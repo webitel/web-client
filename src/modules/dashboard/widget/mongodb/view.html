@@ -1,0 +1,9 @@
+<select class="form-control ng-pristine ng-untouched ng-valid" id="chartType" ng-model="chart.type" ng-change="chartSelectionChange()">
+    <option value="AreaChart">AreaChart</option>
+    <option value="PieChart">PieChart</option>
+    <option value="ColumnChart">ColumnChart</option>
+    <option value="LineChart">LineChart</option>
+    <option value="Table">Table</option>
+    <option value="BarChart">BarChart</option>
+</select>
+<div google-chart chart="chartObject" style="{{cssStyle}}"></div>

@@ -1,0 +1,177 @@
+<div class="page">
+
+    <div class="panel">
+
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="col-sm-6">
+                        <div class="ng-pristine form-validation ng-invalid ng-invalid-required ng-invalid-equal ng-dirty" novalidate role="form">
+
+
+                            <div class="form-group" >
+                                <label for>Id</label>
+                                <input type="text" class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" required ng-disabled="!account._new" data-ng-model="account.id" style="">
+                            </div>
+
+                            <div class="form-group" >
+                                <label for>Password</label>
+                                <input type="password" class="form-control ng-animate ng-dirty" data-ng-model-options="{ updateOn: 'blur' }"  data-ng-model="account.password" style="">
+                            </div>
+
+                            <div class="form-group" >
+                                <label for>Access PIN</label>
+                                <input type="text"  class="form-control ng-animate ng-dirty" data-ng-model="account['vm-password']" style="">
+                            </div>
+
+                            <label for>Role</label>
+                            <select class="form-control"  ng-model="account.variable_account_role"
+                                    ng-init="getRoles()">
+                                    <option ng-repeat="role in roles" ng-selected="{{role==account.variable_account_role}}" value="{{role}}">{{role}}</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="ng-pristine form-validation ng-invalid ng-invalid-required ng-invalid-equal ng-dirty" novalidate role="form">
+
+                            <div class="form-group" >
+                                <label for>Name</label>
+                                <input type="text"  class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required"  ng-model="account.variable_effective_caller_id_name" style="">
+                            </div>
+
+                            <div class="form-group" >
+                                <label for>Extension</label>
+                                <input type="text"  class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" data-ng-model="account['webitel-extensions']" style="">
+                            </div>
+
+                            <div class="form-group" >
+                                <label for>Agent</label>
+                                <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="account['cc-agent']" class="ng-valid ng-dirty"><i></i></label>
+                            </div>
+
+                            <div class="form-group" >
+                                <label for>Use voicemail</label>
+                                <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="account['vm-enabled']" class="ng-valid ng-dirty"><i></i></label>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-6">
+                    <div class="ui-tab-container ui-tab-dark">
+                        <div class="ui-tab">
+                            <tabset>
+                                <tab>
+                                    <tab-heading>
+                                        <span>Variables</span>
+                                    </tab-heading>
+                                    <webitel-variables
+                                            collection = "account.variables"
+                                            dictionary="userVariables"
+                                            remvar="remVar"
+                                            >
+
+                                    </webitel-variables>
+
+                                </tab>
+                                <tab ng-if="account['cc-agent']">
+                                    <tab-heading>
+                                        <span>Agent options</span>
+                                    </tab-heading>
+
+
+                                    <div class="panel-body ng-pristine form-validation ng-invalid ng-invalid-required ng-invalid-equal ng-dirty" novalidate role="form">
+
+                                            <div class="col-sm-6">
+                                                <label for>Call timeout</label>
+                                                <input class="form-control" type="number" name="input" ng-model="account['cc-agent-contact']"
+                                                       min="0" max="999" required>
+
+                                                <label for>Wrap up time</label>
+                                                <input class="form-control" type="number" name="input" ng-model="account['cc-agent-wrap-up-time']"
+                                                       min="0" max="999" required>
+
+                                                <label for>Max no answer</label>
+                                                <input class="form-control" type="number" name="input" ng-model="account['cc-agent-max-no-answer']"
+                                                       min="0" max="999" required>
+
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label for>Busy delay time</label>
+                                                <input class="form-control" type="number" name="input" ng-model="account['cc-agent-busy-delay-time']"
+                                                       min="0" max="999" required>
+
+                                                <label for>Reject delay time</label>
+                                                <input class="form-control" type="number" name="input" ng-model="account['cc-agent-reject-delay-time']"
+                                                       min="0" max="999" required>
+
+                                                <label for>No answer delay time</label>
+                                                <input class="form-control" type="number" name="input" ng-model="account['cc-agent-no-answer-delay-time']"
+                                                       min="0" max="999" required>
+                                            </div>
+
+
+                                    </div>
+
+                                </tab>
+                                <tab ng-if="account['cc-agent'] && canReadQueue && !account._new" ng-click="reloadTabQueue()"  heading="Agent queue">
+
+                                    <div class="panel-body">
+                                        <!--{{queues}}-->
+
+                                        <table class="table table-dynamic" style="table-layout: fixed; word-wrap: break-word;">
+                                            <thead>
+                                            <tr>
+                                                <th >Queue</th>
+                                                <th >Active</th>
+                                                <th >Strategy</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="(key, row) in queues">
+
+                                                <td>
+                                                    {{key}}
+                                                </td>
+
+                                                <td>
+                                                    <label class="ui-checkbox">
+                                                        <input type="checkbox" ng-change="toggleTier(key, row)" ng-model="row.active" class="ng-pristine ng-valid">
+                                                        <span></span>
+                                                    </label>
+                                                </td>
+                                                <td >
+                                                    {{row.strategy}}
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </tab>
+                            </tabset>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="panel-footer">
+            <!--<btn-save-exit save="save" save-exit="save"></btn-save-exit>-->
+            <button ng-show="isEdit" type="button" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
+        </div>
+
+    </div>
+
+</div>

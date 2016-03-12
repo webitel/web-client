@@ -1,0 +1,28 @@
+#phone {
+    background-color: #34323a;
+    min-width: 220px;
+}
+
+#phone .status_container {
+    margin: 0;
+    padding: 0em 0em .1em 0em;
+    width: 100%;
+    text-decoration: none;
+    /* text-shadow: 0 0 0; */
+    font-size: .8em;
+    font-weight: normal;
+}
+
+#phone #page_dialpad_content {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+#phone .ui-content {
+    padding: 0;
+}
+
+
+
+

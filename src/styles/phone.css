@@ -1,0 +1,291 @@
+#phone  {
+    /*min-width: 250px;*/
+    color: #767676;
+    background-color: #242633;
+    position: absolute;
+    width: 200px;
+    /*zoom: 75%;*/
+
+}
+#phone .panel-heading {
+	height: 23px;
+}
+#phone .panel-heading select {
+  background-color: transparent;
+  border: 0;
+}
+#phone .panel-heading select option {
+    margin:40px;
+    background: #242633;
+    color:#fff;
+    text-shadow:0 1px 0 rgba(0,0,0,0.4);
+}
+
+.answer-call {
+	color: #36a97f;
+    /*font-size: 32px;*/
+}
+
+.hold-call {
+    color: #fac552;
+    /*font-size: 22px;	*/
+}
+
+.hangup-call {
+	color: #e9422e;
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1.7);
+    -webkit-transform: rotate(135deg);
+    -moz-transform: rotate(135deg);
+    -ms-transform: rotate(135deg);
+    -o-transform: rotate(135deg);
+    transform: rotate(135deg)	
+
+}
+.fadein,
+.fadeout {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+.fadein.ng-hide-remove,
+.fadeout.ng-hide-add.ng-hide-add-active {
+  opacity: 0;
+  display: block !important;
+}
+
+.fadeout.ng-hide-add,
+.fadein.ng-hide-remove.ng-hide-remove-active {
+  opacity: 1;
+  display: block !important;
+}
+
+#phone a:hover{
+	/*background-color: red;*/
+}
+#phone .digits:hover{
+	/*background-color: red;*/
+}
+
+#phone .t-lines {
+    width: 100%;
+    text-align: center;
+}
+
+#phone .t-lines .active {
+	background-color: #333
+}
+
+#phone li {
+	padding: 0;
+	border: 0;
+	background: url(../images/phone/texture_bg_dial.png) repeat rgba(36, 38, 51, 0.82);
+}
+
+#phone .navigation div{
+	
+}
+
+#phone ol, ul {
+	list-style: none;
+}
+
+#phone div, ul, ol, li {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    font-size: 100%;
+    vertical-align: baseline
+}
+
+#phone .dialpad .t-phone_num {
+	list-style: none;
+    /*background: #3a3a3a;*/
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: center;
+    height: 220px;
+}
+#phone .dialpad .t-phone_num .webitel-del-li{
+    float: left;
+    width: 47px;
+    height: 47px;
+    line-height: 47px;
+    /*border-radius: 47px;
+    border: 1px solid #757575;*/
+    font-size: 16px;
+    margin: 0 8px 7px 0;
+    cursor: pointer;
+}
+
+#phone .dialpad-tab .dialpad a {
+	width: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 2.4em;
+    font-weight: normal;
+    color: #31b6e7;
+}
+#phone .dialpad-tab .dialpad .smalltext {
+    margin: 0em 0em 0em .3em;
+    padding: 0;
+    font-size: .2em;
+    font-weight: bold;
+    color: #aaa;
+}
+
+#phone .dialpad-tab .input-phone-conteiner {
+	width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: url(../images/phone/texture_bg_dial.png) repeat rgba(36, 38, 51, 0.82);
+}
+
+#phone .dialpad-tab .input-phone-conteiner input{
+    display: inline;
+    border: none;
+    box-shadow: none;
+    text-decoration: none;
+    text-shadow: 0 0 0;
+    text-align: center;
+    font-size: 1.3em;
+    background: transparent;
+}
+
+#phone li.navigation {
+	background-color: #333 
+}
+#phone li.navigation div {
+	height: 100%;
+}
+
+#phone li .phonenumber {
+	height: 40px;
+	width: 100%;
+	text-align: center;	
+}
+
+#phone .navigation .active {
+	background-color: #22aadd;
+}
+
+#phone li {
+    background-color: #242633;
+}
+#phone .t-footer div{
+	height: 100%;
+}
+.dialPad .number {
+	position: relative;
+	z-index: 2;
+	padding: 15px 20px;
+	color: #4d4d4d;
+	font-weight: 300;
+	font-size: 40px;
+	background: #fff;
+	height: 78px
+}
+.dialPad .dials {
+	margin: -1px 0 0 -1px;
+	background: #1d1918;
+	cursor: pointer
+}
+.dialPad .dials:before, .dialPad .dials:after {
+	content: "\0020";
+	display: block;
+	height: 0;
+	overflow: hidden
+}
+.dialPad .dials:after {
+	clear: both
+}
+.dialPad .dials .digits {
+	float: left;
+	width: 33.33%
+
+}
+.dialPad .dials .digits p {
+	background: url(../images/phone/texture_bg_dial.png) repeat rgba(36, 38, 51, 0.82);
+	font-weight: 600;
+	padding: 15px 25px;
+	/*border-top: 1px solid #4d4d4d;
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+	border-left: 1px solid #4d4d4d*/
+}
+.dialPad .dials .digits p strong {
+	font-size: 50px;
+	margin-right: 8px;
+	color: #22aadd
+}
+.dialPad .dials .digits:active {
+	background: #00caf2;
+	border-top-color: #b2f2ff
+}
+.compact .dials .digits p {
+	padding: 0px 10px
+}
+.compact .dials .digits p strong {
+	font-size: 20px
+}
+.compact .dials .digits p sup {
+	text-transform: uppercase;
+	color: #c1c1c1
+}
+.compact .dials .pad-action {
+	background: #093
+}
+.compact .dials .pad-action:active {
+	background: #0c3
+}
+.ir {
+	background-color: transparent;
+	border: 0;
+	overflow: hidden;
+	*text-indent:-9999px
+}
+.ir:before {
+	content: "";
+	display: block;
+	width: 0;
+	height: 150%
+}
+.hidden {
+	display: none !important;
+	visibility: hidden
+}
+.visuallyhidden {
+	border: 0;
+	clip: rect(0 0 0 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px
+}
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
+	clip: auto;
+	height: auto;
+	margin: 0;
+	overflow: visible;
+	position: static;
+	width: auto
+	}
+.invisible {
+	visibility: hidden
+}
+.clearfix:before, .clearfix:after {
+	content: " ";
+	display: table
+}
+.clearfix:after {
+	clear: both
+}
+.clearfix {
+	*zoom:1
+}

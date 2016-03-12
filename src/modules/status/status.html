@@ -1,0 +1,166 @@
+<div class="page page-dashboard">
+	<div class="row">
+		<div class="col-lg-6 col-xsm-6">
+            <div class="panel panel-default">
+                    <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> Server info</strong></div>
+                    <div class="panel-body">
+                        <div class="media">
+                            <div class="media-body">
+                                <ul class="list-unstyled list-info">
+                                    <li>
+                                        <span class="icon glyphicon glyphicon-asterisk"></span>
+                                        <label>Server id</label>
+                                        {{output.Webitel.Sid}}
+                                    </li>
+                                    <li>
+                                        <span class="icon glyphicon glyphicon-asterisk"></span>
+                                        <label>Version</label>
+                                        {{output.ver}}
+                                    </li>
+                                    <li>
+                                        <span class="icon glyphicon glyphicon-asterisk"></span>
+                                        <label>Build</label>
+                                        {{output.build}}
+                                    </li>
+                                    <li>
+                                        <span class="icon glyphicon glyphicon-asterisk"></span>
+                                        <label>Commit</label>
+                                        {{output.commit}}
+                                    </li>
+                                    <li>
+                                        <span class="icon glyphicon glyphicon-asterisk"></span>
+                                        <label>Architecture</label>
+                                        {{output.OS.Architecture}}
+                                    </li>
+                                    <li>
+                                        <span class="icon glyphicon glyphicon-home"></span>
+                                        <label>OS Name</label>
+                                        {{output.OS.Name}}
+                                    </li>
+                                    <li>
+                                        <span class="icon glyphicon glyphicon-home"></span>
+                                        <label>Platform</label>
+                                        {{output.OS.Platform}}
+                                    </li>
+                                    <li>
+                                        <span class="icon glyphicon glyphicon-home"></span>
+                                        <label>Node version</label>
+                                        {{output['Node version']}}
+                                    </li>
+                                </ul>
+                                
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+
+        </div>
+
+        <div class="col-lg-3 col-xsm-3">
+            <div class="thumbnail" style="background-color: #fff;">
+                <img alt="" src="images/assets/FS-new-web-logo.png">
+                <div class="caption">
+                    <h3>FreeSWITH status</h3>
+                    <p style="white-space: pre-line;">{{output.freeSWITCH}}</p>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-3 col-xsm-3">
+            <div class="panel mini-box">
+                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-success">
+                    <i class="fa fa-rocket"></i>
+                </span>
+                <div class="box-info">
+                    <p class="size-h2">{{output['Domain session']}}</p>
+                    <p class="text-muted"><span data-i18n="Domains session">Domains session</span></p>
+                </div>
+            </div>
+
+            <div class="panel mini-box">
+                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-info">
+                    <i class="fa fa-users"></i>
+                </span>
+                <div class="box-info">
+                    <p class="size-h2">{{output['Users session']}}</p>
+                    <p class="text-muted"><span data-i18n="Online users">Online users</span></p>
+                </div>
+            </div>
+
+            <div class="panel mini-box">
+                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-success">
+                    <i class="fa fa-calendar"></i>
+                </span>
+                <div class="box-info">
+                    <p class="size-h2">{{output['Process up time']}}</p>
+                    <p class="text-muted"><span data-i18n="Process up time"></span></p>
+                </div>
+            </div>
+
+           
+        </div>
+
+	</div>
+    <!-- Stats -->
+    <div class="row">
+
+        <div class="col-lg-3 col-xsm-6">
+            <div class="panel mini-box">
+                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-info">
+                    <i class="fa fa-users"></i>
+                </span>
+                <div class="box-info">
+                    <p class="size-h2">{{output['Max users session']}}</p>
+                    <p class="text-muted"><span data-i18n="Max user session"></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xsm-6">
+            <div class="panel mini-box">
+                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-warning">
+                    <i class="fa fa-bolt"></i>
+                </span>
+                <div class="box-info">
+                    <p class="size-h5">RSS: {{output['Node memory'].rss}}</p>
+                    <p class="size-h5">Heap total: {{output['Node memory'].heapTotal}}</p>
+                    <p class="size-h5">Heap used: {{output['Node memory'].heapUsed}}</p>
+                    <p class="text-muted"><span data-i18n="Application memory"></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xsm-6">
+            <div class="panel mini-box">
+                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-warning">
+                    <i class="glyphicon glyphicon-warning-sign"></i>
+                </span>
+                <div class="box-info">
+                    <p class="size-h5">Total memory: {{output.OS['Total memory']}}</p>
+                    <p class="size-h5">Free memory: {{output.OS['Free memory']}}</p>
+                    
+                    <p class="text-muted"><span data-i18n="Memory"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-xsm-6">
+            <div class="panel mini-box">
+                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt"
+                    ng-class="output.CRASH_WORKER_COUNT > 1 ? 'btn-danger' : 'btn-success'">
+                    <i class="fa fa-bug"></i>
+                </span>
+                <div class="box-info">
+                    <p class="size-h2">{{output.CRASH_WORKER_COUNT}}</p>
+                    <p class="text-muted"><span data-i18n="Worker crash">Worker crash</span></p>
+                </div>
+            </div> 
+        </div>        
+
+
+    </div>
+    <!-- end stats -->
+
+
+</div>

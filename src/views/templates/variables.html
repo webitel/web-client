@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-sm-6">
+
+        <a ng-disabled="disableAction" ng-click="add()" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+            <i class="fa fa-plus"></i>
+        </a>
+
+        <a ng-disabled="disableAction" ng-if="onSave" ng-click="onSave(collection)" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+            <i class="fa fa-save"></i>
+        </a>
+        <a ng-disabled="disableAction" ng-if="onReload" ng-click="onReload(collection)" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+            <i class="glyphicon glyphicon-refresh"></i>
+        </a>
+    </div>
+</div>
+
+<div class="row text-center ng-scope" ng-if="!collection || collection.length == 0">
+    <div class="center-block col-md-4" style="float: none;">
+        <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+        <h2>No results found</h2>
+    </div>
+</div>
+
+<div class="container-fluid"  ng-if="collection.length > 0">
+    <table class="table table-dynamic" style="table-layout: fixed; word-wrap: break-word;">
+        <thead>
+        <tr>
+            <th >Key </th>
+            <th >Value</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="(key, row) in collection">
+
+            <td>
+                <span ng-hide="row._new && editingData[key]">{{row.key}}</span>
+                <input ng-show="row._new && editingData[key]" type="text" class="form-control" ng-model="row.key" typeahead="itm for itm in dictionary | filter:$viewValue | limitTo:8">
+            </td>
+
+            <td>
+                <span ng-hide="editingData[key]">{{row.value}}</span>
+                <input ng-show="editingData[key]" type="text" class="form-control" ng-model="row.value">
+            </td>
+            <td >
+                <p>
+                    <a ng-click="edit(key, row)" ng-show="!editingData[key]" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
+
+                    <a ng-click="save(key, row)" ng-show="editingData[key]" class="text-muted"><i class="glyphicon glyphicon-save"></i></a>
+                    <span class="space space-xs"></span>
+                    <a ng-click="remove(key, row)" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
+                </p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

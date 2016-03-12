@@ -1,0 +1,82 @@
+<div class="page">
+    <div class="panel panel-body">
+
+        <div class="no-border pull-left">
+            <a href="#/license/manager/new" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                <i class="fa fa-plus"></i>
+            </a>
+
+            <a ng-click="reloadData()" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                <i class="glyphicon glyphicon-refresh"></i>
+            </a>
+
+
+        </div>
+
+
+        <div class="form-group pull-right ">
+
+            <div class="col-sm-10">
+                <input  data-ng-model="query"  type="search" class="form-control no-border text-right" placeholder="Search term">
+                <span class="icon glyphicon glyphicon-search"></span>
+            </div>
+        </div>
+
+        <!--<div class="form-group pull-right ">-->
+            <!--<div class="col-sm-12">-->
+                <!--<span class="">Server id:  {{sid}}</span>-->
+            <!--</div>-->
+
+        <!--</div>-->
+
+        <div class="row text-center" ng-if="!rowCollection || rowCollection.length == 0">
+            <div class="center-block col-md-4" style="float: none;">
+                <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                <h2>No results found</h2>
+            </div>
+        </div>
+
+
+        <table wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" search-watch-model="query">
+            <thead>
+                <tr ng-show="rowCollection.length > 0">
+                    <th st-sort="cid" >Customer</th>
+                    <th st-sort="sid" >SID</th>
+                    <th st-sort="name" >Name</th>
+                    <th st-sort="usr" >Usr</th>
+                    <th st-sort="exp" >Expire</th>
+                    <th st-sort="iat" >Modify</th>
+                    <th st-sort="nbf" >Created</th>
+
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody ng-show="rowCollection.length > 0">
+            <tr ng-repeat="row in displayedCollection">
+                <td >
+                    <a href="#/license/manager/{{row.cid}}/edit">
+                        {{row.cid}}
+                    </a>
+                </td>
+                <td >{{row.sid}}</td>
+                <td >{{row.name}}</td>
+                <td >{{row.usr}}</td>
+                <td >{{convertTime(row.exp)}}</td>
+                <td >{{convertTime(row.iat)}}</td>
+                <td >{{convertTime(row.nbf)}}</td>
+                <td class="center">
+                    <p>
+                        <a href="#/license/manager/{{row.cid}}/edit" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
+                        <span class="space space-xs"></span>
+                        <a href="javascript:;" ng-click="removeItem(row)" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
+                    </p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+</div>

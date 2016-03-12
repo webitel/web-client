@@ -1,0 +1,205 @@
+/**
+ * Created by i.navrotskyj on 03.02.2016.
+ */
+'use strict';
+// TODO
+define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, utils) {
+    app.factory('AccountModel', ["webitel", 'AcdModel', function (webitel, AcdModel) {
+
+        var cacheDomain = new utils.WebitelArrayCollection('name');
+        var cacheAccount = new utils.WebitelArrayCollection('name');
+
+        var notShowAttr = ['a1-hash', 'cc-agent-type', 'dial-string', 'http-allowed-api', 'jsonrpc-allowed-event-channels',
+            'jsonrpc-allowed-fsapi', 'jsonrpc-allowed-methods', 'jsonrpc-password', 'variable_user_context', 'variable_w_domain',
+            'domain', 'variable_user_scheme', 'id'];
+
+
+        function list (domainName, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            webitel.api('GET', '/api/v2/accounts?domain=' + domainName, cb);
+        };
+
+        function item (domainName, id, cb) {
+            if (!domainName || !id)
+                return cb(new Error("Domain and id is required."));
+
+            webitel.api('GET', '/api/v2/accounts/' + id + '?domain=' + domainName, function (err, res) {
+                if (err)
+                    return cb(err);
+
+                var obj = res.data || res.info;
+                var user = create();
+                user.id = id;
+
+                angular.forEach(obj, function (value, key) {
+                    if (~notShowAttr.indexOf(key))
+                        return;
+
+                    if (/^variable_/.test(key) && key !== 'variable_account_role' && key !== 'variable_effective_caller_id_name') {
+                        user.variables.push({
+                            key: key.replace(/variable_/, ''),
+                            value: value
+                        });
+                    } else if (key === 'cc-agent-contact') {
+                        user[key] = +parseAgentContact(value);
+                    } else {
+                        user[key] = utils.strToType(value);
+                    }
+                });
+
+                return cb(err, user);
+            });
+        };
+
+        function parseAgentContact (str) {
+            return str && /originate_timeout=([^,|}]*)/.exec(str)[1]
+        };
+
+        function parseToAgentContact (time, id, domain) {
+            //"{originate_timeout=123,presence_id=100@10.10.10.144}{webitel_call_uuid=${create_uuid()},sip_invite_domain=10.10.10.144}${sofia_contact(*/100@10.10.10.144)},${verto_contact(100@10.10.10.144)}"
+            if (!+time)
+                time = '';
+            return "'{originate_timeout=" + time +
+                ",presence_id=" + id + "@" + domain + "}{webitel_call_uuid=${create_uuid()},sip_invite_domain=" + domain +
+                "}${sofia_contact(*/" + id + "@" + domain +
+                ")},${verto_contact(" + id + "@" + domain + ")}'";
+        };
+
+        function add (account, cb) {
+            // ?domain=
+            var request = {
+                "login": account.id,
+                "role": 'user',
+                "password": account.password,
+                "parameters": [],
+                "variables": ["account_role=" + account.variable_account_role, "effective_caller_id_name='" + account.variable_effective_caller_id_name + "'"]
+            };
+            if (!request.login)
+                return cb(new Error("Id number is required."));
+
+            if (!account.domain)
+                return cb(new Error("Domain is required."));
+
+            if (!account.variable_account_role)
+                return cb(new Error("Role is required."));
+            
+            var _v = [];
+            angular.forEach(account.variables, function (item) {
+                _v.push(item.key + "='" + (item.value || '') + "'")
+            });
+
+            request.variables = request.variables.concat(_v);
+            
+            angular.forEach(account, function (value, key) {
+                if (~notShowAttr.indexOf(key) || key === 'variables' || key === 'variable_effective_caller_id_name'
+                    || key == 'variable_account_role' || key === '_new')
+                    return;
+
+                if (key === 'cc-agent-contact')
+                    return request.parameters.push(key + '=' + parseToAgentContact(value, account.id, account.domain));
+                request.parameters.push(key + '=' + value);
+            });
+            webitel.api('POST', '/api/v2/accounts?domain=' + account.domain, request, cb)
+        };
+
+        function update(account, domainName, diffAttr, remVar, cb) {
+            if (Object.keys(diffAttr).length < 1 && remVar && remVar.length < 1)
+                return cb(new Error("No changes."));
+
+            var id = account.id;
+            if (!id)
+                return cb(new Error("Bad account id"));
+
+            var request = {
+                "parameters": [],
+                "variables": []
+            };
+            angular.forEach(remVar, function (key) {
+                request.variables.push(key + '=')
+            });
+            
+            angular.forEach(diffAttr, function (value, key) {
+                if (key === 'variables') {
+                    angular.forEach(account.variables, function (attr, i) {
+                        request.variables.push(attr.key + '=' + attr.value);
+                    });
+                    return;
+                };
+                if (key === 'cc-agent-contact')
+                    return request.parameters.push(key + '=' + parseToAgentContact(value, id, domainName));
+
+                if (/^variable_/.test(key))
+                    return request.variables.push(key.replace(/^variable_/, '') + '=\'' + value + '\'');
+
+                return request.parameters.push(key + '=\'' + value + '\'');
+            });
+
+            webitel.api('PUT', '/api/v2/accounts/'+ id + '?domain=' + domainName, request, cb)
+        };
+
+        function remove(id, domainName, cb) {
+            webitel.api('DELETE', '/api/v2/accounts/'+ id + '?domain=' + domainName, cb)
+        };
+
+        function getRoles(cb) {
+            webitel.api('GET', '/api/v2/acl/roles', function (err, res) {
+                return cb(err, res && res.info && res.info.roles);
+            });
+        };
+
+        function getTiers (id, domainName, cb) {
+            if (!id)
+                return cb(new Error("Bad agent id"));
+
+            if (!domainName)
+                return cb(new Error("Bad domain name"));
+
+            webitel.api('GET', '/api/v2/accounts/' + id + '/tiers?domain=' + domainName, function (err, res) {
+
+                return cb(err, res && (res.data || res.info))
+            });
+        };
+
+
+
+        function create () {
+            return {
+                id: null,
+                password: null,
+                variables: [],
+
+                "cc-agent": false,
+                "cc-agent-busy-delay-time": 15,
+                "cc-agent-contact": 15,
+                "cc-agent-max-no-answer": 3,
+                "cc-agent-no-answer-delay-time": 10,
+                "cc-agent-reject-delay-time": 15,
+                "cc-agent-wrap-up-time": 10,
+
+
+                "variable_account_role": "",
+                //"variable_default_language": "",
+                "variable_effective_caller_id_name": "",
+                'vm-password': "",
+                'vm-enabled': false,
+                'webitel-extensions': ""
+            }
+        }
+
+        return {
+            list: list,
+            item: item,
+            create: create,
+            add: add,
+            update: update,
+            remove: remove,
+            getRoles: getRoles,
+            getTierList: getTiers,
+            getQueueList: AcdModel.list,
+            addTier: AcdModel.addTier,
+            removeTier: AcdModel.removeTier,
+        }
+    }]);
+});

@@ -1,0 +1,27 @@
+        
+<div class="nav-wrapper">
+    <ul id="nav"
+        class="nav"
+
+        data-slim-scroll
+        >
+<!--         
+            <li><a href="#/dashboard"> <i class="fa fa-dashboard"></i><span data-i18n="Dashboard"></span> </a></li>
+        </li>
+ -->
+        <li data-highlight-active >
+            <a href="#/home"> <i class="fa fa-home"></i><span>Home</span> </a></li>
+        </li>
+         <li data-collapse-nav data-highlight-active ng-show="value.visible" ng-repeat="(key, value) in modules" class="{{value.class}}">
+            <a href="{{value.href}}"><i class="{{value.iconClass}}"></i><span>{{value.caption}}</span></a>
+
+            <ul    ng-if="value.list"  >
+                <li ng-if="valueList.list" ng-repeat="(keyList, valueList) in value.routes">
+                    <a href="#{{valueList.href}}"><i class="fa fa-angle-right"></i><span data-i18n="">{{valueList.caption}}</span></a>
+                </li>
+            </ul>
+            <i ng-if="value.list" class="fa fa-angle-down icon-has-ul-h"></i>
+            <i ng-if="value.list" class="fa fa-angle-right icon-has-ul"></i>
+        </li>
+    </ul>
+</div>

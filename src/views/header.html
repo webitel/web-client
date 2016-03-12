@@ -1,0 +1,184 @@
+<header class="top-header clearfix">
+
+    <!-- Logo -->
+    <div class="logo">
+        <a href="#/">
+             <span class="logo-icon glyphicon glyphicon-fire"></span>
+            <span>{{main.brand}}</span>
+        </a>
+    </div>
+
+    <!-- needs to be put after logo to make it working-->
+    <div class="menu-button" toggle-off-canvas>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </div>
+
+    <div class="top-nav">
+        <ul class="nav-left list-unstyled">
+            <li>
+                <a href="#/" data-toggle-nav-collapsed-min
+                             class="toggle-min"
+                             id="step3"
+                             ><i class="fa fa-bars"></i></a>
+            </li>
+            <li class="dropdown hidden-xs">
+                <a href="javascript:;" class="dropdown-toggle" id="step1" data-toggle="dropdown"><i class="fa fa-cogs"></i></a>
+                <div class="dropdown-menu with-arrow panel panel-dark admin-options" ui-not-close-on-click>
+                    <div class="panel-heading"> Admin Options </div>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <p>Layouts Style</p>
+                            <label class="ui-radio"><input name="layout" type="radio" value="boxed" ng-model="admin.layout"><span>Boxed</span></label>
+                            <label class="ui-radio"><input name="layout" type="radio" value="wide" ng-model="admin.layout"><span>Wide</span></label>
+                        </li>
+                        <li class="list-group-item">
+                            <p>Menu Style</p>
+                            <label class="ui-radio"><input name="menu" type="radio" value="vertical" ng-model="admin.menu"><span>Vertical</span></label>
+                            <label class="ui-radio"><input name="menu" type="radio" value="horizontal" ng-model="admin.menu"><span>Horizontal</span></label>
+                        </li>
+                        <li class="list-group-item">
+                            <p>Additional</p>
+                            <label class="ui-checkbox"><input name="checkbox1" type="checkbox" value="option1" ng-model="admin.fixedHeader"><span>Fixed Top Header</span></label>
+                            <br>
+                            <label class="ui-checkbox"><input name="checkbox1" type="checkbox" value="option1" ng-model="admin.fixedSidebar"><span>Fixed Sidebar Menu</span></label>
+                        </li>
+                        <li class="list-group-item">
+                            <p>
+                                <span>Page Transition: </span> 
+                                <span class="space"></span>
+                                <select ng-model="admin.pageTransition"
+                                        ng-options="ageTransitionOpt.name for ageTransitionOpt in pageTransitionOpts"></select>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+<!--             <li class="dropdown hidden-xs">
+                <a href="javascript:;" class="dropdown-toggle" id="step4" data-toggle="dropdown">
+                    <i class="fa fa-tint"></i>
+                </a>
+                <ul class="dropdown-menu pull-right color-switch" data-ui-color-switch>
+                    <li><a href="javascript:;" class="color-option color-some_color" data-style="some_color"></a></li>
+                </ul>
+            </li> -->
+
+            <!-- TODO add phone-->
+            <!--<li class="dropdown" >-->
+                <!--<a ng-click="" href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" ng-init="showPhone=true", ng-click="showPhone=!showPhone">-->
+                   <!--<i class="fa fa-phone"></i>-->
+                   <!--<span class="badge">99:99</span>-->
+                <!--</a>-->
+                <!-- -->
+                <!--<web-phone ui-not-close-on-click class="dropdown-menu with-arrow pull-center panel panel-dark" show-phone="showPhone" ></web-phone>-->
+            <!--</li>-->
+        
+            <li class="dropdown" ng-show="!admin.domain" ng-controller="NavDomainsCtrl" ng-click="showDomains()">
+                <a id="selectDomainId" href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-database"></i>
+                    <span class="">{{selectedDomain}}</span>
+                </a>
+                <div class="dropdown-menu with-arrow pull-center panel panel-dark">
+                    <div class="panel-heading">
+                        Domains
+                    </div>
+                    <ul class="list-group" ui-not-close-on-click>
+                        <li class="list-group-item">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-search text-muted"></i></span>
+                                <input ng-model="searchText" type="text" class="form-control" placeholder="Search...">
+                            </div>
+                        </li>
+                    </ul>
+                      
+                    <ul class="list-group" style="max-height:250px;  overflow-y:auto;">
+                        <li class="list-group-item" ng-repeat="(key, value) in domainsListFiltered = (domainsList | filter:searchText)" ng-click="selectDomain(value)">
+                            <a href="javascript:;" class="media">{{value.id}}</a>
+                        </li>                 
+                        <li class="list-group-item" ng-hide="domainsListFiltered.length">
+                            <p>
+                                Not found domain
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+        </ul>
+        <ul class="nav-right pull-right list-unstyled">
+            <li class="dropdown text-normal nav-profile">
+                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" ng-if="!admin.domain">
+                    <span>Server</span>
+                </a>
+                <ul class="dropdown-menu with-arrow pull-right">
+                   <li>
+                        <a href="#/license">
+                            <i class="fa fa-usd"></i>
+                            <span data-i18n="License"></span>
+                        </a>
+                    </li>
+                    <li ng-if="main.licenseManager.enabled">
+                        <a href="#/license/manager">
+                            <i class="fa fa-barcode"></i>
+                            <span data-i18n="License manager"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#/roles">
+                            <i class="fa fa-eye-slash"></i>
+                            <span data-i18n="ACL settings"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#/status">
+                            <i class="glyphicon glyphicon-hdd"></i>
+                            <span data-i18n="Status"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="dropdown text-normal nav-profile">
+                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                    <span>{{main.name}}</span>
+                </a>
+                <ul class="dropdown-menu with-arrow pull-right">
+                    <!--<li>-->
+                        <!--<a href="#/pages/profile">-->
+                            <!--<i class="fa fa-user"></i>-->
+                            <!--<span data-i18n="My Profile"></span>-->
+                        <!--</a>-->
+                    <!--</li>-->
+                    <li>
+                        <a href="/docs" target="_blank">
+                            <i class="fa fa-book"></i>
+                            <span data-i18n="Documentation"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a ng-click="signout()">
+                            <i class="fa fa-sign-out"></i>
+                            <span data-i18n="Log Out"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!--TODO add support lang-->
+            <!--<li class="dropdown langs text-normal" data-ng-controller="LangCtrl">-->
+                <!--<a href="javascript:;" class="dropdown-toggle active-flag" id="step2" data-toggle="dropdown">-->
+                    <!--<div class="flag {{ getFlag() }}"></div>-->
+                <!--</a>-->
+                <!--<ul class="dropdown-menu with-arrow  pull-right list-langs" role="menu">-->
+                    <!--<li data-ng-show="lang !== 'English' ">-->
+                        <!--<a href="javascript:;" data-ng-click="setLang('English')"><div class="flag flags-american"></div> English</a></li>-->
+                    <!--<li data-ng-show="lang !== 'Украънська' ">-->
+                        <!--<a href="javascript:;" data-ng-click="setLang('Украънська')"><div class="flag flags-spain"></div> Украънська</a></li>-->
+                    <!--<li data-ng-show="lang !== 'Русский язык' ">-->
+                        <!--<a href="javascript:;" data-ng-click="setLang('Русский язык')"><div class="flag flags-russia"></div> Русский язык</a></li>-->
+                <!--</ul>-->
+            <!--</li>-->
+        </ul>
+    </div>
+
+</header>

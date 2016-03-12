@@ -1,0 +1,81 @@
+<div class="page">
+
+    <section class="panel">
+    	<!-- {{default}} -->
+        <!--<div class="panel-heading"><strong>Domain: {{domain.name}}</strong></div>-->
+        <div class="panel-body">
+
+				<div class="row">
+
+					<div class="col-sm-12">
+
+						<div novalidate role="form">
+
+							<div class="form-group">
+								<div class="col-sm-5">
+									<label class="control-label">Name</label>
+									<input type="text" required class="form-control"  placeholder="Name" ng-model="public.name">
+								</div>
+								<div class="col-sm-5">
+									<label class="control-label">Time zone</label>
+									<input typeahead-editable="false" typeahead-focus-on-select="true" typeahead-select-on-exact="true" typeahead-on-select="onSelectTimeZone" type="text" class="form-control"  placeholder="Time zone" ng-model="public.fs_timezone"  typeahead="zone as zone.name for zone in timeZones | filter:{name:$viewValue}" >
+								</div>
+
+								<div class="col-sm-2">
+									<div class="form-group" >
+                                        <label class="control-label">Disabled</label>
+										<label style="width: 100%;" class="switch switch-danger"><input type="checkbox" ng-model="public.disabled"><i></i></label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="ng-pristine form-validation ng-invalid ng-invalid-required ng-invalid-equal ng-dirty" novalidate role="form">
+
+							<div class="form-group">
+								<div class="col-sm-12">
+									<label class="control-label">Number</label>
+									<tags-input type="text" class="form-group ui-tags-input" required ng-model="public.destination_number">
+									</tags-input>
+								</div>
+							</div>
+						</div>
+				</div>
+			</div>
+
+			<div class="row" style="padding-top: 15px;">
+				<div class="col-md-12">
+					<div class="form-group">
+						<div data-ng-model="cf" ui-ace="{
+						  useWrapMode : true,
+						  showGutter: true,
+						  theme:'github',
+						  mode: 'json',
+						  onLoad: aceLoaded,
+						  onChange: aceChanged,
+						  require: ['ace/ext/language_tools'],
+						  advanced: {
+							  enableSnippets: true,
+							  enableBasicAutocompletion: true,
+							  enableLiveAutocompletion: true
+						  }
+						}" class="json-control"></div>
+					</div>
+
+				</div>
+			</div>
+
+        </div>
+
+        <div class="panel-footer">
+            <button ng-show="isEdit" type="button" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
+		</div>
+    </section>
+</div>

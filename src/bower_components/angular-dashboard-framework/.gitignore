@@ -1,0 +1,23 @@
+# npm
+/node_modules/
+
+# bower
+/sample/components/
+
+# gulp build
+/build/
+/.tmp/
+/dist/docs/
+/dist/sample/
+/dist/reports/
+/src/styles/*.css
+
+# netbeans
+/nbproject/
+
+# idea
+/.idea/
+*.iml
+
+# brackets
+.brackets.json

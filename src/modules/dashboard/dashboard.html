@@ -1,0 +1,21 @@
+<div class="page page-dashboard">
+    <div class="ui-tab-container ui-tab-dark">
+        <div class="ui-tab">
+            <tabset>
+                <tab active="item.active"  ng-repeat="item in models" >
+                    <tab-heading style="position:relative;">
+                        <span>{{item.title}}</span>
+                    </tab-heading>
+                    <a ng-show="models.length > 1" ng-click="removeItem(item)" class="btn">X</a>
+
+                    <adf-dashboard maximizable="true" structure="4-8" adf-model="item" />
+                </tab>
+                <tab select="addDash()">
+                    <tab-heading>
+                        <span>+</span>
+                    </tab-heading>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>

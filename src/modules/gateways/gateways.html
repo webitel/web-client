@@ -1,0 +1,88 @@
+<div class="page">
+	<div class="panel">
+
+		<div class="panel-body" style="position: relative">
+			<div class="no-border pull-left">
+				<a  ng-if="canCreate" href="#/gateways/new?domain={{domain}}" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+					<i class="fa fa-plus"></i>
+				</a>
+
+				<a ng-click="reloadData()"  style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+					<i class="glyphicon glyphicon-refresh"></i>
+				</a>
+			</div>
+
+
+			<div class="form-group pull-right ">
+				<div class="col-sm-10">
+					<input  data-ng-model="query"  type="search" class="form-control no-border text-right" placeholder="Search term">
+					<span class="icon glyphicon glyphicon-search"></span>
+				</div>
+			</div>
+
+			<div class="row text-center" ng-if="!rowCollection || rowCollection.length == 0">
+				<div class="center-block col-md-4" style="float: none;">
+					<h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+					<h2>No results found</h2>
+				</div>
+			</div>
+
+
+			<table wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" search-watch-model="query">
+				<thead>
+					<tr ng-show="rowCollection.length > 0">
+						<th st-sort="name" >Name</th>
+						<th st-sort="profile" >Profile</th>
+						<th st-sort="state" >State</th>
+						<th st-sort="data" >Data</th>
+						<th ng-if="!domain" st-sort="domain" >Domain</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+
+				<div ng-if="isLoading" class="loading text-center">
+					<span>
+						Please wait
+						<i class="fa fa-spinner fa-5x fa-spin"></i>
+					</span>
+				</div>
+
+				<tbody ng-show="rowCollection.length > 0 ">
+					<tr id="account-{{row.id}}" ng-repeat="row in displayedCollection">
+						<td>
+                            <a ng-if="canUpdate" href="#/gateways/{{row.id}}/edit?domain={{domain}}">
+                                {{row.name}}
+                            </a>
+                            <div ng-if="!canUpdate">
+                                {{row.name}}
+                            </div>
+                        </td>
+						<td>
+							<div class="input-group" style="width: 190px;">
+								<select class="form-control" data-ng-model="row.profile" ng-disabled="row.reg">
+									<option value="external">External</option>
+									<option value="nonreg">Nonreg</option>
+								</select>
+								<span class="input-group-addon">
+									<label class="switch switch-small switch-success"><input type="checkbox" ng-change="toggleGw(row)" ng-model="row.reg"><i></i></label>
+								</span>
+							</div>
+
+							<!--{{row.profile}}-->
+						</td>
+						<td>{{row.state}}</td>
+						<td>{{row.data}}</td>
+						<td ng-if="!domain">{{row.domain}}</td>
+						<td class="center">
+							<p>
+								<a href="#/gateways/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
+								<span class="space space-xs"></span>
+								<a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
+							</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

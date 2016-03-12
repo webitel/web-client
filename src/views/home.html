@@ -1,0 +1,41 @@
+<div class="page" >
+
+    <div class="row">
+        <div class="col-md-6">
+            <a href="{{row.href}}" ng-repeat="(key, row) in modules"  ng-if="$even">
+                <div ng-if="row.homeTemplate.url" data-ng-include="row.homeTemplate.url">
+
+                </div>
+
+                <section ng-if="!row.homeTemplate.url"  class="panel panel-box">
+                    <div class="panel-top bg-dark">
+                        <i class="{{row.iconClass}} text-large"></i>
+                    </div>
+                    <div class="panel-bottom bg-reverse">
+                        <p class="size-h1">{{row.caption}}</p>
+                        <p class="text-muted">{{row.description}}</p>
+                    </div>
+                </section>
+            </a>
+        </div>
+
+        <div class="col-md-6" >
+            <a href="{{row.href}}" ng-repeat="(key, row) in modules"  ng-if="!$even">
+                <div ng-if="row.homeTemplate.url" data-ng-include="row.homeTemplate.url">
+
+                </div>
+
+                <section ng-if="!row.homeTemplate.url" class="panel panel-box">
+                    <div class="panel-top bg-dark">
+                        <i class="{{row.iconClass}} text-large"></i>
+                    </div>
+                    <div class="panel-bottom bg-reverse">
+                        <p class="size-h1">{{row.caption}}</p>
+                        <p class="text-muted">{{row.description}}</p>
+                    </div>
+                </section>
+            </a>
+        </div>
+    </div>
+
+</div>

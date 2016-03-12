@@ -1,0 +1,77 @@
+<div class="page">
+    <div class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-3" style="min-height: 200px;">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <a href="javascript:;" class="btn btn-sm btn-success" ng-click="addRole()">
+                                <i class="glyphicon glyphicon-plus">
+                                </i> Add
+                            </a>
+                            <a href="javascript:;" class="btn btn-sm btn-success" ng-click="addRole(true)">
+                                <i class="glyphicon glyphicon-plus">
+                                </i> Add parent
+                            </a>
+                            <a href="javascript:;" ng-click="removeRole()" class="btn-icon btn-icon-sm bg-danger"><i class="glyphicon glyphicon-remove"></i></a>
+                        </div>
+                        <div class="panel-body">
+                            <abn-tree tree-data="rolesData" tree-control="treeRoles" icon-leaf="icon-file" on-select="onChangeRole(branch)" ></abn-tree>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-sm-9">
+
+                    <div class="widget-container">
+
+                        <div class="row text-center" ng-if="!isResources()">
+                            <div class="center-block col-md-4" style="float: none;">
+                                <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                                <h2>No results found</h2>
+                            </div>
+                        </div>
+
+                        <ul class="list-group" ng-if="isResources()">
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-2">Resource</div>
+                                    <div class="col-sm-2">C</div>
+                                    <div class="col-sm-2">U</div>
+                                    <div class="col-sm-2">R</div>
+                                    <div class="col-sm-2">RO</div>
+                                    <div class="col-sm-1">D</div>
+                                </div>
+                            </li>
+                            <li ng-repeat="(key, value) in resources" class="list-group-item" style="padding: 8px;">
+                                <div class="row">
+                                    <div class="col-sm-2">{{key}}</div>
+                                    <div class="col-sm-2">
+                                        <label class="ui-checkbox"><input  type="checkbox" ng-click="resources[key]._changed = true" ng-model="resources[key].c"><span class="checkbox-empty"> </span></label>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="ui-checkbox"><input  type="checkbox" ng-click="resources[key]._changed = true" ng-model="resources[key].u"><span class="checkbox-empty"></span></label>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="ui-checkbox"><input  type="checkbox" ng-click="resources[key]._changed = true" ng-model="resources[key].r"><span class="checkbox-empty"></span></label>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="ui-checkbox"><input  type="checkbox" ng-click="resources[key]._changed = true" ng-model="resources[key].ro"><span class="checkbox-empty"></span></label>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <label class="ui-checkbox"><input  type="checkbox" ng-click="resources[key]._changed = true" ng-model="resources[key].d"><span class="checkbox-empty"></span></label>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <a href="javascript:;" class="btn btn-success btn-xs" ng-click="saveResource(resources[key], key)" ng-if="resources[key]._changed">Save</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
