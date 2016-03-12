@@ -46,10 +46,10 @@
                 <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" st-search search-watch-model="query">
                 <thead>
                 <tr ng-show="rowCollection.length > 0">
-                    <th st-sort="destination_number" >Number</th>
-                    <th st-sort="name" >Name</th>
-                    <th st-sort="order" >Order</th>
-                    <th st-sort="disabled" >Enabled</th>
+                    <th st-skip-natural="true" st-sort="destination_number" >Number</th>
+                    <th st-skip-natural="true" st-sort="name" >Name</th>
+                    <th st-skip-natural="true" st-sort="order" >Order</th>
+                    <th st-skip-natural="true" class="text-center" st-sort="disabled" >Enabled</th>
                     <th>Position</th>
                     <th>Action</th>
                 </tr>

@@ -37,9 +37,9 @@
                 <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" st-search search-watch-model="query" >
                     <thead>
                         <tr ng-show="rowCollection.length > 0">
-                            <th st-sort="destination_number" >Number</th>
-                            <th st-sort="name" >Name</th>
-                            <th st-sort="userRef">User</th>
+                            <th st-skip-natural="true" st-sort="destination_number" >Number</th>
+                            <th st-skip-natural="true" st-sort="name" >Name</th>
+                            <th st-skip-natural="true" st-sort="userRef">User</th>
                             <th>Action</th>
                         </tr>
                     </thead>

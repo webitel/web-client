@@ -44,11 +44,11 @@
 			    <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" search-watch-model="query">
 				<thead>
 					<tr ng-show="rowCollection.length > 0">
-						<th st-sort="name" >Name</th>
-						<th st-sort="profile" >Profile</th>
-						<th st-sort="state" >State</th>
-						<th st-sort="data" >Data</th>
-						<th ng-if="!domain" st-sort="domain" >Domain</th>
+						<th st-skip-natural="true" st-sort="name" >Name</th>
+						<th st-skip-natural="true" st-sort="profile" >Profile</th>
+						<th st-skip-natural="true" st-sort="state" >State</th>
+						<th st-skip-natural="true" st-sort="data" >Data</th>
+						<th st-skip-natural="true" ng-if="!domain" st-sort="domain" >Domain</th>
 						<th>Action</th>
 					</tr>
 				</thead>

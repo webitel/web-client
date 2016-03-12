@@ -14,6 +14,10 @@ html {
     /*color: #FFF;*/
 }
 
+.input-group .datetime-picker-dropdown {
+    min-width: 280px;
+}
+
 .datetime-picker-dropdown .time-picker-menu table .form-group input {
     width: 50px;
 }

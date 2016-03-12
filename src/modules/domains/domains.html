@@ -38,9 +38,9 @@
 		    <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" st-search search-watch-model="query">
 			<thead>
 				<tr>
-					<th st-sort="name">Name</th>
-					<th st-sort="customer">Customer</th>
-					<th st-sort="user">Users</th>
+					<th st-skip-natural="true" st-sort="name">Name</th>
+					<th st-skip-natural="true" st-sort="customer">Customer</th>
+					<th st-skip-natural="true" st-sort="user">Users</th>
 					<th >Action</th>
 				</tr>
 			</thead>
