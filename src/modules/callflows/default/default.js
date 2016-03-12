@@ -11,6 +11,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 			$scope.cf = aceEditor.getStrFromJson([]);
 			$scope.default = {},
 	        $scope.rowCollection = [];
+	        $scope.isLoading = false;
 
 			$scope.query = TableSearch.get('defaults');
 
@@ -241,7 +242,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 				if (!$scope.domain)
 					return $scope.rowCollection = [];
 
+				$scope.isLoading = true;
 				CallflowDefaultModel.list($scope.domain, function (err, res) {
+					$scope.isLoading = false;
 	                if (err)
 	                    return notifi.error(err);
 	                var arr = [];

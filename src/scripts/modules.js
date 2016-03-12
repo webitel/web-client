@@ -11,16 +11,6 @@ define(['angular', 'config'], function (angular, config) {
 		controllerUrl: 'modules/dashboard/dashboard.js',
 		iconClass: 'fa fa-dashboard'
 	},
-		//{
-		//	href: "#/dashboard2",
-		//	caption: "Dashboard2",
-        //
-		//	acl:  'account',
-		//	templateUrl: 'modules/dashboard2/dashboard.html',
-		//	controller: 'DashboardCtrl2',
-		//	controllerUrl: 'modules/dashboard2/dashboard.js',
-		//	iconClass: 'fa fa-dashboard'
-		//},
 	{
 		href: "#/domains",
 		caption: "Domains",

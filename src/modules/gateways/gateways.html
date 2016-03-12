@@ -1,34 +1,47 @@
 <div class="page">
 	<div class="panel">
 
-		<div class="panel-body" style="position: relative">
-			<div class="no-border pull-left">
-				<a  ng-if="canCreate" href="#/gateways/new?domain={{domain}}" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
-					<i class="fa fa-plus"></i>
-				</a>
+		<div class="panel-body">
 
-				<a ng-click="reloadData()"  style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
-					<i class="glyphicon glyphicon-refresh"></i>
-				</a>
-			</div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="no-border pull-left">
+                        <a  ng-if="canCreate" href="#/gateways/new?domain={{domain}}" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                            <i class="fa fa-plus"></i>
+                        </a>
 
-
-			<div class="form-group pull-right ">
-				<div class="col-sm-10">
-					<input  data-ng-model="query"  type="search" class="form-control no-border text-right" placeholder="Search term">
-					<span class="icon glyphicon glyphicon-search"></span>
-				</div>
-			</div>
-
-			<div class="row text-center" ng-if="!rowCollection || rowCollection.length == 0">
-				<div class="center-block col-md-4" style="float: none;">
-					<h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
-					<h2>No results found</h2>
-				</div>
-			</div>
+                        <a ng-click="reloadData()"  style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                            <i class="glyphicon glyphicon-refresh"></i>
+                        </a>
+                    </div>
 
 
-			<table wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" search-watch-model="query">
+                    <div class="form-group pull-right ">
+                        <div class="col-sm-10">
+                            <input  data-ng-model="query"  type="search" class="form-control no-border text-right" placeholder="Search term">
+                            <span class="icon glyphicon glyphicon-search"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="table-responsive"  style="position: relative;">
+                <div ng-show="isLoading" class="loading text-center">
+                        <span>
+                            <i class="fa fa-spinner fa-5x fa-spin"></i>
+                        </span>
+                </div>
+
+                <div class="row text-center" ng-if="!rowCollection || rowCollection.length == 0">
+                    <div class="center-block col-md-4" style="float: none;">
+                        <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                        <h2>No results found</h2>
+                    </div>
+                </div>
+
+			    <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" search-watch-model="query">
 				<thead>
 					<tr ng-show="rowCollection.length > 0">
 						<th st-sort="name" >Name</th>
@@ -39,13 +52,6 @@
 						<th>Action</th>
 					</tr>
 				</thead>
-
-				<div ng-if="isLoading" class="loading text-center">
-					<span>
-						Please wait
-						<i class="fa fa-spinner fa-5x fa-spin"></i>
-					</span>
-				</div>
 
 				<tbody ng-show="rowCollection.length > 0 ">
 					<tr id="account-{{row.id}}" ng-repeat="row in displayedCollection">
@@ -83,6 +89,7 @@
 					</tr>
 				</tbody>
 			</table>
+            </div>
 		</div>
 	</div>
 </div>

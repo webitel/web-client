@@ -30,14 +30,21 @@
                 </div>
             </div>
 
-            <div class="row text-center" ng-if="!rowCollection || rowCollection.length == 0">
-                <div class="center-block col-md-4" style="float: none;">
-                    <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
-                    <h2>No results found</h2>
+
+            <div class="table-responsive"  style="position: relative; word-break: break-word;">
+                <div ng-show="isLoading" class="loading text-center">
+                        <span>
+                            <i class="fa fa-spinner fa-5x fa-spin"></i>
+                        </span>
                 </div>
-            </div>
-            <div class="table-responsive" ng-show="rowCollection.length > 0" style="overflow-x: auto; word-break: break-word;">
-                <table id="test" wt-responsive-table infinite-scroll-disabled="isLoading"    st-table="rowCollection" infinite-scroll="callServer"  st-pipe="callServer" class="table table-bordered">
+                <div class="row text-center" ng-if="!rowCollection || rowCollection.length == 0">
+                    <div class="center-block col-md-4" style="float: none;">
+                        <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                        <h2>No results found</h2>
+                    </div>
+                </div>
+
+                <table ng-show="rowCollection.length > 0" wt-responsive-table infinite-scroll-disabled="isLoading"    st-table="rowCollection" infinite-scroll="callServer"  st-pipe="callServer" class="table table-bordered">
                     <thead>
                         <tr>
                             <th st-skip-natural="true" st-sort="{{item}}" ng-if="!mapColumns[item].noRender && !mapColumns[item].options.detail" ng-repeat="(item, key) in columns">
@@ -46,12 +53,6 @@
                         </tr>
                     </thead>
 
-                    <div ng-show="isLoading" class="loading text-center">
-                        <span>
-                            Please wait
-                            <i class="fa fa-spinner fa-5x fa-spin"></i>
-                        </span>
-                    </div>
                     <tbody style="font-size: 11px;">
 
                     <tr ng-repeat-start="(k, row) in rowCollection" ng-click="selectRow(row)" ng-class="{'bg-gray': row == activeRow}">

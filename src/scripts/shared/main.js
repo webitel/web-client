@@ -1,7 +1,7 @@
-define(['angular', 'config', 'scripts/shared/notifier', 'scripts/modules'], function (angular, config) {
+define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts/modules'], function (angular, config, contributors) {
   	angular.module('app.controllers', ['app.notifier', 'app.modules'])
-	  	.controller('AppCtrl', ['$scope', '$rootScope', '$localStorage', 'webitel', 'MODULES', '$location', '$anchorScroll',
-			function($scope, $rootScope, $localStorage, webitel, MODULES, $location, $anchorScroll) {
+	  	.controller('AppCtrl', ['$scope', '$rootScope', '$localStorage', 'webitel', 'MODULES', '$location',
+			function($scope, $rootScope, $localStorage, webitel, MODULES, $location) {
 	  	  var $window;
 			$scope.modules = [];
 			webitel.onConnect.then(function (session) {
@@ -119,12 +119,26 @@ define(['angular', 'config', 'scripts/shared/notifier', 'scripts/modules'], func
 				})
 			}
 		}])
-	  	.controller('HeaderCtrl', ['$scope', 'webitel', '$location', '$element', '$route', function($scope, webitel, $location, $element, $route) {
+	  	.controller('HeaderCtrl', ['$scope', 'webitel', '$modal', function($scope, webitel, $modal) {
 	  		$scope.signout = function () {
 	  			webitel.signout(function () {
 					window.location.href = "/"
 	  			});
 	  		};
+			
+			$scope.showContributors = function () {
+				$modal.open({
+					templateUrl: 'views/contributors.html',
+					controller: function ($scope) {
+						angular.forEach(contributors, function (value, key) {
+							$scope[key] = value;
+						});
+					},
+					resolve: {
+					}
+				});
+			};
+
 	  	}])
 	  	.controller('NavDomainsCtrl', ['$scope', 'webitel', 'DomainModel', '$timeout',
 	  		function($scope, webitel, DomainModel, $timeout) {
@@ -165,37 +179,13 @@ define(['angular', 'config', 'scripts/shared/notifier', 'scripts/modules'], func
 		.controller('NavContainerCtrl', ['$scope', function($scope) {
 			
 		}])
-		// TODO, delete ???
+
 		.controller('NavCtrl', [
-	    '$scope', '$rootScope', 'MODULES', '$location', 'webitel', function($scope, $rootScope, MODULES, $location, webitel) {
-			console.debug('subscribe -> session:create');
-			webitel.onConnect.then(function (session) {
-				var modules = [];
-				angular.forEach(MODULES, function (item) {
-					if (session.checkResource(item.acl, 'r') && !item.hide) {
-						if ($location.__initPath.indexOf(item.href.substr(1)) === 0)
-							item.class = 'active'
-							;
-						item.visible = true;	
-						if (item.routes) {
-							angular.forEach(item.routes, function(link) {
-								link.list = session.checkResource(link.acl, 'r')
-							})
-						};
-						modules.push(item);
-					}
-				});
-				// TODO  иногда не отображаються модули, походу вебител быстро соединяеться.
-				console.debug('init modules: ', modules);
-				$scope.modules = modules;
-			});
-			$scope.modules = MODULES;
+	    '$scope', function($scope) {
 
 	    }])
 	    .controller('DashboardCtrl', ['$scope', function($scope) {}])
-		.controller('HomeCtrl', ['$scope', 'webitel', function ($scope, webitel) {
-			webitel.onConnect.then(function (session) {
-				debugger
-			})
+		.controller('HomeCtrl', ['$scope', function ($scope) {
+
 		}]);
 })	

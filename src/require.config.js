@@ -15,7 +15,6 @@ require.config({
     'webitel-library': 'scripts/webitel/webitelLib',
     'angular-confirm': 'bower_components/angular-confirm/angular-confirm',
     'smTable': 'bower_components/smart-table/dist/smart-table',
-    'stickyHeader': 'bower_components/lr-sticky-header/lrStickyHeader',
     'jquery-spinner': 'bower_components/jquery-spinner/dist/jquery.spinner.min',
     'nav-tree': 'bower_components/angular-bootstrap-nav-tree/dist/abn_tree_directive',
     'angular-ui-notification': 'bower_components/angular-ui-notification/dist/angular-ui-notification.min',
@@ -28,7 +27,6 @@ require.config({
     'ext-language_tools': 'bower_components/ace-builds/src-min-noconflict/ext-language_tools',
     'ui-ace': 'bower_components/angular-ui-ace/ui-ace',
     'tags-input': 'bower_components/ng-tags-input/ng-tags-input.min',
-    'audioplayer': 'lib/media/audioplayer',
     'angular-clipboard': 'bower_components/angular-clipboard/angular-clipboard',
 
     'angular-sanitize': 'bower_components/angular-sanitize/angular-sanitize.min',
@@ -73,7 +71,6 @@ require.config({
     //'gridster': ['angular', 'css!modules/dashboard2/angular-gridster/dist/angular-gridster.min.css'],
 
     'jquery-builder': ['jquery', 'extendext', 'moment', 'doT', 'bootstrap-select', 'bootstrap-slider', 'bootstrap-selectize'],
-    'audioplayer': ['jquery', 'css!lib/media/audioplayer.css'],
     'sortable': ['jquery'],
     'angular-clipboard': ['angular'],
     'angular-sanitize': ['angular'],

@@ -9,6 +9,7 @@ define(['app', 'scripts/webitel/utils',
 		var self = $scope;
 	  	$scope.displayedCollection = [];
 	  	$scope.remVar = [];
+	  	$scope.isLoading = false;
 
 		$scope.canDelete = webitel.connection.session.checkResource('domain', 'd');
 		$scope.canUpdate = webitel.connection.session.checkResource('domain', 'u');
@@ -137,7 +138,9 @@ define(['app', 'scripts/webitel/utils',
 
 
 		function reloadData (hardReset) {
+			$scope.isLoading = true;
 			DomainModel.list(function(err, dataNew) {
+				$scope.isLoading = false;
 				if (err) {
 					return notifi.error(err);
 				};

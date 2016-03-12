@@ -8,6 +8,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
             $scope.cf = aceEditor.getStrFromJson([]);
             $scope.rowCollection = [];
             $scope.extension = {};
+            $scope.isLoading = false;
 
             $scope.query = TableSearch.get('extensions');
 
@@ -111,7 +112,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                 if (!$scope.domain)
                     return $scope.rowCollection = [];
 
+                $scope.isLoading = true;
                 CallflowExtensionModel.list($scope.domain, function (err, res) {
+                    $scope.isLoading = false;
                     if (err)
                         return notifi.error(err);
                     var arr = [];

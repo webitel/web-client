@@ -14,6 +14,7 @@ define(['app', 'modules/media/mediaModel'
             $scope.reloadData = reloadData;
             $scope.removeItem = removeItem;
             $scope.progress = 0;
+            $scope.isLoading = false;
 
             $scope.setSource = null;
             $scope.activePlayRowName = null;
@@ -157,9 +158,9 @@ define(['app', 'modules/media/mediaModel'
             function reloadData () {
                 if (!$scope.domain)
                     return $scope.rowCollection = [];
-                //$scope.isLoading = true;
+                $scope.isLoading = true;
                 MediaModel.list($scope.domain, function (err, res) {
-                    //$scope.isLoading = false;
+                    $scope.isLoading = false;
                     if (err)
                         return notifi.error(err, 5000);
                     var rows = [],

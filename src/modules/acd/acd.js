@@ -283,9 +283,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/acd/acdModel', 'module
 
                 if (!$scope.domain)
                     return $scope.rowCollection = [];
-                //$scope.isLoading = true;
+                $scope.isLoading = true;
                 AcdModel.list($scope.domain, function (err, res) {
-                    //$scope.isLoading = false;
+                    $scope.isLoading = false;
                     if (err)
                         return notifi.error(err, 5000);
 

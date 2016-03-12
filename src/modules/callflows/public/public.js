@@ -14,6 +14,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
         	var editor;
 	        $scope.rowCollection = [];
 	        $scope.rowColflection = [];
+	        $scope.isLoading = false;
 
 			$scope.query = TableSearch.get('public');
 
@@ -58,6 +59,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        $scope.edit = edit;
 	        $scope.create = create;
 	        $scope.save = save;
+	        $scope.reloadData = reloadData;
 
 			// region File
 			$scope.downloadScheme = function (row) {
@@ -191,7 +193,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 				if (!$scope.domain)
 					return $scope.rowCollection = [];
 
+				$scope.isLoading = true;
 				CallflowPublicModel.list($scope.domain, function (err, res) {
+					$scope.isLoading = false;
 	                if (err)
 	                    return notifi.error(err);
 	                var arr = [];

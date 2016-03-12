@@ -83,9 +83,9 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
 
             if (!$scope.domain)
                 return $scope.rowCollection = [];
-            //$scope.isLoading = true;
+            $scope.isLoading = true;
             AccountModel.list($scope.domain, function (err, res) {
-                //$scope.isLoading = false;
+                $scope.isLoading = false;
                 if (err)
                     return notifi.error(err, 5000);
                 var arr = [];
