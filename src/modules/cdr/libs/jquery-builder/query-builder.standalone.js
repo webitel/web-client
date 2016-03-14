@@ -1065,6 +1065,7 @@
                 return $.extend({}, a);
             var c = {};
             return $.each(this.settings.default_group_flags, function(b, d) {
+                if (!a) return;
                 a[b] !== d && (c[b] = a[b])
             }),
                 c

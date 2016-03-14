@@ -1,7 +1,7 @@
 define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts/modules'], function (angular, config, contributors) {
   	angular.module('app.controllers', ['app.notifier', 'app.modules'])
-	  	.controller('AppCtrl', ['$scope', '$rootScope', '$localStorage', 'webitel', 'MODULES', '$location',
-			function($scope, $rootScope, $localStorage, webitel, MODULES, $location) {
+	  	.controller('AppCtrl', ['$scope', '$rootScope', '$localStorage', 'webitel', 'MODULES', '$location', 'localize',
+			function($scope, $rootScope, $localStorage, webitel, MODULES, $location, localize) {
 	  	  var $window;
 			$scope.modules = [];
 			webitel.onConnect.then(function (session) {
@@ -9,6 +9,7 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
 				$scope.main.name = session.username;
 				$scope.main.acl = session.acl;
 				$scope.admin.domain = session.domain;
+				localize.setLanguage('EN')
 
 				var modules = [];
 				angular.forEach(MODULES, function (item) {

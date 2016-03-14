@@ -52,6 +52,8 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/f
             //$scope.testSource = null;
             $scope.applyFilter = function () {
                 $scope.tableState.pagination.start = 0;
+                if (Object.keys($scope.filterAPI.getFilter()).length == 0)
+                    return;
                 getData($scope.tableState);
             };
             $scope.resetFilter = function () {

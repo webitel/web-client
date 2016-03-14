@@ -93,6 +93,9 @@ define(['angular'], function  (angular) {
           case 'Русский язык':
             localize.setLanguage('RU-RU');
             break;
+          case 'Українська':
+            localize.setLanguage('UA-UA');
+            break;
         }
         return $scope.lang = lang;
       };
@@ -104,6 +107,8 @@ define(['angular'], function  (angular) {
             return 'flags-american';
           case 'Русский язык':
             return 'flags-russia';
+          case 'Українська':
+            return 'flags-ukraine';
         }
       };
     }

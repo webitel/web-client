@@ -96,13 +96,15 @@ define(["app", "jquery", "jquery-builder",
                 function getFilter() {
                     var _f = scope.queryBuilder.queryBuilder("getMongo");
                     if (Object.keys(_f).length > 0) {
-                        $localStorage.cdrF = scope.queryBuilder.queryBuilder("getRules");
+                        $localStorage.cdrF = scope.queryBuilder.queryBuilder("getRules", { get_flags: true });
                     };
                     return _f;
                 };
 
                 function resetFilter () {
-                    scope.queryBuilder.queryBuilder("reset");
+                    //scope.queryBuilder.queryBuilder("reset");
+                    delete $localStorage.cdrF;
+                    scope.queryBuilder.queryBuilder('setRules', getDefaultFilter());
                 };
 
                 var $API = {
@@ -155,8 +157,23 @@ define(["app", "jquery", "jquery-builder",
                 };
 
                 function getFilters(filters) {
-                    var data = [];
+                    var data = [{
+                        "id": "callflow.times.created_time",
+                        "label": "Created time",
+                        "type": "integer",
+                        "input": scope.inputDate,
+                        "operators": [
+                            "less",
+                            "less_or_equal",
+                            "greater",
+                            "greater_or_equal",
+                            "between",
+                            "not_between"
+                        ]
+                    }];
+
                     angular.forEach(filters, function (value, key) {
+                        if (key == "callflow.times.created_time") return;
                         var filter = COLUMN_TYPES[value.type](key, value.caption, value.options);
                         data.push(filter);
                     });
@@ -193,7 +210,9 @@ define(["app", "jquery", "jquery-builder",
 
                     var basic_rules = {
                         condition: "AND",
+                        "flags": {"no_delete": true, "condition_readonly": true, "filter_readonly": true},
                         rules: [{
+                            "flags": {"no_delete": true, "filter_readonly": true},
                             id: "callflow.times.created_time",
                             operator: "between",
                             value: [today.getTime() * 1000, today.getTime() * 1000 + 86399900000] //86399999000
