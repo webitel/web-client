@@ -103,7 +103,7 @@ define(['angular',
 		};
 		 
 		Session.prototype.setCdrLocation = function () {
-			if (this.cdr && !this.cdr.useProxy && this.cdr.host)
+			if (this.cdr && String(this.cdr.useProxy) == 'false' && this.cdr.host) 
 				return connection._cdr = this.cdr.host.replace(/\/$/, '');
 			return connection._cdr = connection._http;
 		};
