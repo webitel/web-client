@@ -139,6 +139,7 @@ define(['app', 'scripts/webitel/utils', 'modules/acl/aclModel', 'nav-tree', 'css
                     return {
                         c: true,
                         u: true,
+                        uo: true,
                         r: true,
                         ro: true,
                         d: true
@@ -158,6 +159,7 @@ define(['app', 'scripts/webitel/utils', 'modules/acl/aclModel', 'nav-tree', 'css
                     $scope.resources[value] = {
                         c: false,
                         u: false,
+                        uo: false,
                         r: false,
                         ro: false,
                         d: false

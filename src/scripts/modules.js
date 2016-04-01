@@ -264,6 +264,29 @@ define(['angular', 'config'], function (angular, config) {
 			controllerUrl: 'modules/acd/acd.js',
 			method: "edit"
 		}]
+	},
+	{
+		href: "#/hooks",
+		caption: "Hooks",
+
+		acl: 'hook',
+		templateUrl: 'modules/hooks/hook.html',
+		controller: 'HookCtrl',
+		controllerUrl: 'modules/hooks/hook.js',
+		iconClass: 'fa fa-exchange',
+		routes: [{
+			href: '/hooks/new',
+			templateUrl: 'modules/hooks/hookPage.html',
+			controller: 'HookCtrl',
+			controllerUrl: 'modules/hooks/hook.js',
+			method: "create"
+		},{
+			href: '/hooks/:id/edit',
+			templateUrl: 'modules/hooks/hookPage.html',
+			controller: 'HookCtrl',
+			controllerUrl: 'modules/hooks/hook.js',
+			method: "edit"
+		}]
 	}
 	]);
 });

@@ -293,6 +293,7 @@ define(['angular'], function (angular) {
         'cc/queue',
 
         'book',
+        'hook',
 
         'cdr',
         'cdr/files',
@@ -313,6 +314,25 @@ define(['angular'], function (angular) {
         'license'
     ];
 
+    var events = [
+        'CHANNEL_CREATE',
+        'CHANNEL_DESTROY',
+        'CHANNEL_CALLSTATE',
+        'CHANNEL_ANSWER',
+        'CHANNEL_HANGUP_COMPLETE',
+        'CHANNEL_HANGUP',
+        'CHANNEL_HOLD',
+        'CHANNEL_UNHOLD',
+        'CHANNEL_BRIDGE',
+        'CHANNEL_UNBRIDGE',
+        'DTMF',
+        'CUSTOM->webitel::account_status',
+        'CUSTOM->webitel::user_create',
+        'CUSTOM->webitel::user_destroy',
+        'CUSTOM->webitel::domain_create',
+        'CUSTOM->webitel::domain_destroy'
+    ]
+
     return {
         WebitelEvent: WebitelEvent,
         WebitelHashCollection: WebitelHashCollection,
@@ -321,6 +341,7 @@ define(['angular'], function (angular) {
         strToType: strToType,
         resourcesAcl: resourcesAcl,
         switchVar: switchVar,
-        saveJsonToPc: saveJsonToPc
+        saveJsonToPc: saveJsonToPc,
+        events: events
     }
 });
