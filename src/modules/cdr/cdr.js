@@ -85,12 +85,12 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/f
 
                     angular.forEach(res, function (item) {
                         var _f = {
-                            "name": item.name || "",
+                            "name": (item.name || ""),
                             "content-type": item['content-type'] || "",
                             "action": "stream",
                             "domain": item.domain,
                             "uuid": row["variables.uuid"],
-                            "uri": fileModel.getUri(row["variables.uuid"], item.name, item.name, item['content-type'] === "application/pdf" ? "pdf" :"mp3"),
+                            "uri": fileModel.getUri(row["variables.uuid"], item.name, item["createdOn"], item['content-type'] === "application/pdf" ? "pdf" :"mp3"),
                             "href": item.path,
                             "class": item['content-type'] === "application/pdf" ? "fa fa-file-pdf-o" :"fa fa-file-audio-o",
                             "buttons": [
@@ -156,11 +156,12 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/f
             };
             
             var loadResource = function (file) {
-                var link = document.createElement("a");
-                link.download = file.name;
-                link.href = file.uri;
-                link.target = "_self";
-                link.click();
+                var $a = document.createElement('a');
+                $a.href = file.uri;
+                $a.download = file.name;
+                document.body.appendChild($a);
+                $a.click();
+                document.body.removeChild($a);
             };
 
             var play = function (file) {
