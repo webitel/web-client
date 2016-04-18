@@ -3,17 +3,88 @@
     <div class="panel" style="min-height: 470px;">
 
         <div class="panel-body" >
-            <div ng-keyup="$event.keyCode == 13 && applyFilter()"  on-init="onInitMongoFilter($API)" filters="mapColumns" mongo-cdr-builder>
+            <div class="row">
+                <div class="col-sm-12">
+
+
+                    <div class="form-inline">
+
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label for>From</label>
+                                <div class="input-group ui-datepicker">
+                                    <input type="text"
+                                           class="form-control"
+                                           datetime-picker="dd.MM.yyyy HH:mm"
+                                           ng-model="startDate"
+                                           is-open="dateOpenedControl.start"
+                                           ng-click="openDate($event, 'start')"
+                                            >
+                                    <span class="input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-show="false">
+                                <div class="btn-group" dropdown="" is-open="status.isopen7">
+                                    <button type="button" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false"> Action <span class="caret"></span> </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="javascript:;">Today</a></li>
+                                        <li><a href="javascript:;">This week</a></li>
+                                        <li><a href="javascript:;">This month</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="javascript:;">Previous week</a></li>
+                                        <li><a href="javascript:;">Previous month</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for>To</label>
+                                <div class="input-group ui-datepicker">
+                                    <input type="text"
+                                           class="form-control"
+                                           datetime-picker="dd.MM.yyyy HH:mm"
+                                           ng-model="endDate"
+                                           is-open="dateOpenedControl.end"
+                                           ng-click="openDate($event, 'end')"
+                                            >
+                                    <span class="input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
 
             </div>
+
+            <div class="divider divider-sm"></div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="input-group">
+                        <input type="text" class="form-control"  ng-model="queryString" ng-keyup="$event.keyCode == 13 && applyFilter()" >
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </span>
+                        <a href="http://www.lucenetutorial.com/lucene-query-syntax.html" target="_blank" class="input-group-addon">
+                            <span class="fa fa-question"></span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="divider divider-sm"></div>
+
             <div class="row">
                 <div class="col-md-12">
                     <button class="btn btn-success btn-xs" ng-click="applyFilter()"><i class="fa fa-filter"></i>Apply</button>
-                    <button class="btn btn-primary btn-xs" ng-click="resetFilter()">Reset</button>
+                    <!--<button class="btn btn-primary btn-xs" ng-click="resetFilter()">Reset</button>-->
                     <a href="#/cdr/settings" class="pull-right text-muted"><i class="fa fa-cog"></i></a>
                     <span class="pull-right space space-xs"></span>
                     <a
-                            cdr-export-excel
+                            elastic-export-excel
                             cdr-progress-export="progressExport"
                             cdr-run-export="runExportCdr"
                             cdr-count-export="countExport"
@@ -47,11 +118,11 @@
 
                 <table ng-show="rowCollection.length > 0" wt-responsive-table infinite-scroll-disabled="isLoading"    st-table="rowCollection" infinite-scroll="callServer"  st-pipe="callServer" class="table table-bordered">
                     <thead>
-                        <tr>
-                            <th st-skip-natural="true" st-sort="{{item}}" ng-if="!mapColumns[item].noRender && !mapColumns[item].options.detail" ng-repeat="(item, key) in columns">
-                                {{mapColumns[item].caption}}
-                            </th>
-                        </tr>
+                    <tr>
+                        <th st-skip-natural="true" st-sort="'{{item}}'" ng-if="!mapColumns[item].noRender && !mapColumns[item].options.detail" ng-repeat="(item, key) in columns">
+                            {{mapColumns[item].caption}}
+                        </th>
+                    </tr>
                     </thead>
 
                     <tbody style="font-size: 11px;">

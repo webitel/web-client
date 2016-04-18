@@ -1,4 +1,9 @@
-define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview'], function (app) {
+/**
+ * Created by igor on 15.04.16.
+ */
+
+
+define(['app', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview', 'css!modules/cdr/css/verticalTabs.css'], function (app) {
 
     app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm', 'notifi',
         function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, notifi) {
@@ -22,10 +27,27 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/f
 
             $scope.mapColumns = CdrModel.mapColumn();
             $scope.columns = CdrModel.availableColumns();
-            $scope.filter = {};
+            $scope.columnsArr = [];
+            $scope.filter = "";
             $scope.detailtColumns = [];
+
+            $scope.dateOpenedControl = {
+                start: false,
+                end: false,
+            };
             
+            $scope.openDate = function ($event, attr) {
+                angular.forEach($scope.dateOpenedControl, function (v, key) {
+                    if (key !== attr)
+                        $scope.dateOpenedControl[key] = false;
+                });
+                return $event.preventDefault(),
+                    $event.stopPropagation(),
+                    $scope.dateOpenedControl[attr] = !0
+            };
+
             angular.forEach($scope.mapColumns, function (item, key) {
+                $scope.columnsArr.push(key);
                 if (item.options && item.options.detail)
                     $scope.detailtColumns.push(key);
             });
@@ -35,29 +57,40 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/f
             function setLoadingDetail(loading) {
                 $scope.detailLoadingText = loading ?  "Loading ..." : "";
             };
-            
+
             $scope.runExportCdr = function (fnExportCdr) {
                 $scope.exportProcessExcel = true;
-                fnExportCdr($scope.mapColumns, $scope.columns, $scope.filter, $scope.sort, function (err) {
+                var filter =  {
+                    "range": {
+                        "variables.start_stamp": {
+                            "gte": $scope.startDate.getTime(),
+                            "lte": $scope.endDate.getTime()
+                        }
+                    }
+                };
+                fnExportCdr($scope.mapColumns, $scope.columnsArr, filter, $scope.queryString, $scope.sort, function (err) {
                     if (err)
                         notifi.error(err);
                     $scope.exportProcessExcel = false;
                 });
             };
 
-            $scope.onInitMongoFilter = function(api) {
-                $scope.filterAPI = api;
-            };
+            var today = new Date();
+            today.setHours(0);
+            today.setMinutes(0);
+            today.setSeconds(0);
+
+            $scope.startDate = today;
+            $scope.endDate = new Date(today.getTime() + 86399900);
 
             //$scope.testSource = null;
             $scope.applyFilter = function () {
                 $scope.tableState.pagination.start = 0;
-                if (Object.keys($scope.filterAPI.getFilter()).length == 0)
-                    return;
+
                 getData($scope.tableState);
             };
             $scope.resetFilter = function () {
-                $scope.filterAPI.resetFilter();
+                //$scope.filterAPI.resetFilter();
             };
 
             $scope.selectRow = function (row) {
@@ -110,7 +143,7 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/f
                     })
                 })
             };
-            
+
             $scope.onClosePlayer = function (a) {
                 // TODO
             };
@@ -139,7 +172,7 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/f
                         notifi.error("No action :(", 3000)
                 }
             };
-            
+
             var deleteResource = function (file, files) {
                 $confirm({text: 'Are you sure you want to delete ' + file.name + '.mp3 or .wav file ?'},  { templateUrl: 'views/confirm.html' })
                     .then(function() {
@@ -154,7 +187,7 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/f
                         })
                     });
             };
-            
+
             var loadResource = function (file) {
                 var $a = document.createElement('a');
                 $a.href = file.uri;
@@ -224,7 +257,7 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/f
             $scope.renderCell = function (value, cell) {
                 if (cell.type == 'timestamp') {
                     if (value === 0) return "-";
-                    return new Date(value / 1000).toLocaleString()
+                    return new Date(value).toLocaleString()
                 };
 
                 return value
@@ -238,40 +271,52 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/f
             var _page = 1;
 
             function getData(tableState) {
-                if (!$scope.filterAPI) return void 0;
                 if ($scope.isLoading) return void 0;
 
                 if ($scope.isLoading)
                     debugger;
 
-                $scope.filter = $scope.filterAPI.getFilter();
                 if (((tableState.pagination.start / tableState.pagination.number) || 0) === 0) {
                     _page = 1;
                     nexData = true;
                     $scope.rowCollection = [];
                     $scope.count = 0;
-                    CdrModel.getCount($scope.filter, function (err, count) {
-                        if (err)
-                            return notifi.error(err);
-                        $scope.count = count;
-                    });
                 };
                 console.debug("Page:", _page);
 
-                $scope.isLoading = true;
                 $scope.tableState = tableState;
 
+                if (!$scope.startDate || !$scope.endDate) {
+                    notifi.error("Bad date", 2000);
+                    return;
+                };
+
+                $scope.isLoading = true;
                 $scope.sort = {};
 
                 if (tableState.sort.predicate)
-                    $scope.sort[tableState.sort.predicate] = tableState.sort.reverse ? -1 : 1;
+                    $scope.sort[tableState.sort.predicate.replace(/'/g, '')] = {
+                        "order": tableState.sort.reverse ? "desc" : "asc",
+                        "unmapped_type": "boolean"
+                    };
+
+                var filter =  {
+                    "range": {
+                        "variables.start_stamp": {
+                            "gte": $scope.startDate.getTime(),
+                            "lte": $scope.endDate.getTime()
+                        }
+                    }
+                };
 
 
-                CdrModel.getData(_page, maxNodes, $scope.columns, $scope.filter, $scope.sort, function (err, res) {
+
+                CdrModel.getElasticData(_page, maxNodes, $scope.columnsArr, filter, $scope.queryString, $scope.sort, function (err, res, count) {
                     if (err)
                         return notifi.error(err);
                     _page++;
                     nexData = res.length == maxNodes;
+                    $scope.count  = count;
 
                     $scope.rowCollection = $scope.rowCollection.concat(res);
 
@@ -280,7 +325,7 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/f
                 });
 
             };
-    }]);
+        }]);
 
 
     app .directive('infiniteScroll',  [
