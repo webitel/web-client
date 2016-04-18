@@ -3,7 +3,8 @@
  */
 
 
-define(['app', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview', 'css!modules/cdr/css/verticalTabs.css'], function (app) {
+define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview', 'css!modules/cdr/css/verticalTabs.css'],
+    function (app, moment) {
 
     app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm', 'notifi',
         function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, notifi) {
@@ -35,7 +36,22 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exp
                 start: false,
                 end: false,
             };
-            
+
+            $scope.quickDateRange = {
+                'Today': [moment().startOf('day'), moment().endOf('day')],
+                'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
+                'Last 7 Days': [moment().subtract(6, 'days').startOf('day'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            };
+
+            $scope.setQuickDateRange = function (v) {
+                $scope.startDate = v[0].toDate();
+                $scope.endDate = v[1].toDate();
+                $scope.applyFilter();
+            }
+
             $scope.openDate = function ($event, attr) {
                 angular.forEach($scope.dateOpenedControl, function (v, key) {
                     if (key !== attr)

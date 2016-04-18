@@ -23,16 +23,13 @@
                                     <span class="input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
                                 </div>
                             </div>
-                            <div class="form-group" ng-show="false">
-                                <div class="btn-group" dropdown="" is-open="status.isopen7">
-                                    <button type="button" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false"> Action <span class="caret"></span> </button>
+                            <div class="form-group">
+                                <div class="btn-group" dropdown="">
+                                    <button type="button" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                                        <span class="caret"></span>
+                                    </button>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li><a href="javascript:;">Today</a></li>
-                                        <li><a href="javascript:;">This week</a></li>
-                                        <li><a href="javascript:;">This month</a></li>
-                                        <li class="divider"></li>
-                                        <li><a href="javascript:;">Previous week</a></li>
-                                        <li><a href="javascript:;">Previous month</a></li>
+                                        <li><a href="javascript:;" ng-click="setQuickDateRange(val)" ng-repeat="(key, val) in quickDateRange">{{key}}</a></li>
                                     </ul>
                                 </div>
                             </div>
