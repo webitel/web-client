@@ -16,13 +16,11 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         };
 
         function item(domain, id, cb) {
-            if (!domain)
-                return cb(new Error("Domain is required."));
 
             if (!id)
                 return cb(new Error("Id is required."));
 
-            webitel.api("GET", "/api/v2/calendars/" + id + "?domain=" + domain, function (err, res) {
+            webitel.api("GET", "/api/v2/calendars/" + id + "?domain=" + (domain || ""), function (err, res) {
                 if (err)
                     return cb(err);
 

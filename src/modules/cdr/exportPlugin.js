@@ -92,7 +92,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
                     function parseTimeStamp (timestamp) {
                         // TODO rus ms-office govno!!!
                         //return '=TEXT(DATE(1970;1;1)+' + timestamp + '/60/60/24/1000/1000;"yyyy-mm-dd hh:mm:ss")'; //
-                        return timestamp ? new Date(timestamp / 1000).toLocaleString() : '-';
+                        return timestamp ? new Date(timestamp).toLocaleString() : '-';
                     };
                     function setHead(table, columns) {
                         table += '<thead><tr>';
