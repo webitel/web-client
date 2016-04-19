@@ -26,7 +26,7 @@ define(["app", "config"], function(app, config) {
                         "caption": "Destination number"
                     },
                     "Call start time": {
-                        "type": "string",
+                        "type": "timestamp",
                         "caption": "Call start time"
                     },
                     "variables.billsec": {
@@ -46,14 +46,14 @@ define(["app", "config"], function(app, config) {
                         "caption": "Hangup cause"
                     },
                     "Call answer time": {
-                        "type": "string",
+                        "type": "timestamp",
                         "caption": "Answered time",
                         "options": {
                             "detail": true
                         }
                     },
-                    "variables.bridge_stamp": {
-                        "type": "string",
+                    "Bridge time": {
+                        "type": "timestamp",
                         "caption": "Bridge time",
                         "options": {
                             "detail": true
@@ -64,7 +64,7 @@ define(["app", "config"], function(app, config) {
                         "caption": "Domain",
                     },
                     "Call end time": {
-                        "type": "string",
+                        "type": "timestamp",
                         "caption": "Call end time",
                         "options": {
                             "detail": true
@@ -265,7 +265,8 @@ define(["app", "config"], function(app, config) {
         };
         function getElasticData(pageNumber, limit, columns, filter, qs, sort, cb) {
             var body = {};
-            body.columns = columns; //availableColumns();
+            body.columns = columns.other; //availableColumns();
+            body.columnsDate = columns.date;
             body.pageNumber = pageNumber;
             body.limit = limit;
             body.query = qs || "*";
@@ -285,8 +286,13 @@ define(["app", "config"], function(app, config) {
         function parseElasticResponse (res) {
             var data = [];
             var _st = Date.now();
+            var t = {};
             angular.forEach(res, function (item) {
-                data.push(convertResponseObject(item._source))
+                t = {};
+                angular.forEach(item.fields, function (val, key) {
+                    t[key] = val[0];
+                });
+                data.push(t);
             });
             return data;
         }
