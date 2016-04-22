@@ -138,11 +138,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     }
                 ],
                 "except": [
-                    {
-                        "name": "My super name",
-                        "date": 123,
-                        "repeat": 0
-                    }
+
                 ]
             }
         }
