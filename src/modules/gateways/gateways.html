@@ -41,7 +41,8 @@
                     </div>
                 </div>
 
-			    <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" search-watch-model="query">
+			    <table ng-show="rowCollection.length > 0"  wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" search-watch-model="query">
+
 				<thead>
 					<tr ng-show="rowCollection.length > 0">
 						<th st-skip-natural="true" st-sort="name" >Name</th>
@@ -53,7 +54,7 @@
 					</tr>
 				</thead>
 
-				<tbody ng-show="rowCollection.length > 0 ">
+				<tbody style="word-break: break-word;" ng-show="rowCollection.length > 0 ">
 					<tr id="account-{{row.id}}" ng-repeat="row in displayedCollection">
 						<td>
                             <a ng-if="canUpdate" href="#/gateways/{{row.id}}/edit?domain={{domain}}">

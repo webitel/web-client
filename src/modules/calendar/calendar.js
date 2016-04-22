@@ -1,4 +1,4 @@
-define(['app', 'scripts/webitel/utils', 'modules/calendar/calendarModel', 'css!modules/calendar/calendar.css'], function (app, utils) {
+define(['app', 'scripts/webitel/utils', 'moment', 'modules/calendar/calendarModel', 'css!modules/calendar/calendar.css'], function (app, utils, moment) {
 
     app.controller('CalendarCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CalendarModel', 'TableSearch', '$location', '$timeout',
         '$route', '$routeParams', '$confirm', '$filter',
@@ -53,7 +53,7 @@ define(['app', 'scripts/webitel/utils', 'modules/calendar/calendarModel', 'css!m
             $scope.closePage = closePage;
             $scope.edit = edit;
 
-                $scope.$watch("query", function (newVal) {
+            $scope.$watch("query", function (newVal) {
                 TableSearch.set(newVal, 'calendar')
             });
 
@@ -146,10 +146,6 @@ define(['app', 'scripts/webitel/utils', 'modules/calendar/calendarModel', 'css!m
                 if (!$scope.calendar._id) {
                     CalendarModel.add($scope.calendar, cb);
                 } else {
-                    var updateValues = utils.diff($scope.oldCalendar, $scope.calendar);
-                    if (Object.keys(updateValues).length === 0)
-                        return notifi.warn('No changes', 5000);
-
                     CalendarModel.update($scope.calendar._id, $scope.calendar, cb)
                 }
             };
@@ -195,16 +191,16 @@ define(['app', 'scripts/webitel/utils', 'modules/calendar/calendarModel', 'css!m
             };
             
             $scope.saveEditWorkWeekRow = function (r, key) {
-                var row = validateAcceptDay($scope.editRowWorkWeek, key);
+                var row = validateAcceptDay($scope.editRowWorkWeek, r);
                 if (!row) {
                     r._error = true;
                     $timeout(function () {
-                        r._error = false;
+                        delete r._error;
                     }, 5000);
                     return;
                 };
-
-                $scope.calendar.accept[key] = row;
+                var id = findIndexFromRows(r, $scope.calendar.accept);
+                $scope.calendar.accept[id] = row;
                 $scope.editRowWorkWeek = {};
                 $scope.editRowWorkWeekKey = null;
             };
@@ -240,9 +236,13 @@ define(['app', 'scripts/webitel/utils', 'modules/calendar/calendarModel', 'css!m
                 }
             };
 
-            function validateAcceptDay (accept, ignoreKey) {
-                if (!accept || !accept.weekDay || !accept.startHour || !accept.startMinute ||
-                    !accept.endHour || !accept.endMinute)
+            function between(x, min, max) {
+                return x >= min && x <= max;
+            };
+
+            function validateAcceptDay (accept, current) {
+                if (!accept || !angular.isNumber(+accept.weekDay) || !angular.isNumber(+accept.startHour) || !angular.isNumber(+accept.startMinute) ||
+                    !angular.isNumber(+accept.endHour) || !angular.isNumber(+accept.endMinute))
                     return null;
                 var startTime = (+accept.startHour * 60) + (+accept.startMinute);
                 var endTime = (+accept.endHour * 60) + (+accept.endMinute);
@@ -250,11 +250,11 @@ define(['app', 'scripts/webitel/utils', 'modules/calendar/calendarModel', 'css!m
                 if (endTime <= startTime)
                     return null;
 
-                var orderBy = $filter('orderBy');
+                var hours = $filter('filter')($scope.calendar.accept, {'weekDay': accept.weekDay});
 
-                var hours =  orderBy($scope.calendar.accept || [], 'weekDay');
                 for (var i = 0, len = hours.length; i < len; i++)
-                    if (ignoreKey !== i && startTime <= hours[i].endTime && hours[i].weekDay == accept.weekDay)
+                    if (current !== hours[i] && ( between(startTime, hours[i].startTime, hours[i].endTime) ||
+                            between(endTime, hours[i].startTime, hours[i].endTime)))
                         return null;
 
                 return {
@@ -263,6 +263,18 @@ define(['app', 'scripts/webitel/utils', 'modules/calendar/calendarModel', 'css!m
                     "endTime": endTime
                 }
             };
+            
+            $scope.removeRowByKey = function (row, schema) {
+                var id = findIndexFromRows(row, $scope.calendar[schema]);
+                return $scope.calendar[schema].splice(id, 1);
+            };
+
+            function findIndexFromRows (row, rows) {
+                for (var i = 0, len = rows.length; i < len; i++)
+                    if (rows[i] === row)
+                        return i;
+
+            }
 
             $scope.addAcceptDay = function (newAccept) {
                 var accept = validateAcceptDay(newAccept);
@@ -279,12 +291,13 @@ define(['app', 'scripts/webitel/utils', 'modules/calendar/calendarModel', 'css!m
 
             $scope.getDateFromTimestamp = function (time) {
                 if (!time) return "";
-                return new Date(time).toLocaleDateString();
+
+                return moment(time).format('DD.MM.YYYY');
             };
 
             $scope.addHoliday = function (holiday) {
-                if (!holiday.name || !holiday.date || !holiday.repeat)
-                    return alert('AAA');
+                if (!holiday || !holiday.name || !holiday.date || !holiday.repeat)
+                    return notifi.error(new Error("Bad holidays parameters."), 5000);
 
                 $scope.calendar.except.push({
                     "name": holiday.name,
