@@ -333,15 +333,21 @@ define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modul
 
 
                 CdrModel.getElasticData(_page, maxNodes, {other: $scope.columnsArr, date: $scope.columnsDateArr}, filter, $scope.queryString, $scope.sort, function (err, res, count) {
-                    if (err)
+                    $scope.isLoading = false;
+                    if (err) {
+
+                        if (err.statusCode === 400) {
+                            return $scope.qsError = true;
+                        };
                         return notifi.error(err);
+                    };
+                    $scope.qsError = false;
+
                     _page++;
                     nexData = res.length == maxNodes;
                     $scope.count  = count;
 
                     $scope.rowCollection = $scope.rowCollection.concat(res);
-
-                    $scope.isLoading = false;
 
                 });
 

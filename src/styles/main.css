@@ -3302,23 +3302,23 @@ input[type=date],input[type=datetime-local],input[type=month],input[type=time] {
 }
 
 .has-error .checkbox,.has-error .checkbox-inline,.has-error .control-label,.has-error .help-block,.has-error .radio,.has-error .radio-inline {
-    color: #a1513c
+    color: #d9534f
 }
 
 .has-error .form-control {
-    border-color: #a1513c;
+    border-color: #d9534f;
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075)
 }
 
 .has-error .form-control:focus {
-    border-color: #7c3e2e;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #cc8977;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #cc8977
+    border-color:#d9534f;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #d9534f;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #d9534f
 }
 
 .has-error .input-group-addon {
-    color: #a1513c;
+    color: #d9534f;
     border-color: #a1513c;
     background-color: #fbe9e6
 }

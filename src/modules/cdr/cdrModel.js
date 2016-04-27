@@ -276,9 +276,11 @@ define(["app", "config"], function(app, config) {
             // TODO BUG!
             body = JSON.stringify(body);
 
-            webitel.cdr("POST", "/api/v2/cdr/text", body, function (err, res) {
-                if (err)
+            webitel.cdr("POST", "/api/v2/cdr/text", body, function (err, res, statusCode) {
+                if (err) {
+                    err.statusCode = statusCode;
                     return cb(err);
+                };
                 return cb(null, parseElasticResponse(res.hits.hits), res.hits.total);
             });
         };

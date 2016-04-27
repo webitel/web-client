@@ -310,6 +310,29 @@ define(['angular', 'config'], function (angular, config) {
 			controllerUrl: 'modules/calendar/calendar.js',
 			method: "edit"
 		}]
-	}
+	},
+		{
+			href: "#/dialer",
+			caption: "Dialer",
+
+			acl: 'dialer',
+			templateUrl: 'modules/dialer/dialer.html',
+			controller: 'DialerCtrl',
+			controllerUrl: 'modules/dialer/dialer.js',
+			iconClass: 'fa fa-eject',
+			routes: [{
+				href: '/dialer/new',
+				templateUrl: 'modules/dialer/dialerPage.html',
+				controller: 'DialerCtrl',
+				controllerUrl: 'modules/dialer/dialer.js',
+				method: "create"
+			},{
+				href: '/dialer/:id/edit',
+				templateUrl: 'modules/dialer/dialerPage.html',
+				controller: 'DialerCtrl',
+				controllerUrl: 'modules/dialer/dialer.js',
+				method: "edit"
+			}]
+		}
 	]);
 });
