@@ -38,12 +38,13 @@
                         </span>
                 </div>
 
-                <table  ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" st-search search-watch-model="query">
+                <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" st-search search-watch-model="query">
                     <thead>
                     <tr ng-show="rowCollection.length > 0">
                         <th st-skip-natural="true" st-sort="name" >Name</th>
                         <th st-skip-natural="true" st-sort="strategy" >Strategy</th>
-                        <th st-skip-natural="true" st-sort="enable" >Enable</th>
+                        <th st-skip-natural="true" st-sort="priority" >Priority</th>
+
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -51,7 +52,7 @@
                     <tbody ng-show="rowCollection.length > 0 ">
                     <tr ng-repeat="row in displayedCollection">
                         <td>
-                            <a ng-if="canUpdate" href="#/acd/{{row.name}}/edit?domain={{domain}}">
+                            <a ng-if="canUpdate" href="#/dialer/{{row._id}}/edit?domain={{domain}}">
                                 {{row.name}}
                             </a>
                             <span ng-if="!canUpdate">
@@ -59,14 +60,10 @@
                             </span>
                         </td>
                         <td>{{row.strategy}}</td>
-                        <td>
-							<span class="input-group-addon" style="width: 50px;background-color: transparent;border: 0;">
-								<label class="switch switch-small switch-success"><input type="checkbox" ng-change="toggleQueueStatus(row)" ng-model="row.enable"><i></i></label>
-							</span>
-                        </td>
+                        <td>{{row.priority}}</td>
                         <td class="center">
                             <p>
-                                <a href="#/acd/{{row.name}}/edit?domain={{domain}}" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
+                                <a href="#/dialer/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
                                 <span class="space space-xs"></span>
                                 <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
                             </p>
