@@ -230,6 +230,9 @@ define(['angular'],
         if (!$scope.remvar)
           $scope.remvar = [];
 
+        if (!$scope.collection)
+          $scope.collection = [];
+
         $scope.editingData = {};
         $scope.add = function () {
           $scope.editingData[$scope.collection.push({key: "", value: "", _new: true}) - 1] = true;

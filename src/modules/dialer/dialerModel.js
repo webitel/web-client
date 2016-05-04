@@ -29,6 +29,14 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
             webitel.api('GET', '/api/v2/dialer/' + id + '?&domain=' + domainName, function(err, res) {
                 var data = res.data || res.info;
+                data._variables = [];
+
+                angular.forEach(data.variables, function (val, key) {
+                    data._variables.push({
+                        key: key,
+                        value: val
+                    })
+                });
                 return cb && cb(err, data);
             });
         };

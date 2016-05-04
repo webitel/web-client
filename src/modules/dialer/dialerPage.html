@@ -39,10 +39,17 @@
                                     <input class="form-control" type="number" name="priority" ng-model="dialer.priority" min="0" max="999" required>
                                 </div>
 
-                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.priority.$invalid && !dialerForm.priority.$pristine }">
+
+                                <div class="form-group" >
                                     <label for>Calendar</label>
-                                    <input class="form-control" type="number" name="priority" ng-model="dialer.priority" min="0" max="999" required>
+                                    <ui-select  ng-model="dialer.calendar" theme="bootstrap"  title="Choose a gateway">
+                                        <ui-select-match placeholder="Select or search calendar...">{{$select.selected.name}}</ui-select-match>
+                                        <ui-select-choices refresh="getCalendars()" repeat="c in calendars | filter: $select.search">
+                                            <span ng-bind-html="c.name | highlight: $select.search"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
                                 </div>
+
 
                                 <label for>Active</label>
                                 <div class="form-group" >
@@ -91,8 +98,15 @@
                                         <tab-heading>
                                             <span>Variables</span>
                                         </tab-heading>
-                                        <div class="form-group" >
-                                            <textarea  class="form-control" ng-model="dialer.description" rows="4"></textarea>
+                                        <div style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">
+                                            <webitel-variables
+                                                    ng-init="dialer._variables = []"
+                                                    collection = "dialer._variables"
+                                                    dictionary="[]"
+                                                    remvar="remVar"
+                                                    >
+
+                                            </webitel-variables>
                                         </div>
                                     </tab>
 
@@ -136,17 +150,23 @@
                                                 <section class="panel panel-default mail-categories">
                                                     <div class="panel-heading">
 
-                                                        <a  ng-if="canCreate" href="#/acd/new?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                                        <a ng-click="editResourceDialString(getDefaultResource())" ng-if="canUpdate" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
                                                             <i class="fa fa-plus"></i>
                                                         </a>
                                                     </div>
-                                                    <ul class="list-group">
-                                                        <li ng-click="setActiveResource(row)" class="list-group-item" ng-class="{'active': activeResource == row}" ng-repeat="row in dialer.resources">
+                                                    <ul class="list-group" style="max-height: 250px; overflow-y: auto;">
+                                                        <li ng-click="setActiveResource(row)" class="list-group-item" ng-class="{'bg-info': activeResource == row}"
+                                                            ng-repeat="(key, row) in dialer.resources">
                                                             <a href="javascript:;" >
                                                                 {{row.dialedNumber}}
                                                             </a>
 
-                                                            <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted pull-right"><i class="glyphicon glyphicon-remove"></i></a>
+                                                            <p class="pull-right">
+                                                                <a href="javascript:;" ng-click="editResourceDialString(row)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                                <span class="space space-xs"></span>
+                                                                <a href="javascript:;" ng-click="removeResource(key, row)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
+                                                            </p>
+
                                                         </li>
                                                     </ul>
                                                 </section>
@@ -155,7 +175,7 @@
                                             <div class="col-sm-8">
                                                 <div class="panel-heading">
 
-                                                    <a  ng-if="canCreate" href="#/acd/new?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                                    <a ng-disabled="!activeResource" ng-click="editResourceDestination(getDefaultResourceDestination())" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
                                                         <i class="fa fa-plus"></i>
                                                     </a>
                                                 </div>
@@ -179,7 +199,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="item in activeResource.destinations">
+                                                        <tr ng-repeat="(key, item) in activeResource.destinations | orderBy: '+order'">
                                                             <td>{{item.gwName}}</td>
                                                             <td>{{item.dialString}}</td>
                                                             <td>{{item.order}}</td>
@@ -187,9 +207,9 @@
                                                             <td>{{item.enabled}}</td>
                                                             <td>
                                                                 <p>
-                                                                    <a ng-click="editResource(item)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                                    <a ng-click="editResourceDestination(item)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
                                                                     <span class="space space-xs"></span>
-                                                                    <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
+                                                                    <a href="javascript:;" ng-click="removeResourceDestination(key, item)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
                                                                 </p>
                                                             </td>
                                                         </tr>
@@ -245,3 +265,5 @@
 
     </div>
 </div>
+
+{{dialer}}

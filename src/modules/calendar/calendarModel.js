@@ -11,7 +11,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         function list (domain, cb) {
             if (!domain)
                 return cb(new Error("Domain is required."));
-
+            // TODO add columns
             webitel.api("GET", "/api/v2/calendars?domain=" + domain, cb)
         };
 

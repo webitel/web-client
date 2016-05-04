@@ -1,9 +1,9 @@
-define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/gateways/gatewayModel',  'modules/dialer/dialerModel'], function (app, async, utils, aceEditor) {
+define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/gateways/gatewayModel',  'modules/dialer/dialerModel', 'modules/calendar/calendarModel'], function (app, async, utils, aceEditor) {
 
     app.controller('DialerCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'DialerModel', '$location', '$route', '$routeParams',
-        '$confirm', 'TableSearch', '$timeout', '$modal',
+        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel',
         function ($scope, webitel, $rootScope, notifi, DialerModel, $location, $route, $routeParams, $confirm, TableSearch,
-                  $timeout, $modal) {
+                  $timeout, $modal, CalendarModel) {
 
             $scope.canDelete = webitel.connection.session.checkResource('dialer', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('dialer', 'u');
@@ -76,10 +76,135 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.edit = edit;
 
             $scope.rowCollection = [];
-            $scope.activeResource = {};
+            $scope.activeResource = null;
             
             $scope.setActiveResource = function (resource) {
                 $scope.activeResource = resource;
+            };
+            
+            $scope.getDefaultResourceDestination = function () {
+                return {
+                    gwName: "",
+                    dialString: "",
+                    gwProto: "sip",
+                    order: 0,
+                    limit: 0,
+                    enabled: true
+                }
+            };
+            $scope.getDefaultResource = getDefaultResource;
+
+            function getDefaultResource(dialString) {
+                return {
+                    dialedNumber: dialString || "",
+                    destinations: []
+                }
+            };
+            
+            $scope.getCalendars = function () {
+                CalendarModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    var c = [];
+                    var data = res.data;
+                    angular.forEach(data, function (v) {
+                        c.push({
+                            "id": v._id,
+                            "name": v.name
+                        });
+                    });
+                    $scope.calendars = c;
+
+                });
+            };
+            
+            $scope.editResourceDialString = function (resource) {
+                var modalInstance = $modal.open({
+                    animation: true,
+                    templateUrl: '/modules/dialer/resourceDialString.html',
+                    controller: 'DialerResourceDialStringCtrl',
+                    resolve: {
+                        resource: function () {
+                            return resource;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (result) {
+
+                    if (!$scope.dialer.resources)
+                        $scope.dialer.resources = [];
+
+                    if (!result.id) {
+                        var resource = getDefaultResource(result.value);
+                        $scope.activeResource = resource;
+                        return $scope.dialer.resources.push(resource);
+                    };
+
+                    var resources = $scope.dialer.resources;
+                    for (var i = 0; i < resources.length; i++) {
+                        if (resources[i].$$hashKey == result.id) {
+                            return resources[i].dialedNumber = result.value
+                        }
+                    }
+                }, function () {
+
+                });
+            };
+
+            $scope.editResourceDestination = function (resource) {
+                var modalInstance = $modal.open({
+                    animation: true,
+                    templateUrl: '/modules/dialer/resourcePage.html',
+                    controller: 'DialerResourceCtrl',
+                    resolve: {
+                        resource: function () {
+                            return resource;
+                        },
+                        domain: function () {
+                            return $scope.domain;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (result) {
+                    if (!$scope.activeResource.destinations)
+                        $scope.activeResource.destinations = [];
+
+                    var destinations = $scope.activeResource.destinations;
+                    if (!result.id)
+                        return destinations.push(result.value);
+
+                    for (var i = 0; i < destinations.length; i++) {
+                        if (destinations[i].$$hashKey == result.id) {
+                            return destinations[i] = result.value
+                        }
+                    }
+                }, function () {
+
+                });
+            };
+            
+            $scope.removeResource = function (key, resource) {
+                var resources = $scope.dialer.resources;
+                $confirm({text: 'Are you sure you want to delete resource ' + resource.dialedNumber + ' ?'},  { templateUrl: 'views/confirm.html' })
+                    .then(function() {
+                        resources.splice(key, 1);
+                    });
+            };
+            
+            $scope.removeResourceDestination = function (key, resource) {
+                var scope = this;
+                $confirm({text: 'Are you sure you want to delete resource ' + resource.dialString + ' ?'},  { templateUrl: 'views/confirm.html' })
+                    .then(function() {
+                        for (var i = 0, des = scope.activeResource.destinations, len = des.length; i < len; i++) {
+                            if (des[i] == resource)
+                                return scope.activeResource.destinations.splice(i, 1)
+                        }
+
+                    });
+
             };
 
             function closePage() {
@@ -97,6 +222,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     };
                     $scope.oldDialer = angular.copy(item);
                     $scope.dialer = item;
+
+                    $scope.activeResource = $scope.dialer.resources && $scope.dialer.resources[0]
                     disableEditMode();
                 });
             }
@@ -152,43 +279,25 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.diealerStates = ["state1", "state2"];
             $scope.diealerTypes = ["progressive", "predictive"];
 
-            $scope.editResource = function (resource) {
-                var modalInstance = $modal.open({
-                    animation: true,
-                    templateUrl: '/modules/dialer/resourcePage.html',
-                    controller: 'DialerResourceCtrl',
-                    resolve: {
-                        resource: function () {
-                            return resource;
-                        },
-                        domain: function () {
-                            return $scope.domain
-                        }
-                    }
-                });
-
-                modalInstance.result.then(function (result) {
-
-                }, function () {
-
-                });
-            }
-
     }]);
     
     app.controller('DialerResourceCtrl', ["$scope", '$modalInstance', 'resource', 'domain', 'GatewayModel', 'notifi',
         function ($scope, $modalInstance, resource, domain, GatewayModel, notifi) {
-        $scope.resource = resource;
+        $scope.resource = angular.copy(resource);
+        var id = resource.$$hashKey;
+
         $scope.ok = function () {
-            if (!$scope.resource.gwName || !$scope.resource.dialString) {
+            if (!$scope.resource.dialString || (!$scope.resource.gwName && $scope.resource.gwProto == 'sip')) {
                 return notifi.error(new Error("Bad parameters"))
             }
-            $modalInstance.close($scope.resource, 5000);
+            $modalInstance.close({value: $scope.resource, id: id}, 5000);
         };
 
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
+
+        $scope.Types = ["sip", "sipUri"];
 
         $scope.gateways = [];
 
@@ -201,4 +310,23 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             });
         });
     }]);
+    
+    app.controller('DialerResourceDialStringCtrl', ['$scope', '$modalInstance', 'resource',
+        function ($scope, $modalInstance, resource) {
+
+        $scope.dialedNumber = angular.copy(resource.dialedNumber);
+
+        var id = resource.$$hashKey;
+
+        $scope.ok = function () {
+            if (!$scope.dialedNumber) {
+                return notifi.error(new Error("Bad parameters"))
+            }
+            $modalInstance.close({value: $scope.dialedNumber, id: id}, 5000);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }])
 });
