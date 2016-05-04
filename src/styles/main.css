@@ -3323,6 +3323,21 @@ input[type=date],input[type=datetime-local],input[type=month],input[type=time] {
     background-color: #fbe9e6
 }
 
+/*.table-row.view:hover .glyphicon-pencil, .table-row.view:hover .glyphicon-remove {*/
+    /*display: block;*/
+/*}*/
+
+
+/*.table-row.view.glyphicon {*/
+    /*position: relative;*/
+    /*margin-bottom: 10px;*/
+    /*padding: 0 12px 0 40px;*/
+    /*border-radius: 4px;*/
+    /*background-color: #fff;*/
+    /*box-shadow: 0 0 1px rgba(0,0,0,.2)*/
+/*}*/
+
+
 .has-error .form-control-feedback {
     color: #a1513c
 }

@@ -35,6 +35,7 @@ require.config({
     'videogular-overlay-play': 'bower_components/videogular-overlay-play/vg-overlay-play.min',
     'videogular-buffering': 'bower_components/videogular-buffering/vg-buffering.min',
     'datetime-picker': 'bower_components/bootstrap-ui-datetime-picker/dist/datetime-picker',
+    'xeditable': 'bower_components/angular-xeditable/js/xeditable.min',
 
     'google-chart': 'bower_components/angular-google-chart/ng-google-chart.min',
     // TODO ijector
@@ -56,6 +57,8 @@ require.config({
     'bootstrap-datepicker': 'modules/cdr/libs/bootstrap/bootstrap-datepicker.min',
     'bootstrap-select': 'modules/cdr/libs/bootstrap/bootstrap-select.min',
     'bootstrap-selectize': 'modules/cdr/libs/bootstrap/selectize.min',
+
+    'ui-select': 'bower_components/ui-select/dist/select.min'
     // END TODO
 
     //new dash
@@ -67,8 +70,13 @@ require.config({
       deps: ['jquery'],
       exports: 'angular'
     },
+
+    'ui-select': {
+      deps: ['angular', 'css!bower_components/ui-select/dist/select.min.css']
+    },
     //TODO
     //'gridster': ['angular', 'css!modules/dashboard2/angular-gridster/dist/angular-gridster.min.css'],
+    'xeditable': ['angular', 'css!bower_components/angular-xeditable/css/xeditable.min.css'],
 
     'jquery-builder': ['jquery', 'extendext', 'moment', 'doT', 'bootstrap-select', 'bootstrap-slider', 'bootstrap-selectize'],
     'sortable': ['jquery'],

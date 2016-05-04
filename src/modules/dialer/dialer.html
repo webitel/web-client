@@ -50,7 +50,7 @@
                     </thead>
 
                     <tbody ng-show="rowCollection.length > 0 ">
-                    <tr ng-repeat="row in displayedCollection">
+                    <tr ng-repeat="row in displayedCollection" >
                         <td>
                             <a ng-if="canUpdate" href="#/dialer/{{row._id}}/edit?domain={{domain}}">
                                 {{row.name}}

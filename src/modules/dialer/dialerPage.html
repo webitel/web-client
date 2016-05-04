@@ -1,6 +1,239 @@
 <div class="page">
     <div class="panel">
+
         <div class="panel-body">
+
+            <form name="dialerForm" novalidate>
+                <div class="row">
+
+                    <div class="col-sm-6">
+                        <div class="row">
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.name.$invalid && !dialerForm.name.$pristine }">
+                                    <label for>Name</label>
+                                    <input type="text"  class="form-control" name="name" required ng-model="dialer.name" >
+                                </div>
+
+                                <div class="form-group" >
+                                    <label for>State</label>
+                                    <select class="form-control"  ng-model="dialer.state">
+                                        <option ng-repeat="state in diealerStates" ng-selected="{{state==dialer.state}}" value="{{state}}">{{state}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group"  ng-class="{ 'has-error' : dialerForm.type.$invalid && !dialerForm.type.$pristine }">
+                                    <label for>Type</label>
+                                    <select class="form-control" name="type" ng-model="dialer.type" required >
+                                        <option ng-repeat="type in diealerTypes" ng-selected="{{type==dialer.type}}"  value="{{type}}">{{type}}</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.priority.$invalid && !dialerForm.priority.$pristine }">
+                                    <label for>Priority</label>
+                                    <input class="form-control" type="number" name="priority" ng-model="dialer.priority" min="0" max="999" required>
+                                </div>
+
+                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.priority.$invalid && !dialerForm.priority.$pristine }">
+                                    <label for>Calendar</label>
+                                    <input class="form-control" type="number" name="priority" ng-model="dialer.priority" min="0" max="999" required>
+                                </div>
+
+                                <label for>Active</label>
+                                <div class="form-group" >
+                                    <label class="switch switch-success"><input type="checkbox" ng-model="dialer.active"><i></i></label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="ui-tab-container ui-tab-dark">
+                            <div class="ui-tab">
+                                <tabset>
+                                    <tab>
+                                        <tab-heading>
+                                            <span>Parameters</span>
+                                        </tab-heading>
+
+                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.limit.$invalid && !dialerForm.limit.$pristine }">
+                                            <label for>Limit</label>
+                                            <input class="form-control" type="number" name="limit" ng-model="dialer.parameters.limit" min="0" max="999" required>
+                                        </div>
+
+                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.progressSec.$invalid && !dialerForm.progressSec.$pristine }">
+                                            <label for>Progress sec</label>
+                                            <input class="form-control" type="number" name="progressSec" ng-model="dialer.parameters.progressSec" min="0" max="999" required>
+                                        </div>
+
+                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.avgProgressSec.$pristine }">
+                                            <label for>Avg progress sec</label>
+                                            <input class="form-control" type="number" name="avgProgressSec" ng-model="dialer.parameters.avgProgressSec" min="0" max="999" required>
+                                        </div>
+
+                                    </tab>
+
+                                    <tab>
+                                        <tab-heading>
+                                            <span>Description</span>
+                                        </tab-heading>
+                                        <div class="form-group" >
+                                            <textarea  class="form-control" ng-model="dialer.description" rows="4"></textarea>
+                                        </div>
+                                    </tab>
+                                    <tab>
+                                        <tab-heading>
+                                            <span>Variables</span>
+                                        </tab-heading>
+                                        <div class="form-group" >
+                                            <textarea  class="form-control" ng-model="dialer.description" rows="4"></textarea>
+                                        </div>
+                                    </tab>
+
+
+                                </tabset>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ui-tab-container ui-tab-dark">
+                        <div class="ui-tab">
+                            <tabset>
+
+                                <tab>
+                                    <tab-heading>
+                                        <span>Members</span>
+                                    </tab-heading>
+                                    <div class="row text-center" ng-show="!activeResource.destinations || activeResource.destinations.length < 1">
+                                        <div class="center-block col-md-4" style="float: none;">
+                                            <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                                            <h2>No results found</h2>
+                                        </div>
+                                    </div>
+
+                                </tab>
+
+                                <tab>
+                                    <tab-heading>
+                                        <span>Resources</span>
+                                    </tab-heading>
+                                    <div class="row">
+
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-4">
+                                                <section class="panel panel-default mail-categories">
+                                                    <div class="panel-heading">
+
+                                                        <a  ng-if="canCreate" href="#/acd/new?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                                            <i class="fa fa-plus"></i>
+                                                        </a>
+                                                    </div>
+                                                    <ul class="list-group">
+                                                        <li ng-click="setActiveResource(row)" class="list-group-item" ng-class="{'active': activeResource == row}" ng-repeat="row in dialer.resources">
+                                                            <a href="javascript:;" >
+                                                                {{row.dialedNumber}}
+                                                            </a>
+
+                                                            <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted pull-right"><i class="glyphicon glyphicon-remove"></i></a>
+                                                        </li>
+                                                    </ul>
+                                                </section>
+                                            </div>
+
+                                            <div class="col-sm-8">
+                                                <div class="panel-heading">
+
+                                                    <a  ng-if="canCreate" href="#/acd/new?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                                        <i class="fa fa-plus"></i>
+                                                    </a>
+                                                </div>
+
+                                                <div class="row text-center" ng-show="!activeResource.destinations || activeResource.destinations.length < 1">
+                                                    <div class="center-block col-md-4" style="float: none;">
+                                                        <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                                                        <h2>No results found</h2>
+                                                    </div>
+                                                </div>
+
+                                                <table class="table table-bordered" ng-show="activeResource.destinations.length > 0">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>gwName</th>
+                                                        <th>dialString</th>
+                                                        <th>order</th>
+                                                        <th>limit</th>
+                                                        <th>enabled</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="item in activeResource.destinations">
+                                                            <td>{{item.gwName}}</td>
+                                                            <td>{{item.dialString}}</td>
+                                                            <td>{{item.order}}</td>
+                                                            <td>{{item.limit}}</td>
+                                                            <td>{{item.enabled}}</td>
+                                                            <td>
+                                                                <p>
+                                                                    <a ng-click="editResource(item)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                                    <span class="space space-xs"></span>
+                                                                    <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </tab>
+
+                                <tab>
+                                    <tab-heading>
+                                        <span>Callflow</span>
+                                    </tab-heading>
+
+                                    <div class="row" style="padding-top: 15px;">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div data-ng-model="cf" ui-ace="{
+                                                      useWrapMode : true,
+                                                      showGutter: true,
+                                                      theme:'github',
+                                                      mode: 'json',
+                                                      onLoad: aceLoaded,
+                                                      onChange: aceChanged,
+                                                      require: ['ace/ext/language_tools'],
+                                                      advanced: {
+                                                          enableSnippets: true,
+                                                          enableBasicAutocompletion: true,
+                                                          enableLiveAutocompletion: true
+                                                      }
+                                                    }" class="json-control"></div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </tab>
+                            </tabset>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
 

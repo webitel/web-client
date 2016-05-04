@@ -1,9 +1,9 @@
-define(['app', 'async', 'scripts/webitel/utils', 'modules/dialer/dialerModel'], function (app, async, utils) {
+define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/gateways/gatewayModel',  'modules/dialer/dialerModel'], function (app, async, utils, aceEditor) {
 
     app.controller('DialerCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'DialerModel', '$location', '$route', '$routeParams',
-        '$confirm', 'TableSearch', '$timeout',
+        '$confirm', 'TableSearch', '$timeout', '$modal',
         function ($scope, webitel, $rootScope, notifi, DialerModel, $location, $route, $routeParams, $confirm, TableSearch,
-                  $timeout) {
+                  $timeout, $modal) {
 
             $scope.canDelete = webitel.connection.session.checkResource('dialer', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('dialer', 'u');
@@ -12,6 +12,45 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/dialer/dialerModel'], 
             $scope.dialer = {};
 
             $scope.query = TableSearch.get('dialer');
+
+            $scope.cf = aceEditor.getStrFromJson([
+                {
+                    "setVar": [
+                        "ringback=$${us-ring}",
+                        "transfer_ringback=$${uk-ring}",
+                        "hangup_after_bridge=true",
+                        "continue_on_fail=true"
+                    ]
+                },
+                {
+                    "recordSession": "start"
+                },
+                {
+                    "bridge": {
+                        "endpoints": [
+                            {
+                                "name": "101",
+                                "type": "user"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "recordSession": "stop"
+                },
+                {
+                    "answer": ""
+                },
+                {
+                    "sleep": "1000"
+                },
+                {
+                    "voicemail": {
+                        "user": "101"
+                    }
+                }
+            ]);
+            $scope.aceLoaded = aceEditor.init;
 
             $scope.$watch("query", function (newVal) {
                 TableSearch.set(newVal, 'dialer')
@@ -37,6 +76,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/dialer/dialerModel'], 
             $scope.edit = edit;
 
             $scope.rowCollection = [];
+            $scope.activeResource = {};
+            
+            $scope.setActiveResource = function (resource) {
+                $scope.activeResource = resource;
+            };
 
             function closePage() {
                 $location.path('/dialer');
@@ -104,5 +148,57 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/dialer/dialerModel'], 
                 };
             }();
 
-    }])
+
+            $scope.diealerStates = ["state1", "state2"];
+            $scope.diealerTypes = ["progressive", "predictive"];
+
+            $scope.editResource = function (resource) {
+                var modalInstance = $modal.open({
+                    animation: true,
+                    templateUrl: '/modules/dialer/resourcePage.html',
+                    controller: 'DialerResourceCtrl',
+                    resolve: {
+                        resource: function () {
+                            return resource;
+                        },
+                        domain: function () {
+                            return $scope.domain
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (result) {
+
+                }, function () {
+
+                });
+            }
+
+    }]);
+    
+    app.controller('DialerResourceCtrl', ["$scope", '$modalInstance', 'resource', 'domain', 'GatewayModel', 'notifi',
+        function ($scope, $modalInstance, resource, domain, GatewayModel, notifi) {
+        $scope.resource = resource;
+        $scope.ok = function () {
+            if (!$scope.resource.gwName || !$scope.resource.dialString) {
+                return notifi.error(new Error("Bad parameters"))
+            }
+            $modalInstance.close($scope.resource, 5000);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        $scope.gateways = [];
+
+        GatewayModel.list(domain, function (err, res) {
+            if (err)
+                return notifi.error(err);
+            $scope.gateways = [];
+            angular.forEach(res, function (v) {
+                $scope.gateways.push(v.id)
+            });
+        });
+    }]);
 });

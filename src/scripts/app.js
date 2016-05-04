@@ -35,11 +35,12 @@ define(['require',
   'widget-link',
   'widget-markdown',
   'widget-mongodb',
+  'ui-select'
    // TODO new dash..
   //'gridster'
   ], function (require, angularAMD) {
   //require()
-  var app = angular.module("app", ['ngRoute', 'ngStorage', 'angular-clipboard', 'ngSanitize', 'com.2fdevs.videogular',  "com.2fdevs.videogular.plugins.controls",//'gridster',
+  var app = angular.module("app", ['ngRoute', 'ngStorage', 'angular-clipboard', 'ngSanitize', 'com.2fdevs.videogular',  "com.2fdevs.videogular.plugins.controls", 'ui.select',//'gridster',
     'adf', 'adf.widget.iframe',  'adf.widget.linklist', 'adf.widget.markdown', 'adf.structures.base', /*'adf.widget.mongodb',*/
     'wt.responsive', 'ngAnimate', 'smart-table', 'ui.bootstrap', 'ui.bootstrap.modal', "ui.bootstrap.datepicker", 'ui.bootstrap.datetimepicker',
     'app.directives',
