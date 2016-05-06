@@ -1,0 +1,101 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="no-border pull-left">
+            <a  ng-if="canCreate" href="#/dialer/new?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                <i class="fa fa-plus"></i>
+            </a>
+
+            <a ng-click="reloadData()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                <i class="glyphicon glyphicon-refresh"></i>
+            </a>
+        </div>
+
+
+        <div class="form-group pull-right ">
+            <div class="col-sm-10">
+                <input  data-ng-model="query"  type="search" class="form-control no-border text-right" placeholder="Search term">
+                <span class="icon glyphicon glyphicon-search"></span>
+            </div>
+        </div>
+
+        <div class="row text-center" ng-if="!membersRowCollection || membersRowCollection.length == 0">
+            <div class="center-block col-md-4" style="float: none;">
+                <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                <h2>No results found</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive" ng-show="membersRowCollection.length > 0" style="position: relative;">
+    <div ng-show="isLoading" class="loading text-center">
+        <span>
+            <i class="fa fa-spinner fa-5x fa-spin"></i>
+        </span>
+    </div>
+
+    <table ng-show="membersRowCollection.length > 0" wt-responsive-table st-pipe="callServer" st-table="membersRowCollection" class="table table-hover">
+        <thead>
+        <tr ng-show="membersRowCollection.length > 0">
+            <th st-skip-natural="true" rowspan=2 st-sort="name" >Name</th>
+            <th st-skip-natural="true" rowspan=2 st-sort="strategy" >Priority</th>
+            <th st-skip-natural="true" rowspan=2 st-sort="timezone" >timezone</th>
+            <th st-skip-natural="true" colspan=4 >Communications</th>
+            <th                        rowspan=2>Action</th>
+        </tr>
+        <tr>
+            <td>number</td>
+            <td>priority</td>
+            <td>status</td>
+            <td>state</td>
+        </tr>
+        </thead>
+
+        <tbody ng-repeat="t in membersRowCollection">
+        <tr>
+            <td rowspan="{{t.communications.length}}">Sell</td>
+            <td>{{t.communications[0].number}}</td>
+            <td>{{t.communications[0].priority}}</td>
+            <td>{{t.communications[0].status}}</td>
+            <td>{{t.communications[0].state}}</td>
+            <td rowspan="{{t.communications.length}}">$100</td>
+        </tr>
+        <tr ng-repeat="item in t.communications" ng-if="$index > 0">
+            <td>{{item.number}}</td>
+            <td>{{item.priority}}</td>
+            <td>{{item.status}}</td>
+            <td>{{item.state}}</td>
+        </tr>
+        </tbody>
+
+        <!--<tbody ng-show="membersRowCollection.length > 0 ">-->
+        <!--<tr ng-repeat="row in membersRowCollection" >-->
+            <!--<td>-->
+                <!--<a ng-if="canUpdate" href="#/dialer/{{row._id}}/edit?domain={{domain}}">-->
+                    <!--{{row.name}}-->
+                <!--</a>-->
+                <!--<span ng-if="!canUpdate">-->
+                    <!--{{row.name}}-->
+                <!--</span>-->
+            <!--</td>-->
+            <!--<td>{{row.priority}}</td>-->
+            <!--<td>{{row.timezone}}</td>-->
+            <!--<td >{{row.communications}}</td>-->
+            <!--<td class="center">-->
+                <!--<p>-->
+                    <!--<a href="#/dialer/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>-->
+                    <!--<span class="space space-xs"></span>-->
+                    <!--<a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>-->
+                <!--</p>-->
+            <!--</td>-->
+        <!--</tr>-->
+        <!--</tbody>-->
+        <tfoot>
+        <tr>
+            <td class="text-center" st-pagination="" st-items-by-page="CountItemsByPage" colspan="4">
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+
+</div>

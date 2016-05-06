@@ -3346,6 +3346,40 @@ input[type=date],input[type=datetime-local],input[type=month],input[type=time] {
     top: 0
 }
 
+
+
+.categories .list-group .list-group-item {
+    padding: 0
+}
+
+.categories .list-group .list-group-item.active>a {
+    border-left: 3px solid #248aaf;
+    color: #248aaf;
+    background-color: #fafafa
+}
+
+.categories .list-group .list-group-item>a {
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    -webkit-transition: all 0.25s ease-in-out;
+    -moz-transition: all 0.25s ease-in-out;
+    transition: all 0.25s ease-in-out
+}
+
+.categories .list-group .list-group-item>a:hover {
+    border-left: 3px solid #248aaf;
+    color: #248aaf;
+    background-color: #fafafa
+}
+
+.categories .list-group .list-group-item>a>i {
+    font-size: 16px;
+    width: 18px;
+    margin-right: 5px
+}
+
+
 .help-block {
     display: block;
     margin-top: 5px;

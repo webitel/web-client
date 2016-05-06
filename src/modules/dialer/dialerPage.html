@@ -126,16 +126,14 @@
                         <div class="ui-tab">
                             <tabset>
 
-                                <tab>
+                                <tab ng-if="!dialer._new">
                                     <tab-heading>
                                         <span>Members</span>
                                     </tab-heading>
-                                    <div class="row text-center" ng-show="!activeResource.destinations || activeResource.destinations.length < 1">
-                                        <div class="center-block col-md-4" style="float: none;">
-                                            <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
-                                            <h2>No results found</h2>
-                                        </div>
-                                    </div>
+
+                                    <section data-ng-controller="MembersDialerCtrl" data-ng-include=" 'modules/dialer/dialerMembers.html' ">
+
+                                    </section>
 
                                 </tab>
 
@@ -147,7 +145,7 @@
 
                                         <div class="col-sm-12">
                                             <div class="col-sm-4">
-                                                <section class="panel panel-default mail-categories">
+                                                <section class="categories panel panel-default">
                                                     <div class="panel-heading">
 
                                                         <a ng-click="editResourceDialString(getDefaultResource())" ng-if="canUpdate" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
@@ -155,50 +153,50 @@
                                                         </a>
                                                     </div>
                                                     <ul class="list-group" style="max-height: 250px; overflow-y: auto;">
-                                                        <li ng-click="setActiveResource(row)" class="list-group-item" ng-class="{'bg-info': activeResource == row}"
+                                                        <li ng-click="setActiveResource(row)" class="list-group-item" ng-class="{'active': activeResource == row}"
                                                             ng-repeat="(key, row) in dialer.resources">
                                                             <a href="javascript:;" >
                                                                 {{row.dialedNumber}}
+
+                                                                <p class="pull-right">
+                                                                    <span href="javascript:;" ng-click="editResourceDialString(row)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></span>
+                                                                    <span class="space space-xs"></span>
+                                                                    <span href="javascript:;" ng-click="removeResource(key, row)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-remove"></i></span>
+                                                                </p>
                                                             </a>
-
-                                                            <p class="pull-right">
-                                                                <a href="javascript:;" ng-click="editResourceDialString(row)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
-                                                                <span class="space space-xs"></span>
-                                                                <a href="javascript:;" ng-click="removeResource(key, row)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
-                                                            </p>
-
                                                         </li>
                                                     </ul>
                                                 </section>
                                             </div>
 
                                             <div class="col-sm-8">
-                                                <div class="panel-heading">
+                                                <section class="panel panel-default">
+                                                    <div class="panel-heading ">
 
-                                                    <a ng-disabled="!activeResource" ng-click="editResourceDestination(getDefaultResourceDestination())" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
-                                                        <i class="fa fa-plus"></i>
-                                                    </a>
-                                                </div>
-
-                                                <div class="row text-center" ng-show="!activeResource.destinations || activeResource.destinations.length < 1">
-                                                    <div class="center-block col-md-4" style="float: none;">
-                                                        <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
-                                                        <h2>No results found</h2>
+                                                        <a ng-disabled="!activeResource" ng-click="editResourceDestination(getDefaultResourceDestination())" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                                            <i class="fa fa-plus"></i>
+                                                        </a>
                                                     </div>
-                                                </div>
 
-                                                <table class="table table-bordered" ng-show="activeResource.destinations.length > 0">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>gwName</th>
-                                                        <th>dialString</th>
-                                                        <th>order</th>
-                                                        <th>limit</th>
-                                                        <th>enabled</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
+                                                    <div class="row text-center" ng-show="!activeResource.destinations || activeResource.destinations.length < 1">
+                                                        <div class="center-block col-md-4" style="float: none;">
+                                                            <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                                                            <h2>No results found</h2>
+                                                        </div>
+                                                    </div>
+
+                                                    <table class="table table-bordered" ng-show="activeResource.destinations.length > 0">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>gwName</th>
+                                                            <th>dialString</th>
+                                                            <th>order</th>
+                                                            <th>limit</th>
+                                                            <th>enabled</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
                                                         <tr ng-repeat="(key, item) in activeResource.destinations | orderBy: '+order'">
                                                             <td>{{item.gwName}}</td>
                                                             <td>{{item.dialString}}</td>
@@ -213,8 +211,10 @@
                                                                 </p>
                                                             </td>
                                                         </tr>
-                                                    </tbody>
-                                                </table>
+                                                        </tbody>
+                                                    </table>
+
+                                                </section>
                                             </div>
 
                                         </div>

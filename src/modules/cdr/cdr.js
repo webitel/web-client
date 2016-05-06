@@ -241,8 +241,6 @@ define(['app', 'modules/cdr/cdrModel', 'modules/cdr/filterModel', 'modules/cdr/f
                 if (!$scope.filterAPI) return void 0;
                 if ($scope.isLoading) return void 0;
 
-                if ($scope.isLoading)
-                    debugger;
 
                 $scope.filter = $scope.filterAPI.getFilter();
                 if (((tableState.pagination.start / tableState.pagination.number) || 0) === 0) {

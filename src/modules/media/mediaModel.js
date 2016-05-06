@@ -19,8 +19,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         function list (domainName, cb) {
             if (!domainName)
                 return cb(new Error("Domain is required."));
-
-            webitel.cdr('GET', '/api/v2/media?domain=' + domainName, function (err, res) {
+            // TODO pagination
+            webitel.cdr('GET', '/api/v2/media?limit=1000&domain=' + domainName, function (err, res) {
                 if (err)
                     return cb(err);
 

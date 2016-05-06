@@ -65,13 +65,38 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 changeDomainEvent();
             });
 
+
             $scope.$watch('domain', function(domainName) {
                 $scope.domain = domainName;
                 reloadData();
             });
 
+            $scope.$watch('dialer', function(newValue, oldValue) {
+                if ($scope.dialer._new)
+                    return $scope.isEdit = $scope.isNew = true;
+
+                return $scope.isEdit = !!oldValue._id;
+            }, true);
+
+            $scope.$watch('dialer.resources', function(newValue, oldValue) {
+                if ($scope.dialer._new)
+                    return $scope.isEdit = $scope.isNew = true;
+
+                return $scope.isEdit = !!oldValue;
+            }, true);
+
+            $scope.cancel = function () {
+                $scope.dialer = angular.copy($scope.oldDialer);
+
+                if ($scope.dialer.resources)
+                    $scope.activeResource = $scope.dialer.resources[0];
+                disableEditMode();
+            };
+
             $scope.reloadData = reloadData;
             $scope.removeItem = removeItem;
+            $scope.create = create;
+            $scope.save = save;
             $scope.closePage = closePage;
             $scope.edit = edit;
 
@@ -174,11 +199,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                     var destinations = $scope.activeResource.destinations;
                     if (!result.id)
-                        return destinations.push(result.value);
+                        return $scope.activeResource.destinations.push(result.value);
 
                     for (var i = 0; i < destinations.length; i++) {
                         if (destinations[i].$$hashKey == result.id) {
-                            return destinations[i] = result.value
+                            return $scope.activeResource.destinations[i] = result.value
                         }
                     }
                 }, function () {
@@ -205,6 +230,33 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                     });
 
+            };
+
+            function save () {
+                var cb = function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    if ($scope.dialer._new) {
+                        return $location.path('/dialer/' + res + '/edit');
+                    } else {
+                        $scope.dialer.__time = Date.now();
+                        return edit();
+                    };
+                };
+                if ($scope.dialer._new) {
+                    DialerModel.add($scope.dialer, cb);
+                } else {
+                    var updateValues = utils.diff($scope.dialer,  $scope.oldDialer);
+                    DialerModel.update($scope.dialer._id, $scope.dialer.domain, Object.keys(updateValues), $scope.dialer, cb);
+                }
+            }
+
+            function create() {
+                $scope.dialer = DialerModel.create();
+                var domain = $routeParams.domain;
+                $scope.dialer.domain = domain;
+                $scope.dialer._new = true;
             };
 
             function closePage() {
@@ -309,6 +361,60 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 $scope.gateways.push(v.id)
             });
         });
+    }]);
+
+    app.controller('MembersDialerCtrl', ['$scope', 'DialerModel', function ($scope, DialerModel) {
+
+        $scope.reloadData = function () {
+
+            var option = {
+                filter: {},
+                columns: {},
+                page: 1,
+                limit: 100
+            };
+
+            DialerModel.members.list($scope.domain, $scope.dialer._id, option, function (err, res) {
+                debugger
+            });
+        };
+
+        var nexData = true;
+        $scope.isLoading = false;
+        var _page = 1;
+        $scope.CountItemsByPage = 1;
+
+        $scope.callServer = function (tableState) {
+            if ($scope.isLoading) return void 0;
+
+            _page = Math.ceil(tableState.pagination.start / tableState.pagination.number) + 1;
+            console.debug("Page:", _page);
+
+            $scope.isLoading = true;
+
+            var option = {
+                sort: {},
+                filter: {},
+                page: _page,
+                limit: $scope.CountItemsByPage,
+                columns: ["name", "priority", "timezone", "communications"]
+            };
+
+            if (tableState.sort.predicate)
+                option.sort[tableState.sort.predicate] = tableState.sort.reverse ? -1 : 1;
+
+            DialerModel.members.list($scope.domain, $scope.dialer._id, option, function (err, res) {
+                if (err)
+                    return notifi.error(err);
+
+                tableState.pagination.numberOfPages =  Math.ceil(3 / $scope.CountItemsByPage);
+
+                $scope.membersRowCollection = res;
+
+                $scope.isLoading = false;
+
+            });
+        };
     }]);
     
     app.controller('DialerResourceDialStringCtrl', ['$scope', '$modalInstance', 'resource',
