@@ -363,7 +363,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         });
     }]);
 
-    app.controller('MembersDialerCtrl', ['$scope', 'DialerModel', function ($scope, DialerModel) {
+    app.controller('MembersDialerCtrl', ['$scope', 'DialerModel', '$modal', '$confirm', 'notifi', function ($scope, DialerModel, $modal, $confirm, notifi) {
         var _tableState = {};
         $scope.reloadData = function () {
             $scope.callServer(_tableState)
@@ -409,13 +409,80 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     return notifi.error(err);
 
                 _page++;
-                //tableState.pagination.numberOfPages =  Math.ceil(MAX_DATA / $scope.CountItemsByPage);
 
                 $scope.membersRowCollection =  $scope.membersRowCollection.concat(res);
 
             });
         };
+        
+        $scope.removeMember = function (row, index) {
+            $confirm({text: 'Are you sure you want to delete resource ' + row.name + ' ?'},  { templateUrl: 'views/confirm.html' })
+                .then(function() {
+                    DialerModel.members.remove($scope.domain, $scope.dialer._id, row._id, function (err) {
+                        if (err)
+                            return notifi.error(err, 5000);
 
+                        $scope.membersRowCollection.splice(index, 1);
+                    })
+                });
+        };
+        
+        $scope.addMember = function () {
+            var modalInstance = $modal.open({
+                animation: true,
+                templateUrl: '/modules/dialer/memberPage.html',
+                controller: 'MemberDialerPageCtrl',
+                size: 'lg',
+                resolve: {
+                    options: function () {
+                        return {
+                            member: null,
+                            dialerId: $scope.dialer._id,
+                            domain: $scope.domain
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (result) {
+                var member = {};
+                angular.forEach(result.value, function (v, k) {
+                    member[k] = v;
+                });
+                $scope.membersRowCollection = [].concat(member, $scope.membersRowCollection);
+            }, function () {
+
+            });
+        };
+        
+        $scope.editMember = function (member, index) {
+            var modalInstance = $modal.open({
+                animation: true,
+                templateUrl: '/modules/dialer/memberPage.html',
+                controller: 'MemberDialerPageCtrl',
+                size: 'lg',
+                resolve: {
+                    options: function () {
+                        return {
+                            member: member,
+                            dialerId: $scope.dialer._id,
+                            domain: $scope.domain
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (result) {
+                var member = result.value;
+                angular.forEach(member, function (v, k) {
+                    $scope.membersRowCollection[index][k] = v;
+                });
+            }, function () {
+
+            });
+        };
+
+        $scope.TimeZones = utils.timeZones;
         $scope.CommunicationStatuses = [
             {
                 name: "Null",
@@ -437,6 +504,64 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             }
         ];
 
+    }]);
+    
+    app.controller('MemberDialerPageCtrl', ['$scope', '$modalInstance', 'notifi', 'DialerModel', 'options', function ($scope, $modalInstance, notifi, DialerModel, options) {
+
+        if (options && options.member) {
+            DialerModel.members.item(options.domain, options.dialerId, options.member._id, function (err, data) {
+                if (err)
+                    return notifi.error(err);
+                $scope.member = data;
+            });
+        } else {
+
+            $scope.member = {
+                _new: true,
+                communications: [],
+                _variables: []
+            };
+        };
+        
+        $scope.addCommunication = function (member) {
+            $scope.inserted = {
+                number: ''
+            };
+            member.communications.push($scope.inserted);
+        };
+        $scope.removeCommunication = function (index) {
+            $scope.member.communications.splice(index, 1);
+        };
+
+
+        $scope.checkCommunicationNumber = function (number) {
+            if (!number)
+                return 'Number is required'
+        };
+
+        $scope.TimeZones = utils.timeZones;
+
+        $scope.ok = function () {
+            var cb = function (err, res) {
+                if (err)
+                    return notifi.error(err, 5000);
+                var ins = res.insertedIds && res.insertedIds[0]
+                if (ins) {
+                    $scope.member._id = ins;
+                }
+                $modalInstance.close({value: $scope.member}, 5000);
+            };
+
+            if (options.member && options.member._id) {
+                DialerModel.members.update(options.domain, options.dialerId, options.member._id, $scope.member, cb);
+            } else {
+                DialerModel.members.add(options.domain, options.dialerId, $scope.member, cb);
+            };
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
     }]);
     
     app.controller('StatsDialerCtrl', ['$scope',

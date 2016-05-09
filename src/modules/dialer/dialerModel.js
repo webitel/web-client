@@ -25,7 +25,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
             var sortKey = Object.keys(option.sort || {})[0];
             if (sortKey)
-                _q += '&sort=' + sortKey + '=' + option.sort[sortKey];
+                _q += '&sort=' + sortKey.replace('_', '.') + '=' + option.sort[sortKey];
 
             if (option.columns) {
                 _q += '&columns=';
@@ -36,6 +36,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             }
             _q += '&filter=';
             angular.forEach(option.filter, function (v, k, i) {
+                if (k == 'communications_number' || k == 'name')
+                    v = '^' + v;
                 _q += k.replace('_', '.') + '=' + v + ','
             });
 
@@ -49,6 +51,99 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
         };
 
+        function itemMember (domainName, dialerId, id, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!dialerId)
+                return cb(new Error("DialerId is required."));
+
+            if (!id)
+                return cb(new Error("Id is required."));
+
+            webitel.api('GET', '/api/v2/dialer/' + dialerId + '/members/' + id + '?domain=' + domainName, function(err, res) {
+                var member = res.data || res.info;
+                member._variables = [];
+                angular.forEach(member.variables, function (v, k) {
+                    member._variables.push({
+                        key: k,
+                        value: v
+                    })
+                });
+                return cb && cb(err, member);
+            });
+        };
+        function removeMember (domainName, dialerId, id, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!dialerId)
+                return cb(new Error("DialerId is required."));
+
+            if (!id)
+                return cb(new Error("Id is required."));
+
+            webitel.api('DELETE', '/api/v2/dialer/' + dialerId + '/members/' + id + '?domain=' + domainName, function(err, res) {
+                var member = res.data || res.info;
+                return cb && cb(err, member);
+            });
+        };
+
+        function updateMember (domainName, dialerId, id, member, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!id)
+                return cb(new Error("Id is required."));
+
+            if (!dialerId)
+                return cb(new Error("DialerId is required."));
+
+            var data = parseMember(member);
+            
+            if (data.communications.length < 1)
+                return cb(new Error('Bad communication'));
+
+            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/members/' + id + '?&domain=' + domainName, data, function(err, res) {
+                var data = res.data || res.info;
+                return cb && cb(err, data);
+            });
+        };
+
+        function addMember(domainName, dialerId, member, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!dialerId)
+                return cb(new Error("DialerId is required."));
+
+            var data = parseMember(member);
+
+            if (data.communications.length < 1)
+                return cb(new Error('Bad communication'));
+
+            webitel.api('POST', '/api/v2/dialer/' + dialerId + '/members?&domain=' + domainName, data, function(err, res) {
+                var data = res.data || res.info;
+                return cb && cb(err, data);
+            });
+        };
+
+        function parseMember(memberData) {
+            var member = createMember(null, memberData);
+
+            angular.forEach(memberData._variables, function (item) {
+                if (item.key && item.value)
+                    member.variables[item.key] = item.value
+            });
+
+            angular.forEach(memberData.communications, function (item) {
+                var comm = createCommunication(item);
+                if (comm)
+                    member.communications.push(comm)
+            });
+
+            return member;
+        }
 
         function list (domainName, page, cb) {
             if (!domainName)
@@ -72,7 +167,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     dialer.variables[item.key] = item.value
             });
             return dialer
-        }
+        };
 
         function add (data, cb) {
             var dialer = parseDialer(data.domain, data);
@@ -108,9 +203,6 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
             if (!id)
                 return cb(new Error("Id is required."));
-
-            if (!diffColumns || diffColumns.length < 1)
-                return cb(new Error("No change."));
 
             var data = parseDialer(domainName, dialer);
 
@@ -155,7 +247,28 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "agentSkills" : angular.isArray(option.agentSkills) ? option.agentSkills : [],
                 "owners" : angular.isArray(option.owners) ? option.owners : []
             }
-        }
+        };
+
+        function createMember(dialer, option) {
+            return {
+                "name": option.name || "" ,
+                "dialer": dialer,
+                "priority": angular.isNumber(option.priority) ? option.priority : 0,
+                "timezone": option.timezone || "",
+                "variables": {},
+                "communications": []
+            }
+        };
+
+        function createCommunication (option) {
+            if (!option.number) return false;
+            return {
+                "number": option.number || "",
+                "priority": angular.isNumber(option.priority) ? option.priority : 0,
+                "status": 0,
+                "state": 0,
+            }
+        };
 
         return {
             list: list,
@@ -166,7 +279,12 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             update: update,
 
             members: {
-                list: listMembers
+                list: listMembers,
+                add: addMember,
+                item: itemMember,
+                create: createMember,
+                update: updateMember,
+                remove: removeMember
             }
         }
     }]);

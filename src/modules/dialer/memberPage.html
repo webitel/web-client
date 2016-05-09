@@ -1,0 +1,119 @@
+<div class="modal-header">
+    <h3 class="modal-title">Member : {{member.name}}</h3>
+</div>
+<div class="modal-body" >
+        <div class="row">
+
+            <div class="col-sm-12">
+
+                <div class="col-sm-3">
+
+                    <div class="form-group" ng-class="{ 'has-error' : memberForm.name.$invalid && !memberForm.name.$pristine }">
+                        <label for>Name</label>
+                        <input type="text"  class="form-control" name="name" required ng-model="member.name" >
+                    </div>
+
+                    <div class="form-group">
+                        <label for>Priority</label>
+                        <input class="form-control" type="number" name="priority" ng-model="member.priority" min="0"  required>
+                    </div>
+
+                    <div class="form-group" >
+                        <label for>Time zone</label>
+                        <input typeahead-show-hint="true" typeahead-min-length="0"
+                               type="text" class="form-control"
+                               ng-model="member.timezone"
+                               placeholder="Time zone"
+                               typeahead="zone.id as zone.id for zone in TimeZones | filter:{id:$viewValue} | limitTo:8" >
+                    </div>
+
+                </div>
+
+                <div class="col-sm-9">
+                    <div class="ui-tab-container ui-tab-dark">
+                        <div class="ui-tab">
+
+                            <tabset >
+                                <tab>
+                                    <tab-heading>
+                                        <span>Communications</span>
+                                    </tab-heading>
+                                        <a ng-click="addCommunication(member)" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table class="table table-hover table-condensed">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:35%">Number</th>
+                                                            <th style="width:15%">Priority</th>
+                                                            <th style="width:15%">State</th>
+                                                            <th style="width:15%">Status</th>
+                                                            <th style="width:20%">Edit</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tr ng-repeat="communication in member.communications">
+                                                        <td>
+                                                        <span editable-text="communication.number" e-name="number"  e-form="rowform"  e-required onbeforesave="checkCommunicationNumber($data)">
+                                                            {{ communication.number || 'empty' }}
+                                                        </span>
+                                                        </td>
+                                                        <td>
+                                                        <span editable-number="communication.priority" e-name="priority"  e-form="rowform"  e-required>
+                                                            {{ communication.priority}}
+                                                        </span>
+                                                        </td>
+                                                        <td>
+                                                            {{ communication.state}}
+                                                        </td>
+                                                        <td>
+                                                            {{ communication.status}}
+                                                        </td>
+                                                        <td style="white-space: nowrap">
+                                                            <!-- form -->
+                                                            <form editable-form name="rowform"  ng-show="rowform.$visible" onaftersave="checkCommunication($data)" class="form-buttons form-inline" shown="inserted == communication">
+                                                                <button type="submit" ng-disabled="rowform.$waiting"  class="btn btn-primary">
+                                                                    <i class="glyphicon glyphicon-save"></i>
+                                                                </button>
+                                                                <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                                                                    <i class="glyphicon glyphicon-repeat"></i>
+                                                                </button>
+                                                            </form>
+                                                            <div class="buttons" ng-show="!rowform.$visible">
+                                                                <button ng-click="rowform.$show()" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                                <button ng-click="removeCommunication($index)" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                </tab>
+                                <tab>
+                                    <tab-heading>
+                                        <span>Variables</span>
+                                    </tab-heading>
+                                    <webitel-variables
+                                            collection = "member._variables"
+                                            dictionary="[]"
+                                            remvar="remVar"
+                                            >
+
+                                    </webitel-variables>
+                                </tab>
+                            </tabset>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="ok()">Save</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+</div>
+
+{{member}}
