@@ -34,9 +34,13 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 });
 
             }
+            _q += '&filter=';
+            angular.forEach(option.filter, function (v, k, i) {
+                _q += k.replace('_', '.') + '=' + v + ','
+            });
 
 
-            webitel.api('GET', '/api/v2/dialer/' + dialerId + '/members?' + _q, function(err, res) {
+            webitel.api('GET', '/api/v2/dialer/' + dialerId + '/members' + _q, function(err, res) {
                 var queues = res.data || res.info;
                 angular.forEach(queues, function (item) {
                     item.enable = item.enable == 'true';

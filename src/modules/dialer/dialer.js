@@ -364,37 +364,37 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     }]);
 
     app.controller('MembersDialerCtrl', ['$scope', 'DialerModel', function ($scope, DialerModel) {
-
+        var _tableState = {};
         $scope.reloadData = function () {
-
-            var option = {
-                filter: {},
-                columns: {},
-                page: 1,
-                limit: 100
-            };
-
-            DialerModel.members.list($scope.domain, $scope.dialer._id, option, function (err, res) {
-                debugger
-            });
+            $scope.callServer(_tableState)
         };
 
         var nexData = true;
         $scope.isLoading = false;
         var _page = 1;
-        $scope.CountItemsByPage = 1;
+        $scope.CountItemsByPage = 40;
+        $scope.membersRowCollection = [];
+        // TODO COUNT FILTERED DATA!!!
+        var MAX_DATA = 1000000;
 
         $scope.callServer = function (tableState) {
             if ($scope.isLoading) return void 0;
+            _tableState = tableState;
 
-            _page = Math.ceil(tableState.pagination.start / tableState.pagination.number) + 1;
+            if (((tableState.pagination.start / tableState.pagination.number) || 0) === 0) {
+                _page = 1;
+                nexData = true;
+                $scope.membersRowCollection = [];
+                $scope.count = 0;
+            };
+
             console.debug("Page:", _page);
 
             $scope.isLoading = true;
 
             var option = {
                 sort: {},
-                filter: {},
+                filter: tableState.search.predicateObject || {},
                 page: _page,
                 limit: $scope.CountItemsByPage,
                 columns: ["name", "priority", "timezone", "communications"]
@@ -404,19 +404,82 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 option.sort[tableState.sort.predicate] = tableState.sort.reverse ? -1 : 1;
 
             DialerModel.members.list($scope.domain, $scope.dialer._id, option, function (err, res) {
+                $scope.isLoading = false;
                 if (err)
                     return notifi.error(err);
 
-                tableState.pagination.numberOfPages =  Math.ceil(3 / $scope.CountItemsByPage);
+                _page++;
+                //tableState.pagination.numberOfPages =  Math.ceil(MAX_DATA / $scope.CountItemsByPage);
 
-                $scope.membersRowCollection = res;
-
-                $scope.isLoading = false;
+                $scope.membersRowCollection =  $scope.membersRowCollection.concat(res);
 
             });
         };
+
+        $scope.CommunicationStatuses = [
+            {
+                name: "Null",
+                val: 0
+            },
+            {
+                name: "One",
+                val: 1
+            }
+        ];
+        $scope.CommunicationStates = [
+            {
+                name: "Null",
+                val: 0
+            },
+            {
+                name: "One",
+                val: 1
+            }
+        ];
+
     }]);
     
+    app.controller('StatsDialerCtrl', ['$scope',
+        function ($scope) {
+
+            // TODO Chart
+            $scope.dialerChartObject = {};
+
+            $scope.dialerChartObject.type = "PieChart";
+
+            $scope.onions = [
+                {v: "Onions"},
+                {v: 3},
+            ];
+
+            $scope.dialerChartObject.data = {"cols": [
+                {id: "t", label: "Topping", type: "string"},
+                {id: "s", label: "Slices", type: "number"}
+            ], "rows": [
+                {c: [
+                    {v: "Mushrooms"},
+                    {v: 3},
+                ]},
+                {c: $scope.onions},
+                {c: [
+                    {v: "Olives"},
+                    {v: 31}
+                ]},
+                {c: [
+                    {v: "Zucchini"},
+                    {v: 1},
+                ]},
+                {c: [
+                    {v: "Pepperoni"},
+                    {v: 2},
+                ]}
+            ]};
+
+            $scope.dialerChartObject.options = {
+                'title': 'How Much Pizza I Ate Last Night'
+            };
+    }]);
+
     app.controller('DialerResourceDialStringCtrl', ['$scope', '$modalInstance', 'resource',
         function ($scope, $modalInstance, resource) {
 

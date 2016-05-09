@@ -9,36 +9,25 @@
                 <i class="glyphicon glyphicon-refresh"></i>
             </a>
         </div>
-
-
-        <div class="form-group pull-right ">
-            <div class="col-sm-10">
-                <input  data-ng-model="query"  type="search" class="form-control no-border text-right" placeholder="Search term">
-                <span class="icon glyphicon glyphicon-search"></span>
-            </div>
-        </div>
-
-        <div class="row text-center" ng-if="!membersRowCollection || membersRowCollection.length == 0">
-            <div class="center-block col-md-4" style="float: none;">
-                <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
-                <h2>No results found</h2>
-            </div>
-        </div>
     </div>
 </div>
 
-<div class="table-responsive" ng-show="membersRowCollection.length > 0" style="position: relative;">
+<div class="table-responsive" style="position: relative;">
     <div ng-show="isLoading" class="loading text-center">
         <span>
             <i class="fa fa-spinner fa-5x fa-spin"></i>
         </span>
     </div>
 
-    <table ng-show="membersRowCollection.length > 0" wt-responsive-table st-pipe="callServer" st-table="membersRowCollection" class="table table-hover">
+    <table st-pipe="callServer" st-table="membersRowCollection"
+           infinite-scroll-disabled="isLoading"
+           infinite-scroll="callServer"
+           wt-responsive-table
+           class="table table-bordered">
         <thead>
-        <tr ng-show="membersRowCollection.length > 0">
+        <tr>
             <th st-skip-natural="true" rowspan=2 st-sort="name" >Name</th>
-            <th st-skip-natural="true" rowspan=2 st-sort="strategy" >Priority</th>
+            <th st-skip-natural="true" rowspan=2 st-sort="priority" >Priority</th>
             <th st-skip-natural="true" rowspan=2 st-sort="timezone" >timezone</th>
             <th st-skip-natural="true" colspan=4 >Communications</th>
             <th                        rowspan=2>Action</th>
@@ -49,16 +38,49 @@
             <td>status</td>
             <td>state</td>
         </tr>
+
+        <tr>
+            <th colspan="1"><input st-search="name" class="form-control" placeholder="start with..." type="search"/></th>
+            <th colspan="1"><input st-search="priority" class="form-control" placeholder="global search ..." type="text"/></th>
+            <th colspan="1"><input st-search="timezone" class="form-control" placeholder="global search ..." type="text"/></th>
+            <th colspan="1"><input st-search="communications_number" class="form-control" placeholder="global search ..." type="text"/></th>
+            <th colspan="1"><input st-search="communications_priority" class="form-control" placeholder="global search ..." type="text"/></th>
+            <th colspan="1">
+                <select st-search="communications_status" class="form-control">
+                    <option value="">All</option>
+                    <option ng-repeat="comStatus in CommunicationStatuses" value="{{comStatus.val}}">{{comStatus.name}}</option>
+                </select>
+            </th>
+            <th colspan="1">
+                <select st-search="communications_state" class="form-control">
+                    <option value="">All</option>
+                    <option ng-repeat="comState in CommunicationStates" value="{{comState.val}}">{{comState.name}}</option>
+                </select>
+            </th>
+            <th></th>
+        </tr>
+        <tr ng-show="membersRowCollection.length <= 0">
+            <th colspan="8">
+                <div class="row text-center">
+                    <div class="center-block col-md-4" style="float: none;">
+                        <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                        <h2>No results found</h2>
+                    </div>
+                </div>
+            </th>
+        </tr>
         </thead>
 
-        <tbody ng-repeat="t in membersRowCollection">
+        <tbody ng-show="membersRowCollection.length > 0" ng-repeat="t in membersRowCollection">
         <tr>
-            <td rowspan="{{t.communications.length}}">Sell</td>
+            <td rowspan="{{t.communications.length}}">{{t.name}}</td>
+            <td rowspan="{{t.communications.length}}">{{t.priority}}</td>
+            <td rowspan="{{t.communications.length}}">{{t.timezone}}</td>
             <td>{{t.communications[0].number}}</td>
             <td>{{t.communications[0].priority}}</td>
             <td>{{t.communications[0].status}}</td>
             <td>{{t.communications[0].state}}</td>
-            <td rowspan="{{t.communications.length}}">$100</td>
+            <td rowspan="{{t.communications.length}}">ACTION</td>
         </tr>
         <tr ng-repeat="item in t.communications" ng-if="$index > 0">
             <td>{{item.number}}</td>
@@ -66,33 +88,13 @@
             <td>{{item.status}}</td>
             <td>{{item.state}}</td>
         </tr>
+
+
         </tbody>
 
-        <!--<tbody ng-show="membersRowCollection.length > 0 ">-->
-        <!--<tr ng-repeat="row in membersRowCollection" >-->
-            <!--<td>-->
-                <!--<a ng-if="canUpdate" href="#/dialer/{{row._id}}/edit?domain={{domain}}">-->
-                    <!--{{row.name}}-->
-                <!--</a>-->
-                <!--<span ng-if="!canUpdate">-->
-                    <!--{{row.name}}-->
-                <!--</span>-->
-            <!--</td>-->
-            <!--<td>{{row.priority}}</td>-->
-            <!--<td>{{row.timezone}}</td>-->
-            <!--<td >{{row.communications}}</td>-->
-            <!--<td class="center">-->
-                <!--<p>-->
-                    <!--<a href="#/dialer/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>-->
-                    <!--<span class="space space-xs"></span>-->
-                    <!--<a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>-->
-                <!--</p>-->
-            <!--</td>-->
-        <!--</tr>-->
-        <!--</tbody>-->
         <tfoot>
         <tr>
-            <td class="text-center" st-pagination="" st-items-by-page="CountItemsByPage" colspan="4">
+            <td class="text-center" st-pagination="" st-items-by-page="CountItemsByPage" colspan="8">
             </td>
         </tr>
         </tfoot>
