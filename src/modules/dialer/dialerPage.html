@@ -94,6 +94,14 @@
                                                                     <label for>Avg progress sec</label>
                                                                     <input class="form-control" type="number" name="avgProgressSec" ng-model="dialer.parameters.avgProgressSec" min="0" max="999" required>
                                                                 </div>
+                                                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.maxTryCount.$pristine }">
+                                                                    <label for>Max try count</label>
+                                                                    <input class="form-control" type="number" name="maxTryCount" ng-model="dialer.parameters.maxTryCount" min="0" max="999" required>
+                                                                </div>
+                                                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.intervalTryCount.$pristine }">
+                                                                    <label for>Interval try count</label>
+                                                                    <input class="form-control" type="number" name="intervalTryCount" ng-model="dialer.parameters.intervalTryCount" min="0" max="999" required>
+                                                                </div>
 
                                                             </tab>
 
@@ -214,7 +222,7 @@
                                         </div>
                                     </div>
                                 </tab>
-                                <tab>
+                                <tab ng-if="!isNew">
                                     <tab-heading>
                                         <span>Members</span>
                                     </tab-heading>
@@ -223,15 +231,42 @@
 
                                     </section>
                                 </tab>
-                                <tab>
+                                <tab ng-show="dialer.type == 'auto dialer'">
                                     <tab-heading>
-                                        <span>Stats</span>
+                                        <span>Callflow</span>
                                     </tab-heading>
 
-                                    <section data-ng-controller="StatsDialerCtrl" data-ng-include=" 'modules/dialer/dialerStats.html' ">
+                                    <div class="row" style="padding-top: 15px;">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div ng-model="$parent.cf" ui-ace="{
+                                                  useWrapMode : true,
+                                                  showGutter: true,
+                                                  theme:'github',
+                                                  mode: 'json',
+                                                  onLoad: aceLoaded,
+                                                  onChange: aceChanged,
+                                                  require: ['ace/ext/language_tools'],
+                                                  advanced: {
+                                                      enableSnippets: true,
+                                                      enableBasicAutocompletion: true,
+                                                      enableLiveAutocompletion: true
+                                                  }
+                                                }" class="json-control"></div>
+                                            </div>
 
-                                    </section>
+                                        </div>
+                                    </div>
                                 </tab>
+                                <!--<tab>-->
+                                    <!--<tab-heading>-->
+                                        <!--<span>Stats</span>-->
+                                    <!--</tab-heading>-->
+
+                                    <!--<section data-ng-controller="StatsDialerCtrl" data-ng-include=" 'modules/dialer/dialerStats.html' ">-->
+
+                                    <!--</section>-->
+                                <!--</tab>-->
                             </tabset>
                         </div>
                     </div>
@@ -269,27 +304,6 @@
                                         <!--<span>Callflow</span>-->
                                     <!--</tab-heading>-->
 
-                                    <!--<div class="row" style="padding-top: 15px;">-->
-                                        <!--<div class="col-md-12">-->
-                                            <!--<div class="form-group">-->
-                                                <!--<div data-ng-model="cf" ui-ace="{-->
-                                                      <!--useWrapMode : true,-->
-                                                      <!--showGutter: true,-->
-                                                      <!--theme:'github',-->
-                                                      <!--mode: 'json',-->
-                                                      <!--onLoad: aceLoaded,-->
-                                                      <!--onChange: aceChanged,-->
-                                                      <!--require: ['ace/ext/language_tools'],-->
-                                                      <!--advanced: {-->
-                                                          <!--enableSnippets: true,-->
-                                                          <!--enableBasicAutocompletion: true,-->
-                                                          <!--enableLiveAutocompletion: true-->
-                                                      <!--}-->
-                                                    <!--}" class="json-control"></div>-->
-                                            <!--</div>-->
-
-                                        <!--</div>-->
-                                    <!--</div>-->
                                 <!--</tab>-->
                             <!--</tabset>-->
                         <!--</div>-->
@@ -308,4 +322,4 @@
     </div>
 </div>
 
-{{dialer}}
+{{cf}}

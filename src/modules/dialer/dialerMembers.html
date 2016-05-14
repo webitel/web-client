@@ -8,7 +8,22 @@
             <a ng-click="reloadData()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
                 <i class="glyphicon glyphicon-refresh"></i>
             </a>
+
+            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  ng-click="showExportPage()" style="padding: 0">
+                    <i class="glyphicon glyphicon-cloud-upload"></i>
+            </span>
+
         </div>
+
+        <div class="no-border pull-right">
+            <span>Count: {{count}}</span>
+        </div>
+    </div>
+</div>
+
+<div class="row" ng-show="processImport">
+    <div class="col-sm-12">
+        <progressbar style="background-color: #34323A;" max="100" value="progress" type="success"><span style="white-space:nowrap;">{{progressCount}} / {{maxProgress}}</span></progressbar>
     </div>
 </div>
 
@@ -29,6 +44,7 @@
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="name" >Name</th>
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="priority" >Priority</th>
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="timezone" >Timezone</th>
+            <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="_endCause" >End cause</th>
             <th class="text-center" st-skip-natural="true" colspan=4 >Communications</th>
             <th class="text-center" style="vertical-align:middle" rowspan=2>Action</th>
         </tr>
@@ -56,6 +72,9 @@
                        placeholder="Time zone"
                        typeahead="zone.id as zone.id for zone in TimeZones | filter:{id:$viewValue}" >
 
+            </th>
+            <th colspan="1">
+                TODO
             </th>
             <th colspan="1">
                 <input st-search="communications_number" class="form-control" placeholder="Start with..." type="text"/>
@@ -96,6 +115,7 @@
             </td>
             <td rowspan="{{t.communications.length}}">{{t.priority}}</td>
             <td rowspan="{{t.communications.length}}">{{t.timezone}}</td>
+            <td rowspan="{{t.communications.length}}">{{t._endCause}}</td>
             <td>{{t.communications[0].number}}</td>
             <td>{{t.communications[0].priority}}</td>
             <td>{{t.communications[0].status}}</td>

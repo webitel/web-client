@@ -51,6 +51,33 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
         };
 
+        function countMembers (domainName, dialerId, option, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!dialerId)
+                return cb(new Error("DialerId is required."));
+
+
+            var _q = '?&domain=' + domainName;
+
+            _q += '&filter=';
+            angular.forEach(option.filter, function (v, k, i) {
+                if (k == 'communications_number' || k == 'name')
+                    v = '^' + v;
+                _q += k.replace('_', '.') + '=' + v + ','
+            });
+
+
+            webitel.api('GET', '/api/v2/dialer/' + dialerId + '/members/count' + _q, function(err, res) {
+                var queues = res.data || res.info;
+                angular.forEach(queues, function (item) {
+                    item.enable = item.enable == 'true';
+                });
+                return cb && cb(err, queues);
+            });
+        }
+
         function itemMember (domainName, dialerId, id, cb) {
             if (!domainName)
                 return cb(new Error("Domain is required."));
@@ -238,14 +265,17 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "parameters" : {
                     "limit" : angular.isNumber(option.parameters && option.parameters.limit) ? option.parameters.limit : 30,
                     "progressSec" : angular.isNumber(option.parameters && option.parameters.progressSec) ? option.parameters.progressSec : 20,
-                    "avgProgressSec" : angular.isNumber(option.parameters && option.parameters.avgProgressSec) ? option.parameters.avgProgressSec : 20
+                    "avgProgressSec" : angular.isNumber(option.parameters && option.parameters.avgProgressSec) ? option.parameters.avgProgressSec : 20,
+                    "maxTryCount" : angular.isNumber(option.parameters && option.parameters.maxTryCount) ? option.parameters.maxTryCount : 5,
+                    "intervalTryCount" : angular.isNumber(option.parameters && option.parameters.intervalTryCount) ? option.parameters.intervalTryCount : 60
                 },
                 "variables" : {},
                 "resources" : angular.isArray(option.resources) ? option.resources : [],
                 "strategy" : option.strategy || "myStrategy",
                 "agents" : angular.isArray(option.agents) ? option.agents : [],
                 "agentSkills" : angular.isArray(option.agentSkills) ? option.agentSkills : [],
-                "owners" : angular.isArray(option.owners) ? option.owners : []
+                "owners" : angular.isArray(option.owners) ? option.owners : [],
+                "_cf": option._cf || []
             }
         };
 
@@ -280,6 +310,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
             members: {
                 list: listMembers,
+                count: countMembers,
                 add: addMember,
                 item: itemMember,
                 create: createMember,

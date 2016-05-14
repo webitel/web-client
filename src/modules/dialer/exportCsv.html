@@ -1,0 +1,57 @@
+<div class="modal-header">
+    <h3 class="modal-title">CSV</h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="form-group" >
+                <label for>Skip headers</label>
+                <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="settings.headers" ><i></i></label>
+            </div>
+            <div class="form-group">
+                <label for>Separator</label>
+                <input type="text"  class="form-control" name="name" required ng-model="settings.separator" >
+            </div>
+            <div class="form-group">
+                <label for>Char set</label>
+                <select class="form-control"  ng-model="settings.charSet">
+                    <option ng-repeat="c in CharSet | orderBy:'name'" ng-selected="c.id==settings.charSet" value="{{c.id}}">{{c.name}}</option>
+                </select>
+            </div>
+
+            <input type="file" file-reader-csv char-set="settings.charSet" file-on-load="fileCsvOnLoad" />
+        </div>
+
+        <div class="col-sm-12">
+            <div class="table-responsive" style="overflow-x: auto;">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th ng-repeat="c in columns">
+                            <select ng-model="c.value" class="form-control" data-ng-change="changeColumnsAlias(c, clol)">
+                                <option value="">--</option>
+                                <option ng-repeat="(k, clol) in MemberColumns" value="{{k}}">{{clol.name}}</option>
+                            </select>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in previewData">
+                        <!--<td>{{item}}</td>-->
+                        <td ng-repeat="i in columns">
+                            {{item[$index]}}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+</div>
