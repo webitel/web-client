@@ -25,7 +25,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
             var sortKey = Object.keys(option.sort || {})[0];
             if (sortKey)
-                _q += '&sort=' + sortKey.replace('_', '.') + '=' + option.sort[sortKey];
+                _q += '&sort=' +  (sortKey !='_endCause' ? sortKey.replace('_', '.')  : sortKey) + '=' + option.sort[sortKey];
 
             if (option.columns) {
                 _q += '&columns=';
@@ -257,10 +257,10 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "domain" : domain || "",
                 "name" : option.name || "",
                 "description" : option.description ||  "",
-                "state" : option.state || "myState",
+                "state" : +option.state || 0,
                 "type" : option.type || "progressive",
                 "priority" : angular.isNumber(option.priority) ? option.priority : 1,
-                "active" : typeof option.active == 'boolean' ? option.active : true,
+                "active" : typeof option.active == 'boolean' ? option.active : false,
                 "calendar" : calendar,
                 "parameters" : {
                     "limit" : angular.isNumber(option.parameters && option.parameters.limit) ? option.parameters.limit : 30,

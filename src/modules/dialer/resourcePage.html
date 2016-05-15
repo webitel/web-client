@@ -2,63 +2,57 @@
     <h3 class="modal-title">Resource</h3>
 </div>
 <div class="modal-body">
-    <div class="row">
-        <div class="col-sm-12">
+    <form name="dialerResource">
+        <div class="row">
+            <div class="col-sm-12">
 
-            <div class="form-group">
-                <label for>Type</label>
-                <select class="form-control"  ng-model="resource.gwProto">
-                    <option ng-repeat="t in Types" ng-selected="{{t==resource.gwProto}}" value="{{t}}">{{t}}</option>
-                </select>
+                <div class="form-group" ng-class="{ 'has-error' : dialerResource.gwProto.$invalid }">
+                    <label for>Type</label>
+                    <select class="form-control" name="gwProto" ng-model="resource.gwProto">
+                        <option ng-repeat="t in Types" ng-selected="{{t==resource.gwProto}}" value="{{t}}">{{t}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group" ng-show="resource.gwProto == 'sip'" ng-class="{ 'has-error' : dialerResource.gwName.$invalid }">
+                    <label for>Gateway</label>
+                    <ui-select required name="gwName" ng-model="resource.gwName" theme="bootstrap"  title="Choose a gateway">
+                        <ui-select-match placeholder="Select or search gateway...">{{$select.selected}}</ui-select-match>
+                        <ui-select-choices repeat="gw in gateways | filter: $select.search">
+                            <span ng-bind-html="gw | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+
             </div>
 
-            <div class="form-group" ng-show="resource.gwProto == 'sip'">
-                <label for>Gateway</label>
-                <ui-select ng-model="resource.gwName" theme="bootstrap"  title="Choose a gateway">
-                    <ui-select-match placeholder="Select or search gateway...">{{$select.selected}}</ui-select-match>
-                    <ui-select-choices repeat="gw in gateways | filter: $select.search">
-                        <span ng-bind-html="gw | highlight: $select.search"></span>
-                    </ui-select-choices>
-                </ui-select>
+            <div class="col-sm-6">
+
+                <div class="form-group" ng-class="{ 'has-error' : dialerResource.dialString.$invalid }" >
+                    <label for>Dial string</label>
+                    <input type="text" class="form-control" required name="dialString" data-ng-model="resource.dialString" >
+                </div>
+
+                <div class="form-group"  ng-class="{ 'has-error' : dialerResource.limit.$invalid }">
+                    <label for>Limit</label>
+                    <input class="form-control" type="number" name="limit" ng-model="resource.limit"
+                           min="0" required>
+                </div>
+
+
             </div>
 
-        </div>
+            <div class="col-sm-6">
+                <div class="form-group" >
+                    <label for>Enabled</label>
+                    <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="resource.enabled" class="ng-valid ng-dirty"><i></i></label>
+                </div>
 
-        <div class="col-sm-6">
-
-            <div class="form-group" >
-                <label for>Dial string</label>
-                <input type="text" class="form-control" required data-ng-model="resource.dialString" style="">
-            </div>
-
-            <div class="form-group" >
-                <label for>Order</label>
-                <input class="form-control" type="number" name="input" ng-model="resource.order"
-                       min="0" max="999" required>
-            </div>
-
-        </div>
-
-        <div class="col-sm-6">
-
-            <div class="form-group" >
-                <label for>Limit</label>
-                <input class="form-control" type="number" name="input" ng-model="resource.limit"
-                       min="0" max="999" required>
-            </div>
-
-
-            <div class="form-group" >
-                <label for>Enabled</label>
-                <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="resource.enabled" class="ng-valid ng-dirty"><i></i></label>
             </div>
 
         </div>
-
-    </div>
-
+    </form>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-primary" type="button" ng-disabled="dialerResource.$invalid" ng-click="ok()">OK</button>
     <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 </div>

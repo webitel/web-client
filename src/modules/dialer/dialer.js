@@ -1,6 +1,39 @@
 define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/gateways/gatewayModel',
     'modules/dialer/dialerModel', 'modules/calendar/calendarModel'], function (app, async, utils, aceEditor, callflowUtils) {
 
+
+    function moveUp (arr, value, by) {
+        if (!arr)
+            arr = [];
+
+        var index = arr.indexOf(value),
+            newPos = index - (by || 1);
+
+        if(index === -1)
+            throw new Error("Element not found in array");
+
+        if(newPos < 0)
+            newPos = 0;
+
+        arr.splice(index,1);
+        arr.splice(newPos,0,value);
+    }
+    function moveDown(arr, value, by) {
+        if (!arr)
+            arr = [];
+        var index = arr.indexOf(value),
+            newPos = index + (by || 1);
+
+        if(index === -1)
+            throw new Error("Element not found in array");
+
+        if(newPos >= arr.length)
+            newPos = arr.length;
+
+        arr.splice(index, 1);
+        arr.splice(newPos,0, value);
+    }
+
     app.controller('DialerCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'DialerModel', '$location', '$route', '$routeParams',
         '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel',
         function ($scope, webitel, $rootScope, notifi, DialerModel, $location, $route, $routeParams, $confirm, TableSearch,
@@ -196,6 +229,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     });
 
             };
+            
+            $scope.setDialStringPosition = function (resources, value, up) {
+                up ? moveUp(resources, value) : moveDown(resources, value);
+            };
 
             function save () {
                 var cb = function (err, res) {
@@ -235,6 +272,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 var id = $routeParams.id;
                 var domain = $routeParams.domain;
 
+                var index = $scope.dialer && $scope.dialer.resources && $scope.dialer.resources.indexOf($scope.activeResource);
+                if (index < 0)
+                    index = 0;
 
                 DialerModel.item(id, domain, function(err, item) {
                     if (err) {
@@ -245,7 +285,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     var cf = callflowUtils.replaceExpression(item._cf);
                     $scope.cf = aceEditor.getStrFromJson(cf);
                     $scope.oldCf = angular.copy($scope.cf);
-                    $scope.activeResource = $scope.dialer.resources && $scope.dialer.resources[0];
+                    $scope.activeResource = $scope.dialer.resources && $scope.dialer.resources[index];
                     disableEditMode();
                 });
             }
@@ -298,7 +338,24 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             }();
 
 
-            $scope.diealerStates = ["state1", "state2"];
+            $scope.diealerStates = [
+                {
+                    val: 0,
+                    name: "Idle"
+                },
+                {
+                    val: 1,
+                    name: "Work"
+                },
+                {
+                    val: 2,
+                    name: "Process stop"
+                },
+                {
+                    val: 3,
+                    name: "End"
+                }
+            ];
             $scope.diealerTypes = ["progressive", "predictive", "auto dialer"];
 
     }]);
@@ -476,6 +533,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             {
                 name: "One",
                 val: 1
+            },
+            {
+                name: "Two",
+                val: 2
             }
         ];
 
