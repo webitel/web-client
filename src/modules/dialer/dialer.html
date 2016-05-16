@@ -42,7 +42,9 @@
                     <thead>
                     <tr ng-show="rowCollection.length > 0">
                         <th st-skip-natural="true" st-sort="name" >Name</th>
-                        <th st-skip-natural="true" st-sort="strategy" >Strategy</th>
+                        <th st-skip-natural="true" st-sort="type" >Type</th>
+                        <th st-skip-natural="true" st-sort="state" >State</th>
+                        <th st-skip-natural="true" st-sort="_cause" >Last cause</th>
                         <th st-skip-natural="true" st-sort="priority" >Priority</th>
 
                         <th>Action</th>
@@ -59,7 +61,9 @@
                                 {{row.name}}
                             </span>
                         </td>
-                        <td>{{row.strategy}}</td>
+                        <td>{{row.type}}</td>
+                        <td>{{row.state}}</td>
+                        <td>{{row._cause}}</td>
                         <td>{{row.priority}}</td>
                         <td class="center">
                             <p>

@@ -6,7 +6,7 @@
 define(['app', 'scripts/webitel/utils'], function (app, utils) {
     app.factory('DialerModel', ["webitel", function (webitel) {
 
-        var COLUMNS_LIST = 'columns=_id,name,strategy,priority';
+        var COLUMNS_LIST = 'columns=_id,name,type,priority,state,_cause';
 
 
         function listMembers (domainName, dialerId, option, cb) {
@@ -36,9 +36,9 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             }
             _q += '&filter=';
             angular.forEach(option.filter, function (v, k, i) {
-                if (k == 'communications_number' || k == 'name')
+                if (k == 'communications_number' || k == 'name' || k == '_endCause')
                     v = '^' + v;
-                _q += k.replace('_', '.') + '=' + v + ','
+                _q += k == /^_/.test(k) ? k + '=' + v + ',' :  k.replace('_', '.') + '=' + v + ',';
             });
 
 
@@ -63,9 +63,9 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
             _q += '&filter=';
             angular.forEach(option.filter, function (v, k, i) {
-                if (k == 'communications_number' || k == 'name')
+                if (k == 'communications_number' || k == 'name' || k == '_endCause')
                     v = '^' + v;
-                _q += k.replace('_', '.') + '=' + v + ','
+                _q += /^_/.test(k) ? k + '=' + v + ',' :  k.replace('_', '.') + '=' + v + ',';
             });
 
 
@@ -193,6 +193,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 if (item.key && item.value)
                     dialer.variables[item.key] = item.value
             });
+
             return dialer
         };
 
@@ -235,6 +236,19 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
 
             webitel.api('PUT', '/api/v2/dialer/' + id + '?&domain=' + domainName, data, function(err, res) {
+                var data = res.data || res.info;
+                return cb && cb(err, data);
+            });
+        };
+
+        function setState(id, domainName, newState, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!id)
+                return cb(new Error("Id is required."));
+
+            webitel.api('PUT', '/api/v2/dialer/' + id + '/state/' + newState + '?&domain=' + domainName, function(err, res) {
                 var data = res.data || res.info;
                 return cb && cb(err, data);
             });
@@ -307,6 +321,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             create: create,
             add: add,
             update: update,
+            setState: setState,
 
             members: {
                 list: listMembers,

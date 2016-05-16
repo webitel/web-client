@@ -142,6 +142,20 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 });
             };
             
+            $scope._activeProcessDialer = true;
+
+            $scope.setProcessDialer = function (v) {
+                var state = v ? 1 : 0;
+                DialerModel.setState($scope.dialer._id, $scope.dialer.domain, state, function (err, res) {
+                    if (err)
+                        return notifi.error(err);
+
+                    $scope.dialer.state = res.activeState;
+                    return notifi.info('Please wait... active call: ' + res.activeCall, 10000);
+
+                });
+            };
+            
             $scope.editResourceDialString = function (resource) {
                 var modalInstance = $modal.open({
                     animation: true,
@@ -337,6 +351,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 };
             }();
 
+            /*
+
+             Idle: 0,
+             Work: 1,
+             Sleep: 2,
+             ProcessStop: 3,
+             End: 4
+
+             */
 
             $scope.diealerStates = [
                 {
@@ -349,14 +372,19 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 },
                 {
                     val: 2,
-                    name: "Process stop"
+                    name: "Sleep"
                 },
                 {
                     val: 3,
+                    name: "Process stop"
+                },
+                {
+                    val: 4,
                     name: "End"
                 }
             ];
-            $scope.diealerTypes = ["progressive", "predictive", "auto dialer"];
+            //$scope.diealerTypes = ["progressive", "predictive", "auto dialer"];
+            $scope.diealerTypes = ["auto dialer"];
 
     }]);
     

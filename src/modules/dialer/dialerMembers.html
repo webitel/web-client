@@ -45,13 +45,13 @@
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="priority" >Priority</th>
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="timezone" >Timezone</th>
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="_endCause" >End cause</th>
-            <th class="text-center" st-skip-natural="true" colspan=4 >Communications</th>
+            <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="_lock" >Active</th>
+            <th class="text-center" st-skip-natural="true" colspan=3>Communications</th>
             <th class="text-center" style="vertical-align:middle" rowspan=2>Action</th>
         </tr>
         <tr>
             <td class="text-center" st-skip-natural="true" st-sort="communications_number" >Number</td>
             <td class="text-center" st-skip-natural="true" st-sort="communications_priority">Priority</td>
-            <td class="text-center" st-skip-natural="true" st-sort="communications_status">Status</td>
             <td class="text-center" st-skip-natural="true" st-sort="communications_state">State</td>
         </tr>
 
@@ -63,7 +63,6 @@
                 <input class="form-control" type="number"  st-search="priority" min="0" max="99999">
             </th>
             <th colspan="1">
-                <!--<input st-search="timezone" ng-bind-html="mFilter.zone" class="form-control" placeholder="global search ..." type="text"/>-->
 
                 <input typeahead-editable="true" typeahead-focus-on-select="true" typeahead-select-on-exact="true"
                        type="text" class="form-control"
@@ -74,7 +73,10 @@
 
             </th>
             <th colspan="1">
-                TODO
+                <input st-search="_endCause" class="form-control" placeholder="Start with..." type="text"/>
+            </th>
+            <th colspan="1">
+                <input st-search="_lock" class="form-control" placeholder="Start with..." type="text"/>
             </th>
             <th colspan="1">
                 <input st-search="communications_number" class="form-control" placeholder="Start with..." type="text"/>
@@ -82,12 +84,7 @@
             <th colspan="1">
                 <input class="form-control" type="number"  st-search="communications_priority" min="0" max="99999">
             </th>
-            <th colspan="1">
-                <select st-search="communications_status" class="form-control">
-                    <option value="">All</option>
-                    <option ng-repeat="comStatus in CommunicationStatuses" value="{{comStatus.val}}">{{comStatus.name}}</option>
-                </select>
-            </th>
+
             <th colspan="1">
                 <select st-search="communications_state" class="form-control">
                     <option value="">All</option>
@@ -116,9 +113,9 @@
             <td rowspan="{{t.communications.length}}">{{t.priority}}</td>
             <td rowspan="{{t.communications.length}}">{{t.timezone}}</td>
             <td rowspan="{{t.communications.length}}">{{t._endCause}}</td>
+            <td rowspan="{{t.communications.length}}">{{t._lock}}</td>
             <td>{{t.communications[0].number}}</td>
             <td>{{t.communications[0].priority}}</td>
-            <td>{{t.communications[0].status}}</td>
             <td>{{t.communications[0].state}}</td>
             <td rowspan="{{t.communications.length}}">
                 <p>
@@ -131,7 +128,6 @@
         <tr ng-repeat="item in t.communications" ng-if="$index > 0">
             <td>{{item.number}}</td>
             <td>{{item.priority}}</td>
-            <td>{{item.status}}</td>
             <td>{{item.state}}</td>
         </tr>
 

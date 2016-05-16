@@ -15,7 +15,7 @@
 
                 <div class="form-group" ng-show="resource.gwProto == 'sip'" ng-class="{ 'has-error' : dialerResource.gwName.$invalid }">
                     <label for>Gateway</label>
-                    <ui-select required name="gwName" ng-model="resource.gwName" theme="bootstrap"  title="Choose a gateway">
+                    <ui-select ng-required="resource.gwProto == 'sip'" name="gwName" ng-model="resource.gwName" theme="bootstrap"  title="Choose a gateway">
                         <ui-select-match placeholder="Select or search gateway...">{{$select.selected}}</ui-select-match>
                         <ui-select-choices repeat="gw in gateways | filter: $select.search">
                             <span ng-bind-html="gw | highlight: $select.search"></span>

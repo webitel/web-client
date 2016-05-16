@@ -27,6 +27,13 @@
                                                             <input ng-disabled="dialer.active" type="text"  class="form-control" name="name" required ng-model="dialer.name" >
                                                         </div>
 
+                                                        <div class="form-group"  ng-class="{ 'has-error' : dialerForm.type.$invalid && !dialerForm.type.$pristine }">
+                                                            <label for>Type</label>
+                                                            <select ng-disabled="dialer.active" class="form-control" name="type" ng-model="dialer.type" required >
+                                                                <option ng-repeat="type in diealerTypes" ng-selected="{{type==dialer.type}}"  value="{{type}}">{{type}}</option>
+                                                            </select>
+                                                        </div>
+
                                                         <div class="form-group" >
                                                             <label for>State</label>
                                                             <select ng-disabled="true" class="form-control"  ng-model="dialer.state">
@@ -34,11 +41,9 @@
                                                             </select>
                                                         </div>
 
-                                                        <div class="form-group"  ng-class="{ 'has-error' : dialerForm.type.$invalid && !dialerForm.type.$pristine }">
-                                                            <label for>Type</label>
-                                                            <select ng-disabled="dialer.active" class="form-control" name="type" ng-model="dialer.type" required >
-                                                                <option ng-repeat="type in diealerTypes" ng-selected="{{type==dialer.type}}"  value="{{type}}">{{type}}</option>
-                                                            </select>
+                                                        <div  class="form-group">
+                                                            <label for>Last cause</label>
+                                                            <input ng-disabled="true" type="text"  class="form-control" required ng-model="dialer._cause" >
                                                         </div>
 
                                                     </div>
@@ -64,7 +69,7 @@
 
                                                         <label ng-if="!isNew"  for>Active</label>
                                                         <div ng-if="!isNew" class="form-group" >
-                                                            <label class="switch switch-success"><input type="checkbox" ng-model="dialer.active"><i></i></label>
+                                                            <label class="switch switch-success"><input type="checkbox" ng-click="setProcessDialer(_activeProcessDialer)" ng-model="_activeProcessDialer"><i></i></label>
                                                         </div>
                                                     </div>
 
@@ -90,7 +95,7 @@
                                                                     <input ng-disabled="dialer.active" class="form-control" type="number" name="progressSec" ng-model="dialer.parameters.progressSec" min="0" max="999" required>
                                                                 </div>
 
-                                                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.avgProgressSec.$pristine }">
+                                                                <div ng-if="false" class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.avgProgressSec.$pristine }">
                                                                     <label for>Avg progress sec</label>
                                                                     <input ng-disabled="dialer.active" class="form-control" type="number" name="avgProgressSec" ng-model="dialer.parameters.avgProgressSec" min="0" max="999" required>
                                                                 </div>
