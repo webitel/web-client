@@ -259,6 +259,9 @@ define(['angular',
 				 args = null;
 			 };
 
+			 if (args)
+			 	args = JSON.stringify(args);
+
 			 var req = {
 				 method: method,
 				 url: srv + url,

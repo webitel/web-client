@@ -282,12 +282,12 @@
                                         </div>
                                     </div>
                                 </tab>
-                                <tab>
+                                <tab ng-if="!isNew">
                                     <tab-heading>
                                         <span>Stats</span>
                                     </tab-heading>
 
-                                    <section data-ng-controller="StatsDialerCtrl" data-ng-include=" 'modules/dialer/dialerStats.html' ">
+                                    <section  data-ng-controller="StatsDialerCtrl" data-ng-include=" 'modules/dialer/dialerStats.html' ">
 
                                     </section>
                                 </tab>

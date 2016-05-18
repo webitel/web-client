@@ -49,7 +49,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 });
                 return cb && cb(err, queues);
             });
-        };
+        }
 
         function countMembers (domainName, dialerId, option, cb) {
             if (!domainName)
@@ -99,7 +99,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 });
                 return cb && cb(err, member);
             });
-        };
+        }
+
         function removeMember (domainName, dialerId, id, cb) {
             if (!domainName)
                 return cb(new Error("Domain is required."));
@@ -114,7 +115,22 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 var member = res.data || res.info;
                 return cb && cb(err, member);
             });
-        };
+        }
+        function aggregateMember (domainName, dialerId, aggregateArray, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!dialerId)
+                return cb(new Error("DialerId is required."));
+
+            if (!aggregateArray || !aggregateArray.length)
+                return cb(new Error("Bad aggregate data"));
+
+            webitel.api('POST', '/api/v2/dialer/' + dialerId + '/members/aggregate' + '?domain=' + domainName, aggregateArray, function(err, res) {
+                var member = res.data || res.info;
+                return cb && cb(err, member);
+            })
+        }
 
         function updateMember (domainName, dialerId, id, member, cb) {
             if (!domainName)
@@ -232,7 +248,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             if (!id)
                 return cb(new Error("Id is required."));
 
-            var data = parseDialer(domainName, dialer);
+            var data = angular.copy(parseDialer(domainName, dialer));
 
 
             webitel.api('PUT', '/api/v2/dialer/' + id + '?&domain=' + domainName, data, function(err, res) {
@@ -330,7 +346,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 item: itemMember,
                 create: createMember,
                 update: updateMember,
-                remove: removeMember
+                remove: removeMember,
+                aggregate: aggregateMember,
             }
         }
     }]);

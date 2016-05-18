@@ -1052,45 +1052,119 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         };
     }]);
     
-    app.controller('StatsDialerCtrl', ['$scope',
-        function ($scope) {
-
-            // TODO Chart
-            $scope.dialerChartObject = {};
-
-            $scope.dialerChartObject.type = "PieChart";
-
-            $scope.onions = [
-                {v: "Onions"},
-                {v: 3},
+    app.controller('StatsDialerCtrl', ['$scope', 'DialerModel', 'notifi',
+        function ($scope, DialerModel, notifi) {
+            var aggCause = [
+                {
+                    $group: {
+                        _id: '$_endCause',
+                        count: {
+                            $sum: 1
+                        }
+                    }
+                }
             ];
 
-            $scope.dialerChartObject.data = {"cols": [
-                {id: "t", label: "Topping", type: "string"},
-                {id: "s", label: "Slices", type: "number"}
-            ], "rows": [
-                {c: [
-                    {v: "Mushrooms"},
-                    {v: 3},
-                ]},
-                {c: $scope.onions},
-                {c: [
-                    {v: "Olives"},
-                    {v: 31}
-                ]},
-                {c: [
-                    {v: "Zucchini"},
-                    {v: 1},
-                ]},
-                {c: [
-                    {v: "Pepperoni"},
-                    {v: 2},
-                ]}
-            ]};
+            var aggCountLock = [
+                {$match: {"_lock": {$ne: null}}},
+                { '$group': { _id: 'active', count: { '$sum': 1 } } }
+            ]
 
-            $scope.dialerChartObject.options = {
-                'title': 'How Much Pizza I Ate Last Night'
+            var domain = '';
+            var id = '';
+            var maxCall = 0;
+
+            $scope.reload = reloadCause;
+
+            $scope.$watch('dialer', function (dialer) {
+                if (dialer && dialer._id) {
+                    domain = dialer.domain;
+                    maxCall = dialer.parameters.limit;
+                    id= dialer._id;
+                    reloadCause();
+                }
+            });
+
+            function reloadCause() {
+                if (!id || !domain)
+                    return notifi.error(new Error("Bad parameters (id, domain is required)."));
+
+
+
+                DialerModel.members.aggregate(domain, id, aggCountLock, function (err, res) {
+                    if (err)
+                        return notifi.error(err);
+                    var calls = 0;
+                    if (res && res[0])
+                        calls = res[0].count;
+
+
+                    $scope.chartActiveCall = {
+                        type: "Gauge",
+                        options: {
+                            'height':'300',
+                            'width':'100%',
+                            max: maxCall,
+                            min: 0,
+
+                            redFrom: 0,
+                            redTo: Math.ceil(maxCall * 75 / 100),
+                            yellowFrom: Math.ceil(maxCall * 75 / 100),
+                            yellowTo: Math.ceil(maxCall * 90 / 100),
+                            greenFrom: Math.ceil(maxCall * 90 / 100),
+                            greenTo: maxCall,
+                            minorTicks: 5
+                        },
+                        data: [
+                            ['Label', 'Value'],
+                            ['Calls', calls]
+                        ]
+                    }
+                });
+
+                DialerModel.members.aggregate(domain, id, aggCause, function (err, res) {
+                    if (err)
+                        return notifi.error(err);
+
+                    var rows = [];
+                    angular.forEach(res, function (item) {
+                        //data.push([item._id, item.count]);
+                        rows.push({c: [
+                            {v: item._id},
+                            {v: item.count}
+                        ]});
+                    });
+                    $scope.chartCause = {
+                        "type": "PieChart",
+                        "options": {
+                            "displayExactValues": true,
+                            'title': 'Hangup cause',
+                            'height':'300',
+                            'width':'100%',
+                            "is3D": true,
+                            "chartArea": {
+                                'width':'100%',
+                                "height": "100%"
+                            },
+                            "isStacked": "true",
+                            "fill": 20
+                        },
+                        "formatters": {
+                            "number": [
+                                {
+                                    "columnNum": 1,
+                                    "pattern": "#,##0"
+                                }
+                            ]
+                        }
+                    };
+                    $scope.chartCause.data = {"cols": [
+                        {id: "t", label: "Cause", type: "string"},
+                        {id: "s", label: "Count", type: "number"}
+                    ], "rows": rows};
+                });
             };
+
     }]);
 
     app.controller('DialerResourceDialStringCtrl', ['$scope', '$modalInstance', 'resource',
