@@ -1,5 +1,5 @@
 define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/gateways/gatewayModel',
-    'modules/dialer/dialerModel', 'modules/calendar/calendarModel'], function (app, async, utils, aceEditor, callflowUtils) {
+    'modules/dialer/dialerModel', 'modules/calendar/calendarModel',  'modules/cdr/libs/json-view/jquery.jsonview', 'modules/cdr/fileModel'], function (app, async, utils, aceEditor, callflowUtils) {
 
 
     function moveUp (arr, value, by) {
@@ -60,6 +60,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             $scope.$on('$destroy', function () {
                 changeDomainEvent();
+                $timeout.cancel(timerId)
             });
 
 
@@ -72,6 +73,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 if ($scope.dialer._new)
                     return $scope.isEdit = $scope.isNew = true;
 
+                $scope.textStateAction = $scope.dialer.active ?  'STOP' : 'RUN';
                 return $scope.isEdit = !!oldValue[0]._id;
             }, true);
 
@@ -142,18 +144,63 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 });
             };
             
-            $scope._activeProcessDialer = true;
+            $scope.activeProcessDialer = false;
 
+            $scope.textStateAction = '';
+
+            $scope.toDateString = function (date) {
+                if (date)
+                    return new Date(date).toLocaleString();
+                return '';
+            };
+
+            var timerId = null;
+            $scope.checkDoNotClickButton = false;
             $scope.setProcessDialer = function (v) {
-                var state = v ? 1 : 0;
-                DialerModel.setState($scope.dialer._id, $scope.dialer.domain, state, function (err, res) {
+                var state = v.active ? 3 : 1;
+                var active = v.active;
+                var setState = function (err) {
                     if (err)
-                        return notifi.error(err);
+                        return;
+                    $scope.checkDoNotClickButton = true;
+                    DialerModel.setState($scope.dialer._id, $scope.dialer.domain, state, function (err, res) {
+                        if (err)
+                            return notifi.error(err);
 
-                    $scope.dialer.state = res.activeState;
-                    return notifi.info('Please wait... active call: ' + res.activeCall, 10000);
+                        var tick = function () {
+                            if ($scope.dialer.active !== active) {
+                                $scope.checkDoNotClickButton = false;
+                                $timeout.cancel(timerId);
+                                if (active)
+                                    notifi.info('Stop dialer ' + $scope.dialer.name, 2000);
+                                return;
+                            };
+                            edit();
+                            timerId = $timeout(tick, 1500);
+                        };
+                        timerId = $timeout(tick, 1500);
+                        if (active)
+                            return notifi.info('Please wait... active call: ' + res.members, 10000);
+                        else return notifi.info('Please wait... Set ready', 2000);
 
-                });
+                    });
+                };
+
+
+                if ($scope.isEdit) {
+                    $confirm({text: 'Save changes ' + v.name + ' ?'},  { templateUrl: 'views/confirm.html' })
+                        .then(function() {
+                            save(setState);
+                        });
+                    return;
+                };
+
+                if (active) {
+                    $confirm({text: 'Stop dialer ' + v.name + ' ?'},  { templateUrl: 'views/confirm.html' })
+                        .then(setState);
+                    return;
+                }
+                setState();
             };
             
             $scope.editResourceDialString = function (resource) {
@@ -248,7 +295,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 up ? moveUp(resources, value) : moveDown(resources, value);
             };
 
-            function save () {
+            function save (callback) {
                 var cb = function (err, res) {
                     if (err)
                         return notifi.error(err, 5000);
@@ -257,7 +304,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         return $location.path('/dialer/' + res + '/edit');
                     } else {
                         $scope.dialer.__time = Date.now();
-                        return edit();
+                        return edit(callback);
                     };
                 };
                 $scope.dialer._cf = JSON.parse($scope.cf);
@@ -282,7 +329,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 $location.path('/dialer');
             };
 
-            function edit () {
+            function edit (callback) {
                 var id = $routeParams.id;
                 var domain = $routeParams.domain;
 
@@ -299,8 +346,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     var cf = callflowUtils.replaceExpression(item._cf);
                     $scope.cf = aceEditor.getStrFromJson(cf);
                     $scope.oldCf = angular.copy($scope.cf);
+                    $scope._activeProcessDialer = angular.copy(item.active);
                     $scope.activeResource = $scope.dialer.resources && $scope.dialer.resources[index];
                     disableEditMode();
+                    if (typeof callback === 'function') callback(err, item);
                 });
             }
 
@@ -350,6 +399,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     return $scope[$route.current.method]();
                 };
             }();
+
+            $scope.setSource = null;
 
             /*
 
@@ -514,7 +565,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             });
         };
-        
+
         $scope.editMember = function (member, index) {
             var modalInstance = $modal.open({
                 animation: true,
@@ -526,6 +577,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         return {
                             member: member,
                             dialerId: $scope.dialer._id,
+                            setSource: $scope.setSource,
                             domain: $scope.domain
                         };
                     }
@@ -874,7 +926,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         };
     });
     
-    app.controller('MemberDialerPageCtrl', ['$scope', '$modalInstance', 'notifi', 'DialerModel', 'options', function ($scope, $modalInstance, notifi, DialerModel, options) {
+    app.controller('MemberDialerPageCtrl', ['$scope', '$modalInstance', 'notifi', 'DialerModel', 'options', 'fileModel',
+    function ($scope, $modalInstance, notifi, DialerModel, options, fileModel) {
 
         if (options && options.member) {
             DialerModel.members.item(options.domain, options.dialerId, options.member._id, function (err, data) {
@@ -901,6 +954,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.member.communications.splice(index, 1);
         };
 
+        $scope.setSource = null;
+
 
         $scope.checkCommunicationNumber = function (number) {
             if (!number)
@@ -908,6 +963,71 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         };
 
         $scope.TimeZones = utils.timeZones;
+
+        $scope.timeToString = function (time) {
+            if (time)
+                return new Date(time).toLocaleString();
+        }
+
+        $scope.showJsonPreview = function(id) {
+            fileModel.getJsonObject(id, function(err, res) {
+
+
+                var jsonData = JSON.stringify(res);
+
+                var jsonWindow = window.open("", id, "width=800, height=600");
+
+                if (jsonWindow) {
+
+                    // додаємо розмітку у вікно для перегляду json обєкта і кнопки для скачування
+                    jsonWindow.document.write(
+                        '<button id="save-cdrJSON" style="position: fixed; right: 0; z-index: 1;">Save</button>' +
+                        '<div id="cdr-jsonViewver"></div>' +
+                        '<style type="text/css">' +
+                        'body { margin: 0; padding: 0; background: #e7ebee; }' +
+                        '</style>'
+                    );
+
+                    $('#cdr-jsonViewver', jsonWindow.document).JSONView(JSON.parse(jsonData, {collapsed: false}));
+
+                    $('#save-cdrJSON', jsonWindow.document).off("click");
+                    $('#save-cdrJSON', jsonWindow.document).on("click", function () {
+
+                        var textFileAsBlob = new Blob([jsonData], {type: 'application/json'}),
+                            downloadLink = document.createElement("a");
+
+                        downloadLink.download = $scope.currentRowId.slice(2) + ".json";
+                        downloadLink.innerHTML = "Download File";
+
+                        if (window.webkitURL !== null) {
+                            downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+                        }
+                        else {
+                            downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+                            downloadLink.onclick = destroyClickedElement;
+                            downloadLink.style.display = "none";
+                            document.body.appendChild(downloadLink);
+                        }
+                        downloadLink.click();
+                    });
+                }
+                else {
+                    notify.warning("Please, allow popup window!", 5000);
+                    return;
+                }
+            })
+        };
+
+        $scope.play = play;
+
+        function play(log) {
+            var uri = fileModel.getUri(log.session, null, log.steps[0].time, "mp3");
+            options.setSource({
+                src: uri,
+                type: 'audio/mpeg',
+                text: log.session
+            }, true);
+        }
 
         $scope.ok = function () {
             var cb = function (err, res) {

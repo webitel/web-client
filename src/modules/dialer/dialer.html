@@ -44,6 +44,7 @@
                         <th st-skip-natural="true" st-sort="name" >Name</th>
                         <th st-skip-natural="true" st-sort="type" >Type</th>
                         <th st-skip-natural="true" st-sort="state" >State</th>
+                        <th st-skip-natural="true" st-sort="nextTick" >Next tick</th>
                         <th st-skip-natural="true" st-sort="_cause" >Last cause</th>
                         <th st-skip-natural="true" st-sort="priority" >Priority</th>
 
@@ -63,6 +64,7 @@
                         </td>
                         <td>{{row.type}}</td>
                         <td>{{row.state}}</td>
+                        <td>{{toDateString(row.nextTick)}}</td>
                         <td>{{row._cause}}</td>
                         <td>{{row.priority}}</td>
                         <td class="center">

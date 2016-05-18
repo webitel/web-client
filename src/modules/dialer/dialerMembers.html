@@ -76,7 +76,11 @@
                 <input st-search="_endCause" class="form-control" placeholder="Start with..." type="text"/>
             </th>
             <th colspan="1">
-                <input st-search="_lock" class="form-control" placeholder="Start with..." type="text"/>
+                <select st-search="_lock" class="form-control">
+                    <option value="">All</option>
+                    <option value="true">Active</option>
+                    <option value="false">No active</option>
+                </select>
             </th>
             <th colspan="1">
                 <input st-search="communications_number" class="form-control" placeholder="Start with..." type="text"/>
@@ -94,7 +98,7 @@
             <th></th>
         </tr>
         <tr ng-show="membersRowCollection.length <= 0">
-            <th colspan="8">
+            <th colspan="9">
                 <div class="row text-center">
                     <div class="center-block col-md-4" style="float: none;">
                         <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>

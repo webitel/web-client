@@ -46,6 +46,11 @@
                                                             <input ng-disabled="true" type="text"  class="form-control" required ng-model="dialer._cause" >
                                                         </div>
 
+                                                        <div  class="form-group" ng-if="dialer.nextTick">
+                                                            <label for>Next tick</label>
+                                                            <input ng-disabled="true" type="text"  class="form-control" required value="{{toDateString(dialer.nextTick)}}" >
+                                                        </div>
+
                                                     </div>
 
                                                     <div class="col-sm-6">
@@ -66,10 +71,9 @@
                                                             </ui-select>
                                                         </div>
 
-
-                                                        <label ng-if="!isNew"  for>Active</label>
-                                                        <div ng-if="!isNew" class="form-group" >
-                                                            <label class="switch switch-success"><input type="checkbox" ng-click="setProcessDialer(_activeProcessDialer)" ng-model="_activeProcessDialer"><i></i></label>
+                                                        <div class="form-group" ng-if="!isNew">
+                                                            <label for>Do not click</label>
+                                                            <button ng-disabled="checkDoNotClickButton" style="width: 100%" ng-click="setProcessDialer(dialer)" type="button" ng-class="{'btn-warning': dialer.active, 'btn-success': !dialer.active}" class="btn  btn-round">{{textStateAction}}</button>
                                                         </div>
                                                     </div>
 
@@ -278,15 +282,15 @@
                                         </div>
                                     </div>
                                 </tab>
-                                <!--<tab>-->
-                                    <!--<tab-heading>-->
-                                        <!--<span>Stats</span>-->
-                                    <!--</tab-heading>-->
+                                <tab>
+                                    <tab-heading>
+                                        <span>Stats</span>
+                                    </tab-heading>
 
-                                    <!--<section data-ng-controller="StatsDialerCtrl" data-ng-include=" 'modules/dialer/dialerStats.html' ">-->
+                                    <section data-ng-controller="StatsDialerCtrl" data-ng-include=" 'modules/dialer/dialerStats.html' ">
 
-                                    <!--</section>-->
-                                <!--</tab>-->
+                                    </section>
+                                </tab>
                             </tabset>
                         </div>
                     </div>
@@ -305,4 +309,6 @@
     </div>
 </div>
 
-{{cf}}
+<div webitel-audio set-source="setSource" on-close="onClosePlayer">
+
+</div>

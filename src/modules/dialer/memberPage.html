@@ -17,8 +17,21 @@
                         <label for>Priority</label>
                         <input class="form-control" type="number" name="priority" ng-model="member.priority" min="0"  required>
                     </div>
+                    <div class="form-group">
+                        <label for>Probe</label>
+                        <input class="form-control" ng-disabled="true" type="number" name="priority" ng-model="member._probeCount" min="0" >
+                    </div>
+                    <div class="form-group" ng-show="member._nextTryTime">
+                        <label for>Next try</label>
+                        <input class="form-control" ng-disabled="true" type="text" name="priority" ng-model="member._nextTryTime" min="0" >
+                    </div>
 
-                    <div class="form-group" >
+                    <div class="form-group" ng-show="member._endCause">
+                        <label for>End cause</label>
+                        <input class="form-control" ng-disabled="true" type="text" name="priority" ng-model="member._endCause" min="0" >
+                    </div>
+
+                    <div class="form-group" ng-if="false">
                         <label for>Time zone</label>
                         <input typeahead-show-hint="true" typeahead-min-length="0"
                                type="text" class="form-control"
@@ -49,7 +62,7 @@
                                                             <th style="width:35%">Number</th>
                                                             <th style="width:15%">Priority</th>
                                                             <th style="width:15%">State</th>
-                                                            <th style="width:15%">Status</th>
+                                                            <th style="width:15%">Probe</th>
                                                             <th style="width:20%">Edit</th>
                                                         </tr>
                                                     </thead>
@@ -68,7 +81,7 @@
                                                             {{ communication.state}}
                                                         </td>
                                                         <td>
-                                                            {{ communication.status}}
+                                                            {{ communication._probe || 0}}
                                                         </td>
                                                         <td style="white-space: nowrap">
                                                             <!-- form -->
@@ -103,6 +116,54 @@
 
                                     </webitel-variables>
                                 </tab>
+
+                                <tab ng-show="member._log">
+                                    <tab-heading>
+                                        Log
+                                    </tab-heading>
+                                    <div class="row">
+                                        <div class="col-sm-12" style="overflow-y: auto; max-height: 500px;">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th style="width:35%">Call Id</th>
+                                                    <th style="width:65%">Steps</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody style="word-break: break-word;">
+                                                <tr ng-repeat="probe in member._log.slice().reverse()">
+                                                    <td>
+                                                        <p>
+                                                            <h5 class="">
+                                                                {{timeToString(probe.steps[0].time)}}
+                                                            </h5>
+
+                                                            <button ng-click="showJsonPreview(probe.session)" class="btn btn-default btn-sm btn-block">
+                                                                {{ probe.session }}
+                                                                <i class="fa fa-file-code-o"></i>
+                                                            </button>
+
+                                                            <button ng-if="probe.recordSessionSec > 0" ng-click="play(probe)" class="btn btn-default btn-sm btn-block">
+                                                                recordSession
+                                                                <i class="fa fa-file-audio-o"></i>
+                                                            </button>
+                                                        </p>
+
+                                                    </td>
+                                                    <td>
+                                                        <ol style="table-layout: fixed; word-wrap: break-word;">
+                                                            <li ng-repeat="s in probe.steps">
+                                                                - {{s.data}}
+                                                            </li>
+                                                        </ol>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </tab>
                             </tabset>
                         </div>
                     </div>
@@ -116,4 +177,4 @@
     <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 </div>
 
-{{member}}
+

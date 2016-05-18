@@ -6,7 +6,7 @@
 define(['app', 'scripts/webitel/utils'], function (app, utils) {
     app.factory('DialerModel', ["webitel", function (webitel) {
 
-        var COLUMNS_LIST = 'columns=_id,name,type,priority,state,_cause';
+        var COLUMNS_LIST = 'columns=_id,name,type,priority,state,_cause,nextTick';
 
 
         function listMembers (domainName, dialerId, option, cb) {
@@ -38,7 +38,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             angular.forEach(option.filter, function (v, k, i) {
                 if (k == 'communications_number' || k == 'name' || k == '_endCause')
                     v = '^' + v;
-                _q += k == /^_/.test(k) ? k + '=' + v + ',' :  k.replace('_', '.') + '=' + v + ',';
+                _q += /^_/.test(k) ? k + '=' + v + ',' :  k.replace('_', '.') + '=' + v + ',';
             });
 
 
@@ -180,9 +180,9 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             page = 1;
             webitel.api('GET', '/api/v2/dialer?' + COLUMNS_LIST + '&limit=1000&page=' + page + '&domain=' + domainName, function(err, res) {
                 var queues = res.data || res.info;
-                angular.forEach(queues, function (item) {
-                    item.enable = item.enable == 'true';
-                });
+                //angular.forEach(queues, function (item) {
+                //    item.enable = item.enable == 'true';
+                //});
                 return cb && cb(err, queues);
             });
         };
