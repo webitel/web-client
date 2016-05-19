@@ -687,10 +687,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             });
         };
 
-        $scope.fileCsvOnLoad = function (data) {
-            debugger
-        };
-
     }]);
     
     app.controller('MemberDialerExportCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
@@ -1130,7 +1126,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     angular.forEach(res, function (item) {
                         //data.push([item._id, item.count]);
                         rows.push({c: [
-                            {v: item._id},
+                            {v: !item._id ? "WAITING" : item._id },
                             {v: item.count}
                         ]});
                     });

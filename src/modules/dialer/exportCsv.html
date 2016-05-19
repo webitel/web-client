@@ -5,22 +5,39 @@
     <div class="row">
         <div class="col-sm-12">
 
-            <div class="form-group" >
-                <label for>Skip headers</label>
-                <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="settings.headers" ><i></i></label>
-            </div>
-            <div class="form-group">
-                <label for>Separator</label>
-                <input type="text"  class="form-control" name="name" required ng-model="settings.separator" >
-            </div>
-            <div class="form-group">
-                <label for>Char set</label>
-                <select class="form-control"  ng-model="settings.charSet">
-                    <option ng-repeat="c in CharSet | orderBy:'name'" ng-selected="c.id==settings.charSet" value="{{c.id}}">{{c.name}}</option>
-                </select>
+            <div class="col-sm-2">
+                <div class="form-group" >
+                    <label style="width: 100%">Skip headers</label>
+                    <label class="switch switch-success"><input type="checkbox" ng-model="settings.headers" ><i></i></label>
+                </div>
             </div>
 
-            <input type="file" file-reader-csv char-set="settings.charSet" file-on-load="fileCsvOnLoad" />
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for>Char set</label>
+                    <select class="form-control"  ng-model="settings.charSet">
+                        <option ng-repeat="c in CharSet | orderBy:'name'" ng-selected="c.id==settings.charSet" value="{{c.id}}">{{c.name}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for>Separator</label>
+                    <input type="text"  class="form-control" name="name" required ng-model="settings.separator" >
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-12">
+            <div class="form-group" style="padding-left: 11px;">
+            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  style="padding: 0">
+                <i class="glyphicon glyphicon-cloud-upload"></i>
+                <input type="file" file-reader-csv char-set="settings.charSet" file-on-load="fileCsvOnLoad" onchange="$('#csvSelectedFileName').text($(this).val());" name="csvSelectedFileName" accept=".csv"/>
+            </span>
+                <span id="csvSelectedFileName"></span>
+            </div>
+
         </div>
 
         <div class="col-sm-12">
