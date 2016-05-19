@@ -3,7 +3,7 @@
 
         <div class="row">
             <div class="col-sm-12">
-                <div class="no-border pull-left" ng-if="canCreate">
+                <div class="no-border pull-left" ng-if="canCreate"  ng-disabled="!domain" >
                     <a href="#/calendars/new" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success" ng-disabled="!domain">
                         <i class="fa fa-plus"></i>
                     </a>

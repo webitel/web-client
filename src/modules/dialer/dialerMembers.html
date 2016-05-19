@@ -90,7 +90,7 @@
             </th>
 
             <th colspan="1">
-                <select st-search="communications_state" class="form-control">
+                <select st-search="communications_state" type="number" class="form-control">
                     <option value="">All</option>
                     <option ng-repeat="comState in CommunicationStates" value="{{comState.val}}">{{comState.name}}</option>
                 </select>
