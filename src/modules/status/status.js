@@ -6,7 +6,7 @@ define(['app'], function (app) {
         	webitel.api("GET", "/api/v2/status", function (err, res) {
         		if (err)
     				return notifi.error(err, 5000);
-    			var v = res.Version.split(/#|-/g);
+    			var v = res.Version.split(/#|:/g);
     			$scope.output = res;
     			$scope.output.ver = v[0];
     			$scope.output.build = v[1];
