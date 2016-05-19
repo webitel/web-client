@@ -362,6 +362,10 @@ define(['angular'], function (angular) {
         'rotes/domain',
 
         'channels',
+        'calendar',
+
+        'dialer',
+        'dialer/members',
 
         'cc/tiers',
         'cc/members',
