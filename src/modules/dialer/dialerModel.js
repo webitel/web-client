@@ -126,7 +126,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             if (!aggregateArray || !aggregateArray.length)
                 return cb(new Error("Bad aggregate data"));
 
-            webitel.api('POST', '/api/v2/dialer/' + dialerId + '/members/aggregate' + '?domain=' + domainName, aggregateArray, function(err, res) {
+            webitel.api('POST', '/api/v2/dialer/' + dialerId + '/members/aggregate' + '?domain=' + domainName, JSON.stringify(aggregateArray), function(err, res) {
                 var member = res.data || res.info;
                 return cb && cb(err, member);
             })

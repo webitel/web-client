@@ -259,8 +259,9 @@ define(['angular',
 				 args = null;
 			 };
 
-			 if (args)
-			 	args = JSON.stringify(args);
+			 // TODO
+			 //if (args)
+			 //	args = JSON.stringify(args);
 
 			 var req = {
 				 method: method,
