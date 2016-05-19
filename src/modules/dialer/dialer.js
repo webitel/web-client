@@ -481,8 +481,24 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         $scope.CountItemsByPage = 40;
         $scope.membersRowCollection = [];
 
+        var checkDialerLoad = true;
+        $scope.$watch('dialer', function (dialer) {
+            if (checkDialerLoad && dialer && dialer._id) {
+                _tableState = {
+                    "sort": {},
+                    "search": {},
+                    "pagination": {
+                        "start": 0,
+                        "totalItemCount": 0
+                    }
+                };
+                checkDialerLoad = false;
+                $scope.callServer(_tableState);
+            }
+        });
+
         $scope.callServer = function (tableState) {
-            if ($scope.isLoading) return void 0;
+            if ($scope.isLoading || checkDialerLoad) return void 0;
             _tableState = tableState;
 
             $scope.isLoading = true;
@@ -1064,7 +1080,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             var aggCountLock = [
                 {$match: {"_lock": {$ne: null}}},
                 { '$group': { _id: 'active', count: { '$sum': 1 } } }
-            ]
+            ];
 
             var domain = '';
             var id = '';

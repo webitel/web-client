@@ -2,11 +2,14 @@
     <div class="panel panel-body">
 
         <div class="row">
+            {{domain}}
             <div class="col-sm-12">
                 <div class="no-border pull-left" ng-if="canCreate"  ng-disabled="!domain" >
-                    <a href="#/calendars/new" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success" ng-disabled="!domain">
+
+                    <a href="#/calendars/new" ng-click="" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success" ng-disabled="!domain">
                         <i class="fa fa-plus"></i>
                     </a>
+
                     <a ng-click="reloadData(true)" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
                         <i class="glyphicon glyphicon-refresh"></i>
                     </a>
