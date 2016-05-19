@@ -687,7 +687,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     function (item, cb) {
                         $scope.progress =  Math.round(100 * $scope.progressCount++ / allCount);
 
-                        DialerModel.members.add('10.10.10.144', '572a170e576151df0d6b164a', getMemberFromTemplate(item, result.template), cb);
+                        DialerModel.members.add($scope.domain, $scope.dialer._id, getMemberFromTemplate(item, result.template), cb);
                     },
                     function (err) {
                         $scope.progress = 0;
