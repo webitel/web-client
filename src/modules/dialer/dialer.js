@@ -307,7 +307,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         return edit(callback);
                     };
                 };
-                $scope.dialer._cf = JSON.parse($scope.cf);
+                if ($scope.cf)
+                    $scope.dialer._cf = JSON.parse($scope.cf);;
+
                 if ($scope.dialer._new) {
                     DialerModel.add($scope.dialer, cb);
                 } else {

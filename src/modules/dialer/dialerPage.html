@@ -47,7 +47,7 @@
                                                         </div>
 
                                                         <div  class="form-group" ng-if="dialer.nextTick">
-                                                            <label for>Next tick</label>
+                                                            <label for>Sleeping till</label>
                                                             <input ng-disabled="true" type="text"  class="form-control" required value="{{toDateString(dialer.nextTick)}}" >
                                                         </div>
 
@@ -71,8 +71,8 @@
                                                             </ui-select>
                                                         </div>
 
-                                                        <div class="form-group" ng-if="!isNew">
-                                                            <label for>Do not click</label>
+                                                        <div class="form-group" ng-if="!isNew" style="padding-top: 6px;">
+                                                            <label></label>
                                                             <button ng-disabled="checkDoNotClickButton" style="width: 100%" ng-click="setProcessDialer(dialer)" type="button" ng-class="{'btn-warning': dialer.active, 'btn-success': !dialer.active}" class="btn  btn-round">{{textStateAction}}</button>
                                                         </div>
                                                     </div>
@@ -94,7 +94,7 @@
                                                                     <input ng-disabled="dialer.active" class="form-control" type="number" name="limit" ng-model="dialer.parameters.limit" min="0" max="999" required>
                                                                 </div>
 
-                                                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.progressSec.$invalid && !dialerForm.progressSec.$pristine }">
+                                                                <div ng-if="false" class="form-group" ng-class="{ 'has-error' : dialerForm.progressSec.$invalid && !dialerForm.progressSec.$pristine }">
                                                                     <label for>Progress sec</label>
                                                                     <input ng-disabled="dialer.active" class="form-control" type="number" name="progressSec" ng-model="dialer.parameters.progressSec" min="0" max="999" required>
                                                                 </div>
