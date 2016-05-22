@@ -246,6 +246,100 @@
                                         </div>
                                     </div>
                                 </tab>
+
+                                <tab ng-if="dialer.type==diealerTypes[1]">
+                                    <tab-heading>
+                                        Agents
+                                    </tab-heading>
+
+                                    <div class="row">
+                                        <div class="panel">
+                                            <div class="panel-body" style="position: relative;">
+                                                <div class="form-group">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group" >
+                                                            <div class="form-group-sm">
+                                                                <label>Tiers</label>
+                                                            </div>
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon"><i class="fa fa-search text-muted"></i></span>
+                                                                <input ng-model="searchTextTiers" type="text" class="form-control" placeholder="Search...">
+
+                                        <span  ng-click="removeTiers()" ng-disabled="dialer.active" ng-if="canUpdate" class="btn input-group-addon">
+                                            <i class="glyphicon glyphicon-chevron-right"></i>
+                                        </span>
+                                        <span  ng-click="removeTiers(true)" ng-disabled="dialer.active" ng-if="canUpdate" class="btn input-group-addon">
+                                             <i class="glyphicon glyphicon-forward"></i>
+                                        </span>
+                                                            </div>
+
+
+                                                            <ul ng-init="loadAgents()" class="list-group" style="max-height:250px; overflow-y:auto; padding: 0;">
+                                                                <li class="list-group-item clearfix" ng-repeat="(key, value) in tiersListFiltered = (dialer.agents | filter:searchTextTiers|orderBy: 'id')"
+                                                                    ng-click="selTiers[agentList[value].id]=!selTiers[agentList[value].id]"
+                                                                    ng-class="{'bg-info': selTiers[agentList[value].id]}">
+
+                                                                    <span>
+                                                                        {{agentList[value].id}} ({{agentList[value].name}})
+                                                                    </span>
+
+
+                                                                    <span class="pull-right">{{agentList[value].state}}/{{agentList[value].status}}</span>
+                                                                </li>
+
+                                                                <li class="list-group-item" ng-hide="tiersListFiltered.length">
+                                                                    <p>
+                                                                        Not found tiers
+                                                                    </p>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group" >
+                                                            <div class="form-group-sm">
+                                                                <label>Agents</label>
+                                                            </div>
+                                                            <div class="input-group">
+                                        <span  ng-disabled="dialer.active" ng-if="canUpdate"  ng-click="addTiers(true)" class="btn input-group-addon">
+                                            <i class="glyphicon glyphicon-backward"></i>
+                                        </span>
+                                        <span  ng-disabled="dialer.active" ng-if="canUpdate"  ng-click="addTiers()" class="btn input-group-addon">
+                                            <i class="glyphicon glyphicon-chevron-left"></i>
+                                        </span>
+
+                                                                <input ng-model="searchTextAgents" type="text" class="form-control" placeholder="Search...">
+                                                                <span class="input-group-addon"><i class="fa fa-search text-muted"></i></span>
+                                                            </div>
+
+                                                            <ul  class="list-group" style="max-height:250px;  overflow-y:auto; padding: 0; line-height: 0">
+                                                                <li ng-show="isAgentInTier(value)"  class="list-group-item" ng-repeat="(key, value) in agentsListFiltered = (agents | filter:searchTextAgents)"
+                                                                     ng-click="selAgents[value.id]=!selAgents[value.id]"
+                                                                     ng-class="{'bg-info': selAgents[value.id]}">
+
+                                                                    <span class="media">{{value.id}}</span>
+                                                                    <span class="space space-xs"></span>
+                                                                    <span class="media">{{value.name}}</span>
+                                        <span class="pull-right text-muted">
+                                            <span>{{value.state}}/</span>
+                                            <span>{{value.status}}</span>
+                                        </span>
+                                                                </li>
+
+                                                                <li class="list-group-item" ng-hide="agentsListFiltered.length">
+                                                                    <p>
+                                                                        Not found agents
+                                                                    </p>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tab>
+
                                 <tab ng-if="!isNew">
                                     <tab-heading>
                                         <span>Members</span>

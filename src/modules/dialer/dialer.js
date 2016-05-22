@@ -1,5 +1,6 @@
 define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/gateways/gatewayModel',
-    'modules/dialer/dialerModel', 'modules/calendar/calendarModel',  'modules/cdr/libs/json-view/jquery.jsonview', 'modules/cdr/fileModel'], function (app, async, utils, aceEditor, callflowUtils) {
+    'modules/dialer/dialerModel', 'modules/calendar/calendarModel',  'modules/cdr/libs/json-view/jquery.jsonview',
+    'modules/cdr/fileModel', 'modules/accounts/accountModel'], function (app, async, utils, aceEditor, callflowUtils) {
 
 
     function moveUp (arr, value, by) {
@@ -35,9 +36,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     }
 
     app.controller('DialerCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'DialerModel', '$location', '$route', '$routeParams',
-        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel',
+        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel', 'AccountModel',
         function ($scope, webitel, $rootScope, notifi, DialerModel, $location, $route, $routeParams, $confirm, TableSearch,
-                  $timeout, $modal, CalendarModel) {
+                  $timeout, $modal, CalendarModel, AccountModel) {
 
             $scope.canDelete = webitel.connection.session.checkResource('dialer', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('dialer', 'u');
@@ -404,6 +405,59 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             $scope.setSource = null;
 
+            $scope.selAgents = {};
+            $scope.selTiers = {};
+            $scope.agents = [];
+            $scope.tiers = [];
+            $scope.agentList = {};
+
+            $scope.addTiers = function (all) {
+                var collection = all ? $scope.agents : $scope.selAgents;
+                if (!collection.length) {
+                    angular.forEach(collection, function (i, key) {
+                        if (!~$scope.dialer.agents.indexOf(key)) {
+                            $scope.dialer.agents.push(key);
+                        }
+                    })
+                } else {
+                    angular.forEach(collection, function (i) {
+                        if (!~$scope.dialer.agents.indexOf(i.id)) {
+                            $scope.dialer.agents.push(i.id);
+                        }
+                    })
+                }
+            };
+
+            $scope.isAgentInTier = function (a) {
+                return !~$scope.dialer.agents.indexOf(a.id);
+            }
+            
+            $scope.removeTiers = function (all) {
+                if (all) {
+                    $scope.selTiers = {};
+                    return $scope.dialer.agents = [];
+                }
+
+                var collection = $scope.selTiers;
+                angular.forEach(collection, function (i, key) {
+                    if (~$scope.dialer.agents.indexOf(key)) {
+                        $scope.dialer.agents.splice($scope.dialer.agents.indexOf(key), 1);
+                    }
+                })
+            };
+
+            $scope.loadAgents = function () {
+                AccountModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    var data =  $scope.agentList = res.data || res.info;
+                    angular.forEach(data, function (i) {
+                        $scope.agents.push(i);
+                    })
+                })
+            }
+
             /*
 
              Idle: 0,
@@ -437,7 +491,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
             ];
             //$scope.diealerTypes = ["progressive", "predictive", "auto dialer"];
-            $scope.diealerTypes = ["Voice Broadcasting"];
+            $scope.diealerTypes = ["Voice Broadcasting", "Progressive Dialer"];
 
     }]);
     
@@ -1131,7 +1185,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         },
                         data: [
                             ['Label', 'Value'],
-                            ['Calls', calls]
+                            ['Members', calls]
                         ]
                     }
                 });
