@@ -216,6 +216,15 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         function add (data, cb) {
             var dialer = parseDialer(data.domain, data);
 
+            if (!dialer.name) {
+                return cb(new Error("Bad dialer name"));
+            }
+            if (!dialer.calendar || !dialer.calendar.id) {
+                return cb(new Error("Bad calendar"));
+            }
+            if (!dialer.type) {
+                return cb(new Error("Bad type dialer"));
+            }
             webitel.api('POST', '/api/v2/dialer?domain=' + dialer.domain, dialer, function (err, res) {
                 if (err)
                     return cb(err);

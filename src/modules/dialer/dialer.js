@@ -160,6 +160,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.setProcessDialer = function (v) {
                 var state = v.active ? 3 : 1;
                 var active = v.active;
+                var tryCount = 0;
                 var setState = function (err) {
                     if (err)
                         return;
@@ -177,6 +178,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                 return;
                             };
                             edit();
+                            tryCount++;
                             timerId = $timeout(tick, 1500);
                         };
                         timerId = $timeout(tick, 1500);

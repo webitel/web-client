@@ -43,7 +43,7 @@
         <tr>
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="name" >Name</th>
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="priority" >Priority</th>
-            <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="timezone" >Timezone</th>
+            <!--<th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="timezone" >Timezone</th>-->
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="_endCause" >End cause</th>
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="_lock" >Active</th>
             <th class="text-center" st-skip-natural="true" colspan=3>Communications</th>
@@ -62,16 +62,16 @@
             <th colspan="1">
                 <input class="form-control" type="number"  st-search="priority" min="0" max="99999">
             </th>
-            <th colspan="1">
+            <!--<th colspan="1" >-->
 
-                <input typeahead-editable="true" typeahead-focus-on-select="true" typeahead-select-on-exact="true"
-                       type="text" class="form-control"
-                       ng-model="mFilter.zone"
-                       st-search="timezone"
-                       placeholder="Time zone"
-                       typeahead="zone.id as zone.id for zone in TimeZones | filter:{id:$viewValue}" >
+                <!--<input typeahead-editable="true" typeahead-focus-on-select="true" typeahead-select-on-exact="true"-->
+                       <!--type="text" class="form-control"-->
+                       <!--ng-model="mFilter.zone"-->
+                       <!--st-search="timezone"-->
+                       <!--placeholder="Time zone"-->
+                       <!--typeahead="zone.id as zone.id for zone in TimeZones | filter:{id:$viewValue}" >-->
 
-            </th>
+            <!--</th>-->
             <th colspan="1">
                 <input st-search="_endCause" class="form-control" placeholder="Start with..." type="text"/>
             </th>
@@ -115,7 +115,7 @@
                 {{t.name}}
             </td>
             <td rowspan="{{t.communications.length}}">{{t.priority}}</td>
-            <td rowspan="{{t.communications.length}}">{{t.timezone}}</td>
+            <!--<td rowspan="{{t.communications.length}}">{{t.timezone}}</td>-->
             <td rowspan="{{t.communications.length}}">{{t._endCause}}</td>
             <td rowspan="{{t.communications.length}}">{{t._lock}}</td>
             <td>{{t.communications[0].number}}</td>
