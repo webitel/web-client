@@ -45,11 +45,14 @@
                 <table class="table table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th ng-repeat="c in columns">
+                        <th ng-repeat="c in columns" style="vertical-align: middle;">
                             <select ng-model="c.value" class="form-control" data-ng-change="changeColumnsAlias(c, clol)">
                                 <option value="">--</option>
                                 <option ng-repeat="(k, clol) in MemberColumns" value="{{k}}">{{clol.name}}</option>
                             </select>
+                            <div ng-if="c.value=='variable'">
+                                <input ng-required="c.value=='variable'" class="form-control" type="text"  ng-model="c.varName" >
+                            </div>
                         </th>
                     </tr>
                     </thead>

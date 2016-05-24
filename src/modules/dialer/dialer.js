@@ -699,7 +699,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         function getMemberFromTemplate (row, template) {
             var m = {
                 name: row[template.name],
-                communications: []
+                communications: [],
+                _variables: []
             };
 
             angular.forEach(template.communications, function (v) {
@@ -710,6 +711,14 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     state : 0
 
                 })
+            });
+            angular.forEach(template.variables, function (v, key) {
+                if (key && row[v]) {
+                    m._variables.push({
+                        key: key,
+                        value: row[v]
+                    })
+                };
             });
 
             return m;
@@ -812,6 +821,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 if (c) {
                     if (!c.type) {
                         template[c.field] = item.id;
+                    } else if (c.type === 'variable' && item.varName) {
+                        template.variables[item.varName] = item.id;
                     } else if (c.type === 'communications') {
                         if (!template.communications[c.position])
                             template.communications[c.position] = {};
@@ -841,11 +852,18 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 name: "Priority",
                 field: 'priority'
             },
-            "timezone": {
-                selected: false,
-                name: "Timezone",
-                field: 'timezone'
+            "variable": {
+                "name": "Variable",
+                "field": "variable",
+                "type": "variable",
+                "value": "",
+                "varName": ""
             },
+            //"timezone": {
+            //    selected: false,
+            //    name: "Timezone",
+            //    field: 'timezone'
+            //},
             "number_1": {
                 selected: false,
                 name: "number_1",
