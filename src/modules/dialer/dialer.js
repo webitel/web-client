@@ -739,6 +739,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     result.data.shift();
 
                 var allCount = result.data.length;
+                var createdItems = 0;
                 $scope.progressCount = 0;
 
                 $scope.maxProgress = allCount;
@@ -746,15 +747,26 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 async.eachSeries(result.data,
                     function (item, cb) {
                         $scope.progress =  Math.round(100 * $scope.progressCount++ / allCount);
-
-                        DialerModel.members.add($scope.domain, $scope.dialer._id, getMemberFromTemplate(item, result.template), cb);
+                        var m = getMemberFromTemplate(item, result.template);
+                        if (!m || !m.name || !m.communications) {
+                            console.warn('skip: ', m);
+                            return cb();
+                        }
+                        DialerModel.members.add($scope.domain, $scope.dialer._id, m, function (err) {
+                            if (err) {
+                                console.error(err);
+                            } else {
+                                createdItems++;
+                            }
+                            cb();
+                        });
                     },
                     function (err) {
                         $scope.progress = 0;
                         $scope.processImport = false;
                         if (err)
                             return notifi.error(err);
-                        return notifi.info('Create: .', 1000)
+                        return notifi.info('Create: ' + createdItems, 2000)
                     }
                 );
 
@@ -765,7 +777,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
     }]);
     
-    app.controller('MemberDialerExportCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+    app.controller('MemberDialerExportCtrl', ['$scope', '$modalInstance', 'notifi', function ($scope, $modalInstance, notifi) {
         $scope.settings = {
             separator: ';',
             headers: true,
@@ -808,7 +820,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 };
             });
             if (template.name === null || template.communications.length == 0)
-                return alert('HALEPA');
+                return notifi.error(new Error('Bad settings.'), 5000)
 
             $scope.settings.template = template;
             $modalInstance.close($scope.settings, 5000);
