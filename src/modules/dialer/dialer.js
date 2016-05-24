@@ -426,6 +426,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         }
                     })
                 }
+                $scope.selAgents = {};
+                $scope.selTiers = {};
             };
 
             $scope.isAgentInTier = function (a) {
@@ -443,7 +445,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     if (~$scope.dialer.agents.indexOf(key)) {
                         $scope.dialer.agents.splice($scope.dialer.agents.indexOf(key), 1);
                     }
-                })
+                });
+                $scope.selAgents = {};
+                $scope.selTiers = {};
             };
 
             $scope.loadAgents = function () {

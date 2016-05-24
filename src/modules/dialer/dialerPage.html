@@ -94,6 +94,11 @@
                                                                     <input ng-disabled="dialer.active" class="form-control" type="number" name="limit" ng-model="dialer.parameters.limit" min="0" max="999" required>
                                                                 </div>
 
+                                                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.minBillSec.$invalid && !dialerForm.minBillSec.$pristine }">
+                                                                    <label for>Min bill sec</label>
+                                                                    <input ng-disabled="dialer.active" class="form-control" type="number" name="minBillSec" ng-model="dialer.parameters.minBillSec" min="0" required>
+                                                                </div>
+
                                                                 <div ng-if="false" class="form-group" ng-class="{ 'has-error' : dialerForm.progressSec.$invalid && !dialerForm.progressSec.$pristine }">
                                                                     <label for>Progress sec</label>
                                                                     <input ng-disabled="dialer.active" class="form-control" type="number" name="progressSec" ng-model="dialer.parameters.progressSec" min="0" max="999" required>

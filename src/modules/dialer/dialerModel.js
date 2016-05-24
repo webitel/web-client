@@ -294,6 +294,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "calendar" : calendar,
                 "parameters" : {
                     "limit" : angular.isNumber(option.parameters && option.parameters.limit) ? option.parameters.limit : 30,
+                    "minBillSec" : angular.isNumber(option.parameters && option.parameters.minBillSec) ? option.parameters.minBillSec : 10,
                     "progressSec" : angular.isNumber(option.parameters && option.parameters.progressSec) ? option.parameters.progressSec : 20,
                     "avgProgressSec" : angular.isNumber(option.parameters && option.parameters.avgProgressSec) ? option.parameters.avgProgressSec : 20,
                     "maxTryCount" : angular.isNumber(option.parameters && option.parameters.maxTryCount) ? option.parameters.maxTryCount : 5,

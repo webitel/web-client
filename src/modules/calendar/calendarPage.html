@@ -75,7 +75,6 @@
             </div>
 
             <div class="row">
-                {{editRowWorkWeekIndex}}
                 <label style="padding-left: 12px;">Work week</label>
                 <table class="table">
                     <thead ng-class="{'bg-danger': _hourError, 'bg-gray':!_hourError}">
@@ -120,7 +119,7 @@
 
                     <tbody class="text-center">
 
-                        <tr ng-repeat="(key, row) in calendar.accept|orderBy:'weekDay'" ng-class="{'bg-danger': row._error}">
+                        <tr ng-repeat="(key, row) in calendar.accept|orderBy:['weekDay','startTime']" ng-class="{'bg-danger': row._error}">
 
                             <td  ng-if="editRowWorkWeekKey != key">
                                 {{mapDays[row.weekDay]}}
