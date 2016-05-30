@@ -1,0 +1,417 @@
+<div class="page">
+    <div class="panel">
+
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ui-tab-container ui-tab-dark">
+                        <div class="ui-tab">
+                            <tabset>
+
+                                <tab>
+                                    <tab-heading>
+                                        <span>General</span>
+                                    </tab-heading>
+
+                                    <form name="dialerForm" novalidate >
+                                        <div class="row">
+
+                                            <div class="col-sm-6">
+                                                <div class="row">
+
+                                                    <div class="col-sm-6">
+
+                                                        <div  class="form-group" ng-class="{ 'has-error' : dialerForm.name.$invalid }">
+                                                            <label for>Name</label>
+                                                            <input ng-disabled="dialer.active" type="text"  class="form-control" name="name" required ng-model="dialer.name" >
+                                                        </div>
+
+                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.type.$invalid}">
+                                                            <label>Type</label>
+                                                            <select ng-disabled="dialer.active" class="form-control" name="type" ng-model="dialer.type" required >
+                                                                <option ng-repeat="type in diealerTypes" ng-selected="{{type==dialer.type}}"  value="{{type}}">{{type}}</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="form-group" >
+                                                            <label for>State</label>
+                                                            <select ng-disabled="true" class="form-control"  ng-model="dialer.state">
+                                                                <option   ng-repeat="state in diealerStates" ng-selected="{{state.val==dialer.state}}" value="{{state.val}}">{{state.name}}</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div  class="form-group">
+                                                            <label for>Last cause</label>
+                                                            <input ng-disabled="true" type="text"  class="form-control" required ng-model="dialer._cause" >
+                                                        </div>
+
+                                                        <div  class="form-group" ng-if="dialer.nextTick">
+                                                            <label for>Sleeping till</label>
+                                                            <input ng-disabled="true" type="text"  class="form-control" required value="{{toDateString(dialer.nextTick)}}" >
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="col-sm-6">
+
+                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.priority.$invalid && !dialerForm.priority.$pristine }">
+                                                            <label for>Priority</label>
+                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="priority" ng-model="dialer.priority" min="0" max="999" required>
+                                                        </div>
+
+
+                                                        <div class="form-group" >
+                                                            <label for>Calendar</label>
+                                                            <ui-select ng-disabled="dialer.active"  ng-model="dialer.calendar" theme="bootstrap"  title="Choose a gateway">
+                                                                <ui-select-match placeholder="Select or search calendar...">{{$select.selected.name}}</ui-select-match>
+                                                                <ui-select-choices refresh="getCalendars()" repeat="c in calendars | filter: $select.search">
+                                                                    <span ng-bind-html="c.name | highlight: $select.search"></span>
+                                                                </ui-select-choices>
+                                                            </ui-select>
+                                                        </div>
+
+                                                        <div class="form-group" ng-if="!isNew" style="padding-top: 6px;">
+                                                            <label></label>
+                                                            <button ng-disabled="checkDoNotClickButton" style="width: 100%" ng-click="setProcessDialer(dialer)" type="button" ng-class="{'btn-warning': dialer.active, 'btn-success': !dialer.active}" class="btn  btn-round">{{textStateAction}}</button>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <div class="ui-tab-container ui-tab-dark">
+                                                    <div class="ui-tab">
+                                                        <tabset>
+                                                            <tab>
+                                                                <tab-heading>
+                                                                    <span>Parameters</span>
+                                                                </tab-heading>
+
+                                                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.limit.$invalid && !dialerForm.limit.$pristine }">
+                                                                    <label for>Limit</label>
+                                                                    <input ng-disabled="dialer.active" class="form-control" type="number" name="limit" ng-model="dialer.parameters.limit" min="0" max="999" required>
+                                                                </div>
+
+
+                                                                <div ng-if="false" class="form-group" ng-class="{ 'has-error' : dialerForm.progressSec.$invalid && !dialerForm.progressSec.$pristine }">
+                                                                    <label for>Progress sec</label>
+                                                                    <input ng-disabled="dialer.active" class="form-control" type="number" name="progressSec" ng-model="dialer.parameters.progressSec" min="0" max="999" required>
+                                                                </div>
+
+                                                                <div ng-if="false" class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.avgProgressSec.$pristine }">
+                                                                    <label for>Avg progress sec</label>
+                                                                    <input ng-disabled="dialer.active" class="form-control" type="number" name="avgProgressSec" ng-model="dialer.parameters.avgProgressSec" min="0" max="999" required>
+                                                                </div>
+                                                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.maxTryCount.$pristine }">
+                                                                    <label for>Maximum number of retry</label>
+                                                                    <input ng-disabled="dialer.active" class="form-control" type="number" name="maxTryCount" ng-model="dialer.parameters.maxTryCount" min="0" max="999" required>
+                                                                </div>
+                                                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.intervalTryCount.$pristine }">
+                                                                    <label for>Wait between retries (in seconds)</label>
+                                                                    <input ng-disabled="dialer.active" class="form-control" type="number" name="intervalTryCount" ng-model="dialer.parameters.intervalTryCount" min="0" max="999" required>
+                                                                </div>
+
+
+                                                                <div class="form-group" ng-class="{ 'has-error' : dialerForm.minBillSec.$invalid && !dialerForm.minBillSec.$pristine }">
+                                                                    <label for>Minimum succeed call duration (in seconds)</label>
+                                                                    <input ng-disabled="dialer.active" class="form-control" type="number" name="minBillSec" ng-model="dialer.parameters.minBillSec" min="0" required>
+                                                                </div>
+
+                                                            </tab>
+
+                                                            <tab>
+                                                                <tab-heading>
+                                                                    <span>Description</span>
+                                                                </tab-heading>
+                                                                <div class="form-group" >
+                                                                    <textarea  ng-disabled="dialer.active" class="form-control" ng-model="dialer.description" rows="4"></textarea>
+                                                                </div>
+                                                            </tab>
+                                                            <tab>
+                                                                <tab-heading>
+                                                                    <span>Variables</span>
+                                                                </tab-heading>
+                                                                <div style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">
+                                                                    <webitel-variables
+                                                                            disable-action="dialer.active"
+                                                                            ng-init="dialer._variables = []"
+                                                                            collection = "dialer._variables"
+                                                                            dictionary="[]"
+                                                                            remvar="remVar"
+                                                                            >
+
+                                                                    </webitel-variables>
+                                                                </div>
+                                                            </tab>
+
+
+                                                        </tabset>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </tab>
+
+                                <tab ng-if="dialer.type==diealerTypes[1]">
+                                    <tab-heading>
+                                        Agents
+                                    </tab-heading>
+
+                                    <div class="row">
+                                        <div class="panel">
+                                            <div class="panel-body" style="position: relative;">
+                                                <div class="form-group">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group" >
+                                                            <div class="form-group-sm">
+                                                                <label>Tiers</label>
+                                                            </div>
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon"><i class="fa fa-search text-muted"></i></span>
+                                                                <input ng-model="searchTextTiers" type="text" class="form-control" placeholder="Search...">
+
+                                        <span  ng-click="removeTiers()" ng-disabled="dialer.active" ng-if="canUpdate" class="btn input-group-addon">
+                                            <i class="glyphicon glyphicon-chevron-right"></i>
+                                        </span>
+                                        <span  ng-click="removeTiers(true)" ng-disabled="dialer.active" ng-if="canUpdate" class="btn input-group-addon">
+                                             <i class="glyphicon glyphicon-forward"></i>
+                                        </span>
+                                                            </div>
+
+
+                                                            <ul ng-init="loadAgents()" class="list-group" style="max-height:250px; overflow-y:auto; padding: 0;">
+                                                                <li class="list-group-item clearfix" ng-repeat="(key, value) in tiersListFiltered = (dialer.agents | filter:searchTextTiers|orderBy: 'id')"
+                                                                    ng-click="selTiers[agentList[value].id]=!selTiers[agentList[value].id]"
+                                                                    ng-class="{'bg-info': selTiers[agentList[value].id]}">
+
+                                                                    <span>
+                                                                        {{agentList[value].id}} ({{agentList[value].name}})
+                                                                    </span>
+
+
+                                                                    <span class="pull-right">{{agentList[value].state}}/{{agentList[value].status}}</span>
+                                                                </li>
+
+                                                                <li class="list-group-item" ng-hide="tiersListFiltered.length">
+                                                                    <p>
+                                                                        Not found tiers
+                                                                    </p>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group" >
+                                                            <div class="form-group-sm">
+                                                                <label>Agents</label>
+                                                            </div>
+                                                            <div class="input-group">
+                                        <span  ng-disabled="dialer.active" ng-if="canUpdate"  ng-click="addTiers(true)" class="btn input-group-addon">
+                                            <i class="glyphicon glyphicon-backward"></i>
+                                        </span>
+                                        <span  ng-disabled="dialer.active" ng-if="canUpdate"  ng-click="addTiers()" class="btn input-group-addon">
+                                            <i class="glyphicon glyphicon-chevron-left"></i>
+                                        </span>
+
+                                                                <input ng-model="searchTextAgents" type="text" class="form-control" placeholder="Search...">
+                                                                <span class="input-group-addon"><i class="fa fa-search text-muted"></i></span>
+                                                            </div>
+
+                                                            <ul  class="list-group" style="max-height:250px;  overflow-y:auto; padding: 0; line-height: 0">
+                                                                <li ng-show="isAgentInTier(value)"  class="list-group-item" ng-repeat="(key, value) in agentsListFiltered = (agents | filter:searchTextAgents)"
+                                                                     ng-click="selAgents[value.id]=!selAgents[value.id]"
+                                                                     ng-class="{'bg-info': selAgents[value.id]}">
+
+                                                                    <span class="media">{{value.id}}</span>
+                                                                    <span class="space space-xs"></span>
+                                                                    <span class="media">{{value.name}}</span>
+                                        <span class="pull-right text-muted">
+                                            <span>{{value.state}}/</span>
+                                            <span>{{value.status}}</span>
+                                        </span>
+                                                                </li>
+
+                                                                <li class="list-group-item" ng-hide="agentsListFiltered.length">
+                                                                    <p>
+                                                                        Not found agents
+                                                                    </p>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tab>
+
+                                <tab ng-if="!isNew">
+                                    <tab-heading>
+                                        <span>Members</span>
+                                    </tab-heading>
+
+                                    <section data-ng-controller="MembersDialerCtrl" data-ng-include=" 'modules/dialer/dialerMembers.html' ">
+
+                                    </section>
+                                </tab>
+
+                                <tab ng-if="dialer.type==diealerTypes[0]">
+                                    <tab-heading>
+                                        <span>Resources</span>
+                                    </tab-heading>
+
+                                    <div class="row">
+
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-4">
+                                                <section class="categories panel panel-default">
+                                                    <div class="panel-heading">
+
+                                                        <a  ng-disabled="dialer.active" ng-click="editResourceDialString(getDefaultResource())" ng-if="canUpdate" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                                            <i class="fa fa-plus"></i>
+                                                        </a>
+                                                    </div>
+                                                    <ul class="list-group" style="max-height: 250px; overflow-y: auto;">
+                                                        <li ng-click="setActiveResource(row)" class="list-group-item" ng-class="{'active': activeResource == row}"
+                                                            ng-repeat="(key, row) in dialer.resources">
+                                                            <a href="javascript:;" >
+                                                                {{row.dialedNumber}}
+
+                                                                <p ng-if="!dialer.active"  class="pull-right" >
+                                                                    <span ng-click="setDialStringPosition(dialer.resources, row, true,  $event)" style="padding: 0;" class="text-muted btn">
+                                                                        <i style="line-height: 0;" class="glyphicon glyphicon-chevron-up"></i>
+                                                                    </span>
+                                                                    <span class="space space-xs"></span>
+                                                                    <span ng-click="setDialStringPosition(dialer.resources, row, false, $event)" style="padding: 0;" class="text-muted btn">
+                                                                        <i style="line-height: 0;" class="glyphicon glyphicon-chevron-down"></i>
+                                                                    </span>
+                                                                    <span class="space space-xs"></span>
+                                                                    <span href="javascript:;" ng-click="editResourceDialString(row)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></span>
+                                                                    <span class="space space-xs"></span>
+                                                                    <span href="javascript:;" ng-click="removeResource(key, row)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-remove"></i></span>
+                                                                </p>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </section>
+                                            </div>
+
+                                            <div class="col-sm-8">
+                                                <section class="panel panel-default">
+                                                    <div class="panel-heading ">
+
+                                                        <a ng-disabled="dialer.active || !activeResource" ng-click="editResourceDestination(getDefaultResourceDestination())" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                                            <i class="fa fa-plus"></i>
+                                                        </a>
+                                                    </div>
+
+                                                    <div class="row text-center" ng-show="!activeResource.destinations || activeResource.destinations.length < 1">
+                                                        <div class="center-block col-md-4" style="float: none;">
+                                                            <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                                                            <h2>No results found</h2>
+                                                        </div>
+                                                    </div>
+
+                                                    <table class="table table-bordered table-hover" ng-show="activeResource.destinations.length > 0">
+                                                        <thead>
+                                                        <tr>
+                                                            <th width="30%">Name</th>
+                                                            <th width="30%">Dial string</th>
+                                                            <th width="10%">Limit</th>
+                                                            <th width="10%">Enabled</th>
+                                                            <th width="20%">Action</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr ng-repeat="(key, item) in activeResource.destinations">
+                                                            <td>{{item.gwName}}</td>
+                                                            <td>{{item.dialString}}</td>
+                                                            <td>{{item.limit}}</td>
+                                                            <td>{{item.enabled}}</td>
+                                                            <td>
+                                                                <p ng-if="!dialer.active">
+                                                                    <span ng-click="setDialStringPosition(activeResource.destinations, item, true,  $event)" style="padding: 0;" class="text-muted btn">
+                                                                        <i style="line-height: 0;" class="glyphicon glyphicon-chevron-up"></i>
+                                                                    </span>
+                                                                    <span class="space space-xs"></span>
+                                                                    <span ng-click="setDialStringPosition(activeResource.destinations, item, false, $event)" style="padding: 0;" class="text-muted btn">
+                                                                        <i style="line-height: 0;" class="glyphicon glyphicon-chevron-down"></i>
+                                                                    </span>
+                                                                    <span class="space space-xs"></span>
+                                                                    <a ng-click="editResourceDestination(item)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                                    <span class="space space-xs"></span>
+                                                                    <a href="javascript:;" ng-click="removeResourceDestination(key, item)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                </section>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </tab>
+
+                                <tab ng-show="dialer.type == 'Voice Broadcasting'">
+                                    <tab-heading>
+                                        <span>Callflow</span>
+                                    </tab-heading>
+
+                                    <div class="row" style="padding-top: 15px;">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div ng-model="$parent.cf" ui-ace="{
+                                                  useWrapMode : true,
+                                                  showGutter: true,
+                                                  theme:'github',
+                                                  mode: 'json',
+                                                  onLoad: aceLoaded,
+                                                  onChange: aceChanged,
+                                                  require: ['ace/ext/language_tools'],
+                                                  advanced: {
+                                                      enableSnippets: true,
+                                                      enableBasicAutocompletion: true,
+                                                      enableLiveAutocompletion: true
+                                                  }
+                                                }" class="json-control"></div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </tab>
+                                <tab ng-if="!isNew">
+                                    <tab-heading>
+                                        <span>Stats</span>
+                                    </tab-heading>
+
+                                    <section  data-ng-controller="StatsDialerCtrl" data-ng-include=" 'modules/dialer/dialerStats.html' ">
+
+                                    </section>
+                                </tab>
+                            </tabset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="panel-footer">
+            <button ng-show="isEdit" type="button" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
+        </div>
+
+    </div>
+</div>
+
+<div webitel-audio set-source="setSource" on-close="onClosePlayer">
+
+</div>

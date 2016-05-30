@@ -28,9 +28,14 @@ define(['angular',
 		 var deferredOnConnect = $q.defer();
 		 var promiseOnConnect = deferredOnConnect;
 
-		var selectDomain = $routeParams.domain;
+		 function getDomainFromUrl() {
+			 return $routeParams.domain || $location.$$search.domain;
+		 }
 
-		function changeDomain (newDomain) {
+		var selectDomain = getDomainFromUrl();
+
+
+		 function changeDomain (newDomain) {
 			if (newDomain.name === selectDomain)
 				return false;
 			selectDomain = newDomain.name;
@@ -202,7 +207,7 @@ define(['angular',
 					return cb(err);
 				}
 				connection.session = new Session(res);
-				changeDomain({name: connection.session.domain || $routeParams.domain})
+				changeDomain({name: getDomainFromUrl()});
 				connection.connected = true;
 				return cb(null, res);
 			}
@@ -254,6 +259,10 @@ define(['angular',
 				 args = null;
 			 };
 
+			 // TODO
+			 //if (args)
+			 //	args = JSON.stringify(args);
+
 			 var req = {
 				 method: method,
 				 url: srv + url,
@@ -270,7 +279,7 @@ define(['angular',
 							 window.location.href = "/";
 					 });
 				 }
-				 cb(_e, {});
+				 cb(_e, {}, statusCode);
 			 });
 		 };
 

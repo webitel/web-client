@@ -19,11 +19,6 @@
                                     </li>
                                     <li>
                                         <span class="icon glyphicon glyphicon-asterisk"></span>
-                                        <label>Build</label>
-                                        {{output.build}}
-                                    </li>
-                                    <li>
-                                        <span class="icon glyphicon glyphicon-asterisk"></span>
                                         <label>Commit</label>
                                         {{output.commit}}
                                     </li>
@@ -85,8 +80,8 @@
                     <i class="fa fa-users"></i>
                 </span>
                 <div class="box-info">
-                    <p class="size-h2">{{output['Users session']}}</p>
-                    <p class="text-muted"><span data-i18n="Online users">Online users</span></p>
+                    <p class="size-h4">Online users: {{output['Users session']}}</p>
+                    <p class="size-h4 text-muted">Sessions: {{output['Socket sessions']}}</p>
                 </div>
             </div>
 

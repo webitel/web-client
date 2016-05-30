@@ -35,13 +35,16 @@ define(['require',
   'widget-link',
   'widget-markdown',
   'widget-mongodb',
+  'ui-select',
+  'google-chart',
+  'xeditable'
    // TODO new dash..
   //'gridster'
   ], function (require, angularAMD) {
   //require()
-  var app = angular.module("app", ['ngRoute', 'ngStorage', 'angular-clipboard', 'ngSanitize', 'com.2fdevs.videogular',  "com.2fdevs.videogular.plugins.controls",//'gridster',
+  var app = angular.module("app", ['ngRoute', 'ngStorage', 'angular-clipboard', 'ngSanitize', 'com.2fdevs.videogular',  "com.2fdevs.videogular.plugins.controls", 'ui.select', 'xeditable',
     'adf', 'adf.widget.iframe',  'adf.widget.linklist', 'adf.widget.markdown', 'adf.structures.base', /*'adf.widget.mongodb',*/
-    'wt.responsive', 'ngAnimate', 'smart-table', 'ui.bootstrap', 'ui.bootstrap.modal', "ui.bootstrap.datepicker", 'ui.bootstrap.datetimepicker',
+    'wt.responsive', 'ngAnimate', 'smart-table', 'ui.bootstrap', 'ui.bootstrap.modal', "ui.bootstrap.datepicker", 'ui.bootstrap.datetimepicker', 'googlechart',
     'app.directives',
      'app.nav', 'app.controllers', 'app.localization', 'app.webitel',  'app.modules', 'ngTagsInput', 'app.notifier', 'angular-confirm', 'app.domain', 'angularFileUpload', 'multi-select']);
   
@@ -104,9 +107,9 @@ define(['require',
     }])
   .run(run);
 
-  run.$inject = ['$rootScope', '$location', '$http', 'webitel', '$localStorage', 'notifi'];
-  function run($rootScope, $location, $http, webitel, $localStorage, notifi) {
-
+  run.$inject = ['$rootScope', '$location', '$http', 'webitel', '$localStorage', 'notifi', 'editableOptions'];
+  function run($rootScope, $location, $http, webitel, $localStorage, notifi, editableOptions) {
+      editableOptions.theme = 'bs3';
       var webitelSession = $localStorage.$default({
         "login": "root",
         "server": $location.protocol() + '://' + $location.host() + '/engine',

@@ -3302,26 +3302,41 @@ input[type=date],input[type=datetime-local],input[type=month],input[type=time] {
 }
 
 .has-error .checkbox,.has-error .checkbox-inline,.has-error .control-label,.has-error .help-block,.has-error .radio,.has-error .radio-inline {
-    color: #a1513c
+    color: #d9534f
 }
 
 .has-error .form-control {
-    border-color: #a1513c;
+    border-color: #d9534f;
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075)
 }
 
 .has-error .form-control:focus {
-    border-color: #7c3e2e;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #cc8977;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #cc8977
+    border-color:#d9534f;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #d9534f;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #d9534f
 }
 
 .has-error .input-group-addon {
-    color: #a1513c;
+    color: #d9534f;
     border-color: #a1513c;
     background-color: #fbe9e6
 }
+
+/*.table-row.view:hover .glyphicon-pencil, .table-row.view:hover .glyphicon-remove {*/
+    /*display: block;*/
+/*}*/
+
+
+/*.table-row.view.glyphicon {*/
+    /*position: relative;*/
+    /*margin-bottom: 10px;*/
+    /*padding: 0 12px 0 40px;*/
+    /*border-radius: 4px;*/
+    /*background-color: #fff;*/
+    /*box-shadow: 0 0 1px rgba(0,0,0,.2)*/
+/*}*/
+
 
 .has-error .form-control-feedback {
     color: #a1513c
@@ -3330,6 +3345,40 @@ input[type=date],input[type=datetime-local],input[type=month],input[type=time] {
 .has-feedback label.sr-only~.form-control-feedback {
     top: 0
 }
+
+
+
+.categories .list-group .list-group-item {
+    padding: 0
+}
+
+.categories .list-group .list-group-item.active>a {
+    border-left: 3px solid #248aaf;
+    color: #248aaf;
+    background-color: #fafafa
+}
+
+.categories .list-group .list-group-item>a {
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    -webkit-transition: all 0.25s ease-in-out;
+    -moz-transition: all 0.25s ease-in-out;
+    transition: all 0.25s ease-in-out
+}
+
+.categories .list-group .list-group-item>a:hover {
+    border-left: 3px solid #248aaf;
+    color: #248aaf;
+    background-color: #fafafa
+}
+
+.categories .list-group .list-group-item>a>i {
+    font-size: 16px;
+    width: 18px;
+    margin-right: 5px
+}
+
 
 .help-block {
     display: block;

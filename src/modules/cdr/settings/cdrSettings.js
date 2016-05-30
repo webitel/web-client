@@ -10,6 +10,12 @@ define(['app', 'modules/cdr/cdrModel'], function (app) {
         $scope.addColumn = addColumn;
         $scope.remove = remove;
         $scope.editItem = editItem;
+        $scope.reset = reset;
+
+        function reset () {
+            CdrModel.mapColumn(true);
+            reloadData();
+        };
 
         function reloadData() {
             var data = [];

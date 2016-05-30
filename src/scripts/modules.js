@@ -219,9 +219,9 @@ define(['angular', 'config'], function (angular, config) {
 		caption: "CDR",
 
 		acl: 'cdr',
-		templateUrl: 'modules/cdr/cdr.html', 
+		templateUrl: config.cdr.useElastic ? 'modules/cdr/cdrElastic.html' : 'modules/cdr/cdr.html',
 		controller: 'CDRCtrl',
-		controllerUrl: 'modules/cdr/cdr.js',
+		controllerUrl: config.cdr.useElastic ? 'modules/cdr/cdrElastic.js' : 'modules/cdr/cdr.js',
 		iconClass: 'fa fa-bar-chart-o',
 		routes: [
 			{
@@ -264,6 +264,75 @@ define(['angular', 'config'], function (angular, config) {
 			controllerUrl: 'modules/acd/acd.js',
 			method: "edit"
 		}]
-	}
+	},
+	{
+		href: "#/hooks",
+		caption: "Hooks",
+
+		acl: 'hook',
+		templateUrl: 'modules/hooks/hook.html',
+		controller: 'HookCtrl',
+		controllerUrl: 'modules/hooks/hook.js',
+		iconClass: 'fa fa-exchange',
+		routes: [{
+			href: '/hooks/new',
+			templateUrl: 'modules/hooks/hookPage.html',
+			controller: 'HookCtrl',
+			controllerUrl: 'modules/hooks/hook.js',
+			method: "create"
+		},{
+			href: '/hooks/:id/edit',
+			templateUrl: 'modules/hooks/hookPage.html',
+			controller: 'HookCtrl',
+			controllerUrl: 'modules/hooks/hook.js',
+			method: "edit"
+		}]
+	},
+	{
+		href: "#/calendars",
+		caption: "Calendar",
+
+		acl: 'calendar',
+		templateUrl: 'modules/calendar/calendar.html',
+		controller: 'CalendarCtrl',
+		controllerUrl: 'modules/calendar/calendar.js',
+		iconClass: 'fa fa-calendar',
+		routes: [{
+			href: '/calendars/new',
+			templateUrl: 'modules/calendar/calendarPage.html',
+			controller: 'CalendarCtrl',
+			controllerUrl: 'modules/calendar/calendar.js',
+			method: "create"
+		},{
+			href: '/calendars/:id/edit',
+			templateUrl: 'modules/calendar/calendarPage.html',
+			controller: 'CalendarCtrl',
+			controllerUrl: 'modules/calendar/calendar.js',
+			method: "edit"
+		}]
+	},
+		{
+			href: "#/dialer",
+			caption: "Dialer",
+
+			acl: 'dialer',
+			templateUrl: 'modules/dialer/dialer.html',
+			controller: 'DialerCtrl',
+			controllerUrl: 'modules/dialer/dialer.js',
+			iconClass: 'fa fa-eject',
+			routes: [{
+				href: '/dialer/new',
+				templateUrl: 'modules/dialer/dialerPage.html',
+				controller: 'DialerCtrl',
+				controllerUrl: 'modules/dialer/dialer.js',
+				method: "create"
+			},{
+				href: '/dialer/:id/edit',
+				templateUrl: 'modules/dialer/dialerPage.html',
+				controller: 'DialerCtrl',
+				controllerUrl: 'modules/dialer/dialer.js',
+				method: "edit"
+			}]
+		}
 	]);
 });

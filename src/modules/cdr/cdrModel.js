@@ -1,122 +1,196 @@
 /**
  * Created by i.navrotskyj on 01.03.2016.
  */
-define(["app"], function(app) {
-
+define(["app", "config"], function(app, config) {
     app.factory("CdrModel", ["webitel", "$localStorage", function(webitel, $localStorage) {
-
-        function getMapColumns () {
+        var useElastic = config.cdr.useElastic;
+        function getMapColumns (reset) {
             // TODO API!!!
-            if ($localStorage.cdrColumns)
+            if ($localStorage.cdrColumns && !reset)
                 return $localStorage.cdrColumns;
 
-            var mapColumn = {
-                "callflow.caller_profile.caller_id_name": {
-                    "type": "string",
-                    "caption": "Caller name"
-                },
-                "callflow.caller_profile.caller_id_number": {
-                    "type": "string",
-                    "caption": "Caller number"
-                },
-                "callflow.caller_profile.destination_number": {
-                    "type": "string",
-                    "caption": "Destination number"
-                },
-                "callflow.times.created_time": {
-                    "type": "timestamp",
-                    "caption": "Created time"
-                },
-                "variables.billsec": {
-                    "type": "integer",
-                    "caption": "Billsec"
-                },
-                "variables.duration": {
-                    "type": "integer",
-                    "caption": "Duration"
-                },
-                "variables.webitel_direction": {
-                    "type": "select",
-                    "caption": "Direction",
-                    "options": {
-                        "select": [
-                            "inbound",
-                            "outbound",
-                            "conference",
-                            "internal",
-                            "eavesdrop"
-                        ]
-                    }
-                },
-                "variables.hangup_cause": {
-                    "type": "select",
-                    "caption": "Hangup cause",
-                    "options": {
-                        "select": [
-                            "CALL_REJECTED",
-                            "DESTINATION_OUT_OF_ORDER",
-                            "NORMAL_CLEARING",
-                            "RECOVERY_ON_TIMER_EXPIRE",
-                            "ORIGINATOR_CANCEL",
-                            "USER_NOT_REGISTERED",
-                            "UNALLOCATED_NUMBER",
-                            "MANAGER_REQUEST",
-                            "INCOMPATIBLE_DESTINATION",
-                            "SYSTEM_SHUTDOWN",
-                            "USER_BUSY",
-                            "NO_ANSWER",
-                            "USER_CHALLENGE",
-                            "NO_ROUTE_DESTINATION",
-                            "EXCHANGE_ROUTING_ERROR",
-                            "INVALID_GATEWAY",
-                            "LOSE_RACE",
-                            "CHAN_NOT_IMPLEMENTED",
-                            "SUBSCRIBER_ABSENT",
-                            "NORMAL_UNSPECIFIED",
-                            "MEDIA_TIMEOUT",
-                            "INCOMING_CALL_BARRED",
-                            "NONE",
-                            "NORMAL_TEMPORARY_FAILURE",
-                            "MANDATORY_IE_MISSING",
-                            "UNKNOWN",
-                            "ATTENDED_TRANSFER",
-                            "INVALID_NUMBER_FORMAT",
-                            "SERVICE_NOT_IMPLEMENTED",
-                            "ALLOTTED_TIMEOUT"
-                        ]
-                    }
-                },
-                "callflow.times.answered_time": {
-                    "type": "timestamp",
-                    "caption": "Answered time",
-                    "options": {
-                        "detail": true
-                    }
-                },
-                "callflow.times.bridged_time": {
-                    "type": "timestamp",
-                    "caption": "Bridged time",
-                    "options": {
-                        "detail": true
-                    }
-                },
-                "callflow.times.hangup_time": {
-                    "type": "timestamp",
-                    "caption": "Hangup",
-                    "options": {
-                        "detail": true
-                    }
-                },
-                "variables.domain_name": {
-                    "type": "string",
-                    "caption": "Domain",
-                },
-                "variables.uuid": {
-                    "type": "string",
-                    "caption": "UUID",
-                    "noRender": true
-                },
+            var mapColumn = {};
+
+            if (useElastic) {
+                mapColumn = {
+                    "variables.outbound_caller_id_name": {
+                        "type": "string",
+                        "caption": "Caller name"
+                    },
+                    "CallerID number": {
+                        "type": "string",
+                        "caption": "Caller number"
+                    },
+                    "Destination number": {
+                        "type": "string",
+                        "caption": "Destination number"
+                    },
+                    "Call start time": {
+                        "type": "timestamp",
+                        "caption": "Call start time"
+                    },
+                    "variables.billsec": {
+                        "type": "integer",
+                        "caption": "Billsec"
+                    },
+                    "variables.duration": {
+                        "type": "integer",
+                        "caption": "Duration"
+                    },
+                    "variables.webitel_direction": {
+                        "type": "string",
+                        "caption": "Direction",
+                    },
+                    "variables.hangup_cause": {
+                        "type": "string",
+                        "caption": "Hangup cause"
+                    },
+                    "Call answer time": {
+                        "type": "timestamp",
+                        "caption": "Answered time",
+                        "options": {
+                            "detail": true
+                        }
+                    },
+                    "Bridge time": {
+                        "type": "timestamp",
+                        "caption": "Bridge time",
+                        "options": {
+                            "detail": true
+                        }
+                    },
+                    "variables.domain_name": {
+                        "type": "string",
+                        "caption": "Domain",
+                    },
+                    "Call end time": {
+                        "type": "timestamp",
+                        "caption": "Call end time",
+                        "options": {
+                            "detail": true
+                        }
+                    },
+                    "Queue ID": {
+                        "type": "string",
+                        "caption": "Queue"
+
+                    },
+                    "variables.uuid": {
+                        "type": "string",
+                        "caption": "UUID",
+                        "noRender": true
+                    },
+                }
+            } else {
+                mapColumn = {
+                    "callflow.caller_profile.caller_id_name": {
+                        "type": "string",
+                        "caption": "Caller name"
+                    },
+                    "callflow.caller_profile.caller_id_number": {
+                        "type": "string",
+                        "caption": "Caller number"
+                    },
+                    "callflow.caller_profile.destination_number": {
+                        "type": "string",
+                        "caption": "Destination number"
+                    },
+                    "callflow.times.created_time": {
+                        "type": "timestamp",
+                        "caption": "Created time"
+                    },
+                    "variables.billsec": {
+                        "type": "integer",
+                        "caption": "Billsec"
+                    },
+                    "variables.duration": {
+                        "type": "integer",
+                        "caption": "Duration"
+                    },
+                    "variables.webitel_direction": {
+                        "type": "select",
+                        "caption": "Direction",
+                        "options": {
+                            "select": [
+                                "inbound",
+                                "outbound",
+                                "conference",
+                                "internal",
+                                "eavesdrop"
+                            ]
+                        }
+                    },
+                    "variables.hangup_cause": {
+                        "type": "select",
+                        "caption": "Hangup cause",
+                        "options": {
+                            "select": [
+                                "CALL_REJECTED",
+                                "DESTINATION_OUT_OF_ORDER",
+                                "NORMAL_CLEARING",
+                                "RECOVERY_ON_TIMER_EXPIRE",
+                                "ORIGINATOR_CANCEL",
+                                "USER_NOT_REGISTERED",
+                                "UNALLOCATED_NUMBER",
+                                "MANAGER_REQUEST",
+                                "INCOMPATIBLE_DESTINATION",
+                                "SYSTEM_SHUTDOWN",
+                                "USER_BUSY",
+                                "NO_ANSWER",
+                                "USER_CHALLENGE",
+                                "NO_ROUTE_DESTINATION",
+                                "EXCHANGE_ROUTING_ERROR",
+                                "INVALID_GATEWAY",
+                                "LOSE_RACE",
+                                "CHAN_NOT_IMPLEMENTED",
+                                "SUBSCRIBER_ABSENT",
+                                "NORMAL_UNSPECIFIED",
+                                "MEDIA_TIMEOUT",
+                                "INCOMING_CALL_BARRED",
+                                "NONE",
+                                "NORMAL_TEMPORARY_FAILURE",
+                                "MANDATORY_IE_MISSING",
+                                "UNKNOWN",
+                                "ATTENDED_TRANSFER",
+                                "INVALID_NUMBER_FORMAT",
+                                "SERVICE_NOT_IMPLEMENTED",
+                                "ALLOTTED_TIMEOUT"
+                            ]
+                        }
+                    },
+                    "callflow.times.answered_time": {
+                        "type": "timestamp",
+                        "caption": "Answered time",
+                        "options": {
+                            "detail": true
+                        }
+                    },
+                    "callflow.times.bridged_time": {
+                        "type": "timestamp",
+                        "caption": "Bridged time",
+                        "options": {
+                            "detail": true
+                        }
+                    },
+                    "callflow.times.hangup_time": {
+                        "type": "timestamp",
+                        "caption": "Hangup",
+                        "options": {
+                            "detail": true
+                        }
+                    },
+                    "variables.domain_name": {
+                        "type": "string",
+                        "caption": "Domain",
+                    },
+                    "variables.uuid": {
+                        "type": "string",
+                        "caption": "UUID",
+                        "noRender": true
+                    },
+                };
             };
+
             $localStorage.cdrColumns = mapColumn;
             return mapColumn;
         };
@@ -188,6 +262,41 @@ define(["app"], function(app) {
                     return cb(err);
                 return cb(null, parseResponse(res));
             });
+        };
+        function getElasticData(pageNumber, limit, columns, filter, qs, sort, cb) {
+            var body = {};
+            body.columns = columns.other; //availableColumns();
+            body.columnsDate = columns.date;
+            body.pageNumber = pageNumber;
+            body.limit = limit;
+            body.query = qs || "*";
+            body.filter = filter || {};
+            body.sort = sort;
+
+            // TODO BUG!
+            body = JSON.stringify(body);
+
+            webitel.cdr("POST", "/api/v2/cdr/text", body, function (err, res, statusCode) {
+                if (err) {
+                    err.statusCode = statusCode;
+                    return cb(err);
+                };
+                return cb(null, parseElasticResponse(res.hits.hits), res.hits.total);
+            });
+        };
+
+        function parseElasticResponse (res) {
+            var data = [];
+            var _st = Date.now();
+            var t = {};
+            angular.forEach(res, function (item) {
+                t = {};
+                angular.forEach(item.fields, function (val, key) {
+                    t[key] = val[0];
+                });
+                data.push(t);
+            });
+            return data;
         }
 
         function convertResponseObject(data) {
@@ -246,6 +355,7 @@ define(["app"], function(app) {
 
         return {
             getData: getData,
+            getElasticData: getElasticData,
             getCount: getCount,
             availableColumns: availableColumns,
             mapColumn: getMapColumns,

@@ -1,6 +1,17 @@
 define(['angular'],
     function (angular) {
   'use strict';
+
+  var uniqueItems = function (data, key) {
+    var result = [];
+    for (var i = 0; i < data.length; i++) {
+      var value = data[i][key];
+      if (result.indexOf(value) == -1) {
+        result.push(value);
+      }
+    }
+    return result;
+  };
   angular.module('app.directives', []).directive('imgHolder', [
     function() {
       return {
@@ -265,19 +276,71 @@ define(['angular'],
   .directive('searchWatchModel',function(){
     return {
       require:'^stTable',
-      scope:{
-        searchWatchModel:'='
-      },
+      //scope:{
+      //  searchWatchModel:'='
+      //},
       link:function(scope, ele, attr, ctrl){
-        var table=ctrl;
-
-        scope.$watch('searchWatchModel',function(val){
+        scope.$watch(attr.searchWatchModel,function(val){
           ctrl.search(val);
         });
-
       }
     };
   })
+
+  .directive('infiniteScroll',  [
+    '$rootScope', '$window', '$timeout', function($rootScope, $window, $timeout) {
+      return {
+        require: 'stTable',
+        link: function(scope, elem, attrs, ctrl) {
+          var checkWhenEnabled, handler, scrollDistance, scrollEnabled;
+
+          var pagination = ctrl.tableState().pagination;
+          var itemByPage = 40;
+
+          $window = angular.element($window);
+          scrollDistance = 0;
+          if (attrs.infiniteScrollDistance != null) {
+            scope.$watch(attrs.infiniteScrollDistance, function(value) {
+              return scrollDistance = parseInt(value, 10);
+            });
+          }
+          scrollEnabled = true;
+          checkWhenEnabled = false;
+          if (attrs.infiniteScrollDisabled != null) {
+            scope.$watch(attrs.infiniteScrollDisabled, function(value) {
+              scrollEnabled = !value;
+              if (scrollEnabled && checkWhenEnabled) {
+                checkWhenEnabled = false;
+                return handler();
+              }
+            });
+          }
+          handler = function() {
+            var elementBottom, remaining, shouldScroll, windowBottom;
+            windowBottom = $window.height() + $window.scrollTop();
+            elementBottom = elem.offset().top + elem.height();
+            remaining = elementBottom - windowBottom;
+            shouldScroll = remaining <= $window.height() * scrollDistance;
+            if (shouldScroll && scrollEnabled) {
+              ctrl.slice(pagination.start + itemByPage, itemByPage);
+              if ($rootScope.$$phase) {
+
+                return scope.$eval(attrs.infiniteScroll);
+              } else {
+                return scope.$apply(attrs.infiniteScroll);
+              }
+            } else if (shouldScroll) {
+              return checkWhenEnabled = true;
+            }
+          };
+          $window.on('scroll', handler);
+          scope.$on('$destroy', function() {
+            return $window.off('scroll', handler);
+          });
+        }
+      };
+    }
+  ])
   .directive('webitelAudio', function () {
         return {
           restrict: 'AE',
@@ -345,6 +408,11 @@ define(['angular'],
         };
   })
 
-
-  ;
+  .filter('groupBy',
+    function () {
+      return function (collection, key) {
+        if (collection === null) return;
+        return uniqueItems(collection, key);
+      };
+    });
 });

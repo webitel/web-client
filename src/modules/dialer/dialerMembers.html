@@ -1,0 +1,142 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="no-border pull-left">
+            <a  ng-click="addMember()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                <i class="fa fa-plus"></i>
+            </a>
+
+            <a ng-click="reloadData()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                <i class="glyphicon glyphicon-refresh"></i>
+            </a>
+
+            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  ng-click="showExportPage()" style="padding: 0">
+                    <i class="glyphicon glyphicon-cloud-upload"></i>
+            </span>
+
+        </div>
+
+        <div class="no-border pull-right">
+            <span>Count: {{count}}</span>
+        </div>
+    </div>
+</div>
+
+<div class="row" ng-show="processImport">
+    <div class="col-sm-12">
+        <progressbar style="background-color: #34323A;" max="100" value="progress" type="success"><span style="white-space:nowrap;">{{progressCount}} / {{maxProgress}}</span></progressbar>
+    </div>
+</div>
+
+<div class="table-responsive" style="position: relative;">
+    <div ng-show="isLoading" class="loading text-center">
+        <span>
+            <i class="fa fa-spinner fa-5x fa-spin"></i>
+        </span>
+    </div>
+
+    <table st-pipe="callServer" st-table="membersRowCollection"
+           infinite-scroll-disabled="isLoading"
+           infinite-scroll="callServer"
+           wt-responsive-table
+           class="table table-bordered">
+        <thead >
+        <tr>
+            <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="name" >Name</th>
+            <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="priority" >Priority</th>
+            <!--<th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="timezone" >Timezone</th>-->
+            <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="_endCause" >End cause</th>
+            <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="_lock" >Active</th>
+            <th class="text-center" st-skip-natural="true" colspan=3>Communications</th>
+            <th class="text-center" style="vertical-align:middle" rowspan=2>Action</th>
+        </tr>
+        <tr>
+            <td class="text-center" st-skip-natural="true" st-sort="communications_number" >Number</td>
+            <td class="text-center" st-skip-natural="true" st-sort="communications_priority">Priority</td>
+            <td class="text-center" st-skip-natural="true" st-sort="communications_state">State</td>
+        </tr>
+
+        <tr>
+            <th colspan="1">
+                <input st-search="name" class="form-control" placeholder="Start with..." type="search"/>
+            </th>
+            <th colspan="1">
+                <input class="form-control" type="number"  st-search="priority" min="0" max="99999">
+            </th>
+            <!--<th colspan="1" >-->
+
+                <!--<input typeahead-editable="true" typeahead-focus-on-select="true" typeahead-select-on-exact="true"-->
+                       <!--type="text" class="form-control"-->
+                       <!--ng-model="mFilter.zone"-->
+                       <!--st-search="timezone"-->
+                       <!--placeholder="Time zone"-->
+                       <!--typeahead="zone.id as zone.id for zone in TimeZones | filter:{id:$viewValue}" >-->
+
+            <!--</th>-->
+            <th colspan="1">
+                <input st-search="_endCause" class="form-control" placeholder="Start with..." type="text"/>
+            </th>
+            <th colspan="1">
+                <select st-search="_lock" class="form-control">
+                    <option value="">All</option>
+                    <option value="true">Active</option>
+                    <option value="false">No active</option>
+                </select>
+            </th>
+            <th colspan="1">
+                <input st-search="communications_number" class="form-control" placeholder="Start with..." type="text"/>
+            </th>
+            <th colspan="1">
+                <input class="form-control" type="number"  st-search="communications_priority" min="0" max="99999">
+            </th>
+
+            <th colspan="1">
+                <select st-search="communications_state" type="number" class="form-control">
+                    <option value="">All</option>
+                    <option ng-repeat="comState in CommunicationStates" value="{{comState.val}}">{{comState.name}}</option>
+                </select>
+            </th>
+            <th></th>
+        </tr>
+        <tr ng-show="membersRowCollection.length <= 0">
+            <th colspan="9">
+                <div class="row text-center">
+                    <div class="center-block col-md-4" style="float: none;">
+                        <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                        <h2>No results found</h2>
+                    </div>
+                </div>
+            </th>
+        </tr>
+        </thead>
+
+        <tbody ng-show="membersRowCollection.length > 0" ng-repeat="t in membersRowCollection">
+        <tr>
+            <td rowspan="{{t.communications.length}}">
+                {{t.name}}
+            </td>
+            <td rowspan="{{t.communications.length}}">{{t.priority}}</td>
+            <!--<td rowspan="{{t.communications.length}}">{{t.timezone}}</td>-->
+            <td rowspan="{{t.communications.length}}">{{t._endCause}}</td>
+            <td rowspan="{{t.communications.length}}">{{t._lock}}</td>
+            <td>{{t.communications[0].number}}</td>
+            <td>{{t.communications[0].priority}}</td>
+            <td>{{t.communications[0].state}}</td>
+            <td rowspan="{{t.communications.length}}">
+                <p>
+                    <a ng-click="editMember(t, $index)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <span class="space space-xs"></span>
+                    <a href="javascript:;" ng-click="removeMember(t, $index)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
+                </p>
+            </td>
+        </tr>
+        <tr ng-repeat="item in t.communications" ng-if="$index > 0">
+            <td>{{item.number}}</td>
+            <td>{{item.priority}}</td>
+            <td>{{item.state}}</td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+</div>

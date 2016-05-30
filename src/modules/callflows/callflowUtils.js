@@ -1,5 +1,5 @@
 define([], function() {
-
+	//TODO remove
 	var timeZones = [
 	  {
 	    "name": "Europe/Andorra +01:00",
