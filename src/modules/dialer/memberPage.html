@@ -138,13 +138,13 @@
                                                                 {{timeToString(probe.steps[0].time)}}
                                                             </h5>
 
-                                                            <button ng-click="showJsonPreview(probe.session)" class="btn btn-default btn-sm btn-block">
-                                                                {{ probe.session }}
+                                                            <button ng-click="showJsonPreview(probe.callUUID)" class="btn btn-default btn-sm btn-block">
+                                                                {{ probe.callUUID }}
                                                                 <i class="fa fa-file-code-o"></i>
                                                             </button>
 
                                                             <button ng-if="probe.recordSessionSec > 0" ng-click="play(probe)" class="btn btn-default btn-sm btn-block">
-                                                                recordSession
+                                                                Record file
                                                                 <i class="fa fa-file-audio-o"></i>
                                                             </button>
                                                         </p>

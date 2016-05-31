@@ -50,3 +50,7 @@
 .account-online .false{
     color: #e9422e;
 }
+
+table td .account-skills {
+    width: 70px;
+}

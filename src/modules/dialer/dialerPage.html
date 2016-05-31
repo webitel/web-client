@@ -95,9 +95,9 @@
                                                                 </div>
 
 
-                                                                <div ng-if="false" class="form-group" ng-class="{ 'has-error' : dialerForm.progressSec.$invalid && !dialerForm.progressSec.$pristine }">
-                                                                    <label for>Progress sec</label>
-                                                                    <input ng-disabled="dialer.active" class="form-control" type="number" name="progressSec" ng-model="dialer.parameters.progressSec" min="0" max="999" required>
+                                                                <div ng-if="dialer.type==diealerTypes[0]" class="form-group" ng-class="{ 'has-error' : dialerForm.originateTimeout.$invalid && !dialerForm.originateTimeout.$pristine }">
+                                                                    <label for>Originate timeout</label>
+                                                                    <input ng-disabled="dialer.active" class="form-control" type="number" name="originateTimeout" ng-model="dialer.parameters.originateTimeout" min="0" max="999">
                                                                 </div>
 
                                                                 <div ng-if="false" class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.avgProgressSec.$pristine }">
@@ -164,6 +164,14 @@
                                     <div class="row">
                                         <div class="panel">
                                             <div class="panel-body" style="position: relative;">
+
+                                                <div class="col-sm-12">
+                                                    <label class="control-label">Skills</label>
+                                                    <tags-input min-length="1" placeholder="Add a skills" type="text" class="form-group ui-tags-input" required ng-model="dialer.skills">
+                                                    </tags-input>
+                                                </div>
+
+
                                                 <div class="form-group">
                                                     <div class="col-sm-6">
                                                         <div class="form-group" >
@@ -205,10 +213,12 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
+
                                                         <div class="form-group" >
                                                             <div class="form-group-sm">
                                                                 <label>Agents</label>
                                                             </div>
+
                                                             <div class="input-group">
                                         <span  ng-disabled="dialer.active" ng-if="canUpdate"  ng-click="addTiers(true)" class="btn input-group-addon">
                                             <i class="glyphicon glyphicon-backward"></i>

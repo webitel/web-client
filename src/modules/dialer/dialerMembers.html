@@ -41,6 +41,7 @@
            class="table table-bordered">
         <thead >
         <tr>
+            <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="createdOn" >Created on</th>
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="name" >Name</th>
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="priority" >Priority</th>
             <!--<th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="timezone" >Timezone</th>-->
@@ -56,6 +57,9 @@
         </tr>
 
         <tr>
+            <th colspan="1">
+                <!--<input st-search="createdOn" class="form-control" placeholder="Start with..." type="search"/>-->
+            </th>
             <th colspan="1">
                 <input st-search="name" class="form-control" placeholder="Start with..." type="search"/>
             </th>
@@ -109,8 +113,11 @@
         </tr>
         </thead>
 
-        <tbody ng-show="membersRowCollection.length > 0" ng-repeat="t in membersRowCollection">
+        <tbody ng-show="membersRowCollection.length > 0" ng-repeat="t in membersRowCollection" data-ng-class="{'bg-success':t._lock}">
         <tr>
+            <td rowspan="{{t.communications.length}}">
+                {{timeToString(t.createdOn)}}
+            </td>
             <td rowspan="{{t.communications.length}}">
                 {{t.name}}
             </td>
@@ -122,7 +129,7 @@
             <td>{{t.communications[0].priority}}</td>
             <td>{{t.communications[0].state}}</td>
             <td rowspan="{{t.communications.length}}">
-                <p>
+                <p ng-if="!t._lock">
                     <a ng-click="editMember(t, $index)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
                     <span class="space space-xs"></span>
                     <a href="javascript:;" ng-click="removeMember(t, $index)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>

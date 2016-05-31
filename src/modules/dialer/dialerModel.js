@@ -292,6 +292,13 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         function create (domain, option) {
             option = option || {};
             var calendar = option.calendar ? {id: option.calendar.id, name: option.calendar.name} : {};
+            var skills = [];
+            if (option && option.skills) {
+                angular.forEach(option.skills, function (i) {
+                    skills.push(i.text)
+                });
+            }
+
             return {
                 "domain" : domain || "",
                 "name" : option.name || "",
@@ -304,12 +311,13 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "parameters" : {
                     "limit" : angular.isNumber(option.parameters && option.parameters.limit) ? option.parameters.limit : 30,
                     "minBillSec" : angular.isNumber(option.parameters && option.parameters.minBillSec) ? option.parameters.minBillSec : 10,
-                    "progressSec" : angular.isNumber(option.parameters && option.parameters.progressSec) ? option.parameters.progressSec : 20,
+                    "originateTimeout" : angular.isNumber(option.parameters && option.parameters.originateTimeout) ? option.parameters.originateTimeout : 60,
                     "avgProgressSec" : angular.isNumber(option.parameters && option.parameters.avgProgressSec) ? option.parameters.avgProgressSec : 20,
                     "maxTryCount" : angular.isNumber(option.parameters && option.parameters.maxTryCount) ? option.parameters.maxTryCount : 5,
                     "intervalTryCount" : angular.isNumber(option.parameters && option.parameters.intervalTryCount) ? option.parameters.intervalTryCount : 60
                 },
                 "variables" : {},
+                "skills" : skills,
                 "resources" : angular.isArray(option.resources) ? option.resources : [],
                 "strategy" : option.strategy || "myStrategy",
                 "agents" : angular.isArray(option.agents) ? option.agents : [],
