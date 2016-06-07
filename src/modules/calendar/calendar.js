@@ -305,6 +305,12 @@ define(['app', 'scripts/webitel/utils', 'moment', 'modules/calendar/calendarMode
                     "repeat": +holiday.repeat
                 });
             };
+            
+            $scope.removeExcept = function (row) {
+                var i = $scope.calendar.except.indexOf(row);
+                if (~i)
+                    $scope.calendar.except.splice(i, 1);
+            }
 
             $scope.init = function init () {
                 if (!!$route.current.method) {

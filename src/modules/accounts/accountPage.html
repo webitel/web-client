@@ -87,33 +87,52 @@
                                     <div class="panel-body ng-pristine form-validation ng-invalid ng-invalid-required ng-invalid-equal ng-dirty" novalidate role="form">
 
                                             <div class="col-sm-6">
-                                                <label for>Call timeout</label>
-                                                <input class="form-control" type="number" name="input" ng-model="account['cc-agent-contact']"
-                                                       min="0" max="999" required>
+                                                <div class="form-group" >
+                                                    <label for>Call timeout</label>
+                                                    <input class="form-control" type="number" name="input" ng-model="account['cc-agent-contact']"
+                                                           min="0" max="999" required>
+                                                </div>
 
-                                                <label for>Wrap up time</label>
-                                                <input class="form-control" type="number" name="input" ng-model="account['cc-agent-wrap-up-time']"
-                                                       min="0" max="999" required>
+                                                <div class="form-group" >
+                                                    <label for>Wrap up time</label>
+                                                    <input class="form-control" type="number" name="input" ng-model="account['cc-agent-wrap-up-time']"
+                                                           min="0" max="999" required>
+                                                </div>
 
-                                                <label for>Max no answer</label>
-                                                <input class="form-control" type="number" name="input" ng-model="account['cc-agent-max-no-answer']"
-                                                       min="0" max="999" required>
+                                                <div class="form-group" >
+                                                    <label for>Max no answer</label>
+                                                    <input class="form-control" type="number" name="input" ng-model="account['cc-agent-max-no-answer']"
+                                                           min="0" max="999" required>
+                                                </div>
 
                                             </div>
 
                                             <div class="col-sm-6">
-                                                <label for>Busy delay time</label>
-                                                <input class="form-control" type="number" name="input" ng-model="account['cc-agent-busy-delay-time']"
-                                                       min="0" max="999" required>
 
-                                                <label for>Reject delay time</label>
-                                                <input class="form-control" type="number" name="input" ng-model="account['cc-agent-reject-delay-time']"
-                                                       min="0" max="999" required>
+                                                <div class="form-group" >
+                                                    <label for>Busy delay time</label>
+                                                    <input class="form-control" type="number" name="input" ng-model="account['cc-agent-busy-delay-time']"
+                                                           min="0" max="999" required>
+                                                </div>
 
-                                                <label for>No answer delay time</label>
-                                                <input class="form-control" type="number" name="input" ng-model="account['cc-agent-no-answer-delay-time']"
-                                                       min="0" max="999" required>
+                                                <div class="form-group" >
+                                                    <label for>Reject delay time</label>
+                                                    <input class="form-control" type="number" name="input" ng-model="account['cc-agent-reject-delay-time']"
+                                                           min="0" max="999" required>
+                                                </div>
+
+                                                <div class="form-group" >
+                                                    <label for>No answer delay time</label>
+                                                    <input class="form-control" type="number" name="input" ng-model="account['cc-agent-no-answer-delay-time']"
+                                                           min="0" max="999" required>
+                                                </div>
                                             </div>
+
+                                            <!--<div class="col-sm-12">-->
+                                                <!--<label class="control-label">Skills</label>-->
+                                                <!--<tags-input min-length="1" placeholder="Add a skills" type="text" class="form-group ui-tags-input" required ng-model="account.variable_skills">-->
+                                                <!--</tags-input>-->
+                                            <!--</div>-->
 
 
                                     </div>

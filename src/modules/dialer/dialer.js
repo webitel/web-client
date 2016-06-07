@@ -35,6 +35,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         arr.splice(newPos,0, value);
     }
 
+    function timeToString(time) {
+        if (time)
+            return new Date(time).toLocaleString();
+    }
+
     app.controller('DialerCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'DialerModel', '$location', '$route', '$routeParams',
         '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel', 'AccountModel',
         function ($scope, webitel, $rootScope, notifi, DialerModel, $location, $route, $routeParams, $confirm, TableSearch,
@@ -417,6 +422,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 var collection = all ? $scope.agents : $scope.selAgents;
                 if (!collection.length) {
                     angular.forEach(collection, function (i, key) {
+                        if (!i) return;
                         if (!~$scope.dialer.agents.indexOf(key)) {
                             $scope.dialer.agents.push(key);
                         }
@@ -444,6 +450,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                 var collection = $scope.selTiers;
                 angular.forEach(collection, function (i, key) {
+                    if (!i) return;
                     if (~$scope.dialer.agents.indexOf(key)) {
                         $scope.dialer.agents.splice($scope.dialer.agents.indexOf(key), 1);
                     }
@@ -497,7 +504,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
             ];
             //$scope.diealerTypes = ["progressive", "predictive", "auto dialer"];
-            $scope.diealerTypes = ["Voice Broadcasting", "Progressive Dialer"];
+            $scope.diealerTypes = ["Voice Broadcasting", "Progressive Dialer", "Predictive Dialer"];
 
     }]);
     
@@ -558,6 +565,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 $scope.callServer(_tableState);
             }
         });
+        $scope.timeToString = timeToString;
 
         $scope.callServer = function (tableState) {
             if ($scope.isLoading || checkDialerLoad) return void 0;
@@ -570,7 +578,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 filter: tableState.search.predicateObject || {},
                 page: _page,
                 limit: $scope.CountItemsByPage,
-                columns: ["name", "priority", "timezone", "communications", "_endCause"]
+                columns: ["createdOn", "name", "priority", "timezone", "communications", "_endCause", "_lock"]
             };
 
             if (((tableState.pagination.start / tableState.pagination.number) || 0) === 0) {
@@ -685,15 +693,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         ];
         $scope.CommunicationStates = [
             {
-                name: "Null",
+                name: "Active",
                 val: 0
             },
             {
-                name: "One",
-                val: 1
-            },
-            {
-                name: "Two",
+                name: "End",
                 val: 2
             }
         ];
@@ -1068,10 +1072,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
         $scope.TimeZones = utils.timeZones;
 
-        $scope.timeToString = function (time) {
-            if (time)
-                return new Date(time).toLocaleString();
-        }
+        $scope.timeToString = timeToString;
 
         $scope.showJsonPreview = function(id) {
             fileModel.getJsonObject(id, function(err, res) {
@@ -1125,7 +1126,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         $scope.play = play;
 
         function play(log) {
-            var uri = fileModel.getUri(log.session, null, log.steps[0].time, "mp3");
+            var uri = fileModel.getUri(log.callUUID, null, log.steps[0].time, "mp3");
             options.setSource({
                 src: uri,
                 type: 'audio/mpeg',

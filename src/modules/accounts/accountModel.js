@@ -37,13 +37,15 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
                     if (~notShowAttr.indexOf(key))
                         return;
 
-                    if (/^variable_/.test(key) && key !== 'variable_account_role' && key !== 'variable_effective_caller_id_name') {
+                    if (/^variable_/.test(key) && key !== 'variable_account_role' && key !== 'variable_effective_caller_id_name' && key != 'variable_skills') {
                         user.variables.push({
                             key: key.replace(/variable_/, ''),
                             value: value
                         });
                     } else if (key === 'cc-agent-contact') {
                         user[key] = +parseAgentContact(value);
+                    } else if (key === 'variable_skills') {
+                        user['variable_skills'] = value.split(',').map(function (i) { return {text: i}});
                     } else {
                         user[key] = utils.strToType(value);
                     }
@@ -55,7 +57,17 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
 
         function parseAgentContact (str) {
             return str && /originate_timeout=([^,|}]*)/.exec(str)[1]
-        };
+        }
+
+        function skillsToString(arr) {
+            var res = [];
+            if (arr && arr.length > 0) {
+                angular.forEach(arr, function (i) {
+                    res.push(i.text);
+                });
+            }
+            return res.join(',');
+        }
 
         function parseToAgentContact (time, id, domain) {
             //"{originate_timeout=123,presence_id=100@10.10.10.144}{webitel_call_uuid=${create_uuid()},sip_invite_domain=10.10.10.144}${sofia_contact(*/100@10.10.10.144)},${verto_contact(100@10.10.10.144)}"
@@ -90,11 +102,15 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
                 _v.push(item.key + "='" + (item.value || '') + "'")
             });
 
+            if (account.variable_skills && account.variable_skills.length > 0) {
+                request.variables.push('\'' + 'skills=' + skillsToString(account.variable_skills) + '\'')
+            }
+
             request.variables = request.variables.concat(_v);
             
             angular.forEach(account, function (value, key) {
                 if (~notShowAttr.indexOf(key) || key === 'variables' || key === 'variable_effective_caller_id_name'
-                    || key == 'variable_account_role' || key === '_new')
+                    || key == 'variable_account_role' || key === '_new' || key === 'variable_skills')
                     return;
 
                 if (key === 'cc-agent-contact')
@@ -105,8 +121,8 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
         };
 
         function update(account, domainName, diffAttr, remVar, cb) {
-            if (Object.keys(diffAttr).length < 1 && remVar && remVar.length < 1)
-                return cb(new Error("No changes."));
+            // if (Object.keys(diffAttr).length < 1 && remVar && remVar.length < 1)
+            //     return cb(new Error("No changes."));
 
             var id = account.id;
             if (!id)
@@ -119,6 +135,9 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
             angular.forEach(remVar, function (key) {
                 request.variables.push(key + '=')
             });
+
+            request.variables.push('skills='  + '\'' + skillsToString(account.variable_skills) + '\'');
+
             
             angular.forEach(diffAttr, function (value, key) {
                 if (key === 'variables') {
@@ -126,7 +145,10 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
                         request.variables.push(attr.key + '=' + attr.value);
                     });
                     return;
-                };
+                }
+                if (key === 'variable_skills') {
+                    return;
+                }
                 if (key === 'cc-agent-contact')
                     return request.parameters.push(key + '=' + parseToAgentContact(value, id, domainName));
 
@@ -180,6 +202,7 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
 
 
                 "variable_account_role": "",
+                "variable_skills": [],
                 //"variable_default_language": "",
                 "variable_effective_caller_id_name": "",
                 'vm-password': "",
