@@ -156,7 +156,7 @@
                                     </form>
                                 </tab>
 
-                                <tab ng-if="dialer.type==diealerTypes[1]">
+                                <tab ng-if="dialer.type==diealerTypes[1] || dialer.type==diealerTypes[2]">
                                     <tab-heading>
                                         Agents
                                     </tab-heading>
@@ -165,11 +165,11 @@
                                         <div class="panel">
                                             <div class="panel-body" style="position: relative;">
 
-                                                <div class="col-sm-12">
-                                                    <label class="control-label">Skills</label>
-                                                    <tags-input min-length="1" placeholder="Add a skills" type="text" class="form-group ui-tags-input" required ng-model="dialer.skills">
-                                                    </tags-input>
-                                                </div>
+                                                <!--<div class="col-sm-12">-->
+                                                    <!--<label class="control-label">Skills</label>-->
+                                                    <!--<tags-input min-length="1" placeholder="Add a skills" type="text" class="form-group ui-tags-input" required ng-model="dialer.skills">-->
+                                                    <!--</tags-input>-->
+                                                <!--</div>-->
 
 
                                                 <div class="form-group">
@@ -269,7 +269,7 @@
                                     </section>
                                 </tab>
 
-                                <tab ng-if="dialer.type==diealerTypes[0]">
+                                <tab ng-if="dialer.type==diealerTypes[0] || dialer.type==diealerTypes[2]">
                                     <tab-heading>
                                         <span>Resources</span>
                                     </tab-heading>

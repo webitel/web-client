@@ -504,7 +504,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
             ];
             //$scope.diealerTypes = ["progressive", "predictive", "auto dialer"];
-            $scope.diealerTypes = ["Voice Broadcasting", "Progressive Dialer"];
+            $scope.diealerTypes = ["Voice Broadcasting", "Progressive Dialer", "Predictive Dialer"];
 
     }]);
     
