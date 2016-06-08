@@ -51,10 +51,10 @@ define(['ui-ace', 'ace', 'ext-language_tools'], function () {
                 "recordSession": {
                     "action": "start",
                     "type": "mp3",
-                    "stereo": "true",
-                    "bridged": "true",
+                    "stereo": false,
+                    "bridged": true,
                     "minSec": "2",
-                    "followTransfer": "true",
+                    "followTransfer": true,
                 }
             },
 
@@ -183,7 +183,7 @@ define(['ui-ace', 'ace', 'ext-language_tools'], function () {
                         "type": "silence"
                     },
                     "transfer": {
-                        "name": "${us-ring}",
+                        "name": "$${us-ring}",
                         "type": "tone"
                     }
                 }
