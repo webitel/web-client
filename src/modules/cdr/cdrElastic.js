@@ -80,14 +80,7 @@ define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modul
 
             $scope.runExportCdr = function (fnExportCdr) {
                 $scope.exportProcessExcel = true;
-                var filter =  {
-                    "range": {
-                        "variables.start_stamp": {
-                            "gte": $scope.startDate.getTime(),
-                            "lte": $scope.endDate.getTime()
-                        }
-                    }
-                };
+                var filter =  getFilter();
                 fnExportCdr($scope.mapColumns, {other: $scope.columnsArr, date: $scope.columnsDateArr}, filter, $scope.queryString, $scope.sort, function (err) {
                     if (err)
                         notifi.error(err);
@@ -290,6 +283,18 @@ define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modul
             var nexData = true;
 
             var _page = 1;
+            
+            function getFilter() {
+                return {
+                    "range": {
+                        "variables.start_stamp": {
+                            "gte": $scope.startDate.getTime(),
+                            "lte": $scope.endDate.getTime(),
+                            "format": "epoch_millis"
+                        }
+                    }
+                }
+            }
 
             function getData(tableState) {
                 if ($scope.isLoading) return void 0;
@@ -321,16 +326,7 @@ define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modul
                         "unmapped_type": "boolean"
                     };
 
-                var filter =  {
-                    "range": {
-                        "variables.start_stamp": {
-                            "gte": $scope.startDate.getTime(),
-                            "lte": $scope.endDate.getTime()
-                        }
-                    }
-                };
-
-
+                var filter =  getFilter();
 
                 CdrModel.getElasticData(_page, maxNodes, {other: $scope.columnsArr, date: $scope.columnsDateArr}, filter, $scope.queryString, $scope.sort, function (err, res, count) {
                     $scope.isLoading = false;
