@@ -1,4 +1,4 @@
-define(['app', 'modules/license/licenseModel'], function (app) {
+define(['app', 'moment', 'modules/license/licenseModel'], function (app, moment) {
 
     app.controller('LicenseCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'LicensesModel', '$confirm',
         function ($scope, webitel, $rootScope, notifi, LicensesModel, $confirm) {
@@ -9,6 +9,22 @@ define(['app', 'modules/license/licenseModel'], function (app) {
             $scope.sid = '';
 
             $scope.displayedCollection = [];
+
+            $scope.getClass = function (row) {
+                try {
+                    var expireTime = moment(row.expire, "DD-MM-YYYY").valueOf(),
+                        currentTime = moment().valueOf();
+                    if (expireTime <= currentTime) {
+                        return 'bg-gray'
+                    } else if (( expireTime - currentTime - 2592000000) <= 0) {
+                        return 'bg-danger'
+                    } else if (( expireTime - currentTime - 5184000000) <= 0) {
+                        return 'bg-warning'
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            };
 
             $scope.add = function add() {
                 $confirm({name: 'Token'},  { templateUrl: 'views/dialogs/input.html' })

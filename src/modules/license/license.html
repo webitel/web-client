@@ -37,7 +37,7 @@
         </div>
 
 
-        <table wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" search-watch-model="query">
+        <table wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table " search-watch-model="query">
             <thead>
                 <tr ng-show="rowCollection.length > 0">
                     <th st-sort="customer" >Customer</th>
@@ -49,7 +49,7 @@
                 </tr>
             </thead>
             <tbody ng-show="rowCollection.length > 0">
-            <tr ng-repeat="row in displayedCollection">
+            <tr ng-repeat="row in displayedCollection" ng-class="getClass(row)">
                 <td >{{row.customer}}</td>
                 <td >{{row['users/limit']}}</td>
                 <td >{{row.issued}}</td>
