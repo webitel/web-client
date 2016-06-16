@@ -528,7 +528,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
         $scope.gateways = [];
 
-        GatewayModel.list(domain, function (err, res) {
+        GatewayModel.list(null, function (err, res) {
             if (err)
                 return notifi.error(err);
             $scope.gateways = [];
