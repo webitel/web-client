@@ -23,7 +23,7 @@ define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modul
             $scope.count = 0;
 
             var canDeleteFile = webitel.connection.session.checkResource('cdr/files', 'd');
-            var canReadFile = webitel.connection.session.checkResource('cdr/files', 'r');
+            var canReadFile = webitel.connection.session.checkResource('cdr/files', 'r') || webitel.connection.session.checkResource('cdr/files', 'ro');
 
 
             $scope.mapColumns = CdrModel.mapColumn();

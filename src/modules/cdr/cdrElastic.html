@@ -61,8 +61,8 @@
                 <div class="col-sm-12">
                     <div class="input-group" data-ng-class="{'has-error': qsError}" >
                         <input type="text" class="form-control" ng-model="queryString" ng-keyup="$event.keyCode == 13 && applyFilter()" >
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-search"></span>
+                        <span class=" btn input-group-addon" ng-click="applyFilter()">
+                            <span class="glyphicon glyphicon-search" ></span>
                         </span>
                         <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.7/query-dsl-query-string-query.html" target="_blank" class="input-group-addon">
                             <span class="fa fa-question"></span>
@@ -76,7 +76,7 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <button class="btn btn-success btn-xs" ng-click="applyFilter()"><i class="fa fa-filter"></i>Apply</button>
+                    <!--<button class="btn btn-success btn-xs" ng-click="applyFilter()"><i class="fa fa-filter"></i>Apply</button>-->
                     <!--<button class="btn btn-primary btn-xs" ng-click="resetFilter()">Reset</button>-->
                     <a href="#/cdr/settings" class="pull-right text-muted"><i class="fa fa-cog"></i></a>
                     <span class="pull-right space space-xs"></span>

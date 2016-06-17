@@ -67,7 +67,16 @@
 
                     <div class="form-group">
                         <label class="control-label">Time zone</label>
-                        <input typeahead-editable="false" typeahead-focus-on-select="true" typeahead-select-on-exact="true" typeahead-on-select="onSelectTimeZone" type="text" class="form-control"  placeholder="Time zone" ng-model="calendar.timeZone"  typeahead="zone as zone.name for zone in timeZones | filter:{name:$viewValue}" >
+                        <input typeahead-editable="false"
+                               required
+                               typeahead-focus-on-select="true"
+                               typeahead-select-on-exact="true"
+                               typeahead-on-select="onSelectTimeZone"
+                               type="text"
+                               class="form-control"
+                               placeholder="Time zone"
+                               ng-model="calendar.timeZone"
+                               typeahead="zone as zone.name for zone in timeZones | filter:{name:$viewValue}" >
                     </div>
 
                 </div>
