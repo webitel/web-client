@@ -314,7 +314,9 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     "originateTimeout" : angular.isNumber(option.parameters && option.parameters.originateTimeout) ? option.parameters.originateTimeout : 60,
                     "avgProgressSec" : angular.isNumber(option.parameters && option.parameters.avgProgressSec) ? option.parameters.avgProgressSec : 20,
                     "maxTryCount" : angular.isNumber(option.parameters && option.parameters.maxTryCount) ? option.parameters.maxTryCount : 5,
-                    "intervalTryCount" : angular.isNumber(option.parameters && option.parameters.intervalTryCount) ? option.parameters.intervalTryCount : 60
+                    "intervalTryCount" : angular.isNumber(option.parameters && option.parameters.intervalTryCount) ? option.parameters.intervalTryCount : 60,
+                    "wrapUpTime" : angular.isNumber(option.parameters && option.parameters.wrapUpTime) ? option.parameters.wrapUpTime : 60,
+                    'waitingForResultStatus': option.parameters && option.parameters.waitingForResultStatus
                 },
                 "variables" : {},
                 "skills" : skills,

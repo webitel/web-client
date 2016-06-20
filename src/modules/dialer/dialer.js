@@ -65,10 +65,19 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             });
 
             $scope.$on('$destroy', function () {
+                webitel.connection.instance.unServerEvent('DC::CHANGE_STATE', true, changeStateEvent);
                 changeDomainEvent();
                 $timeout.cancel(timerId)
             });
+            
+            var changeStateEvent = function (e) {
+                if ($scope.dialer && $scope.dialer._id) {
+                    edit();
+                    $scope.checkDoNotClickButton = false;
+                }
+            };
 
+            webitel.connection.instance.onServerEvent('DC::CHANGE_STATE', changeStateEvent, {all:true});
 
             $scope.$watch('domain', function(domainName) {
                 $scope.domain = domainName;
@@ -186,7 +195,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             tryCount++;
                             timerId = $timeout(tick, 1500);
                         };
-                        timerId = $timeout(tick, 1500);
+                        // timerId = $timeout(tick, 1500);
                         if (active)
                             return notifi.info('Please wait... active call: ' + res.members, 10000);
                         else return notifi.info('Please wait... Set ready', 2000);
@@ -440,7 +449,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             $scope.isAgentInTier = function (a) {
                 return !~$scope.dialer.agents.indexOf(a.id);
-            }
+            };
             
             $scope.removeTiers = function (all) {
                 if (all) {
