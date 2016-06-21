@@ -215,22 +215,27 @@ define(['angular', 'config'], function (angular, config) {
 		}]
 	},
 	{
-		href: "#/cdr",
-		caption: "CDR",
+		href: "#/calendars",
+		caption: "Calendar",
 
-		acl: 'cdr',
-		templateUrl: config.cdr.useElastic ? 'modules/cdr/cdrElastic.html' : 'modules/cdr/cdr.html',
-		controller: 'CDRCtrl',
-		controllerUrl: config.cdr.useElastic ? 'modules/cdr/cdrElastic.js' : 'modules/cdr/cdr.js',
-		iconClass: 'fa fa-bar-chart-o',
-		routes: [
-			{
-				href: '/cdr/settings',
-				templateUrl: 'modules/cdr/settings/cdrSettings.html',
-				controller: 'CDRSettingsCtrl',
-				controllerUrl: 'modules/cdr/settings/cdrSettings.js'
-			}
-		]
+		acl: 'calendar',
+		templateUrl: 'modules/calendar/calendar.html',
+		controller: 'CalendarCtrl',
+		controllerUrl: 'modules/calendar/calendar.js',
+		iconClass: 'fa fa-calendar',
+		routes: [{
+			href: '/calendars/new',
+			templateUrl: 'modules/calendar/calendarPage.html',
+			controller: 'CalendarCtrl',
+			controllerUrl: 'modules/calendar/calendar.js',
+			method: "create"
+		},{
+			href: '/calendars/:id/edit',
+			templateUrl: 'modules/calendar/calendarPage.html',
+			controller: 'CalendarCtrl',
+			controllerUrl: 'modules/calendar/calendar.js',
+			method: "edit"
+		}]
 	},
 	{
 		href: "#/media",
@@ -266,6 +271,29 @@ define(['angular', 'config'], function (angular, config) {
 		}]
 	},
 	{
+		href: "#/dialer",
+		caption: "Dialer",
+
+		acl: 'dialer',
+		templateUrl: 'modules/dialer/dialer.html',
+		controller: 'DialerCtrl',
+		controllerUrl: 'modules/dialer/dialer.js',
+		iconClass: 'fa fa-eject',
+		routes: [{
+			href: '/dialer/new',
+			templateUrl: 'modules/dialer/dialerPage.html',
+			controller: 'DialerCtrl',
+			controllerUrl: 'modules/dialer/dialer.js',
+			method: "create"
+		},{
+			href: '/dialer/:id/edit',
+			templateUrl: 'modules/dialer/dialerPage.html',
+			controller: 'DialerCtrl',
+			controllerUrl: 'modules/dialer/dialer.js',
+			method: "edit"
+		}]
+	},
+	{
 		href: "#/hooks",
 		caption: "Hooks",
 
@@ -289,50 +317,22 @@ define(['angular', 'config'], function (angular, config) {
 		}]
 	},
 	{
-		href: "#/calendars",
-		caption: "Calendar",
+		href: "#/cdr",
+		caption: "CDR",
 
-		acl: 'calendar',
-		templateUrl: 'modules/calendar/calendar.html',
-		controller: 'CalendarCtrl',
-		controllerUrl: 'modules/calendar/calendar.js',
-		iconClass: 'fa fa-calendar',
-		routes: [{
-			href: '/calendars/new',
-			templateUrl: 'modules/calendar/calendarPage.html',
-			controller: 'CalendarCtrl',
-			controllerUrl: 'modules/calendar/calendar.js',
-			method: "create"
-		},{
-			href: '/calendars/:id/edit',
-			templateUrl: 'modules/calendar/calendarPage.html',
-			controller: 'CalendarCtrl',
-			controllerUrl: 'modules/calendar/calendar.js',
-			method: "edit"
-		}]
-	},
-		{
-			href: "#/dialer",
-			caption: "Dialer",
-
-			acl: 'dialer',
-			templateUrl: 'modules/dialer/dialer.html',
-			controller: 'DialerCtrl',
-			controllerUrl: 'modules/dialer/dialer.js',
-			iconClass: 'fa fa-eject',
-			routes: [{
-				href: '/dialer/new',
-				templateUrl: 'modules/dialer/dialerPage.html',
-				controller: 'DialerCtrl',
-				controllerUrl: 'modules/dialer/dialer.js',
-				method: "create"
-			},{
-				href: '/dialer/:id/edit',
-				templateUrl: 'modules/dialer/dialerPage.html',
-				controller: 'DialerCtrl',
-				controllerUrl: 'modules/dialer/dialer.js',
-				method: "edit"
-			}]
-		}
+		acl: 'cdr',
+		templateUrl: config.cdr.useElastic ? 'modules/cdr/cdrElastic.html' : 'modules/cdr/cdr.html',
+		controller: 'CDRCtrl',
+		controllerUrl: config.cdr.useElastic ? 'modules/cdr/cdrElastic.js' : 'modules/cdr/cdr.js',
+		iconClass: 'fa fa-bar-chart-o',
+		routes: [
+			{
+				href: '/cdr/settings',
+				templateUrl: 'modules/cdr/settings/cdrSettings.html',
+				controller: 'CDRSettingsCtrl',
+				controllerUrl: 'modules/cdr/settings/cdrSettings.js'
+			}
+		]
+	}
 	]);
 });

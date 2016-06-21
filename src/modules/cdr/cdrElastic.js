@@ -6,8 +6,8 @@
 define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview', 'css!modules/cdr/css/verticalTabs.css'],
     function (app, moment) {
 
-    app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm', 'notifi',
-        function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, notifi) {
+    app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm', 'notifi', 'TableSearch',
+        function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, notifi, TableSearch) {
 
             $scope.isLoading = false;
             $scope.isOpenFilter = true;
@@ -24,6 +24,25 @@ define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modul
 
             var canDeleteFile = webitel.connection.session.checkResource('cdr/files', 'd');
             var canReadFile = webitel.connection.session.checkResource('cdr/files', 'r') || webitel.connection.session.checkResource('cdr/files', 'ro');
+
+            var defSettings = TableSearch.get('cdrElastic');
+            if (defSettings) {
+                $scope.queryString = defSettings.queryString || "";
+
+                if (defSettings.startDate)
+                    $scope.startDate = defSettings.startDate;
+                if (defSettings.endDate)
+                    $scope.endDate = defSettings.endDate;
+            }
+
+            $scope.$watch("[queryString,startDate,endDate]", function (newVal) {
+                TableSearch.set({
+                    queryString: $scope.queryString,
+                    startDate: $scope.startDate,
+                    endDate: $scope.endDate
+                }, 'cdrElastic')
+            }, true);
+
 
 
             $scope.mapColumns = CdrModel.mapColumn();
@@ -93,8 +112,10 @@ define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modul
             today.setMinutes(0);
             today.setSeconds(0);
 
-            $scope.startDate = today;
-            $scope.endDate = new Date(today.getTime() + 86399900);
+            if (!$scope.startDate) {
+                $scope.startDate = today;
+                $scope.endDate = new Date(today.getTime() + 86399900);
+            }
 
             //$scope.testSource = null;
             $scope.applyFilter = function () {

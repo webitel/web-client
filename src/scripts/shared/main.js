@@ -55,8 +55,8 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
 			  }
 	      ];
 	      $scope.admin = {
-	        layout:  $localStorage.layout || "boxed",
-	        menu: $localStorage.menu || "horizontal",
+	        layout:  $localStorage.layout || "wide",
+	        menu: $localStorage.menu || "vertical",
 	        fixedHeader: typeof $localStorage.fixedHeader == "undefined" ? true : !!$localStorage.fixedHeader,
 	        fixedSidebar: typeof $localStorage.fixedSidebar == "undefined" ? true : !!$localStorage.fixedSidebar,
 			  //TODO
