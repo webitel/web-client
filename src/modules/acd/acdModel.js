@@ -47,7 +47,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         };
 
         var params = ['abandoned-resume-allowed', 'discard-abandoned-after', 'max-wait-time', 'max-wait-time-with-no-agent',
-            'max-wait-time-with-no-agent-time-reached', 'moh-sound', 'strategy', 'time-base-score', 'description'];
+            'max-wait-time-with-no-agent-time-reached', 'moh-sound', 'strategy', 'time-base-score', 'description', 'ring-progressively-delay'];
 
         function add (queue, domainName, cb) {
             var request = {
@@ -187,6 +187,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 'moh-sound': '$${hold_music}',
                 'strategy': 'longest-idle-agent',
                 'time-base-score': 'queue',
+                'ring-progressively-delay': 10,
                 'description': ''
             }
         }

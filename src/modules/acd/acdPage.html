@@ -81,20 +81,39 @@
                                         <span>Times</span>
                                     </tab-heading>
 
-                                    <div class="form-group" >
-                                        <label for>Max wait time</label>
-                                        <input class="form-control" type="number" name="input" ng-model="queue['max-wait-time']"
-                                               min="0"required>
-                                    </div>
-                                    <div class="form-group" >
-                                        <label for>Max wait time with no agent</label>
-                                        <input class="form-control" type="number" name="input" ng-model="queue['max-wait-time-with-no-agent']"
-                                               min="0" required>
-                                    </div>
-                                    <div class="form-group" >
-                                        <label for>Max wait time with no agent time reached</label>
-                                        <input class="form-control" type="number" name="input" ng-model="queue['max-wait-time-with-no-agent-time-reached']"
-                                               min="0" required>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group" >
+                                                <label for>Max wait time</label>
+                                                <input class="form-control" type="number" name="input" ng-model="queue['max-wait-time']"
+                                                       min="0"required>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="form-group" >
+                                                <label for>Max wait time with no agent</label>
+                                                <input class="form-control" type="number" name="input" ng-model="queue['max-wait-time-with-no-agent']"
+                                                       min="0" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="form-group" >
+                                                <label for>Max wait time with no agent time reached</label>
+                                                <input class="form-control" type="number" name="input" ng-model="queue['max-wait-time-with-no-agent-time-reached']"
+                                                       min="0" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="form-group" >
+                                                <label for>Max wait time with no agent time reached</label>
+                                                <input class="form-control" type="number" name="input" ng-model="queue['ring-progressively-delay']"
+                                                       min="0" required>
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                 </tab>
