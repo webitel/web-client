@@ -31,7 +31,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
                 });
 
                 var cdrToExcel = function (mapColumns, columns, filter, qs, sort, cb) {
-                    var _page = 1,
+                    var _page = 0,
                         maxNodes = 1000,
                         table = '<table>',
                         _map = [],
@@ -63,7 +63,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
                             }
                         };
 
-                        CdrModel.getElasticData(_page++, maxNodes, columns, filter, qs, sort, onData);
+                        CdrModel.getElasticData(++_page, maxNodes, columns, filter, qs, sort, onData);
                     };
 
                     onData();
