@@ -38,7 +38,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 return cb(new Error("Bad name"));
             if (!calendar.domain)
                 return cb(new Error("Bad domain name"));
-            if (!calendar.timezone)
+            if (!calendar.timeZone)
                 return cb(new Error("Bad timezone"));
 
             webitel.api("POST", "/api/v2/calendars?domain=" + calendar.domain, calendar, function (err, res) {
@@ -88,7 +88,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 return cb(new Error("Bad name"));
             if (!calendar.domain)
                 return cb(new Error("Bad domain name"));
-            if (!calendar.timezone)
+            if (!calendar.timeZone)
                 return cb(new Error("Bad timezone"));
 
             webitel.api("PUT", "/api/v2/calendars/" + id + "?domain=" + calendar.domain, calendar, cb);

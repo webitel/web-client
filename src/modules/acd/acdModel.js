@@ -34,7 +34,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 var queue = res.data || res.info;
                 angular.forEach(
                     ['max-wait-time', 'max-wait-time-with-no-agent', 'max-wait-time-with-no-agent-time-reached',
-                    'discard-abandoned-after'],
+                    'discard-abandoned-after', 'ring-progressively-delay'],
                     function (key) {
                         if (queue[key])
                             return queue[key] = +queue[key];
