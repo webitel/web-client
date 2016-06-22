@@ -31,7 +31,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
                 });
 
                 var cdrToExcel = function (mapColumns, columns, filter, qs, sort, cb) {
-                    var _page = 0,
+                    var _page = 1,
                         maxNodes = 1000,
                         table = '<table>',
                         _map = [],
@@ -90,7 +90,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
                     };
 
                     function parseTimeStamp (timestamp) {
-                        // TODO rus ms-office govno!!!
+                        // TODO
                         //return '=TEXT(DATE(1970;1;1)+' + timestamp + '/60/60/24/1000/1000;"yyyy-mm-dd hh:mm:ss")'; //
                         return timestamp ? new Date(timestamp).toLocaleString() : '-';
                     };
