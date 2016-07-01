@@ -719,6 +719,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             };
 
             angular.forEach(template.communications, function (v) {
+                if (!v) return;
                 m.communications.push({
                     number: row[v.number],
                     priority: +row[v.priority] || 0,
@@ -905,6 +906,34 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 name: "priority_2",
                 field: "priority",
                 position: 1,
+                type: 'communications'
+            },
+            "number_3": {
+                selected: false,
+                name: "number_3",
+                field: 'number',
+                position: 2,
+                type: 'communications'
+            },
+            "priority_3": {
+                selected: false,
+                name: "priority_3",
+                field: "priority",
+                position: 2,
+                type: 'communications'
+            },
+            "number_4": {
+                selected: false,
+                name: "number_4",
+                field: 'number',
+                position: 3,
+                type: 'communications'
+            },
+            "priority_4": {
+                selected: false,
+                name: "priority_4",
+                field: "priority",
+                position: 3,
                 type: 'communications'
             }
         };

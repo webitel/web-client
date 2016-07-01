@@ -235,16 +235,17 @@
             var WebitelEventMixin = function() {
                 var _eventHandlers = [];
 
-                function commandEvent(eventName, type, all, callback, scopeCb) {
+                function commandEvent(eventName, type, params, callback, scopeCb) {
                     if (eventName.indexOf(' ') != -1 || eventName == "ALL") {
                         if (typeof scopeCb == "function") scopeCb(false);
                         throw new Error('Wrong event');
-                    };
+                    }
 
-                    var srvEvents = new WebitelCommand(type, {
-                        event: eventName,
-                        all: all
-                    }, callback);
+                    var options = (params || {});
+                    options.event = eventName;
+
+
+                    var srvEvents = new WebitelCommand(type, options, callback);
                     srvEvents.execute();
                 };
 
@@ -267,8 +268,7 @@
                         if (cb) cb(true);
                         return
                     } else {
-                        var _all = type.all;
-                        commandEvent(eventName, WebitelCommandTypes.Event, _all, function (response) {
+                        commandEvent(eventName, WebitelCommandTypes.Event, type, function (response) {
                             if (response.status === WebitelCommandResponseTypes.Success)
                             //_eventHandlers[eventName].push(handler);
                                 if (cb) cb(response);
