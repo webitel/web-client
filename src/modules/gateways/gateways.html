@@ -50,7 +50,7 @@
 						<th st-skip-natural="true" st-sort="state" >State</th>
 						<th st-skip-natural="true" st-sort="data" >Data</th>
 						<th st-skip-natural="true" ng-if="!domain" st-sort="domain" >Domain</th>
-						<th>Action</th>
+						<th></th>
 					</tr>
 				</thead>
 
@@ -80,9 +80,9 @@
 						<td>{{row.state}}</td>
 						<td>{{row.data}}</td>
 						<td ng-if="!domain">{{row.domain}}</td>
-						<td class="center">
+						<td class="center" style="text-align: end">
 							<a href="#/gateways/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
-							<span class="space space-xs"></span>
+
 							<a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
 						</td>
 					</tr>

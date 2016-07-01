@@ -51,7 +51,7 @@
                     <th style="width: 5%" st-skip-natural="true" st-sort="order" >Order</th>
                     <th style="width: 10%" st-skip-natural="true" class="text-center" st-sort="disabled" >Enabled</th>
                     <th style="width: 15%" >Position</th>
-                    <th style="width: 10%">Action</th>
+                    <th style="width: 10%"></th>
                 </tr>
                 </thead>
                 <tbody ng-show="rowCollection.length > 0">
@@ -78,7 +78,7 @@
                                 <a ng-click="down(row)" href="javascript:;" class="btn btn-default btn-direction btn-down">Down</a></p>
                             </p>
                         </td>
-                        <td class="center">
+                        <td style="text-align: end">
                             <a href="javascript:void 0" ng-click="downloadScheme(row)" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-cloud-download"></i></a>
 
                             <a href="#/callflows/default/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>

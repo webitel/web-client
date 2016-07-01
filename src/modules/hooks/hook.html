@@ -45,7 +45,7 @@
                         <th style="width: 45%"  st-skip-natural="true" st-sort="description">Description</th>
                         <th style="width: 10%" st-skip-natural="true" st-sort="action['type']" >Type</th>
                         <th style="width: 10%" st-skip-natural="true" st-sort="enable" >Enable</th>
-                        <th style="width: 10%">Action</th>
+                        <th style="width: 10%"></th>
                     </tr>
                 </thead>
                 <tbody ng-show="rowCollection.length > 0">
@@ -57,7 +57,7 @@
                         <td>{{row.action.type}}</td>
                         <td>{{row.enable}}</td>
 
-                        <td class="center">
+                        <td style="text-align: end">
                             <a href="#/hooks/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
 
                             <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>

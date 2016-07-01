@@ -48,7 +48,7 @@
                         <th style="width: 20%" st-skip-natural="true" st-sort="_cause" >Last cause</th>
                         <th style="width: 5%" st-skip-natural="true" st-sort="priority" >Priority</th>
 
-                        <th style="width: 10%" >Action</th>
+                        <th style="width: 10%" ></th>
                     </tr>
                     </thead>
 
@@ -67,7 +67,7 @@
                         <td>{{toDateString(row.nextTick)}}</td>
                         <td>{{row._cause}}</td>
                         <td>{{row.priority}}</td>
-                        <td class="center">
+                        <td style="text-align: end">
                             <a href="#/dialer/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
 
                             <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
