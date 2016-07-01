@@ -142,7 +142,7 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
             angular.forEach(diffAttr, function (value, key) {
                 if (key === 'variables') {
                     angular.forEach(account.variables, function (attr, i) {
-                        request.variables.push(attr.key + '=' + attr.value);
+                        request.variables.push(attr.key + '=\'' + attr.value + '\'');
                     });
                     return;
                 }

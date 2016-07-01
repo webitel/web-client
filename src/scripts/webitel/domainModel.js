@@ -94,7 +94,7 @@ define(['angular', 'scripts/webitel/utils', 'scripts/webitel/webitel'], function
                 _p = pref || ''
                 ;
             angular.forEach(arr, function(item) {
-                resp.push(_p + item.key + '=' + item.value)
+                resp.push(_p + item.key + '=\'' + item.value + '\'')
             });
             return resp;
         };
