@@ -512,6 +512,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     name: "End"
                 }
             ];
+            
+            $scope.stateDialerToString = function (stateNumber) {
+                for (var i = 0, len = $scope.diealerStates.length; i < len; i++) {
+                    if ($scope.diealerStates[i].val == stateNumber)
+                        return $scope.diealerStates[i].name
+                }
+            };
             //$scope.diealerTypes = ["progressive", "predictive", "auto dialer"];
             $scope.diealerTypes = ["Voice Broadcasting", "Progressive Dialer", "Predictive Dialer"];
 

@@ -129,11 +129,11 @@
             <td>{{t.communications[0].priority}}</td>
             <td>{{t.communications[0].state}}</td>
             <td rowspan="{{t.communications.length}}">
-                <p ng-if="!t._lock">
-                    <a ng-click="editMember(t, $index)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
-                    <span class="space space-xs"></span>
-                    <a href="javascript:;" ng-click="removeMember(t, $index)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
-                </p>
+                <div ng-if="!t._lock">
+                    <a ng-click="editMember(t, $index)" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+
+                    <a href="javascript:;" ng-click="removeMember(t, $index)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                </div>
             </td>
         </tr>
         <tr ng-repeat="item in t.communications" ng-if="$index > 0">

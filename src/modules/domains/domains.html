@@ -38,10 +38,10 @@
 		    <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" st-search search-watch-model="query">
 			<thead>
 				<tr>
-					<th st-skip-natural="true" st-sort="name">Name</th>
-					<th st-skip-natural="true" st-sort="customer">Customer</th>
-					<th st-skip-natural="true" st-sort="user">Users</th>
-					<th >Action</th>
+					<th style="width: 40%" st-skip-natural="true" st-sort="name">Name</th>
+					<th style="width: 40%" st-skip-natural="true" st-sort="customer">Customer</th>
+					<th style="width: 10%" st-skip-natural="true" st-sort="user">Users</th>
+					<th style="width: 10%" >Action</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -57,11 +57,9 @@
 				<td>{{row.customer}}</td>
 				<td >{{row.user}}</td>
 				<td >
-					<p>
-						<a href="#/domains/{{row.name}}/edit" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
-						<span class="space space-xs"></span>
-						<a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
-					</p>
+                    <a href="#/domains/{{row.name}}/edit" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <!--<span class="space space-xs"></span>-->
+                    <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
 				</td>
 			</tr>
 			</tbody>

@@ -81,11 +81,9 @@
 						<td>{{row.data}}</td>
 						<td ng-if="!domain">{{row.domain}}</td>
 						<td class="center">
-							<p>
-								<a href="#/gateways/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
-								<span class="space space-xs"></span>
-								<a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
-							</p>
+							<a href="#/gateways/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+							<span class="space space-xs"></span>
+							<a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
 						</td>
 					</tr>
 				</tbody>

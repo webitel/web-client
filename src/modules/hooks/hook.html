@@ -41,12 +41,11 @@
                 <thead>
 
                     <tr ng-show="rowCollection.length > 0">
-                        <th st-skip-natural="true" st-sort="event" >Event</th>
-                        <th st-skip-natural="true" st-sort="action['type']" >Type</th>
-                        <th st-skip-natural="true" st-sort="enable" >Enable</th>
-                        <th st-skip-natural="true" st-sort="description">Description</th>
-
-                        <th>Action</th>
+                        <th style="width: 15%" st-skip-natural="true" st-sort="event" >Event</th>
+                        <th style="width: 45%"  st-skip-natural="true" st-sort="description">Description</th>
+                        <th style="width: 10%" st-skip-natural="true" st-sort="action['type']" >Type</th>
+                        <th style="width: 10%" st-skip-natural="true" st-sort="enable" >Enable</th>
+                        <th style="width: 10%">Action</th>
                     </tr>
                 </thead>
                 <tbody ng-show="rowCollection.length > 0">
@@ -54,16 +53,14 @@
                         <td>
                             <a href="#/hooks/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="text-muted">{{row.event}}</a>
                         </td>
+                        <td>{{row.description}}</td>
                         <td>{{row.action.type}}</td>
                         <td>{{row.enable}}</td>
-                        <td>{{row.description}}</td>
 
                         <td class="center">
-                            <p>
-                                <a href="#/hooks/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
-                                <span class="space space-xs"></span>
-                                <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
-                            </p>
+                            <a href="#/hooks/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+
+                            <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                         </td>
                     </tr>
                 </tbody>

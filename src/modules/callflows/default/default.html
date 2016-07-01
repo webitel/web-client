@@ -46,12 +46,12 @@
                 <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" st-search search-watch-model="query">
                 <thead>
                 <tr ng-show="rowCollection.length > 0">
-                    <th st-skip-natural="true" st-sort="destination_number" >Number</th>
-                    <th st-skip-natural="true" st-sort="name" >Name</th>
-                    <th st-skip-natural="true" st-sort="order" >Order</th>
-                    <th st-skip-natural="true" class="text-center" st-sort="disabled" >Enabled</th>
-                    <th>Position</th>
-                    <th>Action</th>
+                    <th style="width: 30%" st-skip-natural="true" st-sort="destination_number" >Number</th>
+                    <th style="width: 30%" st-skip-natural="true" st-sort="name" >Name</th>
+                    <th style="width: 5%" st-skip-natural="true" st-sort="order" >Order</th>
+                    <th style="width: 10%" st-skip-natural="true" class="text-center" st-sort="disabled" >Enabled</th>
+                    <th style="width: 15%" >Position</th>
+                    <th style="width: 10%">Action</th>
                 </tr>
                 </thead>
                 <tbody ng-show="rowCollection.length > 0">
@@ -72,20 +72,18 @@
                             </span>
                         </td>
 
-                        <td class="col-md-4">
+                        <td>
                             <p>
                                 <a ng-click="up(row)" href="javascript:;" class="btn btn-default btn-direction btn-up">Up</a>
                                 <a ng-click="down(row)" href="javascript:;" class="btn btn-default btn-direction btn-down">Down</a></p>
                             </p>
                         </td>
                         <td class="center">
-                            <p>
-                                <a href="javascript:void 0" ng-click="downloadScheme(row)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-cloud-download"></i></a>
-                                <span class="space space-xs"></span>
-                                <a href="#/callflows/default/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
-                                <span class="space space-xs"></span>
-                                <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
-                            </p>
+                            <a href="javascript:void 0" ng-click="downloadScheme(row)" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-cloud-download"></i></a>
+
+                            <a href="#/callflows/default/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+
+                            <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                         </td>
                     </tr>
                 </tbody>
