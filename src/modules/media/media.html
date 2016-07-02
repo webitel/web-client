@@ -61,12 +61,12 @@
                 <thead>
 
                 <tr >
-                    <th st-skip-natural="true" st-sort="name" >Name</th>
-                    <th st-skip-natural="true" st-sort="format" >Format</th>
-                    <th st-skip-natural="true" st-sort="type" >Type</th>
-                    <th st-skip-natural="true" st-sort="size" >Size</th>
+                    <th style="width: 40%" st-skip-natural="true" st-sort="name" >Name</th>
+                    <th style="width: 15%" st-skip-natural="true" st-sort="format" >Format</th>
+                    <th style="width: 15%" st-skip-natural="true" st-sort="type" >Type</th>
+                    <th style="width: 15%" st-skip-natural="true" st-sort="size" >Size</th>
                     <!--<th>Play</th>-->
-                    <th>Action</th>
+                    <th style="width: 15%; min-width: 116px;">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -78,14 +78,10 @@
                         <!--<td>-->
                             <!--<div webitel-audio resource="row._href"></div>-->
                         <!--</td>-->
-                        <td class="center">
-                            <p>
-                                <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
-                                <span class="space space-xs"></span>
-                                <a href="{{row._href}}" target="_self" download="{{row.name}}" class="text-muted"><i class="glyphicon glyphicon-cloud-download"></i></a>
-                                <span class="space space-xs"></span>
-                                <a ng-class="{'text-play': activePlayRowName == row.name, 'text-muted': activePlayRowName != row.name}" ng-click="playRow(row)" ><i class="glyphicon glyphicon-play"></i></a>
-                            </p>
+                        <td style="text-align: end">
+                            <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                            <a href="{{row._href}}" target="_self" download="{{row.name}}" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-cloud-download"></i></a>
+                            <a ng-class="{'btn-success': activePlayRowName == row.name, 'btn-default': activePlayRowName != row.name}" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v" ng-click="playRow(row)" ><i class="glyphicon glyphicon-play"></i></a>
                             <!--<progressbar ng-show="10 > 0" max="100" value="50" type="success"><span style="color:white; white-space:nowrap;">{{progress}} / 100</span></progressbar>-->
                         </td>
                     </tr>

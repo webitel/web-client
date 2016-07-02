@@ -3,7 +3,7 @@ html {
     overflow-y: scroll;
 }
 
-.text-play {
+a .text-play {
     color: #41F11F
 }
 .ui-datepicker .dropdown-menu {
