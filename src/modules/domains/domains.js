@@ -153,7 +153,10 @@ define(['app', 'scripts/webitel/utils',
 	 	$scope.init = function init () {
 	 		if (!!$route.current.method) {
 	 			return $scope[$route.current.method]();
-	 		};
+	 		}
+
+			if (webitel.connection.session.domain)
+				return $location.path('/domains/' + webitel.connection.session.domain + '/edit');
 	 		reloadData();
 	 	}();
 
