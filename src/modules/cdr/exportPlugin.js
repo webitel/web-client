@@ -35,7 +35,8 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
                         maxNodes = 1000,
                         table = '<table>',
                         _map = [],
-                        allCount = 0
+                        allCount = 0,
+                        forceStop = false
                         ;
 
                     var progress = 0;
@@ -53,7 +54,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
                             table = setRows(table, res);
 
                             if (allCount - progress < maxNodes) {
-                                maxNodes = allCount - progress;
+                               // maxNodes = allCount - progress;
                             };
                             if (progress == allCount || res.length < maxNodes) {
                                 table = endTable(table);
