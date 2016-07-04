@@ -1,6 +1,6 @@
 <div class="page">
 
-    <section class="panel">
+    <form name="extensionForm" class="panel">
         <!-- {{default}} -->
         <!--<div class="panel-heading"><strong>Domain: {{domain.name}}</strong></div>-->
         <div class="panel-body">
@@ -9,23 +9,21 @@
 
                 <div class="col-sm-12">
 
-                    <div class="ng-pristine form-validation ng-invalid ng-invalid-required ng-invalid-equal ng-dirty" novalidate role="form">
-
-                        <div class="form-group">
-                            <div class="col-sm-4">
-                                <label class="control-label">Name</label>
-                                <input type="text" required class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required"  placeholder="Name" ng-model="extension.name">
-                            </div>
-                            <div class="col-sm-4">
-                                <label class="control-label">Number</label>
-                                <input type="text" required class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required"  placeholder="Number" ng-model="extension.destination_number">
-                            </div>
-                            <div class="col-sm-4">
-                                <label class="control-label">Time zone</label>
-                                <input typeahead-editable="false" typeahead-focus-on-select="true" typeahead-select-on-exact="true" typeahead-on-select="onSelectTimeZone" type="text" class="form-control"  placeholder="Time zone" ng-model="extension.fs_timezone"  typeahead="zone as zone.name for zone in timeZones | filter:{name:$viewValue}" >
-                            </div>
+                    <div class="col-sm-4">
+                        <div class="form-group" ng-class="{ 'has-error' : extensionForm.name.$invalid }">
+                            <label class="control-label">Name</label>
+                            <input type="text" name="name" required class="form-control"  placeholder="Name" ng-model="extension.name">
                         </div>
-
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group" ng-class="{ 'has-error' : extensionForm.number.$invalid }">
+                            <label class="control-label">Number</label>
+                            <input type="text" name="number" required class="form-control"  placeholder="Number" ng-model="extension.destination_number">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="control-label">Time zone</label>
+                        <input typeahead-editable="false" typeahead-focus-on-select="true" typeahead-select-on-exact="true" typeahead-on-select="onSelectTimeZone" type="text" class="form-control"  placeholder="Time zone" ng-model="extension.fs_timezone"  typeahead="zone as zone.name for zone in timeZones | filter:{name:$viewValue}" >
                     </div>
                 </div>
 
@@ -56,9 +54,9 @@
         </div>
 
         <div class="panel-footer">
-            <button ng-show="isEdit" type="button" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit" type="button" ng-disabled="extensionForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
         </div>
-    </section>
+    </form>
 </div>

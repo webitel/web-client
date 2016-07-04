@@ -8,12 +8,12 @@
                 <div class="col-sm-4">
 
                     <div class="form-group" ng-class="{ 'has-error' : gatewayForm.name.$invalid }">
-                        <label for>Name</label>
+                        <label class="control-label">Name</label>
                         <input type="text" class="form-control" name="name" required data-ng-model="gateway.name"  ng-disabled="gateway.id">
                     </div>
 
                     <div class="form-group" ng-class="{ 'has-error' : gatewayForm.type.$invalid }">
-                        <label for>Type</label>
+                        <label class="control-label">Type</label>
                         <select class="form-control" required name="type" ng-model="gateway.type">
                             <!-- TODO queue get roles -->
                             <option value="sipTrunk">SIP trunk</option>
@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="form-group" ng-if="!gateway.id">
-                        <label for>Profile</label>
+                        <label class="control-label">Profile</label>
                         <select class="form-control" ng-model="gateway.profile" >
                             <option value="">None</option>
                             <option value="external">External</option>
@@ -32,7 +32,7 @@
                     </div>
 
                     <div class="form-group" ng-if="isRoot && !gateway.id">
-                        <label for>Domain</label>
+                        <label class="control-label">Domain</label>
                         <select class="form-control"  data-ng-model="gateway.domain" ng-options="domain for domain in domains" ng-init="getDomains()">
                             <option value="">-- choose domain --</option>
                         </select>
@@ -48,7 +48,7 @@
                                     <div class="panel-body">
 
                                         <div class="form-group" ng-class="{ 'has-error' : !gateway.attr[key] }" ng-repeat="(key, row) in template[gateway.type].fields | orderBy:'+$index'">
-                                            <label for>{{row.caption}}</label>
+                                            <label class="control-label">{{row.caption}}</label>
                                             <input type="text" name="{{key}}"  class="form-control" ng-model="gateway.attr[key]" required>
                                         </div>
 
