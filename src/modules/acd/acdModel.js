@@ -174,6 +174,31 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
             webitel.api("PUT", '/api/v2/callcenter/queues/' + queueId + '/' + state + '?domain=' + domainName, cb);
         }
+        
+        function getAgentParams(agentId, domainName, cb) {
+            if (!agentId || !domainName)
+                return cb(new Error("Bad agent id or domain"));
+
+            webitel.api("GET", '/api/v2/callcenter/agent/' + agentId + '?domain=' + domainName, function (err, res) {
+                if (err)
+                    return cb(err);
+
+                return cb(null, res.info && res.info[0])
+            });
+        }
+
+        function setAgentState(agentId, domainName, state, cb) {
+            if (!agentId || !domainName || !state)
+                return cb(new Error("Bad agent id, state or domain"));
+
+            webitel.api("POST", '/api/v2/callcenter/agent/' + agentId + '/state?domain=' + domainName, {state: state}, cb);
+        }
+        function setAgentStatus(agentId, domainName, status, cb) {
+            if (!agentId || !domainName || !status)
+                return cb(new Error("Bad agent id, status or domain"));
+
+            webitel.api("POST", '/api/v2/callcenter/agent/' + agentId + '/status?domain=' + domainName, {status: status}, cb);
+        }
 
         function create () {
             return {
@@ -205,6 +230,9 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             addTier: addTier,
             removeTier: removeTier,
             setState: setState,
+            getAgentParams: getAgentParams,
+            setAgentState: setAgentState,
+            setAgentStatus: setAgentStatus
         }
     }]);
 });

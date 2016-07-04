@@ -1,8 +1,8 @@
 define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel', 'css!modules/accounts/account.css'], function (app, utils, async) {
 
     app.controller('AccountsCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'AccountModel', '$route', '$location', '$routeParams',
-        '$confirm', '$timeout', 'TableSearch',
-        function ($scope, webitel, $rootScope, notifi, AccountModel, $route, $location, $routeParams, $confirm, $timeout, TableSearch) {
+        '$confirm', '$timeout', 'TableSearch', '$modal',
+        function ($scope, webitel, $rootScope, notifi, AccountModel, $route, $location, $routeParams, $confirm, $timeout, TableSearch, $modal) {
         $scope.domain = webitel.domain();
         $scope.account = {};
         $scope.userVariables = utils.switchVar;
@@ -259,5 +259,137 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                 return $scope[$route.current.method]();
             };
         }();
+
+        $scope.changeStatus = function (row) {
+            var modalInstance = $modal.open({
+                animation: true,
+                templateUrl: '/modules/accounts/changeStatus.html',
+                controller: 'AccountStateCtrl',
+                // size: 'md',
+                resolve: {
+                    options: function () {
+                        var state, status, id, isAgent, domain;
+                        if (row) {
+                            id = row.id;
+                            domain = row.domain;
+                            state = row.state;
+                            status = row.status;
+                            isAgent = row.agent === 'true';
+                        } else {
+                            // TODO page
+                        }
+                        return {
+                            id: id,
+                            domain: domain,
+                            state: state,
+                            status: status,
+                            isAgent: isAgent
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (result) {
+                if (result.update) {
+                    reloadData();
+                }
+            }, function () {
+
+            });
+        }
     }]);
+
+    app.controller('AccountStateCtrl', ['$scope', 'options', '$modalInstance', 'AcdModel', 'notifi', 'AccountModel',
+    function ($scope, options, $modalInstance, AcdModel, notifi, AccountModel) {
+        $scope.states = ["ONHOOK", "ISBUSY"];
+        $scope.statuses = ["DND", "ONBREAK"];
+
+        $scope.agentStates = ["Waiting", "Idle"];
+        $scope.agentStatuses = ["Logged Out", "Available", "Available (On Demand)", "On Break"];
+
+        $scope.isAgent = options.isAgent;
+
+        var agentDump = {};
+        
+        $scope.initAgent = function () {
+            AcdModel.getAgentParams(options.id, options.domain, function (err, res) {
+                if (err)
+                    return notifi.error(err, 5000);
+
+                $scope.ac.agent = {
+                    state: res.state,
+                    status: res.status
+                };
+
+                agentDump = {
+                    state: res.state,
+                    status: res.status
+                };
+            })
+        };
+
+        $scope.ac = {
+            state: options.state,
+            status: options.state == $scope.states[0] ? null : options.status,
+            agent: {
+                state: null,
+                status: null
+            }
+        };
+        
+        $scope.changeUser = function () {
+            var status = $scope.ac.state == $scope.states[0] ? $scope.states[0] : $scope.ac.status;
+            AccountModel.setStatus(options.id, options.domain, status, function (err, res) {
+                if (err)
+                    return notifi.error(err, 5000);
+
+                $modalInstance.close({update: true}, 5000);
+            });
+        };
+        
+        $scope.changeAgent = function () {
+
+            async.waterfall([
+                function (cb) {
+                    if (agentDump.state != $scope.ac.agent.state) {
+                        AcdModel.setAgentState(options.id, options.domain, $scope.ac.agent.state, cb)
+                    } else {
+                        cb(null, {});
+                    }
+                },
+
+                function (res, cb) {
+                    if (agentDump.status != $scope.ac.agent.status) {
+                        AcdModel.setAgentStatus(options.id, options.domain, $scope.ac.agent.status, cb)
+                    } else {
+                        cb(null);
+                    }
+                }
+            ], function (err, res) {
+                if (err)
+                    return notifi.error(err);
+                notifi.info('Ok: change agent ' + options.id, 3000);
+                $modalInstance.close({update: true}, 5000);
+            });
+        };
+
+        $scope.isNonReg = $scope.ac.state == 'NONREG';
+        
+        $scope.$watch('ac.state', function (val) {
+            if (val == $scope.states[0]) {
+                $scope.ac.status = null;
+            }
+        });
+
+        $scope.accountId = options.id;
+
+        $scope.ok = function () {
+            $scope;
+            $modalInstance.close({}, 5000);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }])
 });

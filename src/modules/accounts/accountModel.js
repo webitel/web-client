@@ -30,7 +30,7 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
                     return cb(err);
 
                 var obj = res.data || res.info;
-                var user = create();
+                var user = createEmpty();
                 user.id = id;
 
                 angular.forEach(obj, function (value, key) {
@@ -160,6 +160,13 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
 
             webitel.api('PUT', '/api/v2/accounts/'+ id + '?domain=' + domainName, request, cb)
         };
+        
+        function setStatus(id, domainName, status, cb) {
+            var request = {
+                "parameters": ["status=" + status]
+            };
+            webitel.api('PUT', '/api/v2/accounts/'+ id + '?domain=' + domainName, request, cb)
+        }
 
         function remove(id, domainName, cb) {
             webitel.api('DELETE', '/api/v2/accounts/'+ id + '?domain=' + domainName, cb)
@@ -184,7 +191,30 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
             });
         };
 
+        function createEmpty() {
+            return {
+                id: null,
+                password: null,
+                variables: [],
 
+                "cc-agent": false,
+                "cc-agent-busy-delay-time": null,
+                "cc-agent-contact": null,
+                "cc-agent-max-no-answer": null,
+                "cc-agent-no-answer-delay-time": null,
+                "cc-agent-reject-delay-time": null,
+                "cc-agent-wrap-up-time": null,
+
+
+                "variable_account_role": "",
+                "variable_skills": [],
+                //"variable_default_language": "",
+                "variable_effective_caller_id_name": "",
+                'vm-password': "",
+                'vm-enabled': false,
+                'webitel-extensions': ""
+            }
+        }
 
         function create () {
             return {
@@ -220,9 +250,11 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
             remove: remove,
             getRoles: getRoles,
             getTierList: getTiers,
+            setStatus: setStatus,
             getQueueList: AcdModel.list,
             addTier: AcdModel.addTier,
             removeTier: AcdModel.removeTier,
+            getAgentParams: AcdModel.getAgentParams
         }
     }]);
 });

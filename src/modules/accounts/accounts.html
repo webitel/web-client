@@ -93,9 +93,8 @@
                         <td class="account-descript">{{row.descript}}</td>
                         <td style="text-align: end">
                             <a href="#/accounts/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
-
+                            <a href="javascript:;" ng-click="changeStatus(row)" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-retweet"></i></a>
                             <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
-                            
                         </td>
                     </tr>
                 </tbody>
