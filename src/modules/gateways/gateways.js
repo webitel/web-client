@@ -182,6 +182,10 @@ define(['app', 'scripts/webitel/utils', 'modules/gateways/gatewayModel', 'script
         $scope.save = save;
         $scope.isLoading = false;
         $scope.reloadData = reloadData;
+            
+        $scope.getParametersViewError = function (form, key) {
+            debugger
+        }
 
         $scope.removeItem = function (row) {
             $confirm({text: 'Are you sure you want to delete ' + row.id + ' ?'},  { templateUrl: 'views/confirm.html' })

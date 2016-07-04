@@ -2,44 +2,42 @@
 
     <section class="panel">
         <!--<div class="panel-heading"><strong>Domain: {{domain.name}}</strong></div>-->
-        <div class="panel-body">
+        <form class="panel-body" name="gatewayForm">
 
             <div class="row">
                 <div class="col-sm-4">
-                    <div class="ng-pristine form-validation ng-invalid ng-invalid-required ng-invalid-equal ng-dirty" novalidate role="form">
 
-
-                        <div class="form-group" >
-                            <label for>Name</label>
-                            <input type="text" class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" required data-ng-model="gateway.name"  ng-disabled="gateway.id">
-                        </div>
-
-                        <div class="form-group" >
-                            <label for>Type</label>
-                            <select class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" required ng-model="gateway.type">
-                                <!-- TODO queue get roles -->
-                                <option value="sipTrunk">SIP trunk</option>
-                                <option value="sipProvider">SIP provider</option>
-                                <!--<option value="skype">Skype connect</option>-->
-                            </select>
-                        </div>
-
-                        <div class="form-group" ng-if="!gateway.id">
-                            <label for>Profile</label>
-                            <select class="form-control" ng-model="gateway.profile" >
-                                <option value="">None</option>
-                                <option value="external">External</option>
-                                <option value="nonreg">Nonreg</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group" ng-if="isRoot && !gateway.id">
-                            <label for>Domain</label>
-                            <select class="form-control"  data-ng-model="gateway.domain" ng-options="domain for domain in domains" ng-init="getDomains()">
-                                <option value="">-- choose domain --</option>
-                            </select>
-                        </div>
+                    <div class="form-group" ng-class="{ 'has-error' : gatewayForm.name.$invalid }">
+                        <label for>Name</label>
+                        <input type="text" class="form-control" name="name" required data-ng-model="gateway.name"  ng-disabled="gateway.id">
                     </div>
+
+                    <div class="form-group" ng-class="{ 'has-error' : gatewayForm.type.$invalid }">
+                        <label for>Type</label>
+                        <select class="form-control" required name="type" ng-model="gateway.type">
+                            <!-- TODO queue get roles -->
+                            <option value="sipTrunk">SIP trunk</option>
+                            <option value="sipProvider">SIP provider</option>
+                            <!--<option value="skype">Skype connect</option>-->
+                        </select>
+                    </div>
+
+                    <div class="form-group" ng-if="!gateway.id">
+                        <label for>Profile</label>
+                        <select class="form-control" ng-model="gateway.profile" >
+                            <option value="">None</option>
+                            <option value="external">External</option>
+                            <option value="nonreg">Nonreg</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" ng-if="isRoot && !gateway.id">
+                        <label for>Domain</label>
+                        <select class="form-control"  data-ng-model="gateway.domain" ng-options="domain for domain in domains" ng-init="getDomains()">
+                            <option value="">-- choose domain --</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 <div class="col-sm-8">
@@ -49,11 +47,10 @@
                                 <tab heading="General">
                                     <div class="panel-body">
 
-                                        <div class="form-group" ng-repeat="(key, row) in template[gateway.type].fields | orderBy:'+$index'">
+                                        <div class="form-group" ng-class="{ 'has-error' : !gateway.attr[key] }" ng-repeat="(key, row) in template[gateway.type].fields | orderBy:'+$index'">
                                             <label for>{{row.caption}}</label>
-                                            <input type="text" ng-disabled="row.value" class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" ng-model="gateway.attr[key]" required>
+                                            <input type="text" name="{{key}}"  class="form-control" ng-model="gateway.attr[key]" required>
                                         </div>
-
 
                                     </div>
                                 </tab>
@@ -120,10 +117,10 @@
 
             </div>
 
-        </div>
+        </form>
 
         <div class="panel-footer">
-            <button ng-show="isEdit" type="button" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit" type="button" ng-disabled="gatewayForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
             <div>
