@@ -1,7 +1,7 @@
 <div class="page">
     <div class="panel">
 
-        <div class="panel-body">
+        <form name="dialerForm" class="panel-body">
 
             <div class="row">
                 <div class="col-sm-12">
@@ -14,7 +14,7 @@
                                         <span>General</span>
                                     </tab-heading>
 
-                                    <form name="dialerForm" novalidate >
+                                    <div >
                                         <div class="row">
 
                                             <div class="col-sm-6">
@@ -23,32 +23,32 @@
                                                     <div class="col-sm-6">
 
                                                         <div  class="form-group" ng-class="{ 'has-error' : dialerForm.name.$invalid }">
-                                                            <label for>Name</label>
+                                                            <label class="control-label">Name</label>
                                                             <input ng-disabled="dialer.active" type="text"  class="form-control" name="name" required ng-model="dialer.name" >
                                                         </div>
 
                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.type.$invalid}">
-                                                            <label>Type</label>
+                                                            <label class="control-label">Type</label>
                                                             <select ng-disabled="dialer.active" class="form-control" name="type" ng-model="dialer.type" required >
                                                                 <option ng-repeat="type in diealerTypes" ng-selected="{{type==dialer.type}}"  value="{{type}}">{{type}}</option>
                                                             </select>
                                                         </div>
 
                                                         <div class="form-group" >
-                                                            <label for>State</label>
+                                                            <label class="control-label">State</label>
                                                             <select ng-disabled="true" class="form-control"  ng-model="dialer.state">
                                                                 <option   ng-repeat="state in diealerStates" ng-selected="{{state.val==dialer.state}}" value="{{state.val}}">{{state.name}}</option>
                                                             </select>
                                                         </div>
 
                                                         <div  class="form-group">
-                                                            <label for>Last cause</label>
-                                                            <input ng-disabled="true" type="text"  class="form-control" required ng-model="dialer._cause" >
+                                                            <label class="control-label">Last cause</label>
+                                                            <input ng-disabled="true" type="text"  class="form-control" ng-model="dialer._cause" >
                                                         </div>
 
                                                         <div  class="form-group" ng-if="dialer.nextTick">
-                                                            <label for>Sleeping till</label>
-                                                            <input ng-disabled="true" type="text"  class="form-control" required value="{{toDateString(dialer.nextTick)}}" >
+                                                            <label class="control-label">Sleeping till</label>
+                                                            <input ng-disabled="true" type="text"  class="form-control" value="{{toDateString(dialer.nextTick)}}" >
                                                         </div>
 
                                                     </div>
@@ -56,14 +56,14 @@
                                                     <div class="col-sm-6">
 
                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.priority.$invalid && !dialerForm.priority.$pristine }">
-                                                            <label for>Priority</label>
+                                                            <label class="control-label">Priority</label>
                                                             <input ng-disabled="dialer.active" class="form-control" type="number" name="priority" ng-model="dialer.priority" min="0" max="999" required>
                                                         </div>
 
 
-                                                        <div class="form-group" >
-                                                            <label for>Calendar</label>
-                                                            <ui-select ng-disabled="dialer.active"  ng-model="dialer.calendar" theme="bootstrap"  title="Choose a gateway">
+                                                        <div class="form-group" ng-class="{ 'has-error' : !dialer.calendar.id }">
+                                                            <label class="control-label">Calendar</label>
+                                                            <ui-select ng-disabled="dialer.active" name="calendar"  ng-model="dialer.calendar" theme="bootstrap"  title="Choose a calendar">
                                                                 <ui-select-match placeholder="Select or search calendar...">{{$select.selected.name}}</ui-select-match>
                                                                 <ui-select-choices refresh="getCalendars()" repeat="c in calendars | filter: $select.search">
                                                                     <span ng-bind-html="c.name | highlight: $select.search"></span>
@@ -92,15 +92,15 @@
                                                                 <div class="row">
 
                                                                     <div class="col-sm-6">
-                                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.limit.$invalid && !dialerForm.limit.$pristine }">
-                                                                            <label for>Limit</label>
+                                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.limit.$invalid}">
+                                                                            <label class="control-label">Limit</label>
                                                                             <input ng-disabled="dialer.active" class="form-control" type="number" name="limit" ng-model="dialer.parameters.limit" min="0" max="999" required>
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="col-sm-6">
-                                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.intervalTryCount.$pristine }">
-                                                                            <label for>Wait between retries (in seconds)</label>
+                                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.intervalTryCount.$invalid}">
+                                                                            <label class="control-label">Wait between retries (in seconds)</label>
                                                                             <input ng-disabled="dialer.active" class="form-control" type="number" name="intervalTryCount" ng-model="dialer.parameters.intervalTryCount" min="0" max="999" required>
                                                                         </div>
                                                                     </div>
@@ -109,14 +109,14 @@
 
                                                                 <div class="row">
                                                                     <div class="col-sm-6">
-                                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.minBillSec.$invalid && !dialerForm.minBillSec.$pristine }">
-                                                                            <label >Minimum succeed call duration (in seconds)</label>
+                                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.minBillSec.$invalid }">
+                                                                            <label class="control-label">Minimum succeed call duration (in seconds)</label>
                                                                             <input ng-disabled="dialer.active" class="form-control" type="number" name="minBillSec" ng-model="dialer.parameters.minBillSec" min="0" required>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-sm-6">
-                                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.maxTryCount.$pristine }">
-                                                                            <label >Maximum number of retry</label>
+                                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.maxTryCount.$invalid }">
+                                                                            <label class="control-label">Maximum number of retry</label>
                                                                             <input style="margin-top: 18px;" ng-disabled="dialer.active" class="form-control" type="number" name="maxTryCount" ng-model="dialer.parameters.maxTryCount" min="0" max="999" required>
                                                                         </div>
                                                                     </div>
@@ -125,21 +125,21 @@
                                                                 <div class="row">
                                                                     <div class="col-sm-6" ng-if="dialer.type!=diealerTypes[0]">
                                                                         <div class="form-group" >
-                                                                            <label for>Waiting for result status</label>
+                                                                            <label class="control-label">Waiting for result status</label>
                                                                             <label  style="width: 100%;" class="switch switch-success">
                                                                                 <input ng-disabled="dialer.active" type="checkbox" ng-model="dialer.parameters.waitingForResultStatus" class="ng-valid ng-dirty"><i></i></label>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-sm-6" ng-if="dialer.type!=diealerTypes[0]" ng-show="dialer.parameters.waitingForResultStatus">
-                                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.wrapUpTime.$invalid && !dialerForm.wrapUpTime.$pristine }">
-                                                                            <label for>Wrap up time</label>
+                                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.wrapUpTime.$invalid }">
+                                                                            <label class="control-label">Wrap up time</label>
                                                                             <input ng-disabled="dialer.active" class="form-control" type="number" name="wrapUpTime" ng-model="dialer.parameters.wrapUpTime" min="0" max="999">
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="col-sm-6">
                                                                         <div ng-if="dialer.type==diealerTypes[0]" class="form-group" ng-class="{ 'has-error' : dialerForm.originateTimeout.$invalid && !dialerForm.originateTimeout.$pristine }">
-                                                                            <label for>Originate timeout</label>
+                                                                            <label class="control-label">Originate timeout</label>
                                                                             <input ng-disabled="dialer.active" class="form-control" type="number" name="originateTimeout" ng-model="dialer.parameters.originateTimeout" min="0" max="999">
                                                                         </div>
                                                                     </div>
@@ -183,7 +183,7 @@
                                             </div>
 
                                         </div>
-                                    </form>
+                                    </div>
                                 </tab>
 
                                 <tab ng-if="!isNew">
@@ -441,10 +441,10 @@
             </div>
 
 
-        </div>
+        </form>
 
         <div class="panel-footer">
-            <button ng-show="isEdit" type="button" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit" type="button" ng-disabled="dialerForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
         </div>

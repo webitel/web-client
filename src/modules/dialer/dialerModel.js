@@ -304,7 +304,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "name" : option.name || "",
                 "description" : option.description ||  "",
                 "state" : +option.state || 0,
-                "type" : option.type || "progressive",
+                "type" : option.type,
                 "priority" : angular.isNumber(option.priority) ? option.priority : 1,
                 "active" : typeof option.active == 'boolean' ? option.active : false,
                 "calendar" : calendar,
