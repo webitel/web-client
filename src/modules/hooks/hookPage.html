@@ -2,17 +2,17 @@
 
     <div class="panel">
 
-        <div class="panel-body">
+        <form name="hookForm" class="panel-body">
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group" >
-                        <label for>URI</label>
-                        <input type="text" class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" required data-ng-model="hook.action.url" style="">
+                    <div class="form-group" ng-class="{ 'has-error' : hookForm.url.$invalid }">
+                        <label class="control-label">URI</label>
+                        <input type="text" name="url" class="form-control" required data-ng-model="hook.action.url">
                     </div>
 
-                    <div class="form-group">
-                        <label for>Method</label>
-                        <select class="form-control" ng-model="hook.action.method">
+                    <div class="form-group" ng-class="{ 'has-error' : hookForm.method.$invalid }">
+                        <label class="control-label">Method</label>
+                        <select class="form-control" name="method" ng-model="hook.action.method">
                             <option>GET</option>
                             <option>POST</option>
                             <option>PUT</option>
@@ -20,21 +20,21 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label for>Event</label>
-                        <select class="form-control" ng-model="hook.event" >
+                    <div class="form-group" ng-class="{ 'has-error' : !hook.event}">
+                        <label class="control-label" >Event</label>
+                        <select class="form-control" name="event" ng-model="hook.event" >
                             <option ng-repeat="option in EVENTS" value="{{option}}">{{option}}</option>
                         </select>
                     </div>
 
                     <div class="form-group" >
                         <label for>Description</label>
-                        <input type="text" class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" required data-ng-model="hook.description" style="">
+                        <input type="text" class="form-control" data-ng-model="hook.description" style="">
                     </div>
 
                     <div class="form-group" >
                         <label for>Enable</label>
-                        <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="hook.enable" class="ng-valid ng-dirty"><i></i></label>
+                        <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="hook.enable"><i></i></label>
                     </div>
 
                 </div>
@@ -47,7 +47,8 @@
                                     <tab-heading>
                                         <span>Filters</span>
                                     </tab-heading>
-                                    <a ng-click="hook._filters.push({})" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+
+                                    <a ng-init="!hook._filters ? hook._filters =[] : hook._filters" ng-click="hook._filters.push({})" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
                                         <i class="fa fa-plus"></i>
                                     </a>
 
@@ -55,7 +56,7 @@
                                         <li class="list-group-item clearfix" ng-repeat="(i, item) in hook._filters">
 
                                             <div class="col-sm-5">
-                                                <input type="text" class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" required data-ng-model="item.name" style="">
+                                                <input type="text" class="form-control" required data-ng-model="item.name" style="">
                                             </div>
                                             <div class="col-sm-2">
                                                 <select class="form-control" ng-model="item.operation">
@@ -70,11 +71,11 @@
                                             </div>
 
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" required data-ng-model="item.value" style="">
+                                                <input type="text" class="form-control" required data-ng-model="item.value" style="">
                                             </div>
 
                                             <div class="col-sm-1">
-                                                <a href="javascript:;" ng-click="hook._filters.splice(i, 1)" style="border: 0" class="form-control text-muted ng-scope"><i class="glyphicon glyphicon-remove"></i></a>
+                                                <a href="javascript:;" ng-click="hook._filters.splice(i, 1)" style="border: 0" class="form-control text-muted"><i class="glyphicon glyphicon-remove"></i></a>
                                             </div>
                                         </li>
                                     </ul>
@@ -90,13 +91,13 @@
                                     <ul class="list-group" style="max-height:250px; overflow-y:auto; padding: 0;">
                                         <li class="list-group-item clearfix" ng-repeat="(i, item) in hook._map">
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" required data-ng-model="item.field" style="">
+                                                <input type="text" class="form-control" required data-ng-model="item.field" style="">
                                             </div>
                                             <div class="col-sm-5">
-                                                <input type="text" class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" required data-ng-model="item.name" style="">
+                                                <input type="text" class="form-control" required data-ng-model="item.name" style="">
                                             </div>
                                             <div class="col-sm-1">
-                                                <a href="javascript:;" ng-click="hook._map.splice(i, 1)" style="border: 0" class="form-control text-muted ng-scope"><i class="glyphicon glyphicon-remove"></i></a>
+                                                <a href="javascript:;" ng-click="hook._map.splice(i, 1)" style="border: 0" class="form-control text-muted"><i class="glyphicon glyphicon-remove"></i></a>
                                             </div>
                                         </li>
                                     </ul>
@@ -108,11 +109,11 @@
             </div>
 
 
-        </div>
+        </form>
 
         <div class="panel-footer">
             <!--<btn-save-exit save="save" save-exit="save"></btn-save-exit>-->
-            <button ng-show="isEdit" type="button" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit" type="button" ng-disabled="hookForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
         </div>
