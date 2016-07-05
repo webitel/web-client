@@ -99,7 +99,9 @@
                     <option ng-repeat="comState in CommunicationStates" value="{{comState.val}}">{{comState.name}}</option>
                 </select>
             </th>
-            <th></th>
+            <th>
+                <a href="javascript:;" style="padding: 0" ng-click="removeMembers()" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+            </th>
         </tr>
         <tr ng-show="membersRowCollection.length <= 0">
             <th colspan="9">
@@ -129,7 +131,7 @@
             <td>{{t.communications[0].priority}}</td>
             <td>{{t.communications[0].state}}</td>
             <td rowspan="{{t.communications.length}}">
-                <div ng-if="!t._lock">
+                <div style="width: 63px" ng-if="!t._lock">
                     <a ng-click="editMember(t, $index)" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
 
                     <a href="javascript:;" ng-click="removeMember(t, $index)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>

@@ -627,7 +627,58 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             });
         };
-        
+
+        var mapColums = {
+            _endCause: function (v) {
+                return {
+                    $regex: '^' + v
+                };
+            },
+            _lock: function (v) {
+                return v === 'true'
+            },
+            communications_number: function (v) {
+                return {
+                    $regex: '^' + v
+                };
+            },
+            communications_priority: function (v) {
+                return +v;
+            },
+            communications_state: function (v) {
+                return +v;
+            },
+            name: function (v) {
+                return {
+                    $regex: '^' + v
+                };
+            },
+            priority: function (v) {
+                return +v;
+            }
+        };
+
+        function removeMembers() {
+            var filter = {};
+            angular.forEach(_tableState.search.predicateObject, function (i, key) {
+                if (mapColums.hasOwnProperty(key)) {
+                    var name = (key != '_endCause' && key != '_lock') ? key.replace('_', '.') : key;
+                    filter[name] = mapColums[key](i)
+                }
+            });
+
+            $confirm({text: 'Are you sure you want to delete ' + $scope.count + ' members ?'},  { templateUrl: 'views/confirm.html' })
+                .then(function() {
+                    DialerModel.members.removeMulti($scope.dialer._id, filter, $scope.domain, function (err, res) {
+                        if (err)
+                            return notifi.error(err, 5000);
+                        notifi.info('Remove ' + res.n + ' members.', 5000);
+                        $scope.reloadData();
+                    });
+                });
+        }
+
+        $scope.removeMembers = removeMembers;
         $scope.removeMember = function (row, index) {
             $confirm({text: 'Are you sure you want to delete resource ' + row.name + ' ?'},  { templateUrl: 'views/confirm.html' })
                 .then(function() {

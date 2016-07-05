@@ -289,6 +289,19 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
         };
 
+        function removeMulti (dialerId, filter, domainName, cb) {
+            if (!domainName)
+                return dialerId(new Error("Domain is required."));
+            if (!dialerId)
+                return cb(new Error("Dialer is required."));
+
+
+            webitel.api('DELETE', '/api/v2/dialer/' + dialerId + '/members?&domain=' + domainName, JSON.stringify(filter), function(err, res) {
+                var data = res.data || res.info;
+                return cb && cb(err, data);
+            });
+        };
+
         function create (domain, option) {
             option = option || {};
             var calendar = option.calendar ? {id: option.calendar.id, name: option.calendar.name} : {};
@@ -368,6 +381,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 update: updateMember,
                 remove: removeMember,
                 aggregate: aggregateMember,
+                removeMulti: removeMulti
             }
         }
     }]);

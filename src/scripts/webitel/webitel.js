@@ -144,6 +144,7 @@ define(['angular',
 		function setTokenKey (token, key) {
 			$http.defaults.headers.common['x-key'] = key;
 			$http.defaults.headers.common['x-access-token'] = token;
+			$http.defaults.headers.common['Content-Type'] = "application/json;charset=utf-8";
 		};
 		// end region
 
