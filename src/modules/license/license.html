@@ -45,7 +45,7 @@
                     <th st-sort="issued" >Issued</th>
                     <th st-sort="expire" >Expire</th>
 
-                    <th>Action</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody ng-show="rowCollection.length > 0">
@@ -54,10 +54,8 @@
                 <td >{{row['users/limit']}}</td>
                 <td >{{row.issued}}</td>
                 <td >{{row.expire}}</td>
-                <td class="center">
-                    <p>
-                        <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
-                    </p>
+                <td style="text-align: end">
+                    <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                 </td>
             </tr>
             </tbody>
