@@ -1,13 +1,14 @@
 define(['angular', 
 	'webitel-library',
 	'scripts/webitel/utils',
+	'moment',
 	'scripts/shared/notifier'
-], function (angular, Webitel, utils) {
+], function (angular, Webitel, utils, moment) {
 
 	var webitel = angular.module('app.webitel', ['app.notifier']);
 
-	webitel.service('webitel', ['$location', '$http', '$localStorage', '$rootScope', '$modal', 'notifi', '$q', '$routeParams', '$timeout',
-	 function($location, $http, $localStorage, $rootScope, $modal, notifi, $q, $routeParams, $timeout){
+	webitel.service('webitel', ['$location', '$http', '$localStorage', '$rootScope', '$modal', 'notifi', '$q', '$routeParams',
+	 function($location, $http, $localStorage, $rootScope, $modal, notifi, $q, $routeParams){
 
 		var connection = {
 			connected: false,
@@ -53,7 +54,36 @@ define(['angular',
 		function getSelectedDomain() {
 			return (connection.session && connection.session.domain) || selectDomain || $routeParams.domain;
 		}
+		 
+		var NotifyHeader = function () {
+			this._id = 0;
+			this.messages = [];
+		};
+		NotifyHeader.prototype.getLink = function () {
+			return this.messages;
+		};
+		NotifyHeader.prototype.add = function (msg, desc, options) {
+			var msg = {
+				_id: this._id++,
+				class: options && options.class,
+				link: options && options.link,
+				text: msg,
+				desc: desc
+			};
+			if (!~this.messages.indexOf(msg))
+				this.messages.push(msg)
+		};
+		 
+		 NotifyHeader.prototype.remove = function (id) {
+			 for (var i = 0, len = this.messages.length; i < len; i++)
+			 	if (this.messages[i].id === id) {
+					this.messages.splice(i, 1);
+					return true;
+				};
+			 return false;
+		 };
 
+		 var notifyHeader = new NotifyHeader();
 
 		// region Session
 		var Session = function(option) {
@@ -196,6 +226,7 @@ define(['angular',
 					if (err)
 						return cb(err);
 					doCb(null, res);
+					checkLicenseStatus();
 				})
 			} else {
 				cb(new Error('Bad request.'))
@@ -283,6 +314,31 @@ define(['angular',
 				 cb(_e, {}, statusCode);
 			 });
 		 };
+		 var checkedStatus = false;
+		 function checkLicenseStatus() {
+			 if (checkedStatus || !connection.session.checkResource('license', 'r')) return;
+
+			 httpApi("GET", "/api/v2/license?sid=true", function (err, res) {
+				 if (err)
+					 return notifi.error(err);
+				 checkedStatus = true;
+				 var items = res.info;
+				 angular.forEach(items, function (row) {
+					 var expireTime = moment(row.expire, "DD-MM-YYYY").valueOf(),
+						 currentTime = moment().valueOf();
+					 if (expireTime <= currentTime) {
+						 return 0;
+					 } else if (( expireTime - currentTime - 2592000000) <= 0) {
+						 notifyHeader.add('License: ' + row.customer, 'Expire ' + row.expire, {class: "btn-danger", link: "#/license"});
+						 // error.push(row.customer + ': ' + row.expire);
+					 } else if (( expireTime - currentTime - 5184000000) <= 0) {
+						 notifyHeader.add('License: ' + row.customer, 'Expire ' + row.expire, {class: "btn-warning", link: "#/license"});
+						 // warn.push(row.customer + ': ' + row.expire);
+					 }
+				 });
+
+			 });
+		 }
 
 		return {
 			"signin": signin,
@@ -295,7 +351,9 @@ define(['angular',
 			"domain": getSelectedDomain,
 			"onConnect": promiseOnConnect.promise,
 			"$scope": $scope,
-			"destroyLocalSession": destroyLocalSession
+			"destroyLocalSession": destroyLocalSession,
+			"notify": notifyHeader,
+			"checkLicenseStatus": checkLicenseStatus
 		};
 	}]);
 	

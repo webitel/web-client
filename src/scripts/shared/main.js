@@ -9,8 +9,8 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
 				$scope.main.name = session.username;
 				$scope.main.acl = session.acl;
 				$scope.admin.domain = session.domain;
-				localize.setLanguage('EN')
-
+				localize.setLanguage('EN');
+				$scope.notifications = webitel.notify.getLink();
 				var modules = [];
 				angular.forEach(MODULES, function (item) {
 					if ((session.checkResource(item.acl, 'r') || session.checkResource(item.acl, 'ro')) && !item.hide) {
