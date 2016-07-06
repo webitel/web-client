@@ -1,6 +1,6 @@
-define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/gateways/gatewayModel',
+define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/cdr/libs/fileSaver', 'modules/gateways/gatewayModel',
     'modules/dialer/dialerModel', 'modules/calendar/calendarModel',  'modules/cdr/libs/json-view/jquery.jsonview',
-    'modules/cdr/fileModel', 'modules/accounts/accountModel'], function (app, async, utils, aceEditor, callflowUtils) {
+    'modules/cdr/fileModel', 'modules/accounts/accountModel'], function (app, async, utils, aceEditor, callflowUtils, fileSaver) {
 
 
     function moveUp (arr, value, by) {
@@ -802,11 +802,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         $scope.progressCount = 0;
         $scope.processImport = false;
 
-        $scope.showExportPage = function () {
+        $scope.showImportPage = function () {
             var modalInstance = $modal.open({
                 animation: true,
-                templateUrl: '/modules/dialer/exportCsv.html',
-                controller: 'MemberDialerExportCtrl',
+                templateUrl: '/modules/dialer/importCsv.html',
+                controller: 'MemberDialerImportCtrl',
                 size: 'lg',
                 resolve: {
                     options: function () {
@@ -858,9 +858,94 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             });
         };
 
+        $scope.exportMembers = function () {
+            var modalInstance = $modal.open({
+                animation: true,
+                templateUrl: '/modules/dialer/exportPageCsv.html',
+                controller: 'MemberDialerExportCtrl',
+                size: 'lg',
+                resolve: {
+                    options: function () {
+                        return {
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (settings) {
+                var option = {
+                    sort: {},
+                    filter: _tableState.search.predicateObject || {},
+                    page: 0,
+                    limit: 1000,
+                    columns: [],
+                    fileName: settings.fileName || $scope.dialer.name
+                };
+
+                var data = "";
+
+                function addRow(row) {
+                    angular.forEach(settings.data, function (i, index) {
+                        var val;
+                        if (i.field === "callTime") {
+                            if (row._log) {
+                                var call = row._log[row._log.length - 1];
+                                call = call && call.steps;
+                                val = call && call[0].time;
+                                if (i.type == 'string' && val)
+                                    val = new Date(val).toLocaleString()
+                            }
+                        } else {
+                            val = row;
+                            i.route.split('.').forEach(function (token) {
+                                val = val && val[token];
+                            });
+                        }
+
+                        if (!val)
+                            val = '';
+
+                        data += val + (settings.data.length - 1 == index ? '': settings.separator);
+                    });
+                    data += '\n';
+                }
+
+                if (settings.skipFilter)
+                    option.filter = {};
+
+                if (settings.headers) {
+                    angular.forEach(settings.data, function (i, index) {
+                        data += i.name + (settings.data.length - 1 == index ? '' : settings.separator);
+                    });
+                    data += '\n';
+                }
+                
+                (function process(err, res) {
+                    if (err)
+                        return notifi.error(err);
+                    
+                    angular.forEach(res, function (row) {
+                        addRow(row);
+                    });
+
+                    if (res && res.length < option.limit) {
+                        var blob = new Blob([data], {
+                            type: "text/plain;charset=" + settings.charSet
+                        });
+                        fileSaver(blob, option.fileName + '.csv');
+                        // exit;
+                        return;
+                    }
+
+                    option.page++;
+                    DialerModel.members.list($scope.domain, $scope.dialer._id, option, process);
+                })();
+            })
+        }
+
     }]);
     
-    app.controller('MemberDialerExportCtrl', ['$scope', '$modalInstance', 'notifi', function ($scope, $modalInstance, notifi) {
+    app.controller('MemberDialerImportCtrl', ['$scope', '$modalInstance', 'notifi', function ($scope, $modalInstance, notifi) {
         $scope.settings = {
             separator: ';',
             headers: true,
@@ -1000,105 +1085,181 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
         }
 
-        $scope.CharSet = [
-            {
-                id: "big5",
-                name: "Chinese Traditional (Big5)"
-            },
-            {
-                id: "euc-kr",
-                name: "Korean (EUC)"
-            },
-            {
-                id: "iso-8859-1",
-                name: "Western Alphabet"
-            },
-            {
-                id: "iso-8859-2",
-                name: "Central European Alphabet (ISO)"
-            },
-            {
-                id: "iso-8859-3",
-                name: "Latin 3 Alphabet (ISO)"
-            },
-            {
-                id: "iso-8859-4",
-                name: "Baltic Alphabet (ISO)"
-            },
-            {
-                id: "iso-8859-5",
-                name: "Cyrillic Alphabet (ISO)"
-            },
-            {
-                id: "iso-8859-6",
-                name: "Arabic Alphabet (ISO)"
-            },
-            {
-                id: "iso-8859-7",
-                name: "Greek Alphabet (ISO)"
-            },
-            {
-                id: "iso-8859-8",
-                name: "Hebrew Alphabet (ISO)"
-            },
-            {
-                id: "koi8-r",
-                name: "Cyrillic Alphabet (KOI8-R)"
-            },
-            {
-                id: "shift-jis",
-                name: "Japanese (Shift-JIS)"
-            },
-            {
-                id: "x-euc",
-                name: "Japanese (EUC)"
-            },
-            {
-                id: "utf-8",
-                name: "Universal Alphabet (UTF-8)"
-            },
-            {
-                id: "windows-1250",
-                name: "Central European Alphabet (Windows)"
-            },
-            {
-                id: "windows-1251",
-                name: "Cyrillic Alphabet (Windows)"
-            },
-            {
-                id: "windows-1252",
-                name: "Western Alphabet (Windows)"
-            },
-            {
-                id: "windows-1253",
-                name: "Greek Alphabet (Windows)"
-            },
-            {
-                id: "windows-1254",
-                name: "Turkish Alphabet"
-            },
-            {
-                id: "windows-1255",
-                name: "Hebrew Alphabet (Windows)"
-            },
-            {
-                id: "windows-1256",
-                name: "Arabic Alphabet (Windows)"
-            },
-            {
-                id: "windows-1257",
-                name: "Baltic Alphabet (Windows)"
-            },
-            {
-                id: "windows-1258",
-                name: "Vietnamese Alphabet (Windows)"
-            },
-            {
-                id: "windows-874",
-                name: "Thai (Windows)"
-            }
+        $scope.CharSet = utils.CharSet;
+    }]);
+    
+    app.controller('MemberDialerExportCtrl', ['$scope', '$modalInstance', 'notifi', function ($scope, $modalInstance, notifi) {
+        $scope.settings = {
+            separator: ';',
+            headers: true,
+            skipFilter: false,
+            charSet: 'utf-8',
+            data: [],
+            template: {},
+            fields: {}
+        };
 
-        ];
+        $scope.CharSet = utils.CharSet;
+
+        var ExportColumns = $scope.ExportColumns = {
+            "name": {
+                selected: false,
+                name: "Name",
+                field: 'name'
+            },
+            "priority": {
+                selected: false,
+                name: "Priority",
+                field: 'priority'
+            },
+            "variable": {
+                "name": "Variable",
+                "field": "variable",
+                "type": "variable",
+                "value": "",
+                "varName": ""
+            },
+            //"timezone": {
+            //    selected: false,
+            //    name: "Timezone",
+            //    field: 'timezone'
+            //},
+            "number_1": {
+                selected: false,
+                name: "number_1",
+                field: 'number',
+                position: 0,
+                type: 'communications'
+            },
+            "priority_1": {
+                selected: false,
+                name: "priority_1",
+                field: "priority",
+                position: 0,
+                type: 'communications'
+            },
+            "state_1": {
+                selected: false,
+                name: "state_1",
+                field: "state",
+                position: 0,
+                type: 'communications'
+            },
+            "number_2": {
+                selected: false,
+                name: "number_2",
+                field: 'number',
+                position: 1,
+                type: 'communications'
+            },
+            "priority_2": {
+                selected: false,
+                name: "priority_2",
+                field: "priority",
+                position: 1,
+                type: 'communications'
+            },
+            "state_2": {
+                selected: false,
+                name: "state_2",
+                field: "state",
+                position: 1,
+                type: 'communications'
+            },
+            "number_3": {
+                selected: false,
+                name: "number_3",
+                field: 'number',
+                position: 2,
+                type: 'communications'
+            },
+            "priority_3": {
+                selected: false,
+                name: "priority_3",
+                field: "priority",
+                position: 2,
+                type: 'communications'
+            },
+            "state_3": {
+                selected: false,
+                name: "state_3",
+                field: "state",
+                position: 2,
+                type: 'communications'
+            },
+            "number_4": {
+                selected: false,
+                name: "number_4",
+                field: 'number',
+                position: 3,
+                type: 'communications'
+            },
+            "priority_4": {
+                selected: false,
+                name: "priority_4",
+                field: "priority",
+                position: 3,
+                type: 'communications'
+            },
+            "state_4": {
+                selected: false,
+                name: "state_4",
+                field: "state",
+                position: 3,
+                type: 'communications'
+            },
+            "_endCause": {
+                name: "End cause",
+                "field": "_endCause"
+            },
+            "_probeCount": {
+                name: "Probe",
+                "field": "_probeCount"
+            },
+            "callTime": {
+                name: "Last call time",
+                type: "lastCall",
+                "field": "_log.steps.time"
+            }
+        };
+        
+        $scope.up = function (row) {
+            moveUp($scope.settings.data, row)
+        };
+        
+        $scope.down = function (row) {
+            moveDown($scope.settings.data, row)
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+        
+        $scope.ok = function () {
+            var fields = [];
+            angular.forEach($scope.settings.data, function (i) {
+                var s = ExportColumns[i.field];
+                if (s) {
+                    i.name = s.name;
+                    if (s.type == 'variable') {
+                        fields.push('variables.' + i.value);
+                        i.route = 'variables.' + i.value;
+                        i.name += ' ' +  i.value;
+                    } else if (s.type == 'communications') {
+                        i.route = 'communications.' + s.position + '.' + s.field;
+                        if (!~fields.indexOf('communications'))
+                            fields.push('communications');
+                    } else {
+                        if (!~fields.indexOf(s.field))
+                            fields.push(s.field);
+                        i.route = s.field;
+                    }
+                }
+            });
+            $scope.settings.fields = fields;
+            $modalInstance.close($scope.settings, 5000);
+        }
+
     }]);
 
     app.directive('fileReaderCsv', function() {

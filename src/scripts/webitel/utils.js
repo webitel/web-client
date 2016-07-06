@@ -2495,6 +2495,106 @@ define(['angular'], function (angular) {
         }
     ];
 
+    var CharSet = [
+        {
+            id: "big5",
+            name: "Chinese Traditional (Big5)"
+        },
+        {
+            id: "euc-kr",
+            name: "Korean (EUC)"
+        },
+        {
+            id: "iso-8859-1",
+            name: "Western Alphabet"
+        },
+        {
+            id: "iso-8859-2",
+            name: "Central European Alphabet (ISO)"
+        },
+        {
+            id: "iso-8859-3",
+            name: "Latin 3 Alphabet (ISO)"
+        },
+        {
+            id: "iso-8859-4",
+            name: "Baltic Alphabet (ISO)"
+        },
+        {
+            id: "iso-8859-5",
+            name: "Cyrillic Alphabet (ISO)"
+        },
+        {
+            id: "iso-8859-6",
+            name: "Arabic Alphabet (ISO)"
+        },
+        {
+            id: "iso-8859-7",
+            name: "Greek Alphabet (ISO)"
+        },
+        {
+            id: "iso-8859-8",
+            name: "Hebrew Alphabet (ISO)"
+        },
+        {
+            id: "koi8-r",
+            name: "Cyrillic Alphabet (KOI8-R)"
+        },
+        {
+            id: "shift-jis",
+            name: "Japanese (Shift-JIS)"
+        },
+        {
+            id: "x-euc",
+            name: "Japanese (EUC)"
+        },
+        {
+            id: "utf-8",
+            name: "Universal Alphabet (UTF-8)"
+        },
+        {
+            id: "windows-1250",
+            name: "Central European Alphabet (Windows)"
+        },
+        {
+            id: "windows-1251",
+            name: "Cyrillic Alphabet (Windows)"
+        },
+        {
+            id: "windows-1252",
+            name: "Western Alphabet (Windows)"
+        },
+        {
+            id: "windows-1253",
+            name: "Greek Alphabet (Windows)"
+        },
+        {
+            id: "windows-1254",
+            name: "Turkish Alphabet"
+        },
+        {
+            id: "windows-1255",
+            name: "Hebrew Alphabet (Windows)"
+        },
+        {
+            id: "windows-1256",
+            name: "Arabic Alphabet (Windows)"
+        },
+        {
+            id: "windows-1257",
+            name: "Baltic Alphabet (Windows)"
+        },
+        {
+            id: "windows-1258",
+            name: "Vietnamese Alphabet (Windows)"
+        },
+        {
+            id: "windows-874",
+            name: "Thai (Windows)"
+        }
+
+    ];
+
     return {
         WebitelEvent: WebitelEvent,
         WebitelHashCollection: WebitelHashCollection,
@@ -2507,6 +2607,7 @@ define(['angular'], function (angular) {
         events: events,
         timeZones: timeZones,
         CSVToArray: CSVToArray,
-        CSV2JSON: CSV2JSON
+        CSV2JSON: CSV2JSON,
+        CharSet: CharSet
     }
 });

@@ -9,7 +9,7 @@
                 <i class="glyphicon glyphicon-refresh"></i>
             </a>
 
-            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  ng-click="showExportPage()" style="padding: 0">
+            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  ng-click="showImportPage()" style="padding: 0">
                     <i class="glyphicon glyphicon-cloud-upload"></i>
             </span>
 
@@ -100,6 +100,7 @@
                 </select>
             </th>
             <th>
+                <a href="javascript:;" style="padding: 0" ng-click="exportMembers()" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-cloud-download"></i></a>
                 <a href="javascript:;" style="padding: 0" ng-click="removeMembers()" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
             </th>
         </tr>
