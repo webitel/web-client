@@ -32,10 +32,9 @@
                                            ng-model="calendar._startDate"
                                            is-open="dateOpenedControl.openedDateStart"
                                            datepicker-options="dateOptions"
-                                           ng-click="openDate($event, 'openedDateStart')"
                                            ng-change="changeDate('startDate')"
                                             >
-                                    <span class="input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
+                                    <span class="btn input-group-addon" ng-click="openDate($event, 'openedDateStart')"><i class="fa fa-calendar"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -51,9 +50,8 @@
                                            is-open="dateOpenedControl.openedDateEnd"
                                            datepicker-options="dateOptions"
                                            ng-change="changeDate('endDate')"
-                                           ng-click="openDate($event,'openedDateEnd')"
                                             >
-                                    <span class="input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
+                                    <span class="btn input-group-addon" ng-click="openDate($event,'openedDateEnd')"><i class="fa fa-calendar"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -222,10 +220,9 @@
                                            ng-model="holiday.date"
                                            is-open="dateOpenedControl.openedHolidays"
                                            datepicker-options="dateOptions"
-                                           ng-click="openDate($event, 'openedHolidays')"
                                            show-button-bar="true"
                                             >
-                                    <span class="input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
+                                    <span class=" btn input-group-addon" ng-click="openDate($event, 'openedHolidays')"><i class="fa fa-calendar"></i></span>
                                 </div>
                             </td>
 
