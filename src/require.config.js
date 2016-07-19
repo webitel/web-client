@@ -58,7 +58,9 @@ require.config({
     'bootstrap-select': 'modules/cdr/libs/bootstrap/bootstrap-select.min',
     'bootstrap-selectize': 'modules/cdr/libs/bootstrap/selectize.min',
 
-    'ui-select': 'bower_components/ui-select/dist/select.min'
+    'ui-select': 'bower_components/ui-select/dist/select.min',
+    'jsZIP': 'bower_components/jszip/jszip.min',
+    'jsZIP-utils': 'bower_components/jszip/jszip-utils.min'
     // END TODO
 
     //new dash
@@ -80,6 +82,8 @@ require.config({
 
     'jquery-builder': ['jquery', 'extendext', 'moment', 'doT', 'bootstrap-select', 'bootstrap-slider', 'bootstrap-selectize'],
     'sortable': ['jquery'],
+    'jsZIP': ['jquery'],
+    'jsZIP-utils': ['jsZIP'],
     'angular-clipboard': ['angular'],
     'angular-sanitize': ['angular'],
     'videogular': ['angular', 'angular-sanitize', 'videogular-controls', 'videogular-overlay-play', 'videogular-buffering'],

@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (app, fileSaver) {
+define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'modules/cdr/cdrModel'], function (app, fileSaver, async, jsZIPUtils, jsZIP) {
     // TODO
     app.directive('elasticExportExcel',function (CdrModel) {
         return {
@@ -55,30 +55,30 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
 
                             if (allCount - progress < maxNodes) {
                                // maxNodes = allCount - progress;
-                            };
+                            }
                             if (progress == allCount || res.length < maxNodes) {
                                 table = endTable(table);
                                 tableToExcel(table, 'cdr_' + new Date().toLocaleDateString() + '.xls');
                                 scope.cdrProgressExport = 0;
                                 return cb();
                             }
-                        };
+                        }
 
                         CdrModel.getElasticData(++_page, maxNodes, columns, filter, qs, sort, onData);
-                    };
+                    }
 
                     onData();
 
                     function endTable (table) {
                         return table += '</tbody></table>'
-                    };
+                    }
 
                     function setRows (table, rows) {
                         angular.forEach(rows, function (value) {
                             table = setRow(table, value);
                         });
                         return table
-                    };
+                    }
 
                     function setRow (table, row) {
                         table += '<tr>';
@@ -88,13 +88,13 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
                         });
                         table += '</tr>';
                         return table;
-                    };
+                    }
 
                     function parseTimeStamp (timestamp) {
                         // TODO
                         //return '=TEXT(DATE(1970;1;1)+' + timestamp + '/60/60/24/1000/1000;"yyyy-mm-dd hh:mm:ss")'; //
                         return timestamp ? new Date(timestamp).toLocaleString() : '-';
-                    };
+                    }
                     function setHead(table, columns) {
                         table += '<thead><tr>';
                         for (var key in columns) {
@@ -104,10 +104,10 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
                                 value: columns[key]
                             });
                             table += '<th>' + (columns[key].caption || '') + '</th>'
-                        };
+                        }
                         table += '</tr></thead>';
                         return table;
-                    };
+                    }
                 };
 
                 var tableToExcel = function(table, name){
@@ -173,17 +173,17 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
 
                             if (allCount - progress < maxNodes) {
                                 maxNodes = allCount - progress;
-                            };
+                            }
                             if (progress == allCount || res.length < maxNodes) {
                                 table = endTable(table);
                                 tableToExcel(table, 'cdr_' + new Date().toLocaleDateString() + '.xls');
                                 scope.cdrProgressExport = 0;
                                 return cb();
                             }
-                        };
+                        }
 
                         CdrModel.getData(_page++, maxNodes, columns, filter, sort, onData);
-                    };
+                    }
 
 
                     CdrModel.getCount(filter, function (err, count) {
@@ -196,14 +196,14 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
 
                     function endTable (table) {
                         return table += '</tbody></table>'
-                    };
+                    }
 
                     function setRows (table, rows) {
                         angular.forEach(rows, function (value) {
                             table = setRow(table, value);
                         });
                         return table
-                    };
+                    }
 
                     function setRow (table, row) {
                         table += '<tr>';
@@ -213,13 +213,13 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
                         });
                         table += '</tr>';
                         return table;
-                    };
+                    }
 
                     function parseTimeStamp (timestamp) {
                         // TODO rus ms-office govno!!!
                         //return '=TEXT(DATE(1970;1;1)+' + timestamp + '/60/60/24/1000/1000;"yyyy-mm-dd hh:mm:ss")'; //
                         return timestamp ? new Date(timestamp / 1000).toLocaleString() : '-';
-                    };
+                    }
                     function setHead(table, columns) {
                         table += '<thead><tr>';
                         for (var key in columns) {
@@ -229,10 +229,10 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
                                 value: columns[key]
                             });
                             table += '<th>' + (columns[key].caption || '') + '</th>'
-                        };
+                        }
                         table += '</tr></thead>';
                         return table;
-                    };
+                    }
                 };
 
                 var tableToExcel = function(table, name){
@@ -249,7 +249,105 @@ define(['app', 'modules/cdr/libs/fileSaver', 'modules/cdr/cdrModel'], function (
         };
     });
 
+    app.directive('elasticExportFiles', function (CdrModel, fileModel) {
+        return {
+            restrict: 'AE',
+            scope: {
+                cdrFilter: "=",
+                cdrSort: "=",
+                cdrProgressExport: "=",
+                cdrCountExport: "=",
+                cdrRunExport: "="
+            },
+            link: function (scope, el) {
+                el.bind('click', function() {
+                    if (typeof scope.cdrRunExport == 'function') {
+                        scope.cdrRunExport(exportFiles)
+                    } else {
+                        exportFiles(scope.cdrFilter, scope.cdrSort, "", function (err) {
+                            if (err)
+                                console.error(err);
+                        });
+                    }
+                });
+                
+                var exportFiles = function (filter, qs, sort, cb) {
+                    var _page = 0,
+                        maxNodes = 100,
+                        columns = {other: ["variables.uuid", "variables.webitel_record_file_name"]};
 
+                    var progress = 0;
+                    var zip = new jsZIP();
+
+                    // TODO add filter variable exists webitel_record_file_name
+                    
+                    function loadFiles(arr, cb) {
+                        async.eachSeries(
+                            arr,
+                            function (i, cb) {
+                                if (!i["variables.webitel_record_file_name"])
+                                    return cb();
+
+                                fileModel.getFiles(i["variables.uuid"], function (err, files) {
+                                    var file = files && files[0];
+                                    if (!file)
+                                        return cb();
+
+                                    var pref = file['content-type'] === "application/pdf" ? "pdf" :"mp3";
+                                    var uri = fileModel.getUri(file.uuid, file.name, file["createdOn"], pref);
+                                    jsZIPUtils.getBinaryContent(uri, function (e, data) {
+                                        if (e)
+                                            return cb(e);
+                                        zip.file(file["createdOn"] + '_' + file.name + '.' + pref, data);
+                                        cb();
+                                    });
+                                });
+                            },
+                            cb
+                        );
+                    }
+
+                    function onData(err, res, allCount) {
+                        if (err)
+                            return cb(err);
+
+                        if (angular.isArray(res)) {
+                            progress += res.length;
+                            scope.cdrProgressExport = Math.round(progress * 100 / allCount);
+
+
+                            if (allCount - progress < maxNodes) {
+                                // maxNodes = allCount - progress;
+                            }
+                            if (progress == allCount || res.length < maxNodes) {
+                                // END
+                                scope.cdrProgressExport = 0;
+                                return loadFiles(res, function (e) {
+                                    if (e)
+                                        return cb(e);
+                                    zip.generateAsync({type:"blob"}).then(function(content) {
+                                        fileSaver(content, "recordFiles.zip");
+                                    });
+                                    cb();
+                                })
+                            }
+
+                            loadFiles(res, function (e) {
+                                if (e)
+                                    return cb(e);
+                                CdrModel.getElasticData(++_page, maxNodes, columns, filter, qs, sort, onData);
+                            });
+                        } else {
+                            CdrModel.getElasticData(++_page, maxNodes, columns, filter, qs, sort, onData);
+                        }
+                    }
+
+                    onData();
+
+                }
+            }
+        }
+    });
 
     app.directive('ngJsonExportExcel', function () {
         return {

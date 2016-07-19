@@ -77,7 +77,14 @@
 
 							<!--{{row.profile}}-->
 						</td>
-						<td>{{row.state}}</td>
+						<td>
+							<span>
+                                {{row.state}}
+                                <i ng-if="row.state === 'REGED'" style="color: #00cc33" class="fa fa-level-up"></i>
+                                <i ng-if="row.state === 'DOWN' || row.state === 'FAIL_WAIT'" style="color: #e9422e" class="fa fa-level-down"></i>
+                                <i ng-if="row.state === 'NOREG'" style="color: #fac552" class="fa fa-level-down"></i>
+                            </span>
+						</td>
 						<td>{{row.data}}</td>
 						<td ng-if="!domain">{{row.domain}}</td>
 						<td class="center" style="text-align: end">

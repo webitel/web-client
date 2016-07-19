@@ -86,10 +86,17 @@
                             class="pull-right text-muted"><i class="fa fa-file-excel-o"></i>
                     </a>
                     <span class="pull-right space space-xs"></span>
+                    <a      ng-show="!qsError"
+                            elastic-export-files
+                            cdr-progress-export="progressExport"
+                            cdr-run-export="runExportFiles"
+                            cdr-count-export="countExport"
+                            class="pull-right text-muted"><i class="fa fa-file-audio-o"></i>
+                    </a>
+                    <span class="pull-right space space-xs"></span>
                     <span class="pull-right">Count: {{count}}</span>
                 </div>
             </div>
-
             <div class="row" ng-show="exportProcessExcel">
                 <div class="col-sm-12">
                     <span class="space space-xs"></span>

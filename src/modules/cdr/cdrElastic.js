@@ -3,11 +3,11 @@
  */
 
 
-define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview', 'css!modules/cdr/css/verticalTabs.css'],
-    function (app, moment) {
+define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview', 'css!modules/cdr/css/verticalTabs.css'],
+    function (app, moment, jsZIP) {
 
-    app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm', 'notifi', 'TableSearch',
-        function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, notifi, TableSearch) {
+    app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm', 'notifi', 'TableSearch', '$timeout',
+        function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, notifi, TableSearch, $timeout) {
 
             $scope.isLoading = false;
             $scope.isOpenFilter = true;
@@ -70,7 +70,7 @@ define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modul
                 $scope.startDate = v[0].toDate();
                 $scope.endDate = v[1].toDate();
                 $scope.applyFilter();
-            }
+            };
 
             $scope.openDate = function ($event, attr) {
                 angular.forEach($scope.dateOpenedControl, function (v, key) {
@@ -95,7 +95,7 @@ define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modul
 
             function setLoadingDetail(loading) {
                 $scope.detailLoadingText = loading ?  "Loading ..." : "";
-            };
+            }
 
             $scope.runExportCdr = function (fnExportCdr) {
                 $scope.exportProcessExcel = true;
@@ -104,6 +104,18 @@ define(['app', 'moment', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modul
                     if (err)
                         notifi.error(err);
                     $scope.exportProcessExcel = false;
+                });
+            };
+            
+            $scope.runExportFiles = function (fnExport) {
+                $scope.exportProcessExcel = true;
+                var filter =  getFilter();
+                fnExport(filter, $scope.queryString, $scope.sort, function (err) {
+                    if (err)
+                        notifi.error(err);
+                    $timeout(function () {
+                        $scope.exportProcessExcel = false;
+                    })
                 });
             };
 

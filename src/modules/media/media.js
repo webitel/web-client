@@ -1,5 +1,5 @@
-define(['app', 'modules/media/mediaModel'
-], function (app) {
+define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 'modules/media/mediaModel'
+], function (app, jsZIPUtils, jsZIP, async, fileSaver) {
 
     app.controller('MediaCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'MediaModel', 'FileUploader', '$confirm',
         'TableSearch', '$sce',
@@ -37,6 +37,27 @@ define(['app', 'modules/media/mediaModel'
             $scope.$watch("query", function (newVal) {
                 TableSearch.set(newVal, 'media');
             });
+            
+            $scope.downloadAll = function () {
+                var zip = new jsZIP();
+                async.eachSeries(
+                    $scope.displayedCollection,
+                    function (i, cb) {
+                        jsZIPUtils.getBinaryContent(i._href, function (e, data) {
+                            if (e)
+                                return cb(e);
+                            zip.file(i.name, data);
+                            cb(null)
+                        })
+                    },
+                    function (e) {
+                        zip.generateAsync({type:"blob"}).then(function(content) {
+                            // see FileSaver.js
+                            fileSaver(content, "media.zip");
+                        });
+                    }
+                );
+            };
 
             var headers = {
                 "x-key": webitel.connection.session.key,
@@ -46,18 +67,18 @@ define(['app', 'modules/media/mediaModel'
             function setUploaderUrl(domainName) {
                 uploader.url = webitel.connection._cdr + '/api/v2/media/?domain=' + domainName + '&x_key=' + headers['x-key']
                     + '&access_token=' + headers['x-access-token']
-            };
+            }
 
             function getFileUrl(name, type, domainName) {
                 return webitel.connection._cdr + '/api/v2/media/' + type + '/' + name + '?domain=' + domainName + '&x_key=' + headers['x-key']
                     + '&access_token=' + headers['x-access-token'];
-            };
+            }
 
             function getType (fileItem) {
                 if (fileItem.file.type == "audio/wav")
                     return 'wav';
                 else return 'mp3'
-            };
+            }
 
             function getPostUrl (type, domainName) {
                 return webitel.connection._cdr + '/api/v2/media/' + type + '?domain=' + domainName + '&x_key=' + headers['x-key']
@@ -78,7 +99,7 @@ define(['app', 'modules/media/mediaModel'
             function setHeaders(fileItem) {
                 fileItem.headers['x-key'] = headers['x-key'];
                 fileItem.headers['x-access-token'] = headers['x-access-token'];
-            };
+            }
 
             uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
                 console.info('onWhenAddingFileFailed', item, filter, options);
@@ -153,7 +174,7 @@ define(['app', 'modules/media/mediaModel'
                             reloadData();
                         });
                     });
-            };
+            }
 
             function reloadData () {
                 if (!$scope.domain)
