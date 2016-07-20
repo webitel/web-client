@@ -38,7 +38,8 @@
                     </div>
                     <div class="form-group" ng-show="member._nextTryTime">
                         <label for>Next try</label>
-                        <input class="form-control" ng-disabled="true" type="text"  ng-model="member._nextTryTime" min="0" >
+                        <input class="form-control" ng-disabled="true" type="text"  value="{{timeToString(member._nextTryTime)}}" min="0" >
+
                     </div>
 
                     <div class="form-group" ng-show="member._endCause">
@@ -53,6 +54,11 @@
                                ng-model="member.timezone"
                                placeholder="Time zone"
                                typeahead="zone.id as zone.id for zone in TimeZones | filter:{id:$viewValue} | limitTo:8" >
+                    </div>
+
+                    <div class="form-group" ng-if="!member._id">
+                        <label for>Run after adding members</label>
+                        <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="member.autoRun"><i></i></label>
                     </div>
 
                 </div>

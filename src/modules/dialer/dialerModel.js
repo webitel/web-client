@@ -168,7 +168,12 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             if (data.communications.length < 1)
                 return cb(new Error('Bad communication'));
 
-            webitel.api('POST', '/api/v2/dialer/' + dialerId + '/members?&domain=' + domainName, data, function(err, res) {
+            var url = '/api/v2/dialer/' + dialerId + '/members?domain=' + domainName;
+
+            if (member.autoRun)
+                url += '&autoRun=true';
+
+            webitel.api('POST', url, data, function(err, res) {
                 var data = res.data || res.info;
                 return cb && cb(err, data);
             });
