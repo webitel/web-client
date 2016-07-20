@@ -1412,6 +1412,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
+        
+        $scope.openDate = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.dateOpenedControl = true;
+        };
+        
+        $scope.changeDate = function () {
+            $scope.member.expire = $scope.member._expire ? $scope.member._expire.getTime() : null;
+        };
     }]);
     
     app.controller('StatsDialerCtrl', ['$scope', 'DialerModel', 'notifi',

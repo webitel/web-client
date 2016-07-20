@@ -97,6 +97,9 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                         value: v
                     })
                 });
+                if (member.expire)
+                    member._expire = new Date(member.expire);
+                
                 return cb && cb(err, member);
             });
         }
@@ -169,7 +172,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 var data = res.data || res.info;
                 return cb && cb(err, data);
             });
-        };
+        }
 
         function parseMember(memberData) {
             var member = createMember(null, memberData);
@@ -201,7 +204,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 //});
                 return cb && cb(err, queues);
             });
-        };
+        }
 
         function parseDialer (domainName, data) {
             var dialer = create(domainName, data);
@@ -211,7 +214,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
 
             return dialer
-        };
+        }
 
         function add (data, cb) {
             var dialer = parseDialer(data.domain, data);
@@ -230,7 +233,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     return cb(err);
                 return cb(null, res.data && res.data.insertedIds[0]);
             });
-        };
+        }
 
         function item (id, domainName, cb) {
             if (!domainName)
@@ -248,7 +251,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 });
                 return cb && cb(err, data);
             });
-        };
+        }
 
         function update (id, domainName, diffColumns, dialer, cb) {
             if (!domainName)
@@ -264,7 +267,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 var data = res.data || res.info;
                 return cb && cb(err, data);
             });
-        };
+        }
 
         function setState(id, domainName, newState, cb) {
             if (!domainName)
@@ -277,7 +280,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 var data = res.data || res.info;
                 return cb && cb(err, data);
             });
-        };
+        }
 
         function remove (id, domainName, cb) {
             if (!domainName)
@@ -287,7 +290,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 var data = res.data || res.info;
                 return cb && cb(err, data);
             });
-        };
+        }
 
         function removeMulti (dialerId, filter, domainName, cb) {
             if (!domainName)
@@ -300,7 +303,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 var data = res.data || res.info;
                 return cb && cb(err, data);
             });
-        };
+        }
 
         function create (domain, option) {
             option = option || {};
@@ -340,7 +343,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "owners" : angular.isArray(option.owners) ? option.owners : [],
                 "_cf": option._cf || []
             }
-        };
+        }
 
         function createMember(dialer, option) {
             return {
@@ -349,9 +352,10 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "priority": angular.isNumber(option.priority) ? option.priority : 0,
                 "timezone": option.timezone || "",
                 "variables": {},
-                "communications": []
+                "communications": [],
+                "expire": option.expire || null
             }
-        };
+        }
 
         function createCommunication (option) {
             if (!option.number) return false;
@@ -361,7 +365,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "status": 0,
                 "state": 0,
             }
-        };
+        }
 
         return {
             list: list,

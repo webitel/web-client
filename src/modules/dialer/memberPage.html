@@ -8,27 +8,42 @@
 
                 <div class="col-sm-3">
 
-                    <div class="form-group" ng-class="{ 'has-error' : memberForm.name.$invalid && !memberForm.name.$pristine }">
-                        <label for>Name</label>
+                    <div class="form-group" ng-class="{ 'has-error' : memberForm.name.$invalid}">
+                        <label class="control-label">Name</label>
                         <input type="text"  class="form-control" name="name" required ng-model="member.name" >
                     </div>
 
-                    <div class="form-group">
-                        <label for>Priority</label>
+                    <div class="form-group" ng-class="{ 'has-error' : memberForm.priority.$invalid}">
+                        <label class="control-label">Priority</label>
                         <input class="form-control" type="number" name="priority" ng-model="member.priority" min="0"  required>
                     </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Expire</label>
+                        <div class="input-group ui-datepicker">
+                            <input type="text"
+                                   class="form-control"
+                                   datetime-picker="dd.MM.yyyy HH:mm"
+                                   ng-model="member._expire"
+                                   ng-change="changeDate()"
+                                   is-open="dateOpenedControl"
+                            >
+                            <span class="btn input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label for>Probe</label>
-                        <input class="form-control" ng-disabled="true" type="number" name="priority" ng-model="member._probeCount" min="0" >
+                        <input class="form-control" ng-disabled="true" type="number"  ng-model="member._probeCount" min="0" >
                     </div>
                     <div class="form-group" ng-show="member._nextTryTime">
                         <label for>Next try</label>
-                        <input class="form-control" ng-disabled="true" type="text" name="priority" ng-model="member._nextTryTime" min="0" >
+                        <input class="form-control" ng-disabled="true" type="text"  ng-model="member._nextTryTime" min="0" >
                     </div>
 
                     <div class="form-group" ng-show="member._endCause">
                         <label for>End cause</label>
-                        <input class="form-control" ng-disabled="true" type="text" name="priority" ng-model="member._endCause" min="0" >
+                        <input class="form-control" ng-disabled="true" type="text" ng-model="member._endCause" min="0" >
                     </div>
 
                     <div class="form-group" ng-if="false">
@@ -176,5 +191,3 @@
     <button class="btn btn-primary" type="button" ng-click="ok()">Save</button>
     <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 </div>
-
-
