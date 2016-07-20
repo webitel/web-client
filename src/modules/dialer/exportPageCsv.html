@@ -83,7 +83,7 @@
                                     </div>
                                 </div>
 
-                                <div ng-if="item.field=='callTime'">
+                                <div ng-if="item.field=='callTime' || item.field=='expire'">
                                     <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.type }">
                                         <select class="form-control" required name="strategy" ng-model="item.type">
                                             <option value="timestamp">timestamp</option>

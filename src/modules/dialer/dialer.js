@@ -1,6 +1,6 @@
-define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/cdr/libs/fileSaver', 'modules/gateways/gatewayModel',
+define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/cdr/libs/fileSaver', 'moment', 'modules/gateways/gatewayModel',
     'modules/dialer/dialerModel', 'modules/calendar/calendarModel',  'modules/cdr/libs/json-view/jquery.jsonview',
-    'modules/cdr/fileModel', 'modules/accounts/accountModel'], function (app, async, utils, aceEditor, callflowUtils, fileSaver) {
+    'modules/cdr/fileModel', 'modules/accounts/accountModel'], function (app, async, utils, aceEditor, callflowUtils, fileSaver, moment) {
 
 
     function moveUp (arr, value, by) {
@@ -557,6 +557,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     app.controller('MembersDialerCtrl', ['$scope', 'DialerModel', '$modal', '$confirm', 'notifi', 'FileUploader', function ($scope, DialerModel, $modal, $confirm, notifi, FileUploader) {
         var _tableState = {};
         $scope.reloadData = function () {
+            _tableState.pagination.start = 0;
             $scope.callServer(_tableState)
         };
 
@@ -773,6 +774,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             var m = {
                 name: row[template.name],
                 communications: [],
+                expire: null,
                 _variables: []
             };
 
@@ -792,8 +794,14 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         key: key,
                         value: row[v]
                     })
-                };
+                }
             });
+
+            if (template.hasOwnProperty('expire') && typeof template.expire.id == 'number' && row[template.expire.id]) {
+                var timeExpire = moment(row[template.expire.id], template.expire.format).valueOf();
+                if (timeExpire)
+                    m.expire = timeExpire;
+            }
 
             return m;
 
@@ -895,6 +903,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                 if (i.type == 'string' && val)
                                     val = new Date(val).toLocaleString()
                             }
+                        } else if (i.field === "expire") {
+                            val = row.expire;
+                            if (i.type == 'string' && val)
+                                val = new Date(val).toLocaleString()
                         } else {
                             val = row;
                             i.route.split('.').forEach(function (token) {
@@ -986,11 +998,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         if (!template.communications[c.position])
                             template.communications[c.position] = {};
                         template.communications[c.position][c.field] = item.id
+                    } else if (c.type === 'time') {
+                        template[c.field] = {
+                            id: item.id,
+                            format: item.format
+                        }
                     }
-                };
+                }
             });
             if (template.name === null || template.communications.length == 0)
-                return notifi.error(new Error('Bad settings.'), 5000)
+                return notifi.error(new Error('Bad settings.'), 5000);
 
             $scope.settings.template = template;
             $modalInstance.close($scope.settings, 5000);
@@ -1078,6 +1095,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 field: "priority",
                 position: 3,
                 type: 'communications'
+            },
+            "expire": {
+                name: "Expire",
+                field: "expire",
+                type: "time"
             }
         };
 
@@ -1220,6 +1242,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 name: "Last call time",
                 type: "lastCall",
                 "field": "_log.steps.time"
+            },
+            "expire": {
+                "name": "Expire",
+                "type": "time",
+                "field": "expire"
             }
         };
         

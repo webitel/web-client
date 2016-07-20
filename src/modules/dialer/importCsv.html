@@ -53,6 +53,9 @@
                             <div ng-if="c.value=='variable'">
                                 <input ng-required="c.value=='variable'" class="form-control" type="text"  ng-model="c.varName" >
                             </div>
+                            <div ng-if="c.value=='expire'">
+                                <input style="width: 135px;" ng-required="c.value=='expire'" class="form-control" type="text" ng-init="c.format = c.format ? c.format : 'DD-MM-YYYY HH:mm'" ng-model="c.format" >
+                            </div>
                         </th>
                     </tr>
                     </thead>
