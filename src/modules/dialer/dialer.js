@@ -893,20 +893,35 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 var data = "";
 
                 function addRow(row) {
+                    var rowString = '',
+                        exportProbe = false,
+                        typeTime;
+
                     angular.forEach(settings.data, function (i, index) {
                         var val;
                         if (i.field === "callTime") {
-                            if (row._log) {
+                            if (row._log && !settings.allProbe) {
                                 var call = row._log[row._log.length - 1];
                                 call = call && call.steps;
                                 val = call && call[0].time;
                                 if (i.type == 'string' && val)
                                     val = new Date(val).toLocaleString()
+                            } else if (row._log && settings.allProbe) {
+                                val = '{{ALL_PROBE_TIME}}';
+                                typeTime = i.type;
+                                exportProbe = true;
                             }
                         } else if (i.field === "expire") {
                             val = row.expire;
                             if (i.type == 'string' && val)
                                 val = new Date(val).toLocaleString()
+                        } else if (i.field === '_endCause') {
+                            if (settings.allProbe) {
+                                exportProbe = true;
+                                val = '{{PROBE_CAUSE}}';
+                            } else {
+                                val = row._endCause || "";
+                            }
                         } else {
                             val = row;
                             i.route.split('.').forEach(function (token) {
@@ -917,9 +932,30 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         if (!val)
                             val = '';
 
-                        data += val + (settings.data.length - 1 == index ? '': settings.separator);
+                        rowString += val + (settings.data.length - 1 == index ? '': settings.separator);
                     });
-                    data += '\n';
+
+                    rowString += '\n';
+                    if (exportProbe) {
+                        rowString = new Array(row._log.length + 1).join(rowString);
+                        var i = 0;
+                        rowString = rowString.replace(/{{PROBE_CAUSE}}/g, function () {
+                            var t = row._log[i++];
+                            return (t && t.cause) || "";
+                        });
+
+                        i = 0;
+                        rowString = rowString.replace(/{{ALL_PROBE_TIME}}/g, function () {
+                            var t = row._log[i++];
+                            var time = t.steps[0] && t.steps[0].time;
+                            if (typeTime == 'string' && time) {
+                                time = new Date(time).toLocaleString()
+                            }
+                            return time || "";
+                        });
+                    }
+
+                    data += rowString;
                 }
 
                 if (settings.skipFilter)
@@ -1129,6 +1165,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 name: "Name",
                 field: 'name'
             },
+            "_id": {
+                selected: false,
+                name: "Id",
+                field: '_id'
+            },
             "priority": {
                 selected: false,
                 name: "Priority",
@@ -1235,19 +1276,23 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 "field": "_endCause"
             },
             "_probeCount": {
-                name: "Probe",
+                name: "Attempts",
                 "field": "_probeCount"
             },
             "callTime": {
-                name: "Last call time",
-                type: "lastCall",
+                "name": "Call time",
+                "type": "lastCall",
                 "field": "_log.steps.time"
             },
             "expire": {
                 "name": "Expire",
                 "type": "time",
                 "field": "expire"
-            }
+            },
+            // "cause": {
+            //     "name": "Probe end cause",
+            //     "field": "cause"
+            // }
         };
         
         $scope.up = function (row) {

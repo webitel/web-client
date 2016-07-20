@@ -33,7 +33,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for>Probe</label>
+                        <label for>Attempts</label>
                         <input class="form-control" ng-disabled="true" type="number"  ng-model="member._probeCount" min="0" >
                     </div>
                     <div class="form-group" ng-show="member._nextTryTime">
@@ -83,7 +83,7 @@
                                                             <th style="width:35%">Number</th>
                                                             <th style="width:15%">Priority</th>
                                                             <th style="width:15%">State</th>
-                                                            <th style="width:15%">Probe</th>
+                                                            <th style="width:15%">Attempts</th>
                                                             <th style="width:20%">Edit</th>
                                                         </tr>
                                                     </thead>
@@ -158,6 +158,8 @@
                                                             <h5 class="">
                                                                 {{timeToString(probe.steps[0].time)}}
                                                             </h5>
+
+                                                            <h5>{{probe.cause}}</h5>
 
                                                             <button ng-click="showJsonPreview(probe.callUUID)" class="btn btn-default btn-sm btn-block">
                                                                 {{ probe.callUUID }}
