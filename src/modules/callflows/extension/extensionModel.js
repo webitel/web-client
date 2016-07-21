@@ -9,7 +9,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 destination_number: null,
                 name: null,
                 fs_timezone: null,
-                callflow: []
+                callflow: [],
+                onDisconnect: []
             }
         };
 
@@ -38,7 +39,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 destination_number: ext.destination_number,
                 name: ext.name,
                 fs_timezone: ext.fs_timezone && ext.fs_timezone.id,
-                callflow: ext.callflow
+                callflow: ext.callflow,
+                onDisconnect: ext.onDisconnect
             };
         };
 

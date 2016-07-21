@@ -9,6 +9,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
         	$scope.domain = webitel.domain();
 
 			$scope.cf = aceEditor.getStrFromJson([]);
+			$scope.cfOnDisconnect = aceEditor.getStrFromJson([]);
 			$scope.default = {},
 	        $scope.rowCollection = [];
 	        $scope.isLoading = false;
@@ -19,7 +20,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 				TableSearch.set(newVal, 'defaults')
 			});
 
-			$scope.$watch('[default,cf]', function(newValue, oldValue) {
+			$scope.$watch('[default,cf,cfOnDisconnect]', function(newValue, oldValue) {
 				if ($scope.default._new)
 					return $scope.isEdit = $scope.isNew = true;
 
@@ -29,6 +30,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 			$scope.cancel = function () {
 				$scope.default = angular.copy($scope.oldDefault);
 				$scope.cf = angular.copy($scope.oldCf);
+				$scope.cfOnDisconnect = angular.copy($scope.oldCfOnDisconnect);
 				disableEditMode();
 			};
 
@@ -178,8 +180,11 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        		$scope.default = res;
 	        		$scope.oldDefault = angular.copy(res);
 	        		var cf = callflowUtils.replaceExpression(res.callflow);
+	        		var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
 					$scope.cf = aceEditor.getStrFromJson(cf);
+					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
 					$scope.oldCf = angular.copy($scope.cf);
+					$scope.oldCfOnDisconnect = angular.copy($scope.cfOnDisconnect);
 					disableEditMode();
 	        	});
 	        };
@@ -199,6 +204,11 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        		};
 
 	        		$scope.default.callflow = JSON.parse($scope.cf);
+					if ($scope.cfOnDisconnect) {
+						$scope.default.onDisconnect = JSON.parse($scope.cfOnDisconnect);
+					} else {
+						$scope.default.onDisconnect = [];
+					}
 		        	if (!$scope.default._id) {
 	        			CallflowDefaultModel.add($scope.default, $scope.domain, cb)
 		        	} else {

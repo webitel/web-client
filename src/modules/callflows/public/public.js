@@ -11,6 +11,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
         	$scope.domain = webitel.domain();
         	$scope.public = {};
 			$scope.cf = aceEditor.getStrFromJson([]);
+			$scope.cfOnDisconnect = aceEditor.getStrFromJson([]);
         	var editor;
 	        $scope.rowCollection = [];
 	        $scope.rowColflection = [];
@@ -32,7 +33,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 			};
 
 
-			$scope.$watch('[public,cf]', function(newValue, oldValue) {
+			$scope.$watch('[public,cf,cfOnDisconnect]', function(newValue, oldValue) {
 				if ($scope.public._new)
 					return $scope.isEdit = $scope.isNew = true;
 
@@ -42,6 +43,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 			$scope.cancel = function () {
 				$scope.public = angular.copy($scope.oldPublic);
 				$scope.cf = angular.copy($scope.oldCf);
+				$scope.cfOnDisconnect = angular.copy($scope.oldCfOnDisconnect);
 				disableEditMode();
 			};
 
@@ -127,8 +129,11 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        		$scope.public = res;
 	        		$scope.oldPublic = angular.copy(res);
 	        		var cf = callflowUtils.replaceExpression(res.callflow);
+	        		var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
 					$scope.cf = aceEditor.getStrFromJson(cf);
+					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
 					$scope.oldCf = angular.copy($scope.cf);
+					$scope.oldCfOnDisconnect = angular.copy($scope.cfOnDisconnect);
 					disableEditMode();
 	        	});
 	        };
@@ -150,6 +155,11 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 						$scope.public.destination_number = $scope.public.destination_number.split(",");
 					}
 	        		$scope.public.callflow = JSON.parse($scope.cf);
+					if ($scope.cfOnDisconnect) {
+						$scope.public.onDisconnect = JSON.parse($scope.cfOnDisconnect);
+					} else {
+						$scope.public.onDisconnect = [];
+					}
 		        	if (!$scope.public._id) {
 	        			CallflowPublicModel.add($scope.public, $scope.domain, cb)
 		        	} else {

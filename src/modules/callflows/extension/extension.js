@@ -6,6 +6,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
             ,$window, TableSearch, $timeout) {
             $scope.domain = webitel.domain();
             $scope.cf = aceEditor.getStrFromJson([]);
+            $scope.cfOnDisconnect = aceEditor.getStrFromJson([]);
             $scope.rowCollection = [];
             $scope.extension = {};
             $scope.isLoading = false;
@@ -30,13 +31,14 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
             $scope.reloadData = reloadData;
 
 
-            $scope.$watch('[extension,cf]', function(newValue, oldValue) {
+            $scope.$watch('[extension,cf,cfOnDisconnect]', function(newValue, oldValue) {
                 return $scope.isEdit = !!oldValue[0]._id;
             }, true);
 
             $scope.cancel = function () {
                 $scope.extension = angular.copy($scope.oldExtension);
                 $scope.cf = angular.copy($scope.oldCf);
+                $scope.cfOnDisconnect = angular.copy($scope.oldCfOnDisconnect);
                 disableEditMode();
             };
 
@@ -56,8 +58,11 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                     $scope.extension = res;
                     $scope.oldExtension = angular.copy(res);
                     var cf = callflowUtils.replaceExpression(res.callflow);
+                    var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
                     $scope.cf = aceEditor.getStrFromJson(cf);
+                    $scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
                     $scope.oldCf = angular.copy($scope.cf);
+                    $scope.oldCfOnDisconnect = angular.copy($scope.cfOnDisconnect);
                     disableEditMode();
                 });
             };
@@ -72,6 +77,11 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                         return edit();
                     };
                     $scope.extension.callflow = JSON.parse($scope.cf);
+                    if ($scope.cfOnDisconnect) {
+                        $scope.extension.onDisconnect = JSON.parse($scope.cfOnDisconnect);
+                    } else {
+                        $scope.extension.onDisconnect = [];
+                    }
 
                     CallflowExtensionModel.update($scope.extension, $scope.domain, cb)
                 } catch (e) {

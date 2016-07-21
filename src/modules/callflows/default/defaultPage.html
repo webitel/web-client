@@ -44,30 +44,63 @@
 
             </div>
 
-			<div class="row" style="padding-top: 15px;">
+			<div class="row">
 				<div class="col-md-12">
-					<div class="form-group">
-						<div data-ng-model="cf" ui-ace="{
-						  useWrapMode : true,
-						  showGutter: true,
-						  theme:'github',
-						  mode: 'json',
-						  onLoad: aceLoaded,
-						  onChange: aceChanged,
-						  require: ['ace/ext/language_tools'],
-						  advanced: {
-							  enableSnippets: true,
-							  enableBasicAutocompletion: true,
-							  enableLiveAutocompletion: true
-						  }
-						}" class="json-control">
+					<div class="ui-tab-container ui-tab-dark">
+					<div class="ui-tab">
+						<tabset>
+							<tab>
+								<tab-heading>
+									<span>Callflow</span>
+								</tab-heading>
+								<div class="form-group">
+									<div ng-model="$parent.cf" ui-ace="{
+									  useWrapMode : true,
+									  showGutter: true,
+									  theme:'github',
+									  mode: 'json',
+									  onLoad: aceLoaded,
+									  onChange: aceChanged,
+									  require: ['ace/ext/language_tools'],
+									  advanced: {
+										  enableSnippets: true,
+										  enableBasicAutocompletion: true,
+										  enableLiveAutocompletion: true
+									  }
+									}" class="json-control">
 
-                        </div>
+									</div>
+								</div>
+							</tab>
+
+							<tab>
+								<tab-heading>
+									<span>On disconnect</span>
+								</tab-heading>
+								<div class="form-group">
+									<div data-ng-model="$parent.cfOnDisconnect" ui-ace="{
+									  useWrapMode : true,
+									  showGutter: true,
+									  theme:'github',
+									  mode: 'json',
+									  onLoad: aceLoaded,
+									  onChange: aceChanged,
+									  require: ['ace/ext/language_tools'],
+									  advanced: {
+										  enableSnippets: true,
+										  enableBasicAutocompletion: true,
+										  enableLiveAutocompletion: true
+									  }
+									}" class="json-control">
+
+									</div>
+								</div>
+							</tab>
+						</tabset>
 					</div>
-
+				</div>
 				</div>
 			</div>
-
 
         </div>
 
