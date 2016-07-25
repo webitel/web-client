@@ -21,37 +21,42 @@
     </div>
 </div>
 
-<div class="container-fluid"  ng-if="collection.length > 0">
-    <table class="table" style="table-layout: fixed; word-wrap: break-word;">
-        <thead>
-        <tr>
-            <th width="40%">Key </th>
-            <th width="40%">Value</th>
-            <th width="15%"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="(key, row) in collection">
+<div class="row"  ng-if="collection.length > 0">
+    <div class="col-sm-12">
+        <table class="table table-hover table-condensed" style="table-layout: fixed; word-wrap: break-word;">
+            <thead>
+            <tr>
+                <th style="width:35%;">Key </th>
+                <th style="width:40%;">Value</th>
+                <th style="width:21%;"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="(key, row) in collection">
 
-            <td>
-                <span ng-hide="row._new && editingData[key]">{{row.key}}</span>
-                <input ng-show="row._new && editingData[key]" type="text" class="form-control" ng-model="row.key" typeahead="itm for itm in dictionary | filter:$viewValue | limitTo:8">
-            </td>
+                <td ng-hide="row._new && editingData[key]">
+                    <span >{{row.key}}</span>
+                </td>
+                <td ng-show="row._new && editingData[key]">
+                    <input type="text" class="form-control" ng-model="row.key" typeahead="itm for itm in dictionary | filter:$viewValue | limitTo:8">
+                </td>
 
-            <td>
-                <span ng-hide="editingData[key]">{{row.value}}</span>
-                <input ng-show="editingData[key]" type="text" class="form-control" ng-model="row.value">
-            </td>
-            <td >
-                <p>
-                    <a ng-click="edit(key, row)" ng-show="!editingData[key]" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
+                <td ng-if="!editingData[key]">
+                    <span >{{row.value}}</span>
 
-                    <a ng-click="save(key, row)" ng-show="editingData[key]" class="text-muted"><i class="glyphicon glyphicon-save"></i></a>
-                    <span class="space space-xs"></span>
-                    <a ng-click="remove(key, row)" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
-                </p>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                </td>
+                <td ng-if="!!editingData[key]">
+                    <input  type="text" class="form-control" ng-model="row.value">
+                </td>
+                <td >
+                    <a ng-click="edit(key, row)" ng-show="!editingData[key]" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+
+                    <a ng-click="save(key, row)" ng-show="editingData[key]" class="btn btn-primary"><i class="glyphicon glyphicon-save"></i></a>
+
+                    <a ng-click="remove(key, row)" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

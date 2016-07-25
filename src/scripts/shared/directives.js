@@ -221,7 +221,7 @@ define(['angular'],
           }
       };
   })
-  .directive( 'webitelVariables', function() {
+  .directive( 'webitelVariables', function($timeout) {
     return {
       restrict: 'E',
       scope: { collection: '=', dictionary: '=', remvar: '=', onSave: '=onSave', onReload: '=onReload', disableAction: "=disableAction" },
@@ -243,7 +243,9 @@ define(['angular'],
           if (!row.value)
             return $scope.remove(key, row);
 
-          $scope.editingData[key] = false;
+          $timeout(function () {
+            $scope.editingData[key] = false;
+          })
         };
 
         function remove (key, row) {
