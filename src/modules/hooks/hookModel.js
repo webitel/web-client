@@ -27,12 +27,22 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 var hook = res && res.data;
                 hook._filters = [];
                 hook._map = [];
+                hook._headers = [];
                 if (hook && hook.filter) {
                     angular.forEach(hook.filter, function (v, k) {
                         v.name = k;
                         hook._filters.push(v)
                     });
-                };
+                }
+
+                if (hook && hook.headers) {
+                    angular.forEach(hook.headers, function (v, k) {
+                        hook._headers.push({
+                            name: k,
+                            value: v
+                        })
+                    });
+                }
 
                 if (hook && hook.map) {
                     angular.forEach(hook.map, function (v, k) {
@@ -41,6 +51,11 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                             name: v
                         })
                     });
+                }
+
+                if (hook && hook.auth) {
+                    hook.auth._map = objToArrayNameValue(hook.auth.map);
+                    hook.auth._headers = objToArrayNameValue(hook.auth.headers);
                 }
 
                 return cb(null, hook)
@@ -93,16 +108,41 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             webitel.api('DELETE', '/api/v2/hooks/' + id + '/?domain=' + domain, cb);
         };
 
+        function arrayToObj(arr) {
+            var res = {};
+            angular.forEach(arr, function (v, i) {
+                if ( v.name && (v.value || v.field) ) {
+                    res[v.name] = v.value || v.field
+                }
+            });
+            return res
+        }
+        
+        function objToArrayNameValue(o) {
+            var res = [];
+            angular.forEach(o, function (v, k) {
+                res.push({
+                    name: k,
+                    value: v
+                })
+            });
+            return res;
+        }
+
         function parseHookToRequest (data) {
             var request = {
                 "event" : data.event,
                 "enable" : data.enable,
                 "description" : data.description,
                 "action" : data.action,
+                "auth": {},
                 "map": {},
                 "filter": {},
                 "fields": [],
+                "headers": {}
             };
+
+            var auth = data.auth || {};
 
             if (data._map && data._map.length > 0) {
                 angular.forEach(data._map, function (value, i) {
@@ -111,7 +151,18 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                         request.map[value.field] = value.name;
                     }
                 })
-            };
+            }
+
+            request.auth.headers = arrayToObj(auth._headers);
+            request.auth.map = arrayToObj(auth._map);
+
+            request.auth.method = auth.method;
+            request.auth.enabled = auth.enabled;
+            request.auth.url = auth.url;
+            request.auth.cookie = auth.cookie;
+
+            request.headers = arrayToObj(data._headers);
+
 
             if (data._filters && data._filters.length > 0) {
 
@@ -122,7 +173,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                             "value": filter.value
                         }
                 });
-            };
+            }
             return request;
         }
 
@@ -133,10 +184,6 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
             return res;
         };
-
-
-
-
 
         function create () {
             return {
@@ -149,11 +196,20 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     "method": "POST",
                     "url": ""
                 },
+                "auth": {
+                    "enabled": false,
+                    "_headers": [],
+                    "headers": {},
+                    "map": {},
+                    "_map": []
+                },
                 "map": {},
                 "_map": [],
                 "filter": {},
                 "_filter": [],
                 "fields": [],
+                "_headers": [],
+                "headers": {}
             }
         }
 

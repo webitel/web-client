@@ -1,0 +1,62 @@
+<div class="row">
+    <div class="col-sm-12">
+        <a ng-click="addData()" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+            <i class="fa fa-plus"></i>
+        </a>
+    </div>
+    <div class="col-sm-12">
+        <div class="row text-center" ng-if="!data || data.length == 0">
+            <div class="center-block col-md-4" style="float: none;">
+                <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                <h2>No results found</h2>
+            </div>
+        </div>
+
+        <table class="table table-hover table-condensed" ng-if="data && data.length > 0">
+            <thead>
+            <tr style="font-weight: bold">
+                <th style="width: {{100 / (fields.length + 1)}}%" data-ng-repeat="f in fields">
+                    {{f}}
+                </th>
+                <th style="width:15%"></th>
+            </tr>
+            </thead>
+
+            <tbody style="word-break: break-word;">
+            <tr ng-repeat="d in data" >
+                <td data-ng-repeat="f in fields">
+
+                    <span ng-if="select[f]" editable-select="d[f]" required isolate-form="true" e-name="{{f}}" e-form="rowform" e-ng-options="s as s for s in select[f]">
+                      {{ d[f] }}
+                    </span>
+
+                    <span ng-if="!select[f]"  editable-text="d[f]" required isolate-form="true" e-name="{{f}}" e-form="rowform">
+                        {{ d[f] }}
+                    </span>
+                </td>
+
+                <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form  name="rowform" editable-form ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == d">
+                        <button type="submit" value="Submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+                            <i class="glyphicon glyphicon-save"></i>
+                        </button>
+                        <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                            <i class="glyphicon glyphicon-repeat"></i>
+                        </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                        <button class="btn btn-default" ng-click="rowform.$show()">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                        </button>
+                        <button class="btn btn-default" ng-click="removeData($index)">
+                            <i class="glyphicon glyphicon-remove"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

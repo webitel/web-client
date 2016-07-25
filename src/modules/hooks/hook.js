@@ -1,5 +1,30 @@
 define(['app', 'scripts/webitel/utils',  'async', 'modules/hooks/hookModel'], function (app, utils, async) {
 
+    app.directive( 'wDictionary', function() {
+        return {
+            restrict: 'AE',
+            scope: {
+                "data": "=",
+                "fields": "=",
+                "select": "="
+            },
+            templateUrl: 'modules/hooks/arrayData.html',
+            controller: function ( $scope ) {
+                if (!$scope.data)
+                    $scope.data = [];
+
+                $scope.addData = function() {
+                    $scope.inserted = {};
+                    $scope.data.push($scope.inserted);
+                };
+                
+                $scope.removeData = function (index) {
+                    $scope.data.splice(index, 1);
+                }
+            }
+        };
+    });
+
     app.controller('HookCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'HookModel', '$route', '$location', '$routeParams',
         '$confirm', '$timeout', 'TableSearch',
         function ($scope, webitel, $rootScope, notifi, HookModel, $route, $location, $routeParams, $confirm, $timeout, TableSearch) {
@@ -140,10 +165,22 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/hooks/hookModel'], fu
             $scope.hook._new = true;
         };
 
+        $scope.addHead = function () {
+            if (!$scope.hook.headers) {
+                $scope.hook.headers = [];
+            }
+            $scope.headInserted = {name: '', value: ''};
+            $scope.hook.headers.push($scope.headInserted);
+        };
+
         $scope.init = function init () {
             if (!!$route.current.method) {
                 return $scope[$route.current.method]();
             };
         }();
+
+
+
+
     }]);
 });
