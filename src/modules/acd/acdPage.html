@@ -43,10 +43,9 @@
                                     <tab-heading>
                                         <span>Options</span>
                                     </tab-heading>
-
                                     <div class="form-group" >
                                         <label class="control-label">Moh sound</label>
-                                        <input type="text" class="form-control"  data-ng-model="queue['moh-sound']" >
+                                        <input type="text" class="form-control" data-ng-model="queue['moh-sound']"  typeahead-on-select="onSelectMedia($item, $model, $label, $event)" typeahead="itm as itm.name for itm in getMedia($viewValue) | filter:$viewValue | limitTo:8">
                                     </div>
                                     <div class="form-group" >
                                         <label class="control-label">Time base score</label>

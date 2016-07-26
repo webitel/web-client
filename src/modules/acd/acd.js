@@ -1,9 +1,9 @@
-define(['app', 'async', 'scripts/webitel/utils', 'modules/acd/acdModel', 'modules/accounts/accountModel'], function (app, async, utils) {
+define(['app', 'async', 'scripts/webitel/utils', 'modules/acd/acdModel', 'modules/accounts/accountModel', 'modules/media/mediaModel'], function (app, async, utils) {
 
     app.controller('ACDCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'AcdModel', '$location', '$route', 'AccountModel', '$routeParams',
-        '$confirm', 'TableSearch', '$timeout',
+        '$confirm', 'TableSearch', '$timeout', 'MediaModel', '$q',
         function ($scope, webitel, $rootScope, notifi, AcdModel, $location, $route, AccountModel, $routeParams, $confirm, TableSearch,
-                  $timeout) {
+                  $timeout, MediaModel, $q) {
 
             $scope.canDelete = webitel.connection.session.checkResource('cc/queue', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('cc/queue', 'u');
@@ -181,6 +181,40 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/acd/acdModel', 'module
                     }
                 );
             };
+
+            var cacheMedia = null;
+            $scope.getMedia = function (str) {
+                if (cacheMedia)
+                    return cacheMedia;
+
+                var result = $q.defer();
+                MediaModel.list($scope.domain, function (err, res) {
+                    var media;
+                    if (err) {
+                        cacheMedia = [{name: "$${hold_music}"}];
+                    } else {
+                        cacheMedia = [{name: '$${hold_music}'}].concat(res);
+                    }
+
+                    return result.resolve(cacheMedia);
+                });
+                return result.promise;
+            };
+            
+            $scope.onSelectMedia = function (item, $model) {
+                if (item.type) {
+                    $scope.queue['moh-sound'] = mediaToUri(item);
+                } else {
+                    $scope.queue['moh-sound'] = item.name;
+                }
+            };
+
+            function mediaToUri(media) {
+                if (media.type == 'wav') {
+                    return "${regex($${cdr_url}|^(http)?s?(.*)$|http_cache%2)}/sys/media/wav/" + encodeURI(media.name  + '?stream=false&domain=' + media.domain + '&.wav');
+                }
+                return "${regex($${cdr_url}|^(http)?s?(.*)$|shout%2)}/sys/media/mp3/" + encodeURI(media.name  + '?domain=' + media.domain);
+            }
 
             $scope.removeItem = function (row) {
                 $confirm({text: 'Are you sure you want to delete ' + row.name + ' ?'},  { templateUrl: 'views/confirm.html' })
