@@ -13,7 +13,7 @@
 
                     <div class="form-group" ng-class="{ 'has-error' : domainForm.customerId.$invalid }">
                         <label class="control-label">Customer</label>
-                        <input type="text" ng-disabled="domain.id" class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" name="customerId" required data-ng-model="domain.customer_id">
+                        <input type="text" ng-disabled="domain.id" class="form-control" name="customerId" required data-ng-model="domain.customer_id">
                     </div>
 
                     <div class="form-group" ng-class="{ 'has-error' : domainForm.language.$invalid }">
@@ -26,13 +26,75 @@
                 </div>
 
                 <div class="col-sm-6">
-                    <webitel-variables
-                        collection = "domain.variables"
-                        dictionary="switchVar"
-                        remvar="remVar"
-                        >
 
-                    </webitel-variables>
+                    <div class="ui-tab-container ui-tab-dark">
+                        <div class="ui-tab">
+                            <tabset>
+                                <tab>
+                                    <tab-heading>
+                                        <span>Variables</span>
+                                    </tab-heading>
+                                    <webitel-variables
+                                            collection = "domain.variables"
+                                            dictionary="switchVar"
+                                            remvar="remVar"
+                                    >
+                                    </webitel-variables>
+                                </tab>
+                                <tab ng-if="domain.id">
+                                    <tab-heading>
+                                        <span>Email</span>
+                                    </tab-heading>
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group" ng-class="{ 'has-error' : domainForm.emailHost.$invalid }">
+                                                <label class="control-label">Host</label>
+                                                <input type="text" class="form-control" name="emailHost" data-ng-model="domain.email.options.host">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="form-group" ng-class="{ 'has-error' : domainForm.emailPort.$invalid }">
+                                                <label class="control-label">Port</label>
+                                                <input type="number" min="1" max="65535" class="form-control" name="emailPort" data-ng-model="domain.email.options.port">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="form-group" ng-class="{ 'has-error' : domainForm.emailUser.$invalid }">
+                                                <label class="control-label">Login</label>
+                                                <input type="text" class="form-control" name="emailUser" data-ng-model="domain.email.options.auth.user">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="form-group" ng-class="{ 'has-error' : domainForm.emailPass.$invalid }">
+                                                <label class="control-label">Password</label>
+                                                <input type="text" class="form-control" name="emailPass" data-ng-model="domain.email.options.auth.pass">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="form-group" ng-class="{ 'has-error' : domainForm.emailFrom.$invalid }">
+                                                <label class="control-label">From</label>
+                                                <input type="text" class="form-control" name="emailFrom" data-ng-model="domain.email.from">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="form-group" >
+                                                <label for>Secure</label>
+                                                <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="domain.email.options.secure"><i></i></label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </tab>
+                            </tabset>
+                        </div>
+                    </div>
                 </div>
 
             </div>

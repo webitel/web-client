@@ -3,11 +3,11 @@
  */
 'use strict';
 
-define(['angular', 'scripts/webitel/utils', 'scripts/webitel/webitel'], function (angular, utils) {
+define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 'scripts/webitel/emailModel'], function (angular, utils, async) {
 
-    var app = angular.module('app.domain', ['app.webitel']);
+    var app = angular.module('app.domain', ['app.webitel', 'app.email']);
 
-    app.factory("DomainModel", ['webitel', function DomainModel(webitel) {
+    app.factory("DomainModel", ['webitel', 'EmailModel', function DomainModel(webitel, EmailModel) {
 
         var cacheDomain = new utils.WebitelArrayCollection('name'),
             httpApi = webitel.api;
@@ -107,7 +107,11 @@ define(['angular', 'scripts/webitel/utils', 'scripts/webitel/webitel'], function
                     if (err)
                         return cb(err);
 
-                    return cb(null, parseDomainObj(res.info, id));
+                    var domain = parseDomainObj(res.info, id);
+                    EmailModel.get(id, function (err, emailCOnfig) {
+                        domain.email = emailCOnfig;
+                        return cb(null, domain);
+                    });
                 });
             },
             add: function (domain, cb) {
@@ -146,6 +150,8 @@ define(['angular', 'scripts/webitel/utils', 'scripts/webitel/webitel'], function
                     requestData.push(key + '=')
                 });
                 angular.forEach(fields, function (item, key) {
+                    if (key === 'email') return;
+
                     if (key === "default_language") {
                         requestData.push("default_language=" + domain.default_language)
                     } else if (key === "customer_id") {
@@ -155,10 +161,29 @@ define(['angular', 'scripts/webitel/utils', 'scripts/webitel/webitel'], function
                     }
                 });
 
-                if (requestData.length < 1)
+                if (requestData.length < 1 && !fields.hasOwnProperty('email'))
                     return cb(new Error("Application parse variable error."));
 
-                webitel.api("PUT", "/api/v2/domains/" + domain.id + "/var", requestData, cb)
+                async.parallel(
+                    [
+                        function (cb) {
+                            if (requestData.length > 0) {
+                                webitel.api("PUT", "/api/v2/domains/" + domain.id + "/var", requestData, cb);
+                            } else {
+                                cb(null);
+                            }
+                        },
+
+                        function (cb) {
+                            if (fields.hasOwnProperty('email')) {
+                                EmailModel.set(domain.id, domain.email, cb);
+                            } else {
+                                cb(null);
+                            }
+                        }
+                    ],
+                    cb
+                );
             },
             remove: function (name, cb) {
                 webitel.api("DELETE", "/api/v2/domains/" + name, function (err, res) {

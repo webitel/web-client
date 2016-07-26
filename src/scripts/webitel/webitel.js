@@ -311,6 +311,7 @@ define(['angular',
 							 window.location.href = "/";
 					 });
 				 }
+				 _e.statusCode = statusCode;
 				 cb(_e, {}, statusCode);
 			 });
 		 };
