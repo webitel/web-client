@@ -50,7 +50,10 @@
 						<th st-skip-natural="true" st-sort="state" >State</th>
 						<th st-skip-natural="true" st-sort="data" >Data</th>
 						<th st-skip-natural="true" ng-if="!domain" st-sort="domain" >Domain</th>
-						<th></th>
+
+                        <th style="text-align: end;">
+                            Count: {{displayedCollection.length}}
+                        </th>
 					</tr>
 				</thead>
 

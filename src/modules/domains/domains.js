@@ -15,6 +15,10 @@ define(['app', 'scripts/webitel/utils',
 		$scope.canUpdate = webitel.connection.session.checkResource('domain', 'u');
 		$scope.canCreate = webitel.connection.session.checkResource('domain', 'c');
 
+	    $scope.changePanel = function (panelStatistic) {
+			$scope.panelStatistic = !!panelStatistic;
+		};
+
 	  	$scope.query = TableSearch.get('domains');
 
 	  	$scope.$watch("query", function (newVal) {
@@ -119,7 +123,7 @@ define(['app', 'scripts/webitel/utils',
 				DomainModel.add(self.domain, cb)
 			}
 		};
-
+		  $scope.domainUsedStorage = null;
 		function edit() {
 			var id = $routeParams.id;
 			DomainModel.item(id, function(err, item) {
@@ -129,6 +133,11 @@ define(['app', 'scripts/webitel/utils',
 				self.oldDomain = angular.copy(item);
 				self.domain = item;
 				disableEditMode();
+				DomainModel.usedFileStorage(id, function (err, res) {
+					if (err || (res && res.size == 0))
+						return;
+					$scope.domainUsedStorage = utils.prettysize(res.size);
+				})
 			});
 		};
 
@@ -161,5 +170,167 @@ define(['app', 'scripts/webitel/utils',
 	 	}();
 
 	 }]);
+
+	app.controller("DomainStatisticCtrl", ["$scope", '$timeout', '$filter', function ($scope, $timeout, $filter) {
+		var timerId = null;
+		$scope.$watch('$parent.displayedCollection', function (val) {
+			$timeout.cancel(timerId);
+			timerId = $timeout(function () {
+				setDomainUsersCount(val);
+				setDomainCustomer(val);
+			}, 500);
+		});
+		$scope.rc = {};
+		$scope.$watch('$parent.panelStatistic', function(val){
+			if (val)
+				$timeout(function(){
+					window.dispatchEvent(new Event('resize'));
+				}, 0);
+		});
+
+		var domainCustomerChart = $scope.domainCustomerChart = {
+			options: {
+				"chart": {
+					"type": "multiBarChart",
+					"height": 600,
+					"margin": {
+						"top": 20,
+						"right": 20,
+						"bottom": 45,
+						"left": 45
+					},
+					"clipEdge": true,
+					"duration": 500,
+					"stacked": true,
+					"xAxis": {
+						"axisLabel": "Customer",
+						"showMaxMin": false
+					},
+					"yAxis": {
+						"tickFormat": function (d) {
+							return d3.format(',f')(d)
+						},
+						"axisLabel": "Count"
+					}
+				},
+				"data": []
+			}
+		};
+
+		var domainUsersCount = $scope.domainUsersCount = {
+			render: false,
+			collection: null,
+			setData: setDomainUsersCount,
+			options: {
+				chart: {
+					dispatch: {
+						renderEnd: function(e){
+							domainUsersCount.render = false;
+						}
+					},
+					type: 'pieChart',
+					margin: {
+						top: 40,
+						right: 0,
+						bottom: 0,
+						left: 0
+					},
+					tooltip: {
+						enabled: true,
+						valueFormatter: function (d) {
+							return d3.format(',f')(d)
+						}
+					},
+					height: 600,
+					x: function(d){
+						return d.key;
+					},
+					y: function(d){
+						return d.y;
+					},
+					showLabels: false,
+					donutRatio: 0.3,
+					donut: true,
+					transitionDuration: 500,
+					labelThreshold: 0.02,
+					// "margin": {
+					// 	"top": 0,
+					// 	"right": 0,
+					// 	"bottom": 0,
+					// 	"left": 0
+					// },
+					legendPosition: "right",
+					legend: {
+						vers: 'furious'
+					},
+				},
+				data: [] // {key, y}
+			}
+		};
+		
+		
+		function setDomainUsersCount(collection) {
+
+			var aggregate = function (data) {
+				var tmp = {};
+				var result = [
+					{
+						key: "Users",
+						values: []
+					},
+					{
+						key: "Domains",
+						values: []
+					}
+				];
+				for (var i = 0; i < data.length; i++) {
+					if (tmp.hasOwnProperty(data[i].customer)) {
+						tmp[data[i].customer].domains++;
+						tmp[data[i].customer].users += data[i].user;
+					} else {
+						tmp[data[i].customer] = {
+							domains: 1,
+							users: data[i].user
+						}
+					}
+				}
+
+				angular.forEach(tmp, function (val, key) {
+					result[0].values.push({
+						x: key,
+						y: val.users
+					});
+					result[1].values.push({
+						x: key,
+						y: val.domains
+					})
+				});
+				return result;
+			};
+
+			domainCustomerChart.data = aggregate(collection);
+
+			$timeout(function () {
+				$scope.$apply();
+			});
+		}
+		function setDomainCustomer(collection) {
+			domainUsersCount.render = true;
+			var _c = collection || domainUsersCount.collection;
+			var data = domainUsersCount.data = [];
+			_c = $filter('orderBy')(_c, '-user').slice(0, 15);
+
+			angular.forEach(_c, function (item) {
+				data.push({
+					key: item.name,
+					y: item.user || 0
+				})
+			});
+			domainUsersCount.data = data;
+			$timeout(function () {
+				$scope.$apply();
+			});
+		}
+	}]);
 
 });

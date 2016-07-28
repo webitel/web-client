@@ -12,6 +12,11 @@
                         <a ng-click="reloadData()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
                             <i class="glyphicon glyphicon-refresh"></i>
                         </a>
+
+                        <a ng-click="changePanel(!panelStatistic)" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                            <i ng-if="panelStatistic" class="glyphicon glyphicon-list-alt"></i>
+                            <i ng-if="!panelStatistic" class="glyphicon glyphicon-stats"></i>
+                        </a>
                     </div>
 
                     <div class="form-group pull-right ">
@@ -23,7 +28,7 @@
                 </div>
             </div>
 
-            <div class="table-responsive" style="position: relative;">
+            <div ng-show="!panelStatistic" class="table-responsive" style="position: relative;">
 
                 <div ng-show="isLoading" class="loading text-center">
                         <span>
@@ -52,7 +57,9 @@
                         <th st-skip-natural="true" st-sort="status" >Status</th>
                         <th st-skip-natural="true" st-sort="descript" >Descript</th>
 
-                        <th></th>
+                        <th style="text-align: end;">
+                            Count: {{displayedCollection.length}}
+                        </th>
                     </tr>
                 </thead>
                 <tbody ng-show="rowCollection.length > 0">
@@ -103,8 +110,8 @@
 
             </div>
 
-
+            <div ng-show="panelStatistic"  data-ng-controller="AccountStatisticCtrl" data-ng-include=" 'modules/accounts/accountsStatistic.html' " >
+            </div>
         </div>
-
     </div>
 </div>

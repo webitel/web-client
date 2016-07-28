@@ -26,6 +26,38 @@ define(['angular'], function (angular) {
         };
     };
 
+    var sizes = [
+        'Bytes', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB'
+    ];
+
+    function prettysize(size, nospace, one) {
+        var mysize, f;
+
+        sizes.forEach(function(f, id) {
+            if (one) {
+                f = f.slice(0, 1);
+            }
+            var s = Math.pow(1024, id),
+                fixed;
+            if (size >= s) {
+                fixed = String((size / s).toFixed(1));
+                if (fixed.indexOf('.0') === fixed.length - 2) {
+                    fixed = fixed.slice(0, -2);
+                }
+                mysize = fixed + (nospace ? '' : ' ') + f;
+            }
+        });
+
+        // zero handling
+        // always prints in Bytes
+        if (!mysize) {
+            f = (one ? sizes[0].slice(0, 1) : sizes[0]);
+            mysize = '0' + (nospace ? '' : ' ') + f;
+        }
+
+        return mysize;
+    }
+
     function WebitelHashCollection() {
         var collection = {};
 
@@ -2608,6 +2640,7 @@ define(['angular'], function (angular) {
         timeZones: timeZones,
         CSVToArray: CSVToArray,
         CSV2JSON: CSV2JSON,
-        CharSet: CharSet
+        CharSet: CharSet,
+        prettysize: prettysize
     }
 });

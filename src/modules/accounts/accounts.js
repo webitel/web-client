@@ -21,6 +21,10 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
 
         $scope.query = TableSearch.get('account'); //$routeParams.search;
 
+        $scope.changePanel = function (panelStatistic) {
+            $scope.panelStatistic = !!panelStatistic;
+        };
+
         $scope.$watch("query", function (newVal) {
             TableSearch.set(newVal, 'account')
         });
@@ -33,29 +37,55 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         });
 
         if (!$route.current.method) {
+            
+            var findAccountInRowCollection = function (id, domain) {
+                if (!$scope.rowCollection)
+                    return;
+
+                for (var i = 0, len = $scope.rowCollection.length; i < len; i++)
+                    if ($scope.rowCollection[i].id == id && $scope.rowCollection[i].domain == domain)
+                        return $scope.rowCollection[i];
+            };
 
             var fnOnUserStatusChange = function (e) {
                 if (e["Account-Domain"] != $scope.domain)
                     return;
 
-                var $row = $("#account-" + e["Account-User"]);
-                // TODO ??? perf
-                $row.find('td.account-state span').removeClass().addClass(e['Account-User-State'].toLocaleLowerCase()).text(e['Account-User-State']);
-                $row.find('td.account-status span').removeClass().addClass(e['Account-Status'].toLocaleLowerCase()).text(e['Account-Status']);
+                // var $row = $("#account-" + e["Account-User"]);
+                // // TODO ??? perf
+                // $row.find('td.account-state span').removeClass().addClass(e['Account-User-State'].toLocaleLowerCase()).text(e['Account-User-State']);
+                // $row.find('td.account-status span').removeClass().addClass(e['Account-Status'].toLocaleLowerCase()).text(e['Account-Status']);
                 var descript = e['Account-Status-Descript'] || "";
-                $row.find('td.account-descript').text(decodeURIComponent(descript));
+                // $row.find('td.account-descript').text(decodeURIComponent(descript));
 
+                var user = findAccountInRowCollection(e["Account-User"], e["Account-Domain"]);
+                if (user) {
+                    user.state = e['Account-User-State'];
+                    user.status = e['Account-Status'];
+                    user.descript = descript;
+                    $scope.$apply();
+                }
             };
             var fnOnUserOnline = function (e) {
                 if (e["User-Domain"] != $scope.domain)
                     return;
-                $("#account-" + e["User-ID"] + ' .account-online span').removeClass().addClass('true')
+                var user = findAccountInRowCollection(e["User-ID"], e["User-Domain"]);
+                if (user) {
+                    user.online = true;
+                    $scope.$apply();
+                }
+                // $("#account-" + e["User-ID"] + ' .account-online span').removeClass().addClass('true')
             };
             var fnOnUserOffline = function (e) {
                 if (e["User-Domain"] != $scope.domain)
                     return;
-                $("#account-" + e["User-ID"] + ' .account-online span').removeClass().addClass('false')
 
+                var user = findAccountInRowCollection(e["User-ID"], e["User-Domain"]);
+                if (user) {
+                    user.online = false;
+                    $scope.$apply();
+                }
+                // $("#account-" + e["User-ID"] + ' .account-online span').removeClass().addClass('false')
             };
 
             webitel.connection.instance.onServerEvent("ACCOUNT_STATUS", fnOnUserStatusChange);
@@ -170,9 +200,6 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
 
                 $scope.queues = grid;
             })
-
-
-
         }
 
         $scope.$watch('domain', function(domainName) {
@@ -298,6 +325,225 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
             });
         }
     }]);
+    
+    app.controller('AccountStatisticCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
+        var timerId = null;
+        $scope.$watch('$parent.panelStatistic', function(val){
+            if (val)
+                $timeout(function(){
+                    window.dispatchEvent(new Event('resize'));
+                }, 0);
+        });
+        $scope.data;
+        $scope.$watch('$parent.rowCollection', function (val) {
+            $timeout.cancel(timerId);
+            timerId = $timeout(function () {
+                updateState(val);
+            }, 500);
+        }, true);
+
+        var stateSettings = {
+            "ONHOOK": {
+                color: "#309570"
+            },
+            "ISBUSY": {
+                color: "#e9422e"
+            },
+            "NONREG": {
+                color: "#f3f3f3"
+            }
+        };
+        var statusSettings = {
+            "NONE": {
+                color: "#f3f3f3"
+            },
+            "DND": {
+                color: "#e9422e"
+            },
+            "ONBREAK": {
+                color: "#fac552"
+            },
+            "AGENT": {
+                color: "#e9422e"
+            }
+        };
+
+        function updateState(collection) {
+            accountState.data =  [
+            ];
+            accountStatus.data =  [
+            ];
+            accountOnline.data =  [
+                {
+                    key: "Online",
+                    y: 0
+                },
+                {
+                    key: "Offline",
+                    y: 0
+                }
+            ];
+
+            var state = {}, status = {};
+            angular.forEach(collection, function (item) {
+                // if (accountState.data.length > 10) return
+                if (state.hasOwnProperty(item.state)) {
+                    state[item.state]++
+                } else {
+                    state[item.state] = 1
+                }
+                if (status.hasOwnProperty(item.status)) {
+                    status[item.status]++
+                } else {
+                    status[item.status] = 1
+                }
+
+                accountOnline.data[item.online ? 0 : 1].y++;
+            });
+
+            accountState.data.push({
+                key: 'State',
+                values: []
+            });
+            angular.forEach(stateSettings, function (item, key) {
+                accountState.data[0].values.push({
+                    x: key,
+                    y: state[key] || 0
+                })
+            });
+
+            angular.forEach(statusSettings, function (item, key) {
+                accountStatus.data.push({
+                    key: key,
+                    y: status[key] || 0
+                })
+            });
+
+
+            $timeout(function () {
+                $scope.$apply();
+            });
+        }
+
+        var accountState = $scope.accountState = {
+            options: {
+                "chart": {
+                    "type": "multiBarHorizontalChart",
+                    "height": 250,
+                    "showControls": false,
+                    "showValues": true,
+                    "showLegend": false,
+                    valueFormat: function (d) {
+                        return d3.format(',f')(d)
+                    },
+                    "barColor": function (i) {
+                        if (stateSettings.hasOwnProperty(i.x)) {
+                            return stateSettings[i.x].color;
+                        }
+                    },
+                    "duration": 500,
+                    tooltip: {
+                        enabled: true,
+                        valueFormatter: function (d) {
+                            return d3.format(',f')(d)
+                        }
+                    },
+                    "xAxis": {
+                        "showMaxMin": false
+                    },
+                    "yAxis": {
+                        "axisLabel": "Values",
+                        tickFormat: function (d) {
+                            return d3.format(',f')(d)
+                        }
+                    }
+                }
+            }
+        };
+
+        var accountStatus = $scope.accountStatus = {
+            options: {
+                chart: {
+                    type: 'pieChart',
+                    margin: {
+                        top: 40,
+                        right: 0,
+                        bottom: 0,
+                        left: 0
+                    },
+                    tooltip: {
+                        enabled: true,
+                        valueFormatter: function (d) {
+                            return d3.format(',f')(d)
+                        }
+                    },
+                    height: 350,
+                    x: function(d){
+                        return d.key;
+                    },
+                    y: function(d){
+                        return d.y;
+                    },
+                    color: function (i) {
+                        if (statusSettings.hasOwnProperty(i.key)) {
+                            return statusSettings[i.key].color;
+                        }
+                    },
+                    showLabels: true,
+                    showLegend: true,
+                    donutRatio: 0.3,
+                    donut: true,
+                    transitionDuration: 500,
+                    labelThreshold: 0.02,
+                    legendPosition: "right",
+                    legend: {
+                        vers: 'furious'
+                    }
+                },
+                data: [] // {key, y}
+            }
+        };
+
+        var accountOnline = $scope.accountOnline = {
+            options: {
+                chart: {
+                    type: 'pieChart',
+                    height: 350,
+                    donut: true,
+                    x: function(d){return d.key;},
+                    y: function(d){return d.y;},
+                    showLabels: true,
+                    color: function (i) {
+                        return i.key == 'Online' ?  "#309570" : "#e9422e";
+                    },
+                    tooltip: {
+                        enabled: true,
+                        valueFormatter: function (d) {
+                            return d3.format(',f')(d)
+                        }
+                    },
+                    donutRatio: 0.3,
+                    pie: {
+                        startAngle: function(d) { return d.startAngle/2 -Math.PI/2 },
+                        endAngle: function(d) { return d.endAngle/2 -Math.PI/2 }
+                    },
+                    duration: 500,
+                    legendPosition: "right",
+                    legend: {
+                        vers: 'furious'
+                    },
+                    legend: {
+                        margin: {
+                            top: 5,
+                            right: 70,
+                            bottom: 5,
+                            left: 0
+                        }
+                    }
+                }
+            }
+        };
+    }]);
 
     app.controller('AccountStateCtrl', ['$scope', 'options', '$modalInstance', 'AcdModel', 'notifi', 'AccountModel',
     function ($scope, options, $modalInstance, AcdModel, notifi, AccountModel) {
@@ -391,5 +637,5 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
-    }])
+    }]);
 });

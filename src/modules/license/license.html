@@ -45,7 +45,9 @@
                     <th st-sort="issued" >Issued</th>
                     <th st-sort="expire" >Expire</th>
 
-                    <th></th>
+                    <th style="text-align: end;">
+                        Count: {{displayedCollection.length}}
+                    </th>
                 </tr>
             </thead>
             <tbody ng-show="rowCollection.length > 0">

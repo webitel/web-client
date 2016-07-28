@@ -97,11 +97,15 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
                 resp.push(_p + item.key + '=\'' + item.value + '\'')
             });
             return resp;
-        };
+        }
+
+        function usedFileStorage(id, cb) {
+            webitel.cdr('GET', '/api/v2/files/stats?domain=' + id, cb);
+        }
 
         return {
             create: create,
-
+            usedFileStorage: usedFileStorage,
             item: function (id, cb) {
                 webitel.api('GET', '/api/v2/domains/' + id, function (err, res) {
                     if (err)

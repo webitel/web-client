@@ -49,7 +49,9 @@
                     <th style="width: 40%" st-skip-natural="true" st-sort="destination_number" >Number</th>
                     <th style="width: 35%" st-skip-natural="true" st-sort="name" >Name</th>
                     <th style="width: 10%" st-skip-natural="true" st-sort="disabled" class="text-center">Enabled</th>
-                    <th style="width: 15%; min-width: 116px;"></th>
+                    <th style="width: 15%; min-width: 116px; text-align: end;">
+                        Count: {{displayedCollection.length}}
+                    </th>
                 </tr>
                 </thead>
                 <tbody ng-show="rowCollection.length > 0">

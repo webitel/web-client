@@ -23,6 +23,14 @@
                             <option>en</option>
                         </select>
                     </div>
+
+                    <div ng-if="domainUsedStorage" class="form-group">
+                        <p>
+                        </p>
+                        <blockquote class="blockquote-colored">
+                            <small>Use of disk space: {{domainUsedStorage}}</small>
+                        </blockquote>
+                    </div>
                 </div>
 
                 <div class="col-sm-6">

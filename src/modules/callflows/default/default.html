@@ -51,7 +51,9 @@
                     <th style="width: 5%" st-skip-natural="true" st-sort="order" >Order</th>
                     <th style="width: 10%" st-skip-natural="true" class="text-center" st-sort="disabled" >Enabled</th>
                     <th style="width: 15%" >Position</th>
-                    <th style="width: 15%; min-width: 116px;"></th>
+                    <th style="width: 15%; min-width: 116px; text-align: end;">
+                        Count: {{displayedCollection.length}}
+                    </th>
                 </tr>
                 </thead>
                 <tbody ng-show="rowCollection.length > 0">

@@ -60,7 +60,10 @@ require.config({
 
     'ui-select': 'bower_components/ui-select/dist/select.min',
     'jsZIP': 'bower_components/jszip/jszip.min',
-    'jsZIP-utils': 'bower_components/jszip/jszip-utils.min'
+    'jsZIP-utils': 'bower_components/jszip/jszip-utils.min',
+    'd3': 'bower_components/d3/d3.min',
+    'nvd3': 'bower_components/nvd3/build/nv.d3',
+    'angular-nvd3': 'bower_components/angular-nvd3/dist/angular-nvd3.min'
     // END TODO
 
     //new dash
@@ -72,7 +75,15 @@ require.config({
       deps: ['jquery'],
       exports: 'angular'
     },
-
+    'd3': {
+      deps: ['angular']
+    },
+    'nvd3': {
+      deps: ['angular', 'd3', 'css!bower_components/nvd3/build/nv.d3.min.css']
+    },
+    'angular-nvd3': {
+      deps: ['angular', 'nvd3']
+    },
     'ui-select': {
       deps: ['angular', 'css!bower_components/ui-select/dist/select.min.css']
     },
