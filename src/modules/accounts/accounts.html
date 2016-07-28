@@ -13,7 +13,7 @@
                             <i class="glyphicon glyphicon-refresh"></i>
                         </a>
 
-                        <a ng-click="changePanel(!panelStatistic)" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                        <a ng-click="changePanel(!panelStatistic)" style="padding: 0" ng-disabled="!domain" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
                             <i ng-if="panelStatistic" class="glyphicon glyphicon-list-alt"></i>
                             <i ng-if="!panelStatistic" class="glyphicon glyphicon-stats"></i>
                         </a>

@@ -441,7 +441,8 @@ define(['angular'], function (angular) {
         'CUSTOM->webitel::user_create',
         'CUSTOM->webitel::user_destroy',
         'CUSTOM->webitel::domain_create',
-        'CUSTOM->webitel::domain_destroy'
+        'CUSTOM->webitel::domain_destroy',
+        'CUSTOM->engine::dialer_member_end'
     ];
 
     var timeZones = [
