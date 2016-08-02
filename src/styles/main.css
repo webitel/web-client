@@ -36,7 +36,9 @@
 html {
     font-family: sans-serif;
     -ms-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%
+    -webkit-text-size-adjust: 100%;
+    overflow: -moz-scrollbars-vertical;
+    overflow-y: scroll;
 }
 
 body {
