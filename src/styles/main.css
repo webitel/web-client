@@ -11092,9 +11092,29 @@ html {
     margin-top: 4px
 }
 
+.header-container>.top-header .selected-domain {
+    display:none;
+}
+.header-container>.top-header .selected-domain p{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+    display: table-cell;
+}
+
 @media (min-width: 768px) {
     .header-container>.top-header .menu-button {
         display:none
+    }
+    .header-container>.top-header .selected-domain {
+        display:initial
+    }
+}
+
+@media (min-width: 992px) {
+    .header-container>.top-header .selected-domain p{
+        max-width: 400px;
     }
 }
 
