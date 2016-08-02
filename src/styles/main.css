@@ -5555,8 +5555,10 @@ a.thumbnail.active,a.thumbnail:focus,a.thumbnail:hover {
 }
 
 .media-body,.media-left,.media-right {
-    display: table-cell;
     vertical-align: top
+}
+.notify-head .media-body,.media-left,.media-right {
+    display: table-cell;
 }
 
 .media-middle {
