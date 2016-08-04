@@ -5,17 +5,15 @@
         </a>
     </div>
 
+
     <div class="col-sm-12">
-
-        <div class="col-sm-6">
-            <h4>End cause</h4>
-            <div google-chart chart="chartCause"></div>
+        <div class="panel panel-default">
+            <!--<div class="panel-heading">-->
+                <!--<h3 class="panel-title">End cause</h3>-->
+            <!--</div>-->
+            <div class="panel-body">
+                <nvd3 options="causeCart.options" data="causeCart.data"></nvd3>
+            </div>
         </div>
-
-        <div class="col-sm-6">
-            <h4>Active members</h4>
-            <div  google-chart chart="chartActiveCall"></div>
-        </div>
-
     </div>
 </div>

@@ -41,9 +41,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     }
 
     app.controller('DialerCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'DialerModel', '$location', '$route', '$routeParams',
-        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel', 'AccountModel',
+        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel', 'AccountModel', '$q', '$filter',
         function ($scope, webitel, $rootScope, notifi, DialerModel, $location, $route, $routeParams, $confirm, TableSearch,
-                  $timeout, $modal, CalendarModel, AccountModel) {
+                  $timeout, $modal, CalendarModel, AccountModel, $q, $filter) {
 
             $scope.canDelete = webitel.connection.session.checkResource('dialer', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('dialer', 'u');
@@ -521,6 +521,51 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             };
             //$scope.diealerTypes = ["progressive", "predictive", "auto dialer"];
             $scope.diealerTypes = ["Voice Broadcasting", "Progressive Dialer", "Predictive Dialer"];
+
+            var _mapCode = {
+                causesError: "CODE_RESPONSE_ERRORS",
+                causesRetry: "CODE_RESPONSE_RETRY",
+                causesOK: "CODE_RESPONSE_OK",
+                causesMinus: "CODE_RESPONSE_MINUS_PROBE"
+            };
+            
+            $scope.resetCause = function () {
+                $confirm({text: 'Are you sure you want to reset causes ?'},  { templateUrl: 'views/confirm.html' })
+                    .then(function() {
+                        $scope.dialer.causesError = angular.copy(DialerModel.CODE_RESPONSE_ERRORS);
+                        $scope.dialer.causesRetry = angular.copy(DialerModel.CODE_RESPONSE_RETRY);
+                        $scope.dialer.causesOK = angular.copy(DialerModel.CODE_RESPONSE_OK);
+                        $scope.dialer.causesMinus = angular.copy(DialerModel.CODE_RESPONSE_MINUS_PROBE);
+                    });
+            };
+
+            $scope.loadCause = function (query, fieldName) {
+                var result = $q.defer();
+                var data = DialerModel.ALL_CODE;
+                angular.forEach(_mapCode, function (v, key) {
+
+                    if ($scope.dialer[key]) {
+                        var m = $scope.dialer[key].map(function (v) {
+                            if (v.text)
+                                return v.text;
+                            return v;
+                        });
+                        data = diffArray(data, m);
+                    }
+                });
+
+                data = $filter('filter')(data, query);
+                result.resolve(data);
+                return result.promise;
+            };
+
+            $scope.selectTabStats = function () {
+                window.dispatchEvent(new Event('resize'));
+            };
+
+            function diffArray(a1, a2) {
+                return a1.filter(function(i) {return a2.indexOf(i) < 0;});
+            }
 
     }]);
     
@@ -1529,42 +1574,42 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
             });
 
+
+
             function reloadCause() {
                 if (!id || !domain)
                     return notifi.error(new Error("Bad parameters (id, domain is required)."));
 
-
-
-                DialerModel.members.aggregate(domain, id, aggCountLock, function (err, res) {
-                    if (err)
-                        return notifi.error(err);
-                    var calls = 0;
-                    if (res && res[0])
-                        calls = res[0].count;
-
-
-                    $scope.chartActiveCall = {
-                        type: "Gauge",
-                        options: {
-                            'height':'300',
-                            'width':'100%',
-                            max: maxCall,
-                            min: 0,
-
-                            redFrom: 0,
-                            redTo: Math.ceil(maxCall * 75 / 100),
-                            yellowFrom: Math.ceil(maxCall * 75 / 100),
-                            yellowTo: Math.ceil(maxCall * 90 / 100),
-                            greenFrom: Math.ceil(maxCall * 90 / 100),
-                            greenTo: maxCall,
-                            minorTicks: 5
-                        },
-                        data: [
-                            ['Label', 'Value'],
-                            ['Members', calls]
-                        ]
-                    }
-                });
+                // DialerModel.members.aggregate(domain, id, aggCountLock, function (err, res) {
+                //     if (err)
+                //         return notifi.error(err);
+                //     var calls = 0;
+                //     if (res && res[0])
+                //         calls = res[0].count;
+                //
+                //
+                //     $scope.chartActiveCall = {
+                //         type: "Gauge",
+                //         options: {
+                //             'height':'300',
+                //             'width':'100%',
+                //             max: maxCall,
+                //             min: 0,
+                //
+                //             redFrom: 0,
+                //             redTo: Math.ceil(maxCall * 75 / 100),
+                //             yellowFrom: Math.ceil(maxCall * 75 / 100),
+                //             yellowTo: Math.ceil(maxCall * 90 / 100),
+                //             greenFrom: Math.ceil(maxCall * 90 / 100),
+                //             greenTo: maxCall,
+                //             minorTicks: 5
+                //         },
+                //         data: [
+                //             ['Label', 'Value'],
+                //             ['Members', calls]
+                //         ]
+                //     }
+                // });
 
                 DialerModel.members.aggregate(domain, id, aggCause, function (err, res) {
                     if (err)
@@ -1572,40 +1617,50 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                     var rows = [];
                     angular.forEach(res, function (item) {
-                        //data.push([item._id, item.count]);
-                        rows.push({c: [
-                            {v: !item._id ? "WAITING" : item._id },
-                            {v: item.count}
-                        ]});
+
+                        rows.push({
+                            key: !item._id ? "WAITING" : item._id,
+                            y: item.count
+                        })
                     });
-                    $scope.chartCause = {
-                        "type": "PieChart",
-                        "options": {
-                            "displayExactValues": true,
-                            'title': 'Hangup cause',
-                            'height':'300',
-                            'width':'100%',
-                            "is3D": true,
-                            "chartArea": {
-                                'width':'100%',
-                                "height": "100%"
+
+                    $scope.causeCart = {
+                        data: rows,
+                        options: {
+                            chart: {
+                                type: 'pieChart',
+                                margin: {
+                                    top: 40,
+                                    right: 0,
+                                    bottom: 0,
+                                    left: 0
+                                },
+                                tooltip: {
+                                    enabled: true,
+                                    valueFormatter: function (d) {
+                                        return d3.format(',f')(d)
+                                    }
+                                },
+
+                                height: 500,
+                                x: function(d){
+                                    return d.key;
+                                },
+                                y: function(d){
+                                    return d.y;
+                                },
+                                title: "End cause",
+                                // showLabels: false,
+                                showLegend: true,
+                                donutRatio: 0.3,
+                                donut: true,
+                                transitionDuration: 500,
+                                labelThreshold: 0.02,
+                                // legendPosition: "right"
                             },
-                            "isStacked": "true",
-                            "fill": 20
-                        },
-                        "formatters": {
-                            "number": [
-                                {
-                                    "columnNum": 1,
-                                    "pattern": "#,##0"
-                                }
-                            ]
+                            data: [] // {key, y}
                         }
                     };
-                    $scope.chartCause.data = {"cols": [
-                        {id: "t", label: "Cause", type: "string"},
-                        {id: "s", label: "Count", type: "number"}
-                    ], "rows": rows};
                 });
             };
 

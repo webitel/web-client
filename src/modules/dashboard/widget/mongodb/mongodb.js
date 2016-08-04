@@ -1,5 +1,5 @@
 'use strict';
-define(['google-chart'], function () {
+define([], function () {
   angular.module('adf.widget.mongodb', ['adf.provider', 'googlechart'])
       .config(function(dashboardProvider){
         dashboardProvider

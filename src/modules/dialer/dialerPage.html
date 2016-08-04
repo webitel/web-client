@@ -425,7 +425,45 @@
                                         </div>
                                     </div>
                                 </tab>
-                                <tab ng-if="!isNew">
+
+                                <tab>
+                                    <tab-heading>
+                                        <span>Cause</span>
+                                    </tab-heading>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <a ng-click="resetCause()" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                                                <i class="glyphicon glyphicon-retweet"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" >
+                                        <label class="control-label">Error</label>
+                                        <tags-input type="text" class="form-group ui-tags-input" required ng-model="dialer.causesError">
+                                            <auto-complete min-length="1" source="loadCause($query, 'causesError')"></auto-complete>
+                                        </tags-input>
+                                    </div>
+                                    <div class="form-group" >
+                                        <label class="control-label">Retry</label>
+                                        <tags-input type="text" class="form-group ui-tags-input" required ng-model="dialer.causesRetry">
+                                            <auto-complete min-length="1" source="loadCause($query, 'causesRetry')"></auto-complete>
+                                        </tags-input>
+                                    </div>
+                                    <div class="form-group" >
+                                        <label class="control-label">OK</label>
+                                        <tags-input type="text" class="form-group ui-tags-input" required ng-model="dialer.causesOK">
+                                            <auto-complete min-length="1" source="loadCause($query, 'causesOK')"></auto-complete>
+                                        </tags-input>
+                                    </div>
+                                    <div class="form-group" >
+                                        <label class="control-label">Minus attempt</label>
+                                        <tags-input type="text" class="form-group ui-tags-input" required ng-model="dialer.causesMinus">
+                                            <auto-complete min-length="1" source="loadCause($query, 'causesMinus')"></auto-complete>
+                                        </tags-input>
+                                    </div>
+                                </tab>
+
+                                <tab ng-if="!isNew" select="selectTabStats()">
                                     <tab-heading>
                                         <span>Stats</span>
                                     </tab-heading>

@@ -90,7 +90,11 @@
                                 <i class="fa fa-circle"></i>
                             </span>
                         </td>
-                        <td class="account-cc-logged">{{row.cc_logged}}</td>
+                        <td class="account-cc-logged">
+                            <span ng-class="!row.cc_logged ? 'color-danger' : 'color-success'">
+                                <i class="fa fa-circle"></i>
+                            </span>
+                        </td>
                         <td class="account-state">
                             <span ng-class="row.state.toLowerCase()">{{row.state}}</span>
                         </td>

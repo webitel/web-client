@@ -36,8 +36,7 @@ require.config({
     'videogular-buffering': 'bower_components/videogular-buffering/vg-buffering.min',
     'datetime-picker': 'bower_components/bootstrap-ui-datetime-picker/dist/datetime-picker',
     'xeditable': 'bower_components/angular-xeditable/js/xeditable.min',
-
-    'google-chart': 'bower_components/angular-google-chart/ng-google-chart.min',
+    
     // TODO ijector
     'dashboard': 'bower_components/angular-dashboard-framework/dist/angular-dashboard-framework',
     'sortable': 'bower_components/Sortable/Sortable.min',
@@ -111,7 +110,6 @@ require.config({
     'widget-base': ['angular', 'dashboard'],
     'dashboard': ['angular', 'sortable', 'css!bower_components/angular-dashboard-framework/dist/angular-dashboard-framework.min.css'],
     'tags-input': ['angular'],
-    'google-chart': ['angular'],
     'ui-ace': ['angular', 'ace'],
     'ext-language_tools': ['ace'],
     'multi-select': ['angular', 'css!bower_components/angular-multi-select/angular-multi-select.css'],

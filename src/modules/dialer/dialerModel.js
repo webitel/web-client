@@ -8,6 +8,12 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
         var COLUMNS_LIST = 'columns=_id,name,type,priority,state,_cause,nextTick';
 
+        var CODE_RESPONSE_ERRORS = ["UNALLOCATED_NUMBER", "NO_ROUTE", "MEMBER_EXPIRED", "INVALID_NUMBER_FORMAT", "NETWORK_OUT_OF_ORDER", "OUTGOING_CALL_BARRED", "SERVICE_UNAVAILABLE", "CHAN_NOT_IMPLEMENTED", "SERVICE_NOT_IMPLEMENTED", "INCOMPATIBLE_DESTINATION", "MANDATORY_IE_MISSING", "PROGRESS_TIMEOUT", "GATEWAY_DOWN"];
+        var CODE_RESPONSE_RETRY = ["NO_ROUTE_DESTINATION", "DESTINATION_OUT_OF_ORDER", "USER_BUSY", "CALL_REJECTED", "NO_USER_RESPONSE", "NO_ANSWER", "SUBSCRIBER_ABSENT", "NUMBER_CHANGED", "NORMAL_UNSPECIFIED", "NORMAL_TEMPORARY_FAILURE", "NORMAL_CIRCUIT_CONGESTION", "ORIGINATOR_CANCEL", "LOSE_RACE", "USER_NOT_REGISTERED"];
+        var CODE_RESPONSE_OK = ["NORMAL_CLEARING"];
+        var CODE_RESPONSE_MINUS_PROBE = ["RECOVERY_ON_TIMER_EXPIRE"];
+
+        var ALL_CODE = [].concat(CODE_RESPONSE_ERRORS, CODE_RESPONSE_RETRY, CODE_RESPONSE_OK, CODE_RESPONSE_MINUS_PROBE);
 
         function listMembers (domainName, dialerId, option, cb) {
             if (!domainName)
@@ -254,6 +260,18 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                         value: val
                     })
                 });
+                if (!data.causesError)
+                    data.causesError = angular.copy(CODE_RESPONSE_ERRORS);
+
+                if (!data.causesRetry)
+                    data.causesRetry = angular.copy(CODE_RESPONSE_RETRY);
+
+                if (!data.causesOK)
+                    data.causesOK = angular.copy(CODE_RESPONSE_OK);
+
+                if (!data.causesMinus)
+                    data.causesMinus = angular.copy(CODE_RESPONSE_MINUS_PROBE);
+
                 return cb && cb(err, data);
             });
         }
@@ -310,6 +328,17 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
         }
 
+        function _setCause(arr, def) {
+            if (!arr)
+                return def;
+
+            var d = [];
+            angular.forEach(arr, function (item) {
+                d.push(item && item.text ? item && item.text : item);
+            });
+            return d;
+        }
+
         function create (domain, option) {
             option = option || {};
             var calendar = option.calendar ? {id: option.calendar.id, name: option.calendar.name} : {};
@@ -319,6 +348,12 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     skills.push(i.text)
                 });
             }
+
+            var causesError = _setCause(option.causesError, CODE_RESPONSE_ERRORS);
+            var causesRetry = _setCause(option.causesRetry, CODE_RESPONSE_RETRY);
+            var causesOK = _setCause(option.causesOK, CODE_RESPONSE_OK);
+            var causesMinus = _setCause(option.causesMinus, CODE_RESPONSE_MINUS_PROBE);
+
 
             return {
                 "domain" : domain || "",
@@ -339,6 +374,10 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     "wrapUpTime" : angular.isNumber(option.parameters && option.parameters.wrapUpTime) ? option.parameters.wrapUpTime : 60,
                     'waitingForResultStatus': option.parameters && option.parameters.waitingForResultStatus
                 },
+                "causesError": causesError,
+                "causesRetry": causesRetry,
+                "causesOK": causesOK,
+                "causesMinus": causesMinus,
                 "variables" : {},
                 "skills" : skills,
                 "resources" : angular.isArray(option.resources) ? option.resources : [],
@@ -380,6 +419,11 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             add: add,
             update: update,
             setState: setState,
+            ALL_CODE: ALL_CODE,
+            CODE_RESPONSE_ERRORS: CODE_RESPONSE_ERRORS,
+            CODE_RESPONSE_RETRY: CODE_RESPONSE_RETRY,
+            CODE_RESPONSE_OK: CODE_RESPONSE_OK,
+            CODE_RESPONSE_MINUS_PROBE: CODE_RESPONSE_MINUS_PROBE,
 
             members: {
                 list: listMembers,

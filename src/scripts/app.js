@@ -36,7 +36,6 @@ define(['require',
     'widget-markdown',
     'widget-mongodb',
     'ui-select',
-    'google-chart',
     'xeditable',
     'angular-nvd3'
     // TODO new dash..
@@ -45,7 +44,7 @@ define(['require',
     //require()
     var app = angular.module("app", ['ngRoute', 'ngStorage', 'angular-clipboard', 'ngSanitize', 'com.2fdevs.videogular', "com.2fdevs.videogular.plugins.controls", 'ui.select', 'xeditable',
         'adf', 'adf.widget.iframe', 'adf.widget.linklist', 'adf.widget.markdown', 'adf.structures.base', /*'adf.widget.mongodb',*/
-        'wt.responsive', 'ngAnimate', 'smart-table', 'ui.bootstrap', 'ui.bootstrap.modal', "ui.bootstrap.datepicker", 'ui.bootstrap.datetimepicker', 'googlechart', 'nvd3',
+        'wt.responsive', 'ngAnimate', 'smart-table', 'ui.bootstrap', 'ui.bootstrap.modal', "ui.bootstrap.datepicker", 'ui.bootstrap.datetimepicker', 'nvd3',
         'app.directives',
         'app.nav', 'app.controllers', 'app.localization', 'app.webitel', 'app.modules', 'ngTagsInput', 'app.notifier', 'angular-confirm', 'app.domain', 'angularFileUpload', 'multi-select']);
 
