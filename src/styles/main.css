@@ -11099,8 +11099,8 @@ html {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 160px;
-    display: table-cell;
+    max-width: 120px;
+    display: inline-table;
 }
 
 @media (min-width: 768px) {
