@@ -1,0 +1,3 @@
+.call-parent-queue td:first-child {
+    border-left: 4px solid #e9422e;
+}

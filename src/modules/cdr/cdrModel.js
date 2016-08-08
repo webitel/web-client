@@ -80,6 +80,11 @@ define(["app", "config"], function(app, config) {
                         "caption": "UUID",
                         "noRender": true
                     },
+                    "variables.cc_member_uuid": {
+                        "type": "string",
+                        "caption": "cc_member_uuid",
+                        "noRender": true
+                    }
                 }
             } else {
                 mapColumn = {

@@ -3,7 +3,7 @@
  */
 
 
-define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview', 'css!modules/cdr/css/verticalTabs.css'],
+define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview', 'css!modules/cdr/css/verticalTabs.css', 'css!modules/cdr/cdr.css'],
     function (app, moment, jsZIP) {
 
     app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm', 'notifi', 'TableSearch', '$timeout',

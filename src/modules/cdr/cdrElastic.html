@@ -129,7 +129,7 @@
 
                     <tbody style="font-size: 11px;">
 
-                    <tr ng-repeat-start="(k, row) in rowCollection" ng-click="selectRow(row)" ng-class="{'bg-gray': row == activeRow}">
+                    <tr ng-repeat-start="(k, row) in rowCollection" ng-click="selectRow(row)" ng-class="{'bg-gray': row == activeRow, 'call-parent-queue': activeRow['variables.cc_member_uuid'] && (row['variables.cc_member_uuid'] === activeRow['variables.cc_member_uuid'])}">
                         <td style="word-break: break-word;" ng-if="!mapColumns[item].noRender && !mapColumns[item].options.detail" ng-repeat="(item, key) in columns">
                             {{renderCell(row[item], mapColumns[item])}}
                             <!--{{row[item]}}-->
