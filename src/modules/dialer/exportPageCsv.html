@@ -78,7 +78,7 @@
                                 <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.field }">
                                     <select required ng-model="item.field" class="form-control">
                                         <option value="">--</option>
-                                        <option ng-repeat="(k, col) in ExportColumns" value="{{k}}">{{col.name}}</option>
+                                        <option ng-repeat="(k, col) in ExportColumns | cdrExportColumns:settings" value="{{k}}">{{col.name}}</option>
                                     </select>
                                 </div>
                             </td>

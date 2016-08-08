@@ -937,6 +937,24 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                 var data = "";
 
+                //region TODO ...
+
+                function _findSteps(steps, reg, to) {
+                    for (var i in steps) {
+                        if (reg.test(steps[i].data)) {
+                            return steps[i].data.replace(reg, to)
+                        }
+                    }
+                    return '';
+                }
+
+                function _findNumber(row, n) {
+                    for (var key in row.communications) {
+                        if (row.communications[key].number == n)
+                            return row.communications[key];
+                    }
+                }
+
                 function addRow(row) {
                     var rowString = '',
                         exportProbe = false,
@@ -966,6 +984,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                 val = '{{PROBE_CAUSE}}';
                             } else {
                                 val = row._endCause || "";
+                            }
+                        } else if (i.field === 'number' || i.field === 'priority_number' || i.field === 'state' || i.field == '_probeCount') {
+                            if (settings.allProbe) {
+                                val = '{{' + i.field.toUpperCase() + '}}';
+                                exportProbe = true;
+                            } else {
+                                val = row;
+                                i.route.split('.').forEach(function (token) {
+                                    val = val && val[token];
+                                });
                             }
                         } else {
                             val = row;
@@ -998,6 +1026,51 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             }
                             return time || "";
                         });
+
+                        i = 0;
+                        rowString = rowString.replace(/{{NUMBER}}/g, function () {
+                            var t = row._log[i++],
+                                res = '';
+                            if (t && t.steps) {
+                                res = _findSteps(t.steps, /set\snumber:\s/g, '');
+                            }
+                            return res;
+                        });
+                        i = 0;
+                        rowString = rowString.replace(/{{STATE}}/g, function () {
+                            var t = row._log[i++],
+                                res = '';
+                            if (t && t.steps) {
+                                res = _findSteps(t.steps, /set\snumber:\s/g, '');
+                                if (res != '') {
+                                    var __n = _findNumber(row, res);
+                                    res = __n && __n.state;
+                                }
+                            }
+                            return res;
+                        });
+                        i = 0;
+                        rowString = rowString.replace(/{{PRIORITY_NUMBER}}/g, function () {
+                            var t = row._log[i++],
+                                res = '';
+                            if (t && t.steps) {
+                                res = _findSteps(t.steps, /set\snumber:\s/g, '');
+                                if (res != '') {
+                                    var __n = _findNumber(row, res);
+                                    res = __n && __n.priority;
+                                }
+                            }
+                            return res;
+                        });
+                        i = 0;
+                        rowString = rowString.replace(/{{_PROBECOUNT}}/g, function () {
+                            var t = row._log[i++],
+                                res = '';
+                            if (t && t.steps) {
+                                res = _findSteps(t.steps, /create\sprobe\s/g, '');
+                            }
+                            return res;
+                        });
                     }
 
                     data += rowString;
@@ -1012,6 +1085,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     });
                     data += '\n';
                 }
+
+                //endregion
                 
                 (function process(err, res) {
                     if (err)
@@ -1194,6 +1269,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     app.controller('MemberDialerExportCtrl', ['$scope', '$modalInstance', 'notifi', function ($scope, $modalInstance, notifi) {
         $scope.settings = {
             separator: ';',
+            allProbe: false,
             headers: true,
             skipFilter: false,
             charSet: 'utf-8',
@@ -1232,89 +1308,154 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             //    name: "Timezone",
             //    field: 'timezone'
             //},
+            "number": {
+                name: "Number",
+                field: 'number',
+                position: 0,
+                type: 'communications',
+                filter: {
+                    "allProbe": true
+                }
+            },
+            "priority_number": {
+                selected: false,
+                name: "Priority number",
+                field: "priority_number",
+                position: 0,
+                type: 'communications',
+                filter: {
+                    "allProbe": true
+                }
+            },
+            "state": {
+                selected: false,
+                name: "State",
+                field: "state",
+                position: 0,
+                type: 'communications',
+                filter: {
+                    "allProbe": true
+                }
+            },
             "number_1": {
                 selected: false,
                 name: "number_1",
                 field: 'number',
                 position: 0,
-                type: 'communications'
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
             },
             "priority_1": {
                 selected: false,
                 name: "priority_1",
                 field: "priority",
                 position: 0,
-                type: 'communications'
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
             },
             "state_1": {
                 selected: false,
                 name: "state_1",
                 field: "state",
                 position: 0,
-                type: 'communications'
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
             },
             "number_2": {
                 selected: false,
                 name: "number_2",
                 field: 'number',
                 position: 1,
-                type: 'communications'
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
             },
             "priority_2": {
                 selected: false,
                 name: "priority_2",
                 field: "priority",
                 position: 1,
-                type: 'communications'
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
             },
             "state_2": {
                 selected: false,
                 name: "state_2",
                 field: "state",
                 position: 1,
-                type: 'communications'
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
             },
             "number_3": {
                 selected: false,
                 name: "number_3",
                 field: 'number',
                 position: 2,
-                type: 'communications'
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
             },
             "priority_3": {
                 selected: false,
                 name: "priority_3",
                 field: "priority",
                 position: 2,
-                type: 'communications'
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
             },
             "state_3": {
                 selected: false,
                 name: "state_3",
                 field: "state",
                 position: 2,
-                type: 'communications'
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
             },
             "number_4": {
                 selected: false,
                 name: "number_4",
                 field: 'number',
                 position: 3,
-                type: 'communications'
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
             },
             "priority_4": {
                 selected: false,
                 name: "priority_4",
                 field: "priority",
                 position: 3,
-                type: 'communications'
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
             },
             "state_4": {
                 selected: false,
                 name: "state_4",
                 field: "state",
                 position: 3,
-                type: 'communications'
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
             },
             "_endCause": {
                 name: "End cause",
@@ -1684,4 +1825,22 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $modalInstance.dismiss('cancel');
         };
     }]);
+
+    app.filter('cdrExportColumns', function ($filter) {
+        return function (items, m) {
+            var res = {};
+            angular.forEach(items, function (v, k) {
+                if (v.hasOwnProperty('filter')) {
+                    for (var key in v.filter) {
+                        if (m.hasOwnProperty(key) && m[key] === v.filter[key]) {
+                            res[k] = v;
+                        }
+                    }
+                } else {
+                    res[k] = v;
+                }
+            });
+            return res;
+        }
+    })
 });
