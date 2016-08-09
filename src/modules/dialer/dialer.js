@@ -1044,7 +1044,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                 res = _findSteps(t.steps, /set\snumber:\s/g, '');
                                 if (res != '') {
                                     var __n = _findNumber(row, res);
-                                    res = __n && __n.state;
+                                    res = (__n && __n.state) || 0;
                                 }
                             }
                             return res;
