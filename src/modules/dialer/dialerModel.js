@@ -140,7 +140,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 return cb && cb(err, member);
             })
         }
-
+        // TODO BUGGGG!!!
         function updateMember (domainName, dialerId, id, member, cb) {
             if (!domainName)
                 return cb(new Error("Domain is required."));

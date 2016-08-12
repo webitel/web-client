@@ -956,124 +956,87 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
 
                 function addRow(row) {
-                    var rowString = '',
-                        exportProbe = false,
-                        typeTime;
 
-                    angular.forEach(settings.data, function (i, index) {
-                        var val;
-                        if (i.field === "callTime") {
-                            if (row._log && !settings.allProbe) {
-                                var call = row._log[row._log.length - 1];
-                                call = call && call.steps;
-                                val = call && call[0].time;
+                    function addNoAtempt() {
+                        angular.forEach(settings.data, function (i, index) {
+                            var val;
+                            if (i.field === "callTime") {
+                                if (row._log) {
+                                    var call = row._log[row._log.length - 1];
+                                    call = call && call.steps;
+                                    val = call && call[0].time;
+                                    if (i.type == 'string' && val)
+                                        val = new Date(val).toLocaleString()
+                                }
+                            } else if (i.field === "expire") {
+                                val = row.expire;
                                 if (i.type == 'string' && val)
                                     val = new Date(val).toLocaleString()
-                            } else if (row._log && settings.allProbe) {
-                                val = '{{ALL_PROBE_TIME}}';
-                                typeTime = i.type;
-                                exportProbe = true;
-                            }
-                        } else if (i.field === "expire") {
-                            val = row.expire;
-                            if (i.type == 'string' && val)
-                                val = new Date(val).toLocaleString()
-                        } else if (i.field === '_endCause') {
-                            if (settings.allProbe) {
-                                exportProbe = true;
-                                val = '{{PROBE_CAUSE}}';
-                            } else {
-                                val = row._endCause || "";
-                            }
-                        } else if (i.field === 'number' || i.field === 'priority_number' || i.field === 'state' || i.field == '_probeCount') {
-                            if (settings.allProbe) {
-                                val = '{{' + i.field.toUpperCase() + '}}';
-                                exportProbe = true;
                             } else {
                                 val = row;
                                 i.route.split('.').forEach(function (token) {
                                     val = val && val[token];
                                 });
                             }
-                        } else {
-                            val = row;
-                            i.route.split('.').forEach(function (token) {
-                                val = val && val[token];
-                            });
-                        }
 
-                        if (!val)
-                            val = '';
+                            if (!val)
+                                val = '';
 
-                        rowString += val + (settings.data.length - 1 == index ? '': settings.separator);
-                    });
-
-                    rowString += '\n';
-                    if (exportProbe) {
-                        rowString = new Array(row._log.length + 1).join(rowString);
-                        var i = 0;
-                        rowString = rowString.replace(/{{PROBE_CAUSE}}/g, function () {
-                            var t = row._log[i++];
-                            return (t && t.cause) || "";
+                            data += val + (settings.data.length - 1 == index ? '': settings.separator);
                         });
-
-                        i = 0;
-                        rowString = rowString.replace(/{{ALL_PROBE_TIME}}/g, function () {
-                            var t = row._log[i++];
-                            var time = t.steps[0] && t.steps[0].time;
-                            if (typeTime == 'string' && time) {
-                                time = new Date(time).toLocaleString()
-                            }
-                            return time || "";
-                        });
-
-                        i = 0;
-                        rowString = rowString.replace(/{{NUMBER}}/g, function () {
-                            var t = row._log[i++],
-                                res = '';
-                            if (t && t.steps) {
-                                res = _findSteps(t.steps, /set\snumber:\s/g, '');
-                            }
-                            return res;
-                        });
-                        i = 0;
-                        rowString = rowString.replace(/{{STATE}}/g, function () {
-                            var t = row._log[i++],
-                                res = '';
-                            if (t && t.steps) {
-                                res = _findSteps(t.steps, /set\snumber:\s/g, '');
-                                if (res != '') {
-                                    var __n = _findNumber(row, res);
-                                    res = (__n && __n.state) || 0;
-                                }
-                            }
-                            return res;
-                        });
-                        i = 0;
-                        rowString = rowString.replace(/{{PRIORITY_NUMBER}}/g, function () {
-                            var t = row._log[i++],
-                                res = '';
-                            if (t && t.steps) {
-                                res = _findSteps(t.steps, /set\snumber:\s/g, '');
-                                if (res != '') {
-                                    var __n = _findNumber(row, res);
-                                    res = __n && __n.priority;
-                                }
-                            }
-                            return res;
-                        });
-                        i = 0;
-                        rowString = rowString.replace(/{{_PROBECOUNT}}/g, function () {
-                            var t = row._log[i++],
-                                res = '';
-                            if (t && t.steps) {
-                                res = _findSteps(t.steps, /create\sprobe\s/g, '');
-                            }
-                            return res;
-                        });
+                        data += '\n';
                     }
 
-                    data += rowString;
+                    if (settings.allProbe) {
+                        if (angular.isArray(row._log)) {
+                            angular.forEach(row._log, function (atempt) {
+                                angular.forEach(settings.data, function (i, index) {
+                                    var val;
+                                    switch (i.field) {
+                                        case "_probeCount":
+                                            val = atempt.callAttempt;
+                                            break;
+                                        case "callTime":
+                                            val = atempt.callTime;
+                                            if (i.type == 'string' && val)
+                                                val = new Date(val).toLocaleString();
+                                            break;
+                                        case "expire":
+                                            val = row.expire;
+                                            if (i.type == 'string' && val)
+                                                val = new Date(val).toLocaleString();
+                                            break;
+                                        case "number":
+                                            val = atempt.callNumber;
+                                            break;
+                                        case "attempt_cause":
+                                            val = atempt.cause;
+                                            break;
+                                        case "priority_number":
+                                            val = atempt.callPriority;
+                                            break;
+                                        case "state":
+                                            val = atempt.callState;
+                                            break;
+                                        default:
+                                            val = row;
+                                            i.route.split('.').forEach(function (token) {
+                                                val = val && val[token];
+                                            });
+                                    }
+                                    if (val == undefined)
+                                        val = '';
+
+                                    data += val + (settings.data.length - 1 == index ? '': settings.separator);
+                                });
+                                data += '\n';
+                            })
+                        } else {
+                            addNoAtempt();
+                        }
+                    } else {
+                        addNoAtempt()
+                    }
                 }
 
                 if (settings.skipFilter)
@@ -1286,6 +1249,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 name: "Name",
                 field: 'name'
             },
+            "callSuccessful": {
+                selected: false,
+                name: "Call success",
+                field: 'callSuccessful'
+            },
             "_id": {
                 selected: false,
                 name: "Id",
@@ -1475,10 +1443,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 "type": "time",
                 "field": "expire"
             },
-            // "cause": {
-            //     "name": "Probe end cause",
-            //     "field": "cause"
-            // }
+            "attempt_cause": {
+                "name": "Attempt end cause",
+                "field": "attempt_cause",
+                filter: {
+                    "allProbe": true
+                }
+            }
         };
         
         $scope.up = function (row) {
