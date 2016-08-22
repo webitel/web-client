@@ -58,6 +58,16 @@ define(['angular'], function (angular) {
         return mysize;
     }
 
+    function secondsToString(seconds){
+        function pad(s){
+            return (s < 10 ? '0' : '') + s;
+        }
+        var hours = Math.floor(seconds / (60*60));
+        var minutes = Math.floor(seconds % (60*60) / 60);
+
+        return pad(hours) + ':' + pad(minutes) + ':' + pad(Math.floor(seconds % 60));
+    }
+
     function WebitelHashCollection() {
         var collection = {};
 
@@ -2642,6 +2652,7 @@ define(['angular'], function (angular) {
         CSVToArray: CSVToArray,
         CSV2JSON: CSV2JSON,
         CharSet: CharSet,
-        prettysize: prettysize
+        prettysize: prettysize,
+        secondsToString: secondsToString
     }
 });
