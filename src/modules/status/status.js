@@ -9,6 +9,24 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 				status: {},
 				user: {}
 			};
+
+			var _freeMemoryInt,
+				_TotalMemoryInt;
+
+			$scope.getClassMemory = function () {
+				if (!_TotalMemoryInt)
+					return;
+
+				var freePercent = (100 * _freeMemoryInt) / _TotalMemoryInt;
+
+				if (freePercent < 10)
+					return 'bg-danger';
+				else if (freePercent < 40)
+					return 'bg-warning';
+				else
+					return 'bg-success'
+			};
+
 			webitel.checkLicenseStatus();
         	webitel.api("GET", "/api/v2/status", function (err, res) {
         		if (err)
@@ -20,6 +38,9 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
     			$scope.totalMemory = prettysize(res.system.totalMemory);
     			$scope.freeMemory = prettysize(res.system.freeMemory);
+				_freeMemoryInt = res.system.freeMemory;
+				_TotalMemoryInt = res.system.totalMemory;
+
     			$scope.nodeMemoryRSS = prettysize(res.nodeMemory.rss);
     			$scope.nodeMemoryHeapTotal = prettysize(res.nodeMemory.heapTotal);
     			$scope.nodeMemoryHeapUsed = prettysize(res.nodeMemory.heapUsed);
@@ -27,7 +48,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
 				var v = res.version.split(/#|:/g);
 				$scope.ver = v[0];
-				$scope.commit = v[2];
+				$scope.commit = (v[2] || '').substring(0, 7);
 				$scope.build = v[1];
 
 				$scope.arch = res.system.architecture;
@@ -257,9 +278,19 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 			};
 			
 			var onHeartbeat = function (e) {
-				$scope.userSession = e["engine_online_count"];
-				$scope.socketSession = e["engine_socket_count"];
-				$scope.uptime = secondsToString(e["engine_uptime_sec"]);
+				$scope.uptime = secondsToString(e.engine_uptime_sec);
+
+				$scope.userSession = e.engine_online_count;
+				$scope.socketSession =  e.engine_socket_count;
+				$scope.domainSession = e.engine_domain_online;
+				$scope.maxUserSession = e.engine_online_max;
+
+				_freeMemoryInt = e.engine_free_mem;
+				$scope.freeMemory = prettysize(_freeMemoryInt);
+				$scope.nodeMemoryRSS = prettysize(e.engine_mem_rss);
+				$scope.nodeMemoryHeapTotal = prettysize(e.engine_mem_heap_total);
+				$scope.nodeMemoryHeapUsed = prettysize(e.engine_mem_heap_used);
+
 				chartsUpdateData(
 					100 - +e['Idle-CPU'],
 					+e['Session-Count'],

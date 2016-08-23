@@ -1,51 +1,126 @@
 <div class="page page-dashboard">
 
     <div class="row">
+
+        <div class="col-lg-6 col-xsm-12">
+            <section class="panel panel-box">
+                <div class="panel-top bg-info">
+                    <div class="divider divider"></div>
+                    <i class="fa fa-users size-h1"></i>
+                    <div class="divider divider"></div>
+                    <span>Online</span>
+                    <div class="divider divider"></div>
+                </div>
+                <div class="list-justified-container">
+                    <ul class="list-justified text-center">
+                        <li>
+                            <p class="size-h4">{{userSession}}</p>
+                            <p class="text-muted">Users</p>
+                        </li>
+                        <li>
+                            <p class="size-h4">{{socketSession}}</p>
+                            <p class="text-muted">Sessions</p>
+                        </li>
+                        <li>
+                            <p class="size-h4">{{domainSession}}</p>
+                            <p class="text-muted">Domains</p>
+                        </li>
+                        <li>
+                            <p class="size-h4">{{maxUserSession}}</p>
+                            <p class="text-muted">Max users</p>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-6 col-xsm-12">
+            <section class="panel panel-box">
+
+                <div class="panel-top" data-ng-class="getClassMemory(freeMemory)">
+                    <div class="divider divider"></div>
+                    <i class="fa fa-bolt size-h1"></i>
+                    <div class="divider divider"></div>
+                    <span>Memory</span>
+                    <div class="divider divider"></div>
+                </div>
+                <div class="list-justified-container">
+                    <ul class="list-justified text-center">
+                        <li>
+                            <p class="size-h4">{{totalMemory}}</p>
+                            <p class="text-muted">Total</p>
+                        </li>
+                        <li>
+                            <p class="size-h4">{{freeMemory}}</p>
+                            <p class="text-muted">Free</p>
+                        </li>
+
+                        <li>
+                            <p class="size-h4">{{nodeMemoryRSS}}</p>
+                            <p class="text-muted">RSS</p>
+                        </li>
+                        <li>
+                            <p class="size-h4">{{nodeMemoryHeapTotal}}</p>
+                            <p class="text-muted">Heap total</p>
+                        </li>
+                        <li>
+                            <p class="size-h4">{{nodeMemoryHeapUsed}}</p>
+                            <p class="text-muted">Heap used</p>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="row">
+
         <div class="col-lg-3 col-xsm-6">
             <div class="panel mini-box">
                 <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-success">
                     <i class="fa fa-calendar"></i>
                 </span>
                 <div class="box-info">
-                    <p class="size-h2">{{uptime}}</p>
+                    <p class="size-h4">{{uptime}}</p>
                     <p class="text-muted"><span data-i18n="Process up time">Process up time</span></p>
                 </div>
             </div>
         </div>
+
+        <div class="col-lg-3 col-xsm-6">
+            <div class="panel mini-box">
+                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt"
+                      ng-class="crashCount > 1 ? 'btn-danger' : 'btn-success'">
+                    <i class="fa fa-bug"></i>
+                </span>
+                <div class="box-info">
+                    <p class="size-h2">{{crashCount}}</p>
+                    <p class="text-muted"><span data-i18n="Worker crash">Worker crash</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-xsm-6">
+            <div class="panel mini-box">
+                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-nodejs">
+                    <!--<i class="fa fa-bug"></i>-->
+                    <img style="margin-top: -8px" src="../images/1471960936_nodejs-512.png">
+                </span>
+                <div class="box-info">
+                    <p class="size-h2">{{nodeVer}}</p>
+                    <p class="text-muted"><span data-i18n="Node version">Node version</span></p>
+                </div>
+            </div>
+        </div>
+
         <div class="col-lg-3 col-xsm-6">
             <div class="panel mini-box">
                 <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-info">
-                    <i class="fa fa-users"></i>
+                    <i class="fa fa-qrcode"></i>
                 </span>
                 <div class="box-info">
-                    <p class="size-h4">Online users: {{userSession}}</p>
-                    <p class="size-h4 text-muted">Sessions: {{socketSession}}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-xsm-6">
-            <div class="panel mini-box">
-                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-warning">
-                    <i class="glyphicon glyphicon-warning-sign"></i>
-                </span>
-                <div class="box-info">
-                    <p class="size-h5">Total memory: {{totalMemory}}</p>
-                    <p class="size-h5">Free memory: {{freeMemory}}</p>
-
-                    <p class="text-muted"><span data-i18n="Memory"></span></p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-xsm-6">
-            <div class="panel mini-box">
-                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-warning">
-                    <i class="fa fa-bolt"></i>
-                </span>
-                <div class="box-info">
-                    <p class="size-h5">RSS: {{nodeMemoryRSS}}</p>
-                    <p class="size-h5">Heap total: {{nodeMemoryHeapTotal}}</p>
-                    <p class="size-h5">Heap used: {{nodeMemoryHeapUsed}}</p>
-                    <p class="text-muted"><span data-i18n="Application memory"></span></p>
+                    <p class="size-h2">{{commit}}</p>
+                    <p class="text-muted"><span data-i18n="Worker crash">Commit</span></p>
                 </div>
             </div>
         </div>
@@ -77,7 +152,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-6">
             <div class="panel panel-default">
                 <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> Server info</strong></div>
                 <div class="panel-body">
@@ -96,11 +171,6 @@
                                 </li>
                                 <li>
                                     <span class="icon glyphicon glyphicon-asterisk"></span>
-                                    <label>Commit</label>
-                                    {{commit}}
-                                </li>
-                                <li>
-                                    <span class="icon glyphicon glyphicon-asterisk"></span>
                                     <label>Architecture</label>
                                     {{arch}}
                                 </li>
@@ -114,11 +184,6 @@
                                     <label>Platform</label>
                                     {{platform}}
                                 </li>
-                                <li>
-                                    <span class="icon glyphicon glyphicon-home"></span>
-                                    <label>Node version</label>
-                                    {{nodeVer}}
-                                </li>
                             </ul>
 
                         </div>
@@ -127,51 +192,19 @@
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="thumbnail" style="background-color: #fff;">
-                <img alt="" src="images/assets/FS-new-web-logo.png">
-                <div class="caption">
-                    <h3>FreeSWITH status</h3>
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong><span class="glyphicon glyphicon-th"></span>
+                        FreeSWITH status
+                    </strong>
+                </div>
+                <div class="caption" style="padding-left: 25px;">
+                    <img alt="" src="images/freeswitch-logo-sm.png">
                     <p style="white-space: pre-line;">{{switchStrStatus}}</p>
-
                 </div>
-            </div>
-        </div>
 
-        <div class="col-lg-3">
-            <div class="panel mini-box">
-                    <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-success">
-                        <i class="fa fa-rocket"></i>
-                    </span>
-                <div class="box-info">
-                    <p class="size-h2">{{domainSession}}</p>
-                    <p class="text-muted">
-                        <span data-i18n="Domains session">Domains session</span>
-                    </p>
-                </div>
             </div>
-
-            <div class="panel mini-box">
-                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-info">
-                    <i class="fa fa-users"></i>
-                </span>
-                <div class="box-info">
-                    <p class="size-h2">{{maxUserSession}}</p>
-                    <p class="text-muted"><span data-i18n="Max user session">Max user session</span></p>
-                </div>
-            </div>
-
-            <div class="panel mini-box">
-                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt"
-                      ng-class="crashCount > 1 ? 'btn-danger' : 'btn-success'">
-                    <i class="fa fa-bug"></i>
-                </span>
-                <div class="box-info">
-                    <p class="size-h2">{{crashCount}}</p>
-                    <p class="text-muted"><span data-i18n="Worker crash">Worker crash</span></p>
-                </div>
-            </div>
-
         </div>
     </div>
 
