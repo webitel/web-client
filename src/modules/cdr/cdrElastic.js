@@ -169,7 +169,7 @@ define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel
                             "action": "stream",
                             "domain": item.domain,
                             "uuid": row["variables.uuid"],
-                            "uri": fileModel.getUri(row["variables.uuid"], item.name, item["createdOn"], item['content-type'] === "application/pdf" ? "pdf" :"mp3"),
+                            "uri": fileModel.getUri(row["variables.uuid"], item.name, item["createdOn"], _getTypeFile(item['content-type'])),
                             "href": item.path,
                             "class": item['content-type'] === "application/pdf" ? "fa fa-file-pdf-o" :"fa fa-file-audio-o",
                             "buttons": [
@@ -189,6 +189,20 @@ define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel
                     })
                 })
             };
+
+            function _getTypeFile(contentType) {
+
+                switch (contentType) {
+                    case 'application/pdf':
+                        return 'pdf';
+                    case 'audio/wav':
+                        return 'wav';
+                    case 'audio/mpeg':
+                    default:
+                        return 'mp3'
+
+                }
+            }
 
             $scope.onClosePlayer = function (a) {
                 // TODO
