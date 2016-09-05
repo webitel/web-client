@@ -1,14 +1,21 @@
-define(['app', 'scripts/webitel/utils'], function (app, utils) {
+define(['app', 'scripts/webitel/utils', 'scripts/webitel/domainModel'], function (app, utils) {
 	var prettysize = utils.prettysize;
 	var secondsToString = utils.secondsToString;
 
-    app.controller('StatusCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', '$timeout',
-        function ($scope, webitel, $rootScope, notifi, $timeout) {
+    app.controller('StatusCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', '$timeout', 'DomainModel',
+        function ($scope, webitel, $rootScope, notifi, $timeout, DomainModel) {
 
 			$scope.api = {
 				status: {},
 				user: {}
 			};
+
+			DomainModel.usedFileStorage('', function (err, res) {
+				if (err)
+					return notifi.error(err, 5000);
+
+				$scope.cdrFilesSize = prettysize(res.size);
+			});
 
 			var _freeMemoryInt,
 				_TotalMemoryInt;

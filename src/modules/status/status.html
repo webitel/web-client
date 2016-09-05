@@ -102,6 +102,18 @@
 
         <div class="col-lg-3 col-xsm-6">
             <div class="panel mini-box">
+                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-info">
+                    <i class="glyphicon glyphicon-hdd"></i>
+                </span>
+                <div class="box-info">
+                    <p class="size-h3">{{cdrFilesSize}}</p>
+                    <p class="text-muted"><span data-i18n="Record files size">Record files size</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-xsm-6">
+            <div class="panel mini-box">
                 <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-nodejs">
                     <!--<i class="fa fa-bug"></i>-->
                     <img style="margin-top: -8px" src="../images/1471960936_nodejs-512.png">
@@ -113,17 +125,6 @@
             </div>
         </div>
 
-        <div class="col-lg-3 col-xsm-6">
-            <div class="panel mini-box">
-                <span class="btn-icon-lined btn-icon-round btn-icon-lg-alt btn-info">
-                    <i class="fa fa-qrcode"></i>
-                </span>
-                <div class="box-info">
-                    <p class="size-h3">{{commit}}</p>
-                    <p class="text-muted"><span data-i18n="Commit">Commit</span></p>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="row">
@@ -168,6 +169,11 @@
                                     <span class="icon glyphicon glyphicon-asterisk"></span>
                                     <label>Version</label>
                                     {{ver}}
+                                </li>
+                                <li>
+                                    <span class="icon glyphicon glyphicon-asterisk"></span>
+                                    <label>Commit</label>
+                                    {{commit}}
                                 </li>
                                 <li>
                                     <span class="icon glyphicon glyphicon-asterisk"></span>
