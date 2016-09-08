@@ -169,6 +169,7 @@ define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel
                             "action": "stream",
                             "domain": item.domain,
                             "uuid": row["variables.uuid"],
+                            "private": item.private,
                             "uri": fileModel.getUri(row["variables.uuid"], item.name, item["createdOn"], _getTypeFile(item['content-type'])),
                             "href": item.path,
                             "class": item['content-type'] === "application/pdf" ? "fa fa-file-pdf-o" :"fa fa-file-audio-o",

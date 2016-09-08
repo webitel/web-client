@@ -103,6 +103,10 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
             webitel.cdr('GET', '/api/v2/files/stats?domain=' + id, cb);
         }
 
+        function getDomainSettings(domainName, cb) {
+            webitel.api('GET', '/api/v2/domains/' + domainName + '/settings', cb);
+        }
+
         return {
             create: create,
             usedFileStorage: usedFileStorage,
@@ -112,10 +116,29 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
                         return cb(err);
 
                     var domain = parseDomainObj(res.info, id);
-                    EmailModel.get(id, function (err, emailCOnfig) {
-                        domain.email = emailCOnfig;
-                        return cb(null, domain);
-                    });
+                    
+                    async.waterfall(
+                        [
+                            function (cb) {
+                                getDomainSettings(id, function (err, result) {
+                                    if (result && result.info) {
+                                        domain.storage = result.info && result.info.storage;
+                                    }
+                                    cb();
+                                });
+                            },
+                            function (cb) {
+                                EmailModel.get(id, function (err, emailCOnfig) {
+                                    domain.email = emailCOnfig;
+                                    cb();
+                                });
+                            }
+                        ],
+                        function (err) {
+                            return cb(null, domain);
+                        }
+                    );
+
                 });
             },
             add: function (domain, cb) {
@@ -154,7 +177,7 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
                     requestData.push(key + '=')
                 });
                 angular.forEach(fields, function (item, key) {
-                    if (key === 'email') return;
+                    if (key === 'email' || key == 'storage') return;
 
                     if (key === "default_language") {
                         requestData.push("default_language=" + domain.default_language)
@@ -165,7 +188,7 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
                     }
                 });
 
-                if (requestData.length < 1 && !fields.hasOwnProperty('email'))
+                if (requestData.length < 1 && !fields.hasOwnProperty('email') && !fields.hasOwnProperty('storage'))
                     return cb(new Error("Application parse variable error."));
 
                 async.parallel(
@@ -173,6 +196,14 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
                         function (cb) {
                             if (requestData.length > 0) {
                                 webitel.api("PUT", "/api/v2/domains/" + domain.id + "/var", requestData, cb);
+                            } else {
+                                cb(null);
+                            }
+                        },
+
+                        function (cb) {
+                            if (fields.hasOwnProperty('storage')) {
+                                webitel.api('PUT', '/api/v2/domains/' + domain.id + '/settings', {storage: domain.storage}, cb)
                             } else {
                                 cb(null);
                             }

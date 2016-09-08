@@ -7,8 +7,8 @@ define(['angular',
 
 	var webitel = angular.module('app.webitel', ['app.notifier']);
 
-	webitel.service('webitel', ['$location', '$http', '$localStorage', '$rootScope', '$modal', 'notifi', '$q', '$routeParams',
-	 function($location, $http, $localStorage, $rootScope, $modal, notifi, $q, $routeParams){
+	webitel.service('webitel', ['$location', '$http', '$localStorage', '$rootScope', '$modal', 'notifi', '$q', '$routeParams', '$document',
+	 function($location, $http, $localStorage, $rootScope, $modal, notifi, $q, $routeParams, $document){
 
 		var connection = {
 			connected: false,
@@ -30,7 +30,9 @@ define(['angular',
 		 var promiseOnConnect = deferredOnConnect;
 
 		 function getDomainFromUrl() {
-			 return $routeParams.domain || $location.$$search.domain;
+			 var domain = $routeParams.domain || $location.$$search.domain;
+			 $document.prop('title', domain || '');
+			 return domain;
 		 }
 
 		var selectDomain = getDomainFromUrl();
@@ -43,6 +45,7 @@ define(['angular',
 			$location.search('domain', selectDomain);
 			console.debug('change domain ', newDomain);
 			$rootScope.$emit('webitel:changeDomain', selectDomain);
+			$document.prop('title', selectDomain)
 		};
 
 		 $rootScope.$on('$locationChangeStart', function (event, next, current) {

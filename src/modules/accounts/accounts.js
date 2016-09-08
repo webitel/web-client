@@ -630,7 +630,6 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.accountId = options.id;
 
         $scope.ok = function () {
-            $scope;
             $modalInstance.close({}, 5000);
         };
 

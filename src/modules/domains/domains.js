@@ -63,6 +63,69 @@ define(['app', 'scripts/webitel/utils',
 		self.removeItem = removeItem;
 		self.change = change;
 
+		function updateOrInsertStorageConfig(storageConfig, storageType, storageNotAllowTypes, cb) {
+			var modalInstance = $modal.open({
+				animation: true,
+				templateUrl: '/modules/domains/storagePage.html',
+				controller: 'DomainStorageCtrl',
+				resolve: {
+					storageConfig: function () {
+						return storageConfig;
+					},
+					storageType: function () {
+						return storageType;
+					},
+					storageNotAllowTypes: function () {
+						return storageNotAllowTypes;
+					}
+				}
+			});
+
+			modalInstance.result.then(cb);
+		}
+
+
+	    self.addStorage = function (domain) {
+			updateOrInsertStorageConfig(null, null, Object.keys((domain.storage && domain.storage.providers) || {}), function (res) {
+				var result = res.data,
+					type = res.type;
+
+				if (!domain.storage) {
+					domain.storage = {
+						defaultProvider: type,
+						maskPath: "$DOMAIN/$Y/$M/$D/$H",
+						providers: {}
+					}
+				}
+				domain.storage.providers[type] = result;
+			})
+		};
+		  
+	    self.removeStorage = function (key) {
+			if ($scope.domain && $scope.domain.storage) {
+				delete $scope.domain.storage.providers[key];
+				if ($scope.domain.storage.defaultProvider == key)
+					$scope.domain.storage.defaultProvider = '';
+			}
+		};
+		  
+		self.updateStorage = function (key, params) {
+			updateOrInsertStorageConfig(angular.copy(params), key, null, function (res) {
+				var result = res.data,
+					type = res.type;
+
+				var domain = $scope.domain;
+				if (!domain.storage) {
+					domain.storage = {
+						defaultProvider: type,
+						maskPath: "$DOMAIN/$Y/$M/$D/$H",
+						providers: {}
+					}
+				}
+				domain.storage.providers[type] = result;
+			})
+		};
+
 		var changedFiels = [];
 
 		self.addVariable = function () {
@@ -116,14 +179,16 @@ define(['app', 'scripts/webitel/utils',
 				var updateValues = utils.diff(self.domain,  self.oldDomain);
 
 				if (Object.keys(updateValues).length < 1 && self.remVar.length < 1) {
-					return notifi.warn('No changes.', 5000)
+					// TODO
+					updateValues.storage = {};
 				}
 				DomainModel.update(self.domain, updateValues, self.remVar, cb);
 			} else {
 				DomainModel.add(self.domain, cb)
 			}
-		};
-		  $scope.domainUsedStorage = null;
+		}
+
+		$scope.domainUsedStorage = null;
 		function edit() {
 			var id = $routeParams.id;
 			DomainModel.item(id, function(err, item) {
@@ -331,6 +396,73 @@ define(['app', 'scripts/webitel/utils',
 				$scope.$apply();
 			});
 		}
+	}]);
+	
+	app.controller("DomainStorageCtrl", ["$scope", "$modalInstance", "storageConfig", "storageType", "storageNotAllowTypes",
+		function ($scope, $modalInstance, storageConfig, storageType, storageNotAllowTypes) {
+		$scope.storage = storageConfig || {};
+		$scope.option = {
+			type: storageType || ''
+		};
+
+		$scope.storageNotAllowTypes = storageNotAllowTypes || [];
+
+		$scope.isNew = !storageConfig;
+		
+		if ($scope.isNew) {
+			$scope.$watch('option.type', function (newV, oldV) {
+				if (newV ) {
+					for (var key in $scope.storage) {
+						if (key == 'type')
+							continue;
+						delete $scope.storage[key];
+					}
+				}
+			});
+		}
+
+		var TYPES = [
+			{
+				value: 's3',
+				name: 'S3 (Amazon Simple Storage Service)'
+			},
+			{
+				value: 'b2',
+				name: 'Backblaze B2 Cloud Storage'
+			}
+		];
+
+		$scope.types = [];
+		angular.forEach(TYPES, function (v) {
+			if (storageNotAllowTypes && ~storageNotAllowTypes.indexOf(v.value))
+				return;
+			$scope.types.push(v);
+		});
+			
+		$scope.ok = function () {
+			$modalInstance.close({
+				data: $scope.storage,
+				type: $scope.option.type
+			});
+		};
+
+		$scope.cancel = function () {
+			$modalInstance.dismiss('cancel');
+		};
+
+		$scope.s3Regions = [
+			{name: "US East (N. Virginia)", value: "us-east-1"},
+			{name: "US West (N. California)", value: "us-west-1"},
+			{name: "US West (Oregon)", value: "us-west-2"},
+			{name: "Asia Pacific (Mumbai)", value: "ap-south-1"},
+			{name: "Asia Pacific (Seoul)", value: "ap-northeast-2"},
+			{name: "Asia Pacific (Singapore)", value: "ap-southeast-1"},
+			{name: "Asia Pacific (Sydney)", value: "ap-southeast-2"},
+			{name: "Asia Pacific (Tokyo)", value: "ap-northeast-1"},
+			{name: "EU (Frankfurt)", value: "eu-central-1"},
+			{name: "EU (Ireland)", value: "eu-west-1"},
+			{name: "South America (São Paulo)", value: "sa-east-1"}
+		]
 	}]);
 
 });

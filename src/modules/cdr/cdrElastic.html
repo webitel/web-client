@@ -148,6 +148,7 @@
                                 <div class="col-sm-12" ng-repeat="file in row._files" >
                                     <div class="row pull-right">
                                         <button ng-click="fileAction(file)"  class="btn btn-default btn-sm" >
+                                            <i ng-if="file.private" class="color-info fa fa-asterisk" aria-hidden="true"></i>
                                             {{file.name}}
                                             <i ng-class="file.class"></i>
                                         </button>

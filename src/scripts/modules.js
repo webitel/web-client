@@ -66,6 +66,16 @@ define(['angular', 'config'], function (angular, config) {
 		iconClass: 'fa fa-usd'
 	},
 	{
+		href: "#/server/utils",
+		caption: "Utils",
+		hide: true,
+		acl: 'license',
+		templateUrl: 'modules/server/settings/settings.html',
+		controller: 'ServerSettingsCtrl',
+		controllerUrl: 'modules/server/settings/settings.js',
+		iconClass: 'fa fa-usd'
+	},
+	{
 		href: "#/license/manager",
 		caption: "License manager",
 		disable: !config.licenseManager.enabled,

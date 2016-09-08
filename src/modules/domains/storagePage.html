@@ -1,0 +1,63 @@
+<div class="modal-header">
+    <h3 class="modal-title">Storage {{option.type | uppercase}}</h3>
+</div>
+<div class="modal-body">
+    <form name="storagePageForm">
+        <div class="row">
+            <div class="col-sm-12" ng-if="isNew">
+                <div class="form-group">
+                    <select class="form-control"  ng-model="option.type">
+                        <option data-ng-repeat="o in types" value="{{o.value}}">{{o.name}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+
+                <!--S3-->
+
+                <div ng-if="option.type=='s3'" class="form-group" ng-class="{ 'has-error' : storagePageForm.accessKeyId.$invalid }">
+                    <label class="control-label">Key Id</label>
+                    <input type="text" class="form-control" name="accessKeyId" required data-ng-model="storage.accessKeyId">
+                </div>
+                <div ng-if="option.type=='s3'" class="form-group" ng-class="{ 'has-error' : storagePageForm.secretAccessKey.$invalid }">
+                    <label class="control-label">Access Key</label>
+                    <input type="text" class="form-control" name="secretAccessKey" required data-ng-model="storage.secretAccessKey">
+                </div>
+                <div ng-if="option.type=='s3'" class="form-group" ng-class="{ 'has-error' : storagePageForm.bucketName.$invalid }">
+                    <label class="control-label">Bucket Name</label>
+                    <input type="text" class="form-control" name="bucketName" required data-ng-model="storage.bucketName">
+                </div>
+                <div ng-if="option.type=='s3'" class="form-group" ng-class="{ 'has-error' : storagePageForm.region.$invalid }">
+                    <label class="control-label">Region</label>
+                    <select class="form-control" name="region" ng-model="storage.region" required >
+                        <option ng-repeat="r in s3Regions" ng-selected="{{region==r.value}}"  value="{{r.value}}">{{r.name}}</option>
+                    </select>
+                </div>
+
+                <!--b2-->
+                <div ng-if="option.type=='b2'" class="form-group" ng-class="{ 'has-error' : storagePageForm.accountId.$invalid }">
+                    <label class="control-label">Account Id</label>
+                    <input type="text" class="form-control" name="accountId" required data-ng-model="storage.accountId">
+                </div>
+                <div ng-if="option.type=='b2'" class="form-group" ng-class="{ 'has-error' : storagePageForm.applicationKey.$invalid }">
+                    <label class="control-label">Application Key</label>
+                    <input type="text" class="form-control" name="applicationKey" required data-ng-model="storage.applicationKey">
+                </div>
+                <div ng-if="option.type=='b2'" class="form-group" ng-class="{ 'has-error' : storagePageForm.bucketName.$invalid }">
+                    <label class="control-label">Bucket Name</label>
+                    <input type="text" class="form-control" name="bucketName" required data-ng-model="storage.bucketName">
+                </div>
+                <div ng-if="option.type=='b2'" class="form-group" ng-class="{ 'has-error' : storagePageForm.bucketId.$invalid }">
+                    <label class="control-label">Bucket Id</label>
+                    <input type="text" class="form-control" name="bucketId" required data-ng-model="storage.bucketId">
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-disabled="storagePageForm.$invalid" ng-click="ok()">OK</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+</div>
