@@ -17,6 +17,14 @@ define(['app', 'scripts/webitel/utils', 'scripts/webitel/domainModel'], function
 				$scope.cdrFilesSize = prettysize(res.size);
 			});
 
+			$scope.onCopied = function (sid) {
+				return notifi.info('Copied: ' + sid, 1000)
+			};
+
+			$scope.onCopiedFail = function (err) {
+				return notifi.error(err, 1000)
+			};
+
 			var _freeMemoryInt,
 				_TotalMemoryInt;
 
@@ -51,7 +59,7 @@ define(['app', 'scripts/webitel/utils', 'scripts/webitel/domainModel'], function
     			$scope.nodeMemoryRSS = prettysize(res.nodeMemory.rss);
     			$scope.nodeMemoryHeapTotal = prettysize(res.nodeMemory.heapTotal);
     			$scope.nodeMemoryHeapUsed = prettysize(res.nodeMemory.heapUsed);
-    			$scope.sid = res.wConsole.sid;
+    			$scope.sid = (res.wConsole.sid).trim();
 
 				var v = res.version.split(/#|:/g);
 				$scope.ver = v[0];
