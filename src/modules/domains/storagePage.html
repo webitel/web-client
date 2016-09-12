@@ -53,6 +53,27 @@
                     <input type="text" class="form-control" name="bucketId" required data-ng-model="storage.bucketId">
                 </div>
 
+                <!--GDrive-->
+                <span ng-if="option.type=='gDrive'" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  style="padding: 0">
+                    <i class="glyphicon glyphicon-cloud-upload"></i>
+                    <input type="file" nv-file-select="" uploader="uploader">
+                </span>
+                <div ng-if="option.type=='gDrive'" class="form-group" ng-class="{ 'has-error' : storagePageForm.folderName.$invalid }">
+                    <label class="control-label">Folder name</label>
+                    <input type="text" class="form-control" name="folderName" required data-ng-model="storage.folderName">
+                </div>
+
+                <div ng-if="option.type=='gDrive'" class="form-group" ng-class="{ 'has-error' : storagePageForm.client_email.$invalid }">
+                    <label class="control-label">EMail</label>
+                    <input type="text" class="form-control" name="client_email"  ng-disabled="true" required data-ng-model="storage.client_email">
+                </div>
+
+                <div ng-if="option.type=='gDrive'" class="form-group" ng-class="{ 'has-error' : storagePageForm.private_key.$invalid }">
+                    <label class="control-label">Private Key</label>
+                    <input type="text" class="form-control" name="private_key" ng-disabled="true" required data-ng-model="storage.private_key">
+                </div>
+
+
             </div>
         </div>
     </form>

@@ -399,7 +399,8 @@ define(['app', 'scripts/webitel/utils',
 	}]);
 	
 	app.controller("DomainStorageCtrl", ["$scope", "$modalInstance", "storageConfig", "storageType", "storageNotAllowTypes",
-		function ($scope, $modalInstance, storageConfig, storageType, storageNotAllowTypes) {
+		"notifi", "FileUploader",
+		function ($scope, $modalInstance, storageConfig, storageType, storageNotAllowTypes, notifi, FileUploader) {
 		$scope.storage = storageConfig || {};
 		$scope.option = {
 			type: storageType || ''
@@ -429,6 +430,10 @@ define(['app', 'scripts/webitel/utils',
 			{
 				value: 'b2',
 				name: 'Backblaze B2 Cloud Storage'
+			},
+			{
+				value: 'gDrive',
+				name: 'Google Drive'
 			}
 		];
 
@@ -448,6 +453,27 @@ define(['app', 'scripts/webitel/utils',
 
 		$scope.cancel = function () {
 			$modalInstance.dismiss('cancel');
+		};
+
+		var uploader = $scope.uploader = new FileUploader();
+		uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+			console.info('onWhenAddingFileFailed', item, filter, options);
+		};
+		uploader.onAfterAddingFile = function(item) {
+			console.info('onAfterAddingFile', item);
+
+			var reader = new FileReader();
+			reader.onload = function(event) {
+				$.getJSON(event.target.result).then(function(data){
+					$scope.storage.private_key = data.private_key;
+					$scope.storage.client_email = data.client_email;
+					$scope.$apply();
+				}).fail(function (res, e, err) {
+					notifi.error(err);
+				});
+
+			};
+			reader.readAsDataURL(item._file);
 		};
 
 		$scope.s3Regions = [
