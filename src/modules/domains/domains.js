@@ -434,6 +434,10 @@ define(['app', 'scripts/webitel/utils',
 			{
 				value: 'gDrive',
 				name: 'Google Drive'
+			},
+			{
+				value: 'dropBox',
+				name: 'Drop Box'
 			}
 		];
 

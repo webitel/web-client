@@ -73,6 +73,11 @@
                     <input type="text" class="form-control" name="private_key" ng-disabled="true" required data-ng-model="storage.private_key">
                 </div>
 
+                <!--dropBox-->
+                <div ng-if="option.type=='dropBox'" class="form-group" ng-class="{ 'has-error' : storagePageForm.accessToken.$invalid }">
+                    <label class="control-label">Access Token</label>
+                    <input type="text" class="form-control" name="accessToken" required data-ng-model="storage.accessToken">
+                </div>
 
             </div>
         </div>
