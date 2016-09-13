@@ -22,6 +22,21 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             webitel.cdr("DELETE", "/api/v2/files/utils/removeNonExistentFiles", body, cb);
         }
         
+        function removeFiles(from, to, cb) {
+            if (!from || !to)
+                return cb(new Error('Bad date parameters'));
+
+            if (to <= from)
+                return cb(new Error('Date to must > to'));
+
+            var body = {
+                from: from,
+                to: to
+            };
+
+            webitel.cdr("DELETE", "/api/v2/files/utils/removeFiles", body, cb);
+        }
+        
         function reload(name, cb) {
             if (!name)
                 return cb(new Error('Bad module name'));
@@ -32,6 +47,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
         return {
             removeNonExistentFiles: removeNonExistentFiles,
+            removeFiles: removeFiles,
             reload: reload
         }
     }]);
