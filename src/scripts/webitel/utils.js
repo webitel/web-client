@@ -59,13 +59,19 @@ define(['angular'], function (angular) {
     }
 
     function secondsToString(seconds){
-        function pad(s){
-            return (s < 10 ? '0' : '') + s;
+        function pad(ss){
+            return (ss < 10 ? '0' : '') + ss;
         }
-        var hours = Math.floor(seconds / (60*60));
-        var minutes = Math.floor(seconds % (60*60) / 60);
+        var d, h, m, s;
+        s = Math.floor(seconds);
+        m = Math.floor(s / 60);
+        s = s % 60;
+        h = Math.floor(m / 60);
+        m = m % 60;
+        d = Math.floor(h / 24);
+        h = h % 24;
 
-        return pad(hours) + ':' + pad(minutes) + ':' + pad(Math.floor(seconds % 60));
+        return d + ' days ' + pad(h) + ':' + pad(m) + ':' + pad(s);
     }
 
     function WebitelHashCollection() {
