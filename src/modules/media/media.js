@@ -1,6 +1,5 @@
-define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 'modules/media/mediaModel'
-], function (app, jsZIPUtils, jsZIP, async, fileSaver) {
-
+define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 'scripts/webitel/utils','modules/media/mediaModel'
+], function (app, jsZIPUtils, jsZIP, async, fileSaver, utils) {
     app.controller('MediaCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'MediaModel', 'FileUploader', '$confirm',
         'TableSearch', '$sce',
         function ($scope, webitel, $rootScope, notifi, MediaModel, FileUploader, $confirm, TableSearch, $sce) {
@@ -18,6 +17,11 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 'm
 
             $scope.setSource = null;
             $scope.activePlayRowName = null;
+
+            $scope.convertSize = function (size) {
+                if (size)
+                    return utils.prettysize(size);
+            };
 
             $scope.playRow = function (row) {
 
