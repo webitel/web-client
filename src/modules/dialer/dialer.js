@@ -1215,6 +1215,90 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 position: 3,
                 type: 'communications'
             },
+            "number_5": {
+                selected: false,
+                name: "number_5",
+                field: 'number',
+                position: 4,
+                type: 'communications'
+            },
+            "priority_5": {
+                selected: false,
+                name: "priority_5",
+                field: "priority",
+                position: 4,
+                type: 'communications'
+            },
+            "number_6": {
+                selected: false,
+                name: "number_6",
+                field: 'number',
+                position: 5,
+                type: 'communications'
+            },
+            "priority_6": {
+                selected: false,
+                name: "priority_6",
+                field: "priority",
+                position: 5,
+                type: 'communications'
+            },
+            "number_7": {
+                selected: false,
+                name: "number_7",
+                field: 'number',
+                position: 6,
+                type: 'communications'
+            },
+            "priority_7": {
+                selected: false,
+                name: "priority_7",
+                field: "priority",
+                position: 6,
+                type: 'communications'
+            },
+            "number_8": {
+                selected: false,
+                name: "number_8",
+                field: 'number',
+                position: 7,
+                type: 'communications'
+            },
+            "priority_8": {
+                selected: false,
+                name: "priority_8",
+                field: "priority",
+                position: 7,
+                type: 'communications'
+            },
+            "number_9": {
+                selected: false,
+                name: "number_9",
+                field: 'number',
+                position: 8,
+                type: 'communications'
+            },
+            "priority_9": {
+                selected: false,
+                name: "priority_9",
+                field: "priority",
+                position: 8,
+                type: 'communications'
+            },
+            "number_10": {
+                selected: false,
+                name: "number_10",
+                field: 'number',
+                position: 9,
+                type: 'communications'
+            },
+            "priority_10": {
+                selected: false,
+                name: "priority_10",
+                field: "priority",
+                position: 9,
+                type: 'communications'
+            },
             "expire": {
                 name: "Expire",
                 field: "expire",
@@ -1420,6 +1504,186 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 name: "state_4",
                 field: "state",
                 position: 3,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "number_5": {
+                selected: false,
+                name: "number_5",
+                field: 'number',
+                position: 4,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "priority_5": {
+                selected: false,
+                name: "priority_5",
+                field: "priority",
+                position: 4,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "state_5": {
+                selected: false,
+                name: "state_5",
+                field: "state",
+                position: 4,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "number_6": {
+                selected: false,
+                name: "number_6",
+                field: 'number',
+                position: 5,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "priority_6": {
+                selected: false,
+                name: "priority_6",
+                field: "priority",
+                position: 5,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "state_6": {
+                selected: false,
+                name: "state_6",
+                field: "state",
+                position: 5,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "number_7": {
+                selected: false,
+                name: "number_7",
+                field: 'number',
+                position: 6,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "priority_7": {
+                selected: false,
+                name: "priority_7",
+                field: "priority",
+                position: 6,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "state_7": {
+                selected: false,
+                name: "state_7",
+                field: "state",
+                position: 6,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "number_8": {
+                selected: false,
+                name: "number_8",
+                field: 'number',
+                position: 7,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "priority_8": {
+                selected: false,
+                name: "priority_8",
+                field: "priority",
+                position: 7,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "state_8": {
+                selected: false,
+                name: "state_8",
+                field: "state",
+                position: 7,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "number_9": {
+                selected: false,
+                name: "number_9",
+                field: 'number',
+                position: 8,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "priority_9": {
+                selected: false,
+                name: "priority_9",
+                field: "priority",
+                position: 8,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "state_9": {
+                selected: false,
+                name: "state_9",
+                field: "state",
+                position: 8,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "number_10": {
+                selected: false,
+                name: "number_10",
+                field: 'number',
+                position: 9,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "priority_10": {
+                selected: false,
+                name: "priority_10",
+                field: "priority",
+                position: 9,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "state_10": {
+                selected: false,
+                name: "state_10",
+                field: "state",
+                position: 9,
                 type: 'communications',
                 filter: {
                     "allProbe": false
