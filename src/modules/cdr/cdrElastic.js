@@ -309,7 +309,7 @@ define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel
                         });
                     }
                     else {
-                        notify.warning("Please, allow popup window!", 5000);
+                        notifi.warning("Please, allow popup window!", 5000);
                         return;
                     }
                 })
