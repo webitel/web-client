@@ -1023,7 +1023,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                             val = row.communications[atempt.callPositionIndex]
                                                 && row.communications[atempt.callPositionIndex].description;
                                             break;
-                                        default:
+                                        default: 
                                             val = row;
                                             i.route.split('.').forEach(function (token) {
                                                 val = val && val[token];
