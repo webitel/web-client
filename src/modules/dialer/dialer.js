@@ -829,7 +829,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     number: row[v.number],
                     priority: +row[v.priority] || 0,
                     status : 0,
-                    state : 0
+                    state : 0,
+                    description : row[v.description] || ""
 
                 })
             });
@@ -1018,7 +1019,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                         case "state":
                                             val = atempt.callState;
                                             break;
-                                        default:
+                                        case "description":
+                                            val = row.communications[atempt.callPositionIndex]
+                                                && row.communications[atempt.callPositionIndex].description;
+                                            break;
+                                        default: 
                                             val = row;
                                             i.route.split('.').forEach(function (token) {
                                                 val = val && val[token];
@@ -1173,6 +1178,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 position: 0,
                 type: 'communications'
             },
+            "description_1": {
+                selected: false,
+                name: "description_1",
+                field: "description",
+                position: 0,
+                type: 'communications'
+            },
             "number_2": {
                 selected: false,
                 name: "number_2",
@@ -1184,6 +1196,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 selected: false,
                 name: "priority_2",
                 field: "priority",
+                position: 1,
+                type: 'communications'
+            },
+            "description_2": {
+                selected: false,
+                name: "description_2",
+                field: "description",
                 position: 1,
                 type: 'communications'
             },
@@ -1201,6 +1220,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 position: 2,
                 type: 'communications'
             },
+            "description_3": {
+                selected: false,
+                name: "description_3",
+                field: "description",
+                position: 2,
+                type: 'communications'
+            },
             "number_4": {
                 selected: false,
                 name: "number_4",
@@ -1212,6 +1238,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 selected: false,
                 name: "priority_4",
                 field: "priority",
+                position: 3,
+                type: 'communications'
+            },
+            "description_4": {
+                selected: false,
+                name: "description_4",
+                field: "description",
                 position: 3,
                 type: 'communications'
             },
@@ -1229,6 +1262,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 position: 4,
                 type: 'communications'
             },
+            "description_5": {
+                selected: false,
+                name: "description_5",
+                field: "description",
+                position: 4,
+                type: 'communications'
+            },
             "number_6": {
                 selected: false,
                 name: "number_6",
@@ -1240,6 +1280,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 selected: false,
                 name: "priority_6",
                 field: "priority",
+                position: 5,
+                type: 'communications'
+            },
+            "description_6": {
+                selected: false,
+                name: "description_6",
+                field: "description",
                 position: 5,
                 type: 'communications'
             },
@@ -1257,6 +1304,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 position: 6,
                 type: 'communications'
             },
+            "description_7": {
+                selected: false,
+                name: "description_7",
+                field: "description",
+                position: 6,
+                type: 'communications'
+            },
             "number_8": {
                 selected: false,
                 name: "number_8",
@@ -1268,6 +1322,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 selected: false,
                 name: "priority_8",
                 field: "priority",
+                position: 7,
+                type: 'communications'
+            },
+            "description_8": {
+                selected: false,
+                name: "description_8",
+                field: "description",
                 position: 7,
                 type: 'communications'
             },
@@ -1285,6 +1346,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 position: 8,
                 type: 'communications'
             },
+            "description_9": {
+                selected: false,
+                name: "description_9",
+                field: "description",
+                position: 8,
+                type: 'communications'
+            },
             "number_10": {
                 selected: false,
                 name: "number_10",
@@ -1296,6 +1364,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 selected: false,
                 name: "priority_10",
                 field: "priority",
+                position: 9,
+                type: 'communications'
+            },
+            "description_10": {
+                selected: false,
+                name: "description_10",
+                field: "description",
                 position: 9,
                 type: 'communications'
             },
@@ -1369,6 +1444,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     "allProbe": true
                 }
             },
+            "description": {
+                name: "Description",
+                field: 'description',
+                position: 0,
+                type: 'communications',
+                filter: {
+                    "allProbe": true
+                }
+            },
             "priority_number": {
                 selected: false,
                 name: "Priority number",
@@ -1419,6 +1503,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     "allProbe": false
                 }
             },
+            "description_1": {
+                selected: false,
+                name: "description_1",
+                field: "description",
+                position: 0,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
             "number_2": {
                 selected: false,
                 name: "number_2",
@@ -1443,6 +1537,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 selected: false,
                 name: "state_2",
                 field: "state",
+                position: 1,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "description_2": {
+                selected: false,
+                name: "description_2",
+                field: "description",
                 position: 1,
                 type: 'communications',
                 filter: {
@@ -1479,6 +1583,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     "allProbe": false
                 }
             },
+            "description_3": {
+                selected: false,
+                name: "description_3",
+                field: "description",
+                position: 2,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
             "number_4": {
                 selected: false,
                 name: "number_4",
@@ -1503,6 +1617,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 selected: false,
                 name: "state_4",
                 field: "state",
+                position: 3,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "description_4": {
+                selected: false,
+                name: "description_4",
+                field: "description",
                 position: 3,
                 type: 'communications',
                 filter: {
@@ -1539,6 +1663,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     "allProbe": false
                 }
             },
+            "description_5": {
+                selected: false,
+                name: "description_5",
+                field: "description",
+                position: 4,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
             "number_6": {
                 selected: false,
                 name: "number_6",
@@ -1563,6 +1697,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 selected: false,
                 name: "state_6",
                 field: "state",
+                position: 5,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "description_6": {
+                selected: false,
+                name: "description_6",
+                field: "description",
                 position: 5,
                 type: 'communications',
                 filter: {
@@ -1599,6 +1743,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     "allProbe": false
                 }
             },
+            "description_7": {
+                selected: false,
+                name: "description_7",
+                field: "description",
+                position: 6,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
             "number_8": {
                 selected: false,
                 name: "number_8",
@@ -1623,6 +1777,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 selected: false,
                 name: "state_8",
                 field: "state",
+                position: 7,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "description_8": {
+                selected: false,
+                name: "description_8",
+                field: "description",
                 position: 7,
                 type: 'communications',
                 filter: {
@@ -1659,6 +1823,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     "allProbe": false
                 }
             },
+            "description_9": {
+                selected: false,
+                name: "description_9",
+                field: "description",
+                position: 8,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
             "number_10": {
                 selected: false,
                 name: "number_10",
@@ -1683,6 +1857,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 selected: false,
                 name: "state_10",
                 field: "state",
+                position: 9,
+                type: 'communications',
+                filter: {
+                    "allProbe": false
+                }
+            },
+            "description_10": {
+                selected: false,
+                name: "description_10",
+                field: "description",
                 position: 9,
                 type: 'communications',
                 filter: {
