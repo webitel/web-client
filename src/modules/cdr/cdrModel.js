@@ -357,6 +357,13 @@ define(["app", "config"], function(app, config) {
 
             webitel.cdr("DELETE", "/api/v2/files/" + id + "?db=true&domain=" + domain + "&name=" + name, cb);
         };
+        
+        function removeCdr(uuid, cb) {
+            if (!uuid)
+                return cb(new Error('Bad request parameters.'));
+
+            webitel.cdr("DELETE", "/api/v2/cdr/" + uuid, cb);
+        }
 
         return {
             getData: getData,
@@ -369,6 +376,7 @@ define(["app", "config"], function(app, config) {
             setMapColumn: setMapColumn,
             removeMapColumn: removeMapColumn,
             getMapColumn: getMapColumn,
+            removeCdr: removeCdr
         }
     }]);
 });

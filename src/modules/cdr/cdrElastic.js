@@ -149,6 +149,12 @@ define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel
                         "uuid": row["variables.uuid"],
                         "action": "open",
                         "class": "fa fa-file-code-o",
+                        "buttons": [
+                            {
+                                "action": "removeCdr",
+                                "class": "glyphicon glyphicon-remove"
+                            }
+                        ]
                     }
                 ];
 
@@ -229,9 +235,26 @@ define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel
                             return loadResource(file);
                         play(file);
                         break;
+
+                    case "removeCdr":
+                        deleteCdr(parent.uuid);
+                        break;
                     default :
                         notifi.error("No action :(", 3000)
                 }
+            };
+            
+            var deleteCdr = function (uuid) {
+                $confirm({text: 'Are you sure you want to delete ' + uuid + ' ?'},  { templateUrl: 'views/confirm.html' })
+                    .then(function() {
+                        CdrModel.removeCdr(uuid, function (err, res) {
+                            if (err)
+                                return notifi.error(err);
+
+                            $scope.rowCollection.splice($scope.rowCollection.indexOf( $scope.activeRow), 1);
+                            --$scope.count;
+                        })
+                    });
             };
 
             var deleteResource = function (file, files) {
