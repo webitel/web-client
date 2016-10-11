@@ -76,6 +76,10 @@
                 <div class="col-md-12">
                     <!--<button class="btn btn-success btn-xs" ng-click="applyFilter()"><i class="fa fa-filter"></i>Apply</button>-->
                     <!--<button class="btn btn-primary btn-xs" ng-click="resetFilter()">Reset</button>-->
+                    <a ng-if="canDeleteCDR" ng-click="removeCdrFromQuery()" class="pull-right text-muted">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </a>
+                    <span ng-if="canDeleteCDR" class="pull-right space space-xs"></span>
                     <a href="#/cdr/settings" class="pull-right text-muted"><i class="fa fa-cog"></i></a>
                     <span class="pull-right space space-xs"></span>
                     <a      ng-show="!qsError"
@@ -109,6 +113,7 @@
                 <div ng-show="isLoading" class="loading text-center">
                         <span>
                             <i class="fa fa-spinner fa-5x fa-spin"></i>
+                            <span style="margin-left: -40px; font-size: medium; font-weight: bolder;" ng-if="loadingText">{{loadingText}}</span>
                         </span>
                 </div>
                 <div class="row text-center" ng-if="!rowCollection || rowCollection.length == 0">

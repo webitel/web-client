@@ -3,8 +3,8 @@
  */
 
 
-define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview', 'css!modules/cdr/css/verticalTabs.css', 'css!modules/cdr/cdr.css'],
-    function (app, moment, jsZIP) {
+define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview', 'css!modules/cdr/css/verticalTabs.css', 'css!modules/cdr/cdr.css'],
+    function (app, moment, jsZIP, async) {
 
     app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm', 'notifi', 'TableSearch', '$timeout',
         function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, notifi, TableSearch, $timeout) {
@@ -24,6 +24,8 @@ define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel
 
             var canDeleteFile = webitel.connection.session.checkResource('cdr/files', 'd');
             var canReadFile = webitel.connection.session.checkResource('cdr/files', 'r') || webitel.connection.session.checkResource('cdr/files', 'ro');
+            var canDeleteCDR = $scope.canDeleteCDR = webitel.connection.session.checkResource('cdr', 'd');
+
 
             var defSettings = TableSearch.get('cdrElastic');
             if (defSettings) {
@@ -118,6 +120,105 @@ define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel
                     })
                 });
             };
+            
+            $scope.removeCdrFromQuery = function () {
+                if ($scope.isLoading) return;
+                $confirm({text: 'Are you sure you want to delete ' + $scope.count + ' records ?'},  { templateUrl: 'views/confirm.html' })
+                    .then(function() {
+                        setDeleteProcess();
+                    });
+            };
+            
+            function setDeleteProcess() {
+                $scope.isLoading = true;
+                var _page = 0;
+                var queryString = angular.copy($scope.queryString);
+                var sort = {
+                    "Call start time": {
+                        "order": "asc",
+                        "unmapped_type": "boolean"
+                    }
+                };
+
+                var filter =  getFilter();
+                var deleted = 0;
+                var allCount = +angular.copy($scope.count);
+
+                function onError(err) {
+                    $scope.isLoading = false;
+                    $scope.loadingText = null;
+                    apply();
+                    return notifi.error(err);
+                }
+
+                function onEnd() {
+                    $scope.isLoading = false;
+                    $scope.loadingText = null;
+                    apply();
+                    notifi.info('Deleted ' + deleted + ' records.');
+                }
+
+                function apply() {
+                    $timeout(function () {
+                        $scope.applyFilter();
+                    }, 1000)
+                }
+
+                function _getPart(cb) {
+
+                    CdrModel.getElasticData(
+                        null,
+                        10000,
+                        {other: ["variables.uuid"], date: []},
+                        filter,
+                        queryString,
+                        null,
+                        cb
+                    );
+                }
+                
+                function onData(err, data) {
+                    if (err) {
+                        return onError(err)
+                    }
+
+                    if (!data || data.length == 0)
+                        return onEnd();
+
+                    async.eachSeries(data,
+                        function (item, cb) {
+                            if (!item['variables.uuid']) return cb();
+
+                            CdrModel.removeCdr(item['variables.uuid'], function (err, res) {
+                                if (err && err.statusCode != 404) {
+                                    return cb(err);
+                                } else if (err) {
+                                    deleted--;
+                                }
+
+                                $scope.loadingText = 'Delete ' + (++deleted) + '/' + allCount;
+                                cb();
+                            });
+
+                        },
+                        function (err) {
+                            if (err) {
+                                return onError(err)
+                            }
+
+                            if (deleted >= allCount) {
+                                return onEnd();
+                            }
+
+                            setTimeout(() => _getPart(onData), 1000);
+                        }
+                    );
+                }
+
+                _getPart(onData);
+                
+                
+            }
 
             var today = new Date();
             today.setHours(0);
@@ -149,14 +250,18 @@ define(['app', 'moment', 'jsZIP', 'modules/cdr/cdrModel', 'modules/cdr/fileModel
                         "uuid": row["variables.uuid"],
                         "action": "open",
                         "class": "fa fa-file-code-o",
-                        "buttons": [
-                            {
-                                "action": "removeCdr",
-                                "class": "glyphicon glyphicon-remove"
-                            }
-                        ]
+                        "buttons": []
                     }
                 ];
+
+                if (canDeleteCDR) {
+                    row._files[0].buttons.push(
+                        {
+                            "action": "removeCdr",
+                            "class": "glyphicon glyphicon-remove"
+                        }
+                    )
+                }
 
                 if (!canReadFile)
                     return;
