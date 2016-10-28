@@ -249,7 +249,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
         };
     });
 
-    app.directive('elasticExportFiles', function (CdrModel, fileModel) {
+    app.directive('elasticExportFiles', function (CdrModel, fileModel, notifi) {
         return {
             restrict: 'AE',
             scope: {
@@ -277,6 +277,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                         columns = {other: ["variables.uuid", "variables.record_seconds"]};
 
                     var progress = 0;
+                    var errorFiles = [];
                     var zip = new jsZIP();
 
                     // TODO add filter variable exists webitel_record_file_name
@@ -299,8 +300,10 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                                             var pref = file['content-type'] === "application/pdf" ? "pdf" :"mp3";
                                             var uri = fileModel.getUri(file.uuid, file.name, file["createdOn"], pref);
                                             jsZIPUtils.getBinaryContent(uri, function (e, data) {
-                                                if (e)
-                                                    return cb(e);
+                                                if (e) {
+                                                    errorFiles.push(e.message);
+                                                    return cb();
+                                                }
                                                 zip.file(file["createdOn"] + '_' + file.name + '.' + pref, data);
                                                 cb();
                                             });
@@ -332,6 +335,11 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                                 return loadFiles(res, function (e) {
                                     if (e)
                                         return cb(e);
+
+                                    if (errorFiles.length > 0) {
+                                        // TODO add show log
+                                        notifi.error(new Error('Download files: error count ' + errorFiles.length));
+                                    }
                                     zip.generateAsync({type:"blob"}).then(function(content) {
                                         fileSaver(content, "recordFiles.zip");
                                     });
