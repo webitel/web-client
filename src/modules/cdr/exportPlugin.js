@@ -274,7 +274,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                 var exportFiles = function (filter, qs, sort, cb) {
                     var _page = 0,
                         maxNodes = 100,
-                        columns = {other: ["variables.uuid", "variables.webitel_record_file_name"]};
+                        columns = {other: ["variables.uuid", "variables.record_seconds"]};
 
                     var progress = 0;
                     var zip = new jsZIP();
@@ -285,22 +285,29 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                         async.eachSeries(
                             arr,
                             function (i, cb) {
-                                if (!i["variables.webitel_record_file_name"])
+                                if (!i["variables.record_seconds"])
                                     return cb();
 
                                 fileModel.getFiles(i["variables.uuid"], function (err, files) {
-                                    var file = files && files[0];
-                                    if (!file)
+
+                                    if (!files)
                                         return cb();
 
-                                    var pref = file['content-type'] === "application/pdf" ? "pdf" :"mp3";
-                                    var uri = fileModel.getUri(file.uuid, file.name, file["createdOn"], pref);
-                                    jsZIPUtils.getBinaryContent(uri, function (e, data) {
-                                        if (e)
-                                            return cb(e);
-                                        zip.file(file["createdOn"] + '_' + file.name + '.' + pref, data);
-                                        cb();
-                                    });
+                                    async.eachSeries(
+                                        files,
+                                        function (file, cb) {
+                                            var pref = file['content-type'] === "application/pdf" ? "pdf" :"mp3";
+                                            var uri = fileModel.getUri(file.uuid, file.name, file["createdOn"], pref);
+                                            jsZIPUtils.getBinaryContent(uri, function (e, data) {
+                                                if (e)
+                                                    return cb(e);
+                                                zip.file(file["createdOn"] + '_' + file.name + '.' + pref, data);
+                                                cb();
+                                            });
+                                        },
+                                        cb
+                                    )
+
                                 });
                             },
                             cb
