@@ -301,7 +301,7 @@ define(['app', 'scripts/webitel/utils', 'moment', 'modules/calendar/calendarMode
 
                 $scope.calendar.except.push({
                     "name": holiday.name,
-                    "date": holiday.date.getTime(),
+                    "date": holiday.date.getTime() - (holiday.date.getTimezoneOffset() * 60000),
                     "repeat": +holiday.repeat
                 });
             };
