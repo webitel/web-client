@@ -18,6 +18,9 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.roles = [];
         $scope.queues = {};
         $scope.isLoading = false;
+        $scope.options = {
+            multiInsert: false
+        };
 
         $scope.query = TableSearch.get('account'); //$routeParams.search;
 
@@ -242,10 +245,32 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                 } else {
                     $scope.account.__time = Date.now();
                     return edit();
-                };
+                }
             };
             if ($scope.account._new) {
-                AccountModel.add($scope.account, cb);
+                if ($scope.options.multiInsert) {
+                    if (+$scope.options.to > +$scope.account.id) {
+                        var iterator = +$scope.account.id;
+                        var ids = [];
+                        while (iterator <= +$scope.options.to)
+                            ids.push(iterator++);
+
+                        async.eachSeries(ids, function (id, cb) {
+                            $scope.account.id = id;
+                            AccountModel.add($scope.account, function (err) {
+                                if (err)
+                                    return cb(err);
+
+                                notifi.info('Created: ' + id, 1000);
+                                cb();
+                            });
+                        }, cb)
+                    } else {
+                        notifi.error('Bad from or to', 2000);
+                    }
+                } else {
+                    AccountModel.add($scope.account, cb);
+                }
             } else {
                 var updateValues = utils.diff($scope.account,  $scope.oldAccount);
                 AccountModel.update($scope.account, $scope.domain, updateValues, $scope.remVar, cb)
