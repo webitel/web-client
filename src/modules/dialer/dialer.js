@@ -427,6 +427,25 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.tiers = [];
             $scope.agentList = {};
 
+            $scope.agentStrategy = [
+                {
+                    name: "Random",
+                    val: "random"
+                },
+                {
+                    name: "With fewest calls",
+                    val: "with_fewest_calls"
+                },
+                {
+                    name: "With least talk time",
+                    val: "with_least_talk_time"
+                },
+                {
+                    name: "Longest idle agent",
+                    val: "longest_idle_agent"
+                }
+            ];
+
             $scope.addTiers = function (all) {
                 var collection = all ? $scope.agents : $scope.selAgents;
                 if (!collection.length) {

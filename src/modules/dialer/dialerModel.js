@@ -345,7 +345,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             var skills = [];
             if (option && option.skills) {
                 angular.forEach(option.skills, function (i) {
-                    skills.push(i.text)
+                    if (i)
+                        skills.push(i.text)
                 });
             }
 
@@ -378,6 +379,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "causesRetry": causesRetry,
                 "causesOK": causesOK,
                 "causesMinus": causesMinus,
+                "agentStrategy": option.agentStrategy,
                 "variables" : {},
                 "skills" : skills,
                 "resources" : angular.isArray(option.resources) ? option.resources : [],
