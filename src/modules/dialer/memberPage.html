@@ -193,6 +193,43 @@
                                         </div>
                                     </div>
                                 </tab>
+
+                                <tab ng-show="member._callback">
+                                    <tab-heading>
+                                        Callback
+                                    </tab-heading>
+                                    <div class="row">
+                                        <div class="col-sm-12" style="overflow-y: auto; max-height: 500px;">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th style="width:15%">Time</th>
+                                                    <th style="width:15%">User</th>
+                                                    <th style="width: 70%; text-align: center">Result</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody style="word-break: break-word;">
+                                                <tr ng-repeat="cb in member._callback.slice().reverse()">
+                                                    <td>
+                                                        {{timeToString(cb.time)}}
+                                                    </td>
+                                                    <td>
+                                                        {{cb.from}}
+                                                    </td>
+                                                    <td>
+                                                        <ul style="table-layout: fixed; word-wrap: break-word;">
+                                                            <li ng-repeat="(k, v) in cb.data">
+                                                                {{k}} -  {{v}}
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </tab>
                             </tabset>
                         </div>
                     </div>
