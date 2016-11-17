@@ -123,7 +123,9 @@
                     </div>
                 </div>
 
-                <table ng-show="rowCollection.length > 0" wt-responsive-table infinite-scroll-disabled="isLoading"    st-table="rowCollection" infinite-scroll="callServer"  st-pipe="callServer" class="table table-bordered">
+                <table ng-show="rowCollection.length > 0" wt-responsive-table infinite-scroll-disabled="isLoading"
+                       style="table-layout: fixed;"
+                       st-table="rowCollection" infinite-scroll="callServer"  st-pipe="callServer" class="table table-bordered">
                     <thead>
                     <tr>
                         <th st-skip-natural="true" st-sort="'{{item}}'" ng-if="!mapColumns[item].noRender && !mapColumns[item].options.detail" ng-repeat="(item, key) in columns">
