@@ -99,19 +99,22 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 
 				var reader = new FileReader();
 				reader.onload = function(event) {
-					$.getJSON(event.target.result).then(function(data){
+					try {
+						var data = JSON.parse(event.target.result);
+						data.fs_timezone = {
+							id: data.fs_timezone
+						};
 						CallflowPublicModel.item(data._id, $scope.domain, function (err, res) {
 							if (err)
 								return notifi.error(err, 3000);
 
 							uploadJson(data, !!res);
 						});
-					}).fail(function (res, e, err) {
-						notifi.error(err);
-					});
-
+					} catch (e) {
+						notifi.error(e, 10000);
+					}
 				};
-				reader.readAsDataURL(item._file);
+				reader.readAsText(item._file);
 			};
 			// endregion
 
