@@ -359,7 +359,7 @@ optgroup {
 }
 
 table {
-    table-layout: auto;
+    table-layout: fixed;
     word-wrap: break-word;
     border-collapse: collapse;
     border-spacing: 0
