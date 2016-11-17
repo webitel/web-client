@@ -135,8 +135,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 var queryString = angular.copy($scope.queryString);
                 var sort = {
                     "Call start time": {
-                        "order": "asc",
-                        "unmapped_type": "boolean"
+                        "order": "asc"
                     }
                 };
 
@@ -499,7 +498,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 if (tableState.sort.predicate)
                     $scope.sort[tableState.sort.predicate.replace(/'/g, '')] = {
                         "order": tableState.sort.reverse ? "desc" : "asc",
-                        "unmapped_type": "boolean"
+                        "missing" : tableState.sort.reverse ? "_last" : "_first"
                     };
 
                 var filter =  getFilter();
