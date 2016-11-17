@@ -49,6 +49,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
 
             $scope.mapColumns = CdrModel.mapColumn();
             $scope.columns = CdrModel.availableColumns();
+            $scope._countColumns = 0;
             $scope.columnsArr = [];
             $scope.columnsDateArr = [];
             $scope.filter = "";
@@ -89,8 +90,13 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     $scope.columnsDateArr.push(key);
                 else $scope.columnsArr.push(key);
 
-                if (item.options && item.options.detail)
+                if (!item.noRender)
+                    $scope._countColumns++;
+
+                if (item.options && item.options.detail) {
                     $scope.detailtColumns.push(key);
+                    $scope._countColumns--;
+                }
             });
 
             $scope.detailLoadingText = "";

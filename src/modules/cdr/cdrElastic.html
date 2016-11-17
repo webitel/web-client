@@ -142,7 +142,7 @@
                     </tr>
 
                     <tr ng-repeat-end="" class="bg-gray" ng-show="row == activeRow">
-                        <td colspan="90" class="row">
+                        <td colspan="{{_countColumns}}" class="row">
                             <div class="col-sm-8">
                                 <dl class="dl-horizontal" ng-repeat="name in detailtColumns">
                                     <dt>{{mapColumns[name].caption}}</dt>
