@@ -101,7 +101,7 @@
                                                                     <div class="col-sm-6">
                                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.intervalTryCount.$invalid}">
                                                                             <label class="control-label">Wait between retries (in seconds)</label>
-                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="intervalTryCount" ng-model="dialer.parameters.intervalTryCount" min="0" max="999" required>
+                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="intervalTryCount" ng-model="dialer.parameters.intervalTryCount" min="0" required>
                                                                         </div>
                                                                     </div>
 
@@ -133,7 +133,7 @@
                                                                     <div class="col-sm-6" ng-if="dialer.type!=diealerTypes[0]" ng-show="dialer.parameters.waitingForResultStatus">
                                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.wrapUpTime.$invalid }">
                                                                             <label class="control-label">Wrap up time</label>
-                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="wrapUpTime" ng-model="dialer.parameters.wrapUpTime" min="0" max="999">
+                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="wrapUpTime" ng-model="dialer.parameters.wrapUpTime" min="0">
                                                                         </div>
                                                                     </div>
 
