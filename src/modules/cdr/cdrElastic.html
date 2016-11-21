@@ -160,7 +160,7 @@
                                             <i ng-class="file.class"></i>
                                         </button>
 
-                                        <button ng-repeat="btn in file.buttons" ng-click="fileAction(btn, file, row._files)"  class="btn btn-default btn-sm " >
+                                        <button ng-repeat="btn in file.buttons" ng-class="{{btn.ngClass}}" ng-click="fileAction(btn, file, row._files)"  class="btn btn-default btn-sm " >
                                             <i ng-class="btn.class"></i>
                                         </button>
                                     </div>

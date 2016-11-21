@@ -7,7 +7,20 @@ define(["app"], function(app) {
 
         function getFiles(call_uuid, cb) {
             webitel.cdr("GET", "/api/v2/files/" + call_uuid + "?type=all", cb);
-        };
+        }
+
+        function updateFile(domain, params, cb) {
+            if (!params.uuid)
+                return cb(new Error("Bad uuid file"));
+
+            if (!params.id)
+                return cb(new Error("Bad id file"));
+
+            if (!params.data)
+                return cb(new Error("Bad update data file"));
+
+            webitel.cdr("PUT", "/api/v2/files/" + params.uuid + "/" + params.id + "?domain=" + domain, params.data, cb);
+        }
 
         function getUri (id, name, fileName, type) {
             var uri = webitel.connection._cdr + "/api/v2/files/" +
@@ -35,6 +48,7 @@ define(["app"], function(app) {
         return {
             getFiles: getFiles,
             getUri: getUri,
+            updateFile: updateFile,
             getJsonObject: getJsonObject
         }
     }]);

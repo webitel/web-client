@@ -122,6 +122,15 @@
                                         </div>
                                     </div>
 
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group" ng-class="{ 'has-error' : domainForm.storageExpiresDays.$invalid }">
+                                                <label class="control-label color-danger">How long to keep records ({{domain.storage.expiresDays}} days) ?</label>
+                                                <input type="number" min="0" max="65535" class="form-control" name="storageExpiresDays" data-ng-model="domain.storage.expiresDays">
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="row" ng-if="domain.storage.providers.s3 || domain.storage.providers.b2">
                                         <div class="col-sm-12" ng-if="domain.storage.defaultProvider">
                                             <div class="form-group" ng-class="{ 'has-error' : !domain.storage.maskPath}">

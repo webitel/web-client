@@ -280,6 +280,8 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
 
                     angular.forEach(res, function (item) {
                         var _f = {
+                            "_id": item._id,
+                            "_lock": item._lock,
                             "name": item.name || "",
                             "content-type": item['content-type'] || "",
                             "action": "stream",
@@ -297,10 +299,17 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                             ]
                         };
                         if (canDeleteFile) {
-                            _f.buttons.push({
-                                "action": "delete",
-                                "class": "fa fa-trash-o"
-                            })
+                            _f.buttons = _f.buttons.concat(
+                                {
+                                    "action": "setLock",
+                                    "class": "fa fa-lock",
+                                    "ngClass": "{'btn-success': file._lock}"
+                                },
+                                {
+                                    "action": "delete",
+                                    "class": "fa fa-trash-o"
+                                }
+                            )
                         }
                         row._files.push(_f);
                     })
@@ -348,6 +357,24 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
 
                     case "removeCdr":
                         deleteCdr(parent.uuid);
+                        break;
+
+                    case "setLock":
+                        var lock = parent._lock !== true;
+                        var params = {
+                            id: parent._id,
+                            uuid: parent.uuid,
+                            data: {
+                                _lock: lock
+                            }
+                        };
+                        
+                        fileModel.updateFile(parent.domain, params, function (err, res) {
+                            if (err)
+                                return notifi.error(err, 3000);
+
+                            parent._lock = lock;
+                        });
                         break;
                     default :
                         notifi.error("No action :(", 3000)
