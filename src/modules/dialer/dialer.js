@@ -1957,35 +1957,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         }
 
     }]);
-
-    app.directive('fileReaderCsv', function() {
-        return {
-            scope: {
-                fileReaderCsv:"=",
-                fileOnLoad: "=",
-                charSet: "="
-            },
-            link: function(scope, element) {
-                $(element).on('change', function(changeEvent) {
-                    var files = changeEvent.target.files;
-                    if (files.length) {
-                        var r = new FileReader();
-                        r.onload = function(e) {
-                            var contents = e.target.result;
-
-                            scope.$apply(function () {
-                                if (typeof scope.fileOnLoad === 'function' )
-                                    return scope.fileOnLoad(contents);
-                                scope.fileReaderCsv = contents;
-                            });
-                        };
-                        // TODO
-                        r.readAsText(files[0], scope.charSet);
-                    }
-                });
-            }
-        };
-    });
     
     app.controller('MemberDialerPageCtrl', ['$scope', '$modalInstance', 'notifi', 'DialerModel', 'options', 'fileModel',
     function ($scope, $modalInstance, notifi, DialerModel, options, fileModel) {

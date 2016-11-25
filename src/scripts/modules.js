@@ -149,7 +149,7 @@ define(['angular', 'config'], function (angular, config) {
 		href: "#/callflows",
 		caption: "Callflow",
 
-		acl: ['rotes/default', 'rotes/public', 'rotes/extension', 'rotes/domain'],
+		acl: ['rotes/default', 'rotes/public', 'rotes/extension', 'rotes/domain', 'blacklist'],
 		templateUrl: 'modules/callflows/callflows.html', 
 		controller: 'CallflowsCtrl',
 		controllerUrl: 'modules/callflows/callflows.js',
@@ -214,6 +214,29 @@ define(['angular', 'config'], function (angular, config) {
 			controller: 'CallflowExtensionCtrl',
 			controllerUrl: 'modules/callflows/extension/extension.js',
 			method: "edit"
+		}, {
+			list: true,
+			acl: 'blacklist',
+			caption: "Blacklists",
+			href: "/callflows/blacklists",
+
+			templateUrl: 'modules/callflows/blacklists/blacklists.html',
+			controller: 'BlackListCtrl',
+			controllerUrl: 'modules/callflows/blacklists/blacklists.js'
+		}, {
+			list: true,
+			href: '/callflows/blacklists/new',
+			templateUrl: 'modules/callflows/blacklists/blacklistPage.html',
+			controller: 'BlackListCtrl',
+			controllerUrl: 'modules/callflows/blacklists/blacklists.js',
+			method: "create"
+		}, {
+			list: true,
+			href: '/callflows/blacklists/:id/edit',
+			templateUrl: 'modules/callflows/blacklists/blacklistPage.html',
+			controller: 'BlackListCtrl',
+			controllerUrl: 'modules/callflows/blacklists/blacklists.js',
+			method: "edit"
 		},{
 			list: true,
 			acl: 'rotes/domain',
@@ -222,7 +245,8 @@ define(['angular', 'config'], function (angular, config) {
 			templateUrl: 'modules/callflows/variables/variables.html',
 			controller: 'CallflowsVariableCtrl',
 			controllerUrl: 'modules/callflows/variables/variables.js'
-		}]
+		}
+		]
 	},
 	{
 		href: "#/calendars",

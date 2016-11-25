@@ -409,7 +409,34 @@ define(['angular'],
           }
         };
   })
+  .directive('fileReaderCsv', function() {
+    return {
+      scope: {
+        fileReaderCsv:"=",
+        fileOnLoad: "=",
+        charSet: "="
+      },
+      link: function(scope, element) {
+        $(element).on('change', function(changeEvent) {
+          var files = changeEvent.target.files;
+          if (files.length) {
+            var r = new FileReader();
+            r.onload = function(e) {
+              var contents = e.target.result;
 
+              scope.$apply(function () {
+                if (typeof scope.fileOnLoad === 'function' )
+                  return scope.fileOnLoad(contents);
+                scope.fileReaderCsv = contents;
+              });
+            };
+            // TODO
+            r.readAsText(files[0], scope.charSet);
+          }
+        });
+      }
+    };
+  })
   .filter('groupBy',
     function () {
       return function (collection, key) {

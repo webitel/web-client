@@ -1,0 +1,60 @@
+<div class="page">
+
+    <section class="panel">
+
+        <div class="row">
+            <section>
+                <form isolate-form="true" class="panel-body" name="blacklistForm">
+                    <div class="col-sm-10">
+                        <div class="form-group" ng-class="{ 'has-error' : accountForm.blacklistForm.$invalid || !blacklist.name}">
+                            <label class="control-label">Name</label>
+                            <input ng-disabled="!isNew" class="form-control" type="text" name="name" ng-model="blacklist.name" required>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="form-group " ng-class="{ 'has-error' : accountForm.blacklistForm.$invalid }">
+                            <label class="control-label">Actions</label>
+                            <br>
+                            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  style="padding: 0">
+                                <i class="glyphicon glyphicon-cloud-upload"></i>
+                                <input type="file" file-reader-csv file-on-load="fileCsvOnLoad" name="csvSelectedFileName" accept=".csv"/>
+                            </span>
+
+                            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file" ng-click="export()" style="padding: 0">
+                                <i class="glyphicon glyphicon-cloud-download"></i>
+                            </span>
+
+                            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file" ng-click="closePage()" style="padding: 0">
+                                <i class="fa fa-reply"></i>
+                            </span>
+                        </div>
+
+                    </div>
+
+                </form>
+            </section>
+        </div>
+
+        <div class="col-sm-12" ng-show="processImport">
+            <progressbar style="background-color: #34323A;" max="100" value="progress" type="success">
+                <span style="white-space:nowrap;">{{progressCount}} / {{maxProgress}}</span>
+            </progressbar>
+        </div>
+
+        <div class="row" >
+            <div class="col-sm-12">
+                <section class="panel-body" style="padding-top: 0px;" data-ng-controller="BlackListNumbersCtrl" data-ng-include=" 'modules/callflows/blacklists/numbers.html' ">
+
+                </section>
+            </div>
+        </div>
+
+        <!--<div class="panel-footer">-->
+            <!--<button ng-show="isNew" type="button" ng-disabled="blacklistForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>-->
+            <!--<button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>-->
+        <!--</div>-->
+
+    </section>
+
+</div>
