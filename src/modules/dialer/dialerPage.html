@@ -211,11 +211,56 @@
                                             <!--</div>-->
 
                                             <div class="row">
+
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Strategy</label>
+                                                        <select ng-disabled="dialer.active" class="form-control" name="type" ng-model="dialer.agentStrategy" >
+                                                            <option ng-repeat="type in agentStrategy" ng-selected="{{type.val==dialer.agentStrategy}}"  value="{{type.val}}">{{type.name}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-sm-6">
-                                                    <label class="control-label">Strategy</label>
-                                                    <select ng-disabled="dialer.active" class="form-control" name="type" ng-model="dialer.agentStrategy" >
-                                                        <option ng-repeat="type in agentStrategy" ng-selected="{{type.val==dialer.agentStrategy}}"  value="{{type.val}}">{{type.name}}</option>
-                                                    </select>
+
+                                                    <div class="form-group" ng-class="{ 'has-error' : dialerForm.agentContact.$invalid }">
+                                                        <label class="control-label">Call timeout</label>
+                                                        <input class="form-control" type="number" name="agentContact" ng-model="dialer.agentParams.callTimeout"
+                                                               min="0" max="999">
+                                                    </div>
+
+                                                    <div class="form-group" ng-class="{ 'has-error' : dialerForm.agentWrap.$invalid }">
+                                                        <label class="control-label">Wrap up time</label>
+                                                        <input class="form-control" type="number" name="agentWrap" ng-model="dialer.agentParams.wrapUpTime"
+                                                               min="0" max="999" >
+                                                    </div>
+
+                                                    <div class="form-group" ng-class="{ 'has-error' : dialerForm.agentMaxNoAns.$invalid }">
+                                                        <label class="control-label">Max no answer</label>
+                                                        <input class="form-control" type="number" name="agentMaxNoAns" ng-model="dialer.agentParams.maxNoAnswer"
+                                                               min="0" max="999">
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-sm-6">
+                                                    <div class="form-group" ng-class="{ 'has-error' : dialerForm.agentBusyTime.$invalid }">
+                                                        <label class="control-label">Busy delay time</label>
+                                                        <input class="form-control" type="number" name="agentBusyTime" ng-model="dialer.agentParams.busyDelayTime"
+                                                               min="0" max="999">
+                                                    </div>
+
+                                                    <div class="form-group" ng-class="{ 'has-error' : dialerForm.agentRejectTime.$invalid }">
+                                                        <label class="control-label">Reject delay time</label>
+                                                        <input class="form-control" type="number" name="agentRejectTime" ng-model="dialer.agentParams.rejectDelayTime"
+                                                               min="0" max="999">
+                                                    </div>
+
+                                                    <div class="form-group" ng-class="{ 'has-error' : dialerForm.agentAnswerTime.$invalid }">
+                                                        <label class="control-label">No answer delay time</label>
+                                                        <input class="form-control" type="number" name="agentAnswerTime" ng-model="dialer.agentParams.noAnswerDelayTime"
+                                                               min="0" max="999">
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -303,6 +348,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </tab>

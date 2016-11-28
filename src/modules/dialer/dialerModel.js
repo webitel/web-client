@@ -375,6 +375,14 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     "wrapUpTime" : angular.isNumber(option.parameters && option.parameters.wrapUpTime) ? option.parameters.wrapUpTime : 60,
                     'waitingForResultStatus': option.parameters && option.parameters.waitingForResultStatus
                 },
+                "agentParams": {
+                    "callTimeout": option.agentParams && option.agentParams.callTimeout,
+                    "wrapUpTime": option.agentParams && option.agentParams.wrapUpTime,
+                    "maxNoAnswer": option.agentParams && option.agentParams.maxNoAnswer,
+                    "busyDelayTime": option.agentParams && option.agentParams.busyDelayTime,
+                    "rejectDelayTime": option.agentParams && option.agentParams.rejectDelayTime,
+                    "noAnswerDelayTime": option.agentParams && option.agentParams.noAnswerDelayTime
+                },
                 "causesError": causesError,
                 "causesRetry": causesRetry,
                 "causesOK": causesOK,
