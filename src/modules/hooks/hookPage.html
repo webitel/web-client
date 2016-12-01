@@ -1,7 +1,7 @@
 <div class="page">
 
     <div class="panel">
-        <form name="hookForm"  class="panel-body">
+        <div  name="hookForm"  class="panel-body">
 
             <div class="row">
                 <div class="col-sm-12">
@@ -15,7 +15,7 @@
 
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <div class="form-group" ng-class="{ 'has-error' : hookForm.url.$invalid }">
+                                            <div class="form-group" ng-class="{ 'has-error' : !hook.action.url }">
                                                 <label class="control-label">URI</label>
                                                 <input type="text" name="url" class="form-control" required data-ng-model="hook.action.url">
                                             </div>
@@ -96,7 +96,7 @@
                                     </tab-heading>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <div class="form-group" ng-class="{ 'has-error' : hookForm.authUrl.$invalid }">
+                                            <div class="form-group" ng-class="{ 'has-error' : !hook.auth.url }">
                                                 <label class="control-label">Auth URI</label>
                                                 <input type="text" name="authUrl" class="form-control" required data-ng-model="hook.auth.url">
                                             </div>
@@ -146,11 +146,11 @@
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
 
         <div class="panel-footer">
             <!--<btn-save-exit save="save" save-exit="save"></btn-save-exit>-->
-            <button ng-show="isEdit" type="button" ng-disabled="hookForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit" type="button" ng-disabled="!hook.action.url || !hook.event || !hook.event || (hook.auth.enabled && (!hook.auth.url || !hook.auth.method))" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
         </div>

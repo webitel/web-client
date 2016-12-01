@@ -26,11 +26,11 @@
             <tr ng-repeat="d in data" >
                 <td data-ng-repeat="f in fields">
 
-                    <span ng-if="select[f]" editable-select="d[f]" required isolate-form="true" e-name="{{f}}" e-form="rowform" e-ng-options="s as s for s in select[f]">
+                    <span ng-if="select[f]" editable-select="d[f]" e-required isolate-form="true" e-name="{{f}}" e-form="rowform" e-ng-options="s as s for s in select[f]">
                       {{ d[f] }}
                     </span>
 
-                    <span ng-if="!select[f]"  editable-text="d[f]" required isolate-form="true" e-name="{{f}}" e-form="rowform">
+                    <span ng-if="!select[f]"  editable-text="d[f]" e-required isolate-form="true" e-name="{{f}}" e-form="rowform">
                         {{ d[f] }}
                     </span>
                 </td>
