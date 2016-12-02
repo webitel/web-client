@@ -4,7 +4,7 @@
 
 "use strict";
 
-define(['app', 'modules/cdr/libs/fileSaver', 'async', 'modules/callflows/blacklists/blacklistsModel'], function (app, fileSaver, async) {
+define(['app', 'modules/cdr/libs/fileSaver', 'async', 'scripts/webitel/utils', 'modules/callflows/blacklists/blacklistsModel'], function (app, fileSaver, async, utils) {
     app.controller('BlackListCtrl', ['$scope', 'webitel', 'TableSearch', '$rootScope', '$location', 'BlacklistModel', 'notifi',
     '$route', '$routeParams', '$confirm',
     function ($scope, webitel, TableSearch, $rootScope, $location, BlacklistModel, notifi, $route, $routeParams, $confirm) {
@@ -143,7 +143,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'modules/callflows/blackli
         $scope.maxProgress = 0;
 
         $scope.fileCsvOnLoad = function (content) {
-            var numbers = content.split(/\n/);
+            var numbers = utils.CSVToArray(content);
             var count = $scope.progress = 0;
             $scope.maxProgress = numbers.length;
             async.eachSeries(
