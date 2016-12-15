@@ -181,59 +181,59 @@
 
                                                             <tab ng-if="dialer.type==diealerTypes[0] || dialer.type==diealerTypes[2]">
                                                                 <tab-heading>
-                                                                    <span>AVD</span>
+                                                                    <span>AMD</span>
                                                                 </tab-heading>
 
                                                                 <div class="row">
                                                                     <div class="col-sm-6">
                                                                         <div class="form-group" style=" margin-bottom: 10px;">
-                                                                            <label class="control-label">Use AVD</label>
+                                                                            <label class="control-label">Use AMD</label>
                                                                             <label  style="width: 100%;" class="switch switch-success">
-                                                                                <input ng-disabled="dialer.active" type="checkbox" ng-model="dialer.avd.enabled" ><i></i></label>
+                                                                                <input ng-disabled="dialer.active" type="checkbox" ng-model="dialer.amd.enabled" ><i></i></label>
                                                                         </div>
 
                                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.maximumWordLength.$invalid }">
                                                                             <label class="control-label">maximumWordLength</label>
-                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="maximumWordLength" ng-model="dialer.avd.maximum_word_length" min="0">
+                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="maximumWordLength" ng-model="dialer.amd.maximum_word_length" min="0">
                                                                         </div>
 
                                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.maximumNumberOfWords.$invalid }">
                                                                             <label class="control-label">maximumNumberOfWords</label>
-                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="maximumNumberOfWords" ng-model="dialer.avd.maximum_number_of_words" min="0">
+                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="maximumNumberOfWords" ng-model="dialer.amd.maximum_number_of_words" min="0">
                                                                         </div>
 
                                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.betweenWordsSilence.$invalid }">
                                                                             <label class="control-label">betweenWordsSilence</label>
-                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="betweenWordsSilence" ng-model="dialer.avd.between_words_silence" min="0">
+                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="betweenWordsSilence" ng-model="dialer.amd.between_words_silence" min="0">
                                                                         </div>
                                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.minWordLength.$invalid }">
                                                                             <label class="control-label">minWordLength</label>
-                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="minWordLength" ng-model="dialer.avd.min_word_length" min="0">
+                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="minWordLength" ng-model="dialer.amd.min_word_length" min="0">
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="col-sm-6">
                                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.wrapUpTime.$invalid }">
                                                                             <label class="control-label">silenceThreshold</label>
-                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="silenceThreshold" ng-model="dialer.avd.silence_threshold" min="0">
+                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="silenceThreshold" ng-model="dialer.amd.silence_threshold" min="0">
                                                                         </div>
 
 
                                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.totalAnalysisTime.$invalid }">
                                                                             <label class="control-label">totalAnalysisTime</label>
-                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="totalAnalysisTime" ng-model="dialer.avd.total_analysis_time" min="0">
+                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="totalAnalysisTime" ng-model="dialer.amd.total_analysis_time" min="0">
                                                                         </div>
                                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.afterGreetingSilence.$invalid }">
                                                                             <label class="control-label">afterGreetingSilence</label>
-                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="afterGreetingSilence" ng-model="dialer.avd.after_greeting_silence" min="0">
+                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="afterGreetingSilence" ng-model="dialer.amd.after_greeting_silence" min="0">
                                                                         </div>
                                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.greeting.$invalid }">
                                                                             <label class="control-label">greeting</label>
-                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="greeting" ng-model="dialer.avd.greeting" min="0">
+                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="greeting" ng-model="dialer.amd.greeting" min="0">
                                                                         </div>
                                                                         <div class="form-group" ng-class="{ 'has-error' : dialerForm.initialSilence.$invalid }">
                                                                             <label class="control-label">initialSilence</label>
-                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="initialSilence" ng-model="dialer.avd.initial_silence" min="0">
+                                                                            <input ng-disabled="dialer.active" class="form-control" type="number" name="initialSilence" ng-model="dialer.amd.initial_silence" min="0">
                                                                         </div>
                                                                     </div>
                                                                 </div>
