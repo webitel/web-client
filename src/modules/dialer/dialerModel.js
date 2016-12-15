@@ -355,7 +355,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             var causesOK = _setCause(option.causesOK, CODE_RESPONSE_OK);
             var causesMinus = _setCause(option.causesMinus, CODE_RESPONSE_MINUS_PROBE);
 
-
+            var avd = option.avd || {};
             return {
                 "domain" : domain || "",
                 "name" : option.name || "",
@@ -382,6 +382,18 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     "busyDelayTime": option.agentParams && option.agentParams.busyDelayTime,
                     "rejectDelayTime": option.agentParams && option.agentParams.rejectDelayTime,
                     "noAnswerDelayTime": option.agentParams && option.agentParams.noAnswerDelayTime
+                },
+                "avd": {
+                    "enabled": avd.enabled,
+                    "maximum_word_length": avd.maximum_word_length || 5000,
+                    "maximum_number_of_words": avd.maximum_number_of_words || 3,
+                    "between_words_silence": avd.between_words_silence || 50,
+                    "min_word_length": avd.min_word_length || 100,
+                    "total_analysis_time": avd.total_analysis_time || 5000,
+                    "silence_threshold": avd.silence_threshold || 256,
+                    "after_greeting_silence": avd.after_greeting_silence || 800,
+                    "greeting": avd.greeting || 1500,
+                    "initial_silence": avd.initial_silence || 2500
                 },
                 "causesError": causesError,
                 "causesRetry": causesRetry,
