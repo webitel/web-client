@@ -385,15 +385,15 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 },
                 "amd": {
                     "enabled": amd.enabled,
-                    "maximum_word_length": amd.maximum_word_length || 5000,
-                    "maximum_number_of_words": amd.maximum_number_of_words || 3,
-                    "between_words_silence": amd.between_words_silence || 50,
-                    "min_word_length": amd.min_word_length || 100,
-                    "total_analysis_time": amd.total_analysis_time || 5000,
-                    "silence_threshold": amd.silence_threshold || 256,
-                    "after_greeting_silence": amd.after_greeting_silence || 800,
+                    "maximumWordLength": amd.maximumWordLength || 5000,
+                    "maximumNumberOfWords": amd.maximumNumberOfWords || 3,
+                    "betweenWordsSilence": amd.betweenWordsSilence || 50,
+                    "minWordLength": amd.minWordLength || 100,
+                    "totalAnalysisTime": amd.totalAnalysisTime || 5000,
+                    "silenceThreshold": amd.silenceThreshold || 256,
+                    "afterGreetingSilence": amd.afterGreetingSilence || 800,
                     "greeting": amd.greeting || 1500,
-                    "initial_silence": amd.initial_silence || 2500
+                    "initialSilence": amd.initialSilence || 2500
                 },
                 "causesError": causesError,
                 "causesRetry": causesRetry,
