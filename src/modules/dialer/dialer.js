@@ -1,6 +1,6 @@
 define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/cdr/libs/fileSaver', 'moment', 'modules/gateways/gatewayModel',
     'modules/dialer/dialerModel', 'modules/calendar/calendarModel',  'modules/cdr/libs/json-view/jquery.jsonview',
-    'modules/cdr/fileModel', 'modules/accounts/accountModel'], function (app, async, utils, aceEditor, callflowUtils, fileSaver, moment) {
+    'modules/cdr/fileModel', 'modules/accounts/accountModel', 'modules/media/mediaModel'], function (app, async, utils, aceEditor, callflowUtils, fileSaver, moment) {
 
 
     function moveUp (arr, value, by) {
@@ -41,9 +41,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     }
 
     app.controller('DialerCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'DialerModel', '$location', '$route', '$routeParams',
-        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel', 'AccountModel', '$q', '$filter',
+        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel', 'AccountModel', '$q', '$filter', 'MediaModel',
         function ($scope, webitel, $rootScope, notifi, DialerModel, $location, $route, $routeParams, $confirm, TableSearch,
-                  $timeout, $modal, CalendarModel, AccountModel, $q, $filter) {
+                  $timeout, $modal, CalendarModel, AccountModel, $q, $filter, MediaModel) {
 
             $scope.canDelete = webitel.connection.session.checkResource('dialer', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('dialer', 'u');
@@ -156,6 +156,25 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     });
                     $scope.calendars = c;
 
+                });
+            };
+
+            $scope.mediaFiles = [];
+            $scope.getMediaFiles = function () {
+                MediaModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    $scope.mediaFiles = [];
+                    if (angular.isArray(res)) {
+                        res.forEach(function (item) {
+                            $scope.mediaFiles.push({
+                                id: item._id,
+                                uri: utils.mediaToUri(item),
+                                name: item.name
+                            })
+                        })
+                    }
                 });
             };
             

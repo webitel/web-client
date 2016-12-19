@@ -289,6 +289,14 @@ define(['angular'], function (angular) {
     };
 
 
+    function mediaToUri(media) {
+        if (media.type == 'wav') {
+            return "${regex($${cdr_url}|^(http)?s?(.*)$|http_cache%2)}/sys/media/wav/" + encodeURI(media.name  + '?stream=false&domain=' + media.domain + '&.wav');
+        }
+        return "${regex($${cdr_url}|^(http)?s?(.*)$|shout%2)}/sys/media/mp3/" + encodeURI(media.name  + '?domain=' + media.domain);
+    }
+
+
     // Source: http://www.bennadel.com/blog/1504-Ask-Ben-Parsing-CSV-Strings-With-Javascript-Exec-Regular-Expression-Command.htm
     // This will parse a delimited string into an array of
     // arrays. The default delimiter is the comma, but this
@@ -2658,6 +2666,7 @@ define(['angular'], function (angular) {
         CSVToArray: CSVToArray,
         CSV2JSON: CSV2JSON,
         CharSet: CharSet,
+        mediaToUri: mediaToUri,
         prettysize: prettysize,
         secondsToString: secondsToString
     }

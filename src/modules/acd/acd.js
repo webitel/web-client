@@ -203,18 +203,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/acd/acdModel', 'module
             
             $scope.onSelectMedia = function (item, $model) {
                 if (item.type) {
-                    $scope.queue['moh-sound'] = mediaToUri(item);
+                    $scope.queue['moh-sound'] = utils.mediaToUri(item);
                 } else {
                     $scope.queue['moh-sound'] = item.name;
                 }
             };
-
-            function mediaToUri(media) {
-                if (media.type == 'wav') {
-                    return "${regex($${cdr_url}|^(http)?s?(.*)$|http_cache%2)}/sys/media/wav/" + encodeURI(media.name  + '?stream=false&domain=' + media.domain + '&.wav');
-                }
-                return "${regex($${cdr_url}|^(http)?s?(.*)$|shout%2)}/sys/media/mp3/" + encodeURI(media.name  + '?domain=' + media.domain);
-            }
 
             $scope.removeItem = function (row) {
                 $confirm({text: 'Are you sure you want to delete ' + row.name + ' ?'},  { templateUrl: 'views/confirm.html' })
