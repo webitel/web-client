@@ -374,7 +374,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     "maxTryCount" : angular.isNumber(option.parameters && option.parameters.maxTryCount) ? option.parameters.maxTryCount : 5,
                     "intervalTryCount" : angular.isNumber(option.parameters && option.parameters.intervalTryCount) ? option.parameters.intervalTryCount : 60,
                     "wrapUpTime" : angular.isNumber(option.parameters && option.parameters.wrapUpTime) ? option.parameters.wrapUpTime : 60,
-                    'waitingForResultStatus': option.parameters && option.parameters.waitingForResultStatus
+                    'waitingForResultStatus': option.parameters && option.parameters.waitingForResultStatus,
+                    'recordSession': (option.parameters && option.parameters.recordSession) === undefined ? true : option.parameters.recordSession
                 },
                 "agentParams": {
                     "callTimeout": option.agentParams && option.agentParams.callTimeout,

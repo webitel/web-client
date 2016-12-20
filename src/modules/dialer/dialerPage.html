@@ -160,6 +160,16 @@
                                                                     </div>
                                                                 </div>
 
+                                                                <div class="row">
+                                                                    <div class="col-sm-6">
+                                                                        <div class="form-group" ng-if="dialer.type==diealerTypes[2]">
+                                                                            <label class="control-label">Record session</label>
+                                                                            <label  style="width: 100%;" class="switch switch-success">
+                                                                                <input ng-disabled="dialer.active" type="checkbox" ng-model="dialer.parameters.recordSession"><i></i></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
                                                                 <div ng-if="false" class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.avgProgressSec.$pristine }">
                                                                     <label for>Avg progress sec</label>
                                                                     <input ng-disabled="dialer.active" class="form-control" type="number" name="avgProgressSec" ng-model="dialer.parameters.avgProgressSec" min="0" max="999" required>
