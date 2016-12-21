@@ -366,6 +366,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "active" : typeof option.active == 'boolean' ? option.active : false,
                 "calendar" : calendar,
                 "playbackFile" : option.playbackFile,
+                "communications" : option.communications,
                 "parameters" : {
                     "limit" : angular.isNumber(option.parameters && option.parameters.limit) ? option.parameters.limit : 30,
                     "minBillSec" : angular.isNumber(option.parameters && option.parameters.minBillSec) ? option.parameters.minBillSec : 10,

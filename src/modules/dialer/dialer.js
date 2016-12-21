@@ -601,6 +601,201 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 window.dispatchEvent(new Event('resize'));
             };
 
+            // region Communication type logic
+
+            $scope.rangeType = {};
+            $scope._hourError = false;
+            $scope._editRangeRowKey = null;
+            $scope._editRangeRowRow = {};
+            
+            $scope.editRangeName = function (rowName, key) {
+                $scope._editRangeRowRow = {
+                    "name": rowName.name
+                };
+                $scope._editRangeRowKey = key;
+            };
+            
+            $scope.saveRangeName = function (newRow, oldRow) {
+                if (!newRow.name) {
+                    return showError('Bad name');
+                }
+
+                oldRow.name = newRow.name;
+                $scope._editRangeRowRow = {};
+                $scope._editRangeRowKey = null;
+            };
+
+            $scope.removeRangeName = function (key, types) {
+                types.splice(key, 1);
+            };
+
+            $scope.editRangeRow = function (row, key) {
+                var startTime = getHourAndMinuteFromTimeOfDay(row.startTime);
+                var endTime = getHourAndMinuteFromTimeOfDay(row.endTime);
+                $scope._editRangeRowRow = {
+                    "startHour": startTime.hour,
+                    "startMinute": startTime.minute,
+                    "endHour": endTime.hour,
+                    "endMinute": endTime.minute,
+                    "attempts": row.attempts,
+                    "priority": row.priority
+                };
+                $scope._editRangeRowKey = key;
+            };
+
+            $scope.saveRangeRow = function (range, communications) {
+                var row = validateRange($scope._editRangeRowRow, communications, range);
+                if (!row) {
+                    return showError('Bad range');
+                }
+
+                var idx = findIndexFromRows(range, communications);
+                communications[idx] = row;
+                $scope._editRangeRowRow = {};
+                $scope._editRangeRowKey = null;
+            };
+            
+            $scope.addRangeType = function (range, communications) {
+
+                if (!range.name) {
+                    //TODO error
+                    return showError('Bad name');
+                }
+
+                if (!communications)
+                    $scope.dialer.communications = communications = {types: []};
+
+                var type = findTypeInCommunications(range.name, communications);
+                if (!type) {
+                    type = {
+                        name: range.name,
+                        ranges: []
+                    };
+                    communications.types.push(type);
+                }
+
+                if (!type.ranges) {
+                    type.ranges = []
+                }
+
+                var _range = validateRange(range, type.ranges);
+                if (!_range)
+                    return showError('Bad hours');
+
+                type.ranges.push(_range);
+            };
+            
+            $scope.removeRange = function (row, range, key) {
+                row.ranges.splice(key, 1);
+                if (row.ranges.length === 0) {
+                    var idx = findTypeIdInCommunications(row.name, $scope.dialer.communications);
+                    if (isFinite(idx)) {
+                        $scope.dialer.communications.types.splice(idx, 1);
+                    } else {
+                        //TODO
+                        throw 'Bad name';
+                    }
+                }
+            };
+
+            function showError(err) {
+                notifi.error(err, 2000);
+                $scope._hourError = true;
+                $timeout(function () {
+                    $scope._hourError = false;
+                }, 2000);
+            }
+
+            function validateRange(range, ranges, _curentRange) {
+                if (!range)
+                    return null;
+
+                if (!isFinite(range.startHour) || !isFinite(range.startMinute) ||
+                    !isFinite(range.endHour) || !isFinite(range.endMinute) ||
+                    !isFinite(range.attempts) || !isFinite(range.priority))
+                    return null;
+
+                var startTime = (+range.startHour * 60) + (+range.startMinute);
+                var endTime = (+range.endHour * 60) + (+range.endMinute);
+
+                if (endTime <= startTime)
+                    return null;
+
+                var max = Math.max(startTime, endTime),
+                    min = Math.min(startTime, endTime)
+                    ;
+
+                for (var i = 0, len = ranges.length; i < len; i++)
+                    if (_curentRange !== ranges[i] && betweenLine(max, min, ranges[i].startTime, ranges[i].endTime))
+                        return null;
+
+                return {
+                    "startTime": startTime,
+                    "endTime": endTime,
+                    "attempts": range.attempts,
+                    "priority": range.priority
+                }
+            }
+
+            //TODO move utils
+            function betweenLine(maxA, minA, bX, bY) {
+                return Math.min(maxA, Math.max(bX, bY)) >=
+                    Math.max(minA, Math.min(bX, bY))
+            }
+            //TODO move utils
+            function addZero (n) {
+                return n < 10 ? '0' + n : '' + n;
+            }
+
+            function findIndexFromRows (row, rows) {
+                for (var i = 0, len = rows.length; i < len; i++)
+                    if (rows[i] === row)
+                        return i;
+
+            }
+            //TODO move utils
+            $scope.minuteOfDayToString = function (time) {
+                var hm = getHourAndMinuteFromTimeOfDay(time);
+                return addZero(hm.hour) + ':' + addZero(hm.minute);
+            };
+            //TODO move utils
+            function getHourAndMinuteFromTimeOfDay (time) {
+                return {
+                    hour: Math.floor((time / 60) % 24),
+                    minute: time % 60
+                }
+            }
+
+            function findTypeInCommunications(name, communications) {
+                if (angular.isArray(communications && communications.types)) {
+                    for (var item of communications.types) {
+                        if (item.name === name)
+                            return item;
+                    }
+                }
+            }
+            function findTypeIdInCommunications(name, communications) {
+                if (angular.isArray(communications && communications.types)) {
+                    for (var i = 0; i <  communications.types.length; i++) {
+                        if (communications.types[i].name === name)
+                            return i;
+                    }
+                }
+            }
+
+            $scope.getNumber = function (num) {
+                var arr = [];
+                for (var i = 0; i < num; i++)
+                    if (i < 10)
+                        arr.push('0' + i);
+                    else arr.push('' + i);
+                return arr;
+            };
+
+
+
+            // endregion
+
             function diffArray(a1, a2) {
                 return a1.filter(function(i) {return a2.indexOf(i) < 0;});
             }
