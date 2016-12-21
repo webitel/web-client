@@ -610,17 +610,25 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             
             $scope.editRangeName = function (rowName, key) {
                 $scope._editRangeRowRow = {
-                    "name": rowName.name
+                    "name": rowName.name,
+                    "code": rowName.code
                 };
                 $scope._editRangeRowKey = key;
             };
             
-            $scope.saveRangeName = function (newRow, oldRow) {
-                if (!newRow.name) {
-                    return showError('Bad name');
+            $scope.saveRangeName = function (newRow, oldRow, communications) {
+                if (!newRow.name || !newRow.code) {
+                    return showError('Bad name or code');
+                }
+
+                if (angular.isArray(communications)) {
+                    for (var i = 0; i < communications.length; i++)
+                        if (oldRow !== communications[i] && communications[i].code == newRow.code)
+                            return showError('Bad code')
                 }
 
                 oldRow.name = newRow.name;
+                oldRow.code = newRow.code;
                 $scope._editRangeRowRow = {};
                 $scope._editRangeRowKey = null;
             };
@@ -661,14 +669,19 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     //TODO error
                     return showError('Bad name');
                 }
+                if (!range.code) {
+                    //TODO error
+                    return showError('Bad code');
+                }
 
                 if (!communications)
                     $scope.dialer.communications = communications = {types: []};
 
-                var type = findTypeInCommunications(range.name, communications);
+                var type = findTypeInCommunications(range.code, communications);
                 if (!type) {
                     type = {
                         name: range.name,
+                        code: range.code,
                         ranges: []
                     };
                     communications.types.push(type);
@@ -688,7 +701,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.removeRange = function (row, range, key) {
                 row.ranges.splice(key, 1);
                 if (row.ranges.length === 0) {
-                    var idx = findTypeIdInCommunications(row.name, $scope.dialer.communications);
+                    var idx = findTypeIdInCommunications(row.code, $scope.dialer.communications);
                     if (isFinite(idx)) {
                         $scope.dialer.communications.types.splice(idx, 1);
                     } else {
@@ -766,18 +779,18 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
             }
 
-            function findTypeInCommunications(name, communications) {
+            function findTypeInCommunications(code, communications) {
                 if (angular.isArray(communications && communications.types)) {
                     for (var item of communications.types) {
-                        if (item.name === name)
+                        if (item.code === code)
                             return item;
                     }
                 }
             }
-            function findTypeIdInCommunications(name, communications) {
+            function findTypeIdInCommunications(code, communications) {
                 if (angular.isArray(communications && communications.types)) {
                     for (var i = 0; i <  communications.types.length; i++) {
-                        if (communications.types[i].name === name)
+                        if (communications.types[i].code === code)
                             return i;
                     }
                 }
@@ -846,8 +859,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         $scope.membersRowCollection = [];
 
         var checkDialerLoad = true;
+
+        $scope.communicationTypes = [];
         $scope.$watch('dialer', function (dialer) {
             if (checkDialerLoad && dialer && dialer._id) {
+                if (dialer.communications && angular.isArray(dialer.communications.types))
+                    $scope.communicationTypes = dialer.communications.types;
+
                 _tableState = {
                     "sort": {},
                     "search": {},
@@ -860,6 +878,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 $scope.callServer(_tableState);
             }
         });
+
+        $scope.getCommunicationDisplayName = function (code) {
+            var communicationTypes = $scope.communicationTypes;
+
+            for (var i = 0; i < communicationTypes.length; i++)
+                if (communicationTypes[i].code === code)
+                    return communicationTypes[i].name
+        };
+
         $scope.timeToString = timeToString;
 
         $scope.callServer = function (tableState) {
@@ -1010,7 +1037,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             member: member,
                             dialerId: $scope.dialer._id,
                             setSource: $scope.setSource,
-                            domain: $scope.domain
+                            domain: $scope.domain,
+                            communications: $scope.dialer.communications && $scope.dialer.communications.types
                         };
                     }
                 }
@@ -2202,6 +2230,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
         $scope.setSource = null;
 
+        $scope.communicationTypes = options.communications;
+
+        $scope.displayCommunicationType = function (code, codes) {
+            if (angular.isArray(codes)) {
+                for (var i = 0; i < codes.length; i++)
+                    if (codes[i].code === code)
+                        return codes[i].name
+            }
+        }
 
         $scope.checkCommunicationNumber = function (number) {
             if (!number)

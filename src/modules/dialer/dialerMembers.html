@@ -52,7 +52,7 @@
         </tr>
         <tr>
             <td class="text-center" st-skip-natural="true" st-sort="communications_number" >Number</td>
-            <td class="text-center" st-skip-natural="true" st-sort="communications_priority">Priority</td>
+            <td class="text-center" st-skip-natural="true" st-sort="communications_type">Type</td>
             <td class="text-center" st-skip-natural="true" st-sort="communications_state">State</td>
         </tr>
 
@@ -64,7 +64,7 @@
                 <input st-search="name" class="form-control" placeholder="Start with..." type="search"/>
             </th>
             <th colspan="1">
-                <input class="form-control" type="number"  st-search="priority" min="0" max="99999">
+                <input class="form-control" type="text"  st-search="type">
             </th>
             <!--<th colspan="1" >-->
 
@@ -90,7 +90,11 @@
                 <input st-search="communications_number" class="form-control" placeholder="Start with..." type="text"/>
             </th>
             <th colspan="1">
-                <input class="form-control" type="number"  st-search="communications_priority" min="0" max="99999">
+                <!--<input class="form-control" type="text"  st-search="communications_type">-->
+                <select st-search="communications_type" class="form-control">
+                    <option value="">All</option>
+                    <option ng-repeat="type in communicationTypes" value="{{type.code}}">{{type.name}}</option>
+                </select>
             </th>
 
             <th colspan="1">
@@ -124,12 +128,12 @@
             <td rowspan="{{t.communications.length}}">
                 {{t.name}}
             </td>
-            <td rowspan="{{t.communications.length}}">{{t.priority}}</td>
+            <td rowspan="{{t.communications.length}}">{{t.type}}</td>
             <!--<td rowspan="{{t.communications.length}}">{{t.timezone}}</td>-->
             <td rowspan="{{t.communications.length}}">{{t._endCause}}</td>
             <td rowspan="{{t.communications.length}}">{{t._lock}}</td>
             <td>{{t.communications[0].number}}</td>
-            <td>{{t.communications[0].priority}}</td>
+            <td>{{getCommunicationDisplayName(t.communications[0].type)}}</td>
             <td>{{t.communications[0].state}}</td>
             <td rowspan="{{t.communications.length}}">
                 <div style="width: 63px" ng-if="!t._lock">
@@ -141,7 +145,7 @@
         </tr>
         <tr ng-repeat="item in t.communications" ng-if="$index > 0">
             <td>{{item.number}}</td>
-            <td>{{item.priority}}</td>
+            <td>{{getCommunicationDisplayName(item.type)}}</td>
             <td>{{item.state}}</td>
         </tr>
 

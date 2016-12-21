@@ -81,11 +81,11 @@
                                                     <thead>
                                                         <tr>
                                                             <th style="width:30%">Number</th>
-                                                            <th style="width:5%">Priority</th>
+                                                            <th style="width:20%">Type</th>
                                                             <th style="width:5%">State</th>
                                                             <th style="width:5%">Attempts</th>
-                                                            <th style="width:35%">Description</th>
-                                                            <th style="width:20%">Edit</th>
+                                                            <th style="width:25%">Description</th>
+                                                            <th style="width:15%">Edit</th>
                                                         </tr>
                                                     </thead>
                                                     <tr ng-repeat="communication in member.communications">
@@ -95,8 +95,8 @@
                                                         </span>
                                                         </td>
                                                         <td>
-                                                        <span editable-number="communication.priority" e-name="priority"  e-form="rowform"  e-required>
-                                                            {{ communication.priority}}
+                                                        <span editable-select="communication.type" e-name="type" e-ng-options="type.code as type.name for type in communicationTypes" e-form="rowform" >
+                                                            {{ displayCommunicationType(communication.type, communicationTypes)}}
                                                         </span>
                                                         </td>
                                                         <td>
