@@ -432,8 +432,10 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "number": option.number || "",
                 "priority": angular.isNumber(option.priority) ? option.priority : 0,
                 "type": option.type,
-                "status": 0,
-                "state": 0,
+                "_range": option._range,
+                "_probe": option._probe || 0,
+                "status": angular.isNumber(option.status) ? option.status : 0,
+                "state": angular.isNumber(option.state) ? option.state : 0,
                 "description": option.description || ""
             }
         }
