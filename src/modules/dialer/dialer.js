@@ -611,7 +611,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.editRangeName = function (rowName, key) {
                 $scope._editRangeRowRow = {
                     "name": rowName.name,
-                    "code": rowName.code
+                    "code": rowName.code,
+                    "priority": rowName.priority
                 };
                 $scope._editRangeRowKey = key;
             };
@@ -629,6 +630,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                 oldRow.name = newRow.name;
                 oldRow.code = newRow.code;
+                oldRow.priority = newRow.priority;
                 $scope._editRangeRowRow = {};
                 $scope._editRangeRowKey = null;
             };
@@ -645,8 +647,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     "startMinute": startTime.minute,
                     "endHour": endTime.hour,
                     "endMinute": endTime.minute,
-                    "attempts": row.attempts,
-                    "priority": row.priority
+                    "attempts": row.attempts
                 };
                 $scope._editRangeRowKey = key;
             };
@@ -665,10 +666,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             
             $scope.addRangeType = function (range, communications) {
 
-                if (!range.name) {
-                    //TODO error
-                    return showError('Bad name');
-                }
                 if (!range.code) {
                     //TODO error
                     return showError('Bad code');
@@ -725,7 +722,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                 if (!isFinite(range.startHour) || !isFinite(range.startMinute) ||
                     !isFinite(range.endHour) || !isFinite(range.endMinute) ||
-                    !isFinite(range.attempts) || !isFinite(range.priority))
+                    !isFinite(range.attempts) )
                     return null;
 
                 var startTime = (+range.startHour * 60) + (+range.startMinute);
@@ -745,8 +742,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 return {
                     "startTime": startTime,
                     "endTime": endTime,
-                    "attempts": range.attempts,
-                    "priority": range.priority
+                    "attempts": range.attempts
                 }
             }
 
@@ -1000,6 +996,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         $scope.addMember = function () {
             var modalInstance = $modal.open({
                 animation: true,
+                windowClass: "large-modal-window",
                 templateUrl: '/modules/dialer/memberPage.html',
                 controller: 'MemberDialerPageCtrl',
                 size: 'lg',
@@ -1008,7 +1005,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         return {
                             member: null,
                             dialerId: $scope.dialer._id,
-                            domain: $scope.domain
+                            domain: $scope.domain,
+                            communications: $scope.dialer.communications && $scope.dialer.communications.types
                         };
                     }
                 }
@@ -1029,6 +1027,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             var modalInstance = $modal.open({
                 animation: true,
                 templateUrl: '/modules/dialer/memberPage.html',
+                windowClass: "large-modal-window",
                 controller: 'MemberDialerPageCtrl',
                 size: 'lg',
                 resolve: {

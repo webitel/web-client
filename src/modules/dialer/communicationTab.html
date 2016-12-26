@@ -12,15 +12,16 @@
                     <th>
                         Name
                     </th>
+                    <th>
+                        Priority
+                    </th>
                     <th colspan="3" style="text-align: center">
                         Time range
                     </th>
                     <th>
                         Attempts
                     </th>
-                    <th>
-                        Priority
-                    </th>
+
                     <th>
                     </th>
                 </tr>
@@ -34,9 +35,10 @@
                                name="rangeTypeName"
                                class="form-control"
                                placeholder="Code"
-                               ng-model="rangeType.name"
-                               typeahead="type.name as type.name for type in (dialer.communications.types || []) | filter:{name:$viewValue}" >
+                               ng-model="rangeType.code"
+                               typeahead="type.code as type.code for type in (dialer.communications.types || []) | filter:{code:$viewValue}" >
                     </th>
+
                     <th>
                         <input typeahead-editable="true"
                                autocomplete="off"
@@ -45,9 +47,14 @@
                                type="text"
                                name="rangeTypeName"
                                class="form-control"
-                               placeholder="Type"
-                               ng-model="rangeType.code"
-                               typeahead="type.code as type.code for type in (dialer.communications.types || []) | filter:{code:$viewValue}" >
+                               placeholder="Name"
+                               ng-model="rangeType.name"
+                               typeahead="type.name as type.name for type in (dialer.communications.types || []) | filter:{name:$viewValue}" >
+                    </th>
+
+                    <th style="border-right-style: solid;">
+                        <input class="form-control" type="number"  ng-model="rangeType.priority" style="max-width: 70px; "
+                               min="0" max="999">
                     </th>
                     <th class="text-center">
                         <div class="form-inline">
@@ -80,10 +87,6 @@
                         <input class="form-control" type="number"  ng-model="rangeType.attempts" style="max-width: 70px;"
                                min="0" max="999">
                     </th>
-                    <th>
-                        <input class="form-control" type="number"  ng-model="rangeType.priority" style="max-width: 70px;"
-                               min="0" max="999">
-                    </th>
 
                     <th class="text-center">
                         <button class="btn btn-default" ng-click="addRangeType(rangeType, dialer.communications)">Add</button>
@@ -92,7 +95,7 @@
                 </thead>
 
                 <tbody class="text-center">
-                <tr ng-repeat-start="(key, rowName) in dialer.communications.types" ng-class="{'bg-danger': row._error}">
+                <tr ng-repeat-start="(key, rowName) in dialer.communications.types | orderBy:'priority'" ng-class="{'bg-danger': row._error}">
                     <td  ng-if="rowName.code != _editRangeRowKey" style="text-align: left">
                         <h5>
                             {{rowName.code}}
@@ -102,22 +105,36 @@
                         <input class="form-control" type="text" ng-model="_editRangeRowRow.code">
                     </td>
 
-                    <td  ng-if="rowName.code != _editRangeRowKey" colspan="6" style="text-align: left">
+                    <td  ng-if="rowName.code != _editRangeRowKey" style="text-align: left">
                         <h5>
                             {{rowName.name}}
                         </h5>
                     </td>
-                    <td  ng-if="rowName.code == _editRangeRowKey" colspan="6" style="text-align: left">
+                    <td  ng-if="rowName.code == _editRangeRowKey"  style="text-align: left">
                         <input class="form-control" type="text" ng-model="_editRangeRowRow.name">
                     </td>
 
+                    <td ng-if="rowName.code != _editRangeRowKey">
+                        {{rowName.priority}}
+                    </td>
+
+                    <td ng-if="rowName.code == _editRangeRowKey">
+                        <input class="form-control" type="number"  ng-model="_editRangeRowRow.priority" style="max-width: 70px;"
+                               min="0" max="999">
+                    </td>
+                    <td colspan="4">
+
+                    </td>
                     <td>
                         <button ng-if="_editRangeRowKey == rowName.code" ng-click="saveRangeName(_editRangeRowRow, rowName, dialer.communications.types)" class="btn btn-default"><i class="glyphicon glyphicon-save"></i></button>
                         <button ng-if="_editRangeRowKey != rowName.code" ng-click="editRangeName(rowName, rowName.code)" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
                         <button href="javascript:;" ng-click="removeRangeName(key, dialer.communications.types);" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></button>
                     </td>
                 </tr>
-                <tr ng-repeat-end data-ng-repeat="(key, range) in rowName.ranges">
+                <tr ng-repeat-end data-ng-repeat="(key, range) in rowName.ranges | orderBy:'startTime'">
+                    <td>
+
+                    </td>
                     <td>
 
                     </td>
@@ -162,13 +179,7 @@
                         <input class="form-control" type="number"  ng-model="_editRangeRowRow.attempts" style="max-width: 70px;"
                                min="0" max="999">
                     </td>
-                    <td ng-if="rowName.code + $index != _editRangeRowKey">
-                        {{range.priority}}
-                    </td>
-                    <td ng-if="rowName.code + $index == _editRangeRowKey">
-                        <input class="form-control" type="number"  ng-model="_editRangeRowRow.priority" style="max-width: 70px;"
-                               min="0" max="999">
-                    </td>
+
                     <td>
                         <button ng-if="_editRangeRowKey == rowName.code + $index" ng-click="saveRangeRow(range, rowName.ranges)" class="btn btn-default"><i class="glyphicon glyphicon-save"></i></button>
                         <button ng-if="_editRangeRowKey != rowName.code + $index" ng-click="editRangeRow(range, rowName.code + $index)" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></button>

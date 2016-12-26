@@ -365,6 +365,10 @@ table {
     border-spacing: 0
 }
 
+.large-modal-window .modal-dialog {
+    width: 70%;
+}
+
 td,th {
     padding: 0
 }

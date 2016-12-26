@@ -80,12 +80,13 @@
                                                 <table class="table table-hover table-condensed">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width:30%">Number</th>
+                                                            <th style="width:25%">Number</th>
                                                             <th style="width:20%">Type</th>
+                                                            <th style="width:10%">Priority</th>
+                                                            <th style="width:20%">Description</th>
                                                             <th style="width:5%">State</th>
                                                             <th style="width:5%">Attempts</th>
-                                                            <th style="width:25%">Description</th>
-                                                            <th style="width:15%">Edit</th>
+                                                            <th style="width:15%"></th>
                                                         </tr>
                                                     </thead>
                                                     <tr ng-repeat="communication in member.communications">
@@ -100,16 +101,22 @@
                                                         </span>
                                                         </td>
                                                         <td>
-                                                            {{ communication.state}}
-                                                        </td>
-                                                        <td>
-                                                            {{ communication._probe || 0}}
+                                                            <span editable-number="communication.priority" e-name="priority"  e-form="rowform">
+                                                                {{ communication.priority}}
+                                                            </span>
                                                         </td>
                                                         <td>
                                                             <span editable-text="communication.description" e-name="description"  e-form="rowform">
                                                                 {{ communication.description}}
                                                             </span>
                                                         </td>
+                                                        <td>
+                                                            {{ communication.state}}
+                                                        </td>
+                                                        <td>
+                                                            {{ communication._probe || 0}}
+                                                        </td>
+
                                                         <td style="white-space: nowrap">
                                                             <!-- form -->
                                                             <form editable-form name="rowform"  ng-show="rowform.$visible" onaftersave="checkCommunication($data)" class="form-buttons form-inline" shown="inserted == communication">
