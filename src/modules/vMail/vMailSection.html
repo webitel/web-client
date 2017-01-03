@@ -1,0 +1,126 @@
+<div>
+	<div class="page">
+		<div class="row">
+
+			<div class="col-sm-3">
+				<section class="panel panel-default mail-categories">
+					<div ng-if="canAllList" class="panel-heading">
+
+						<label class="control-label">Account</label>
+						<div class="form-group" ng-class="{ 'has-error' : !state.user.id }">
+							<ui-select require name="calendar"  ng-model="state.user" theme="bootstrap"  title="Choose a user">
+								<ui-select-match placeholder="Select user...">{{$select.selected.name}}</ui-select-match>
+								<ui-select-choices repeat="c in users | filter: $select.search">
+									<span ng-bind-html="c.name | highlight: $select.search"></span>
+								</ui-select-choices>
+							</ui-select>
+						</div>
+					</div>
+
+					<ul class="list-group">
+						<li class="list-group-item" data-ng-class="{'active': menu == ''}" data-ng-click="menu=''">
+							<a href="javascript:;">
+								<i class="fa fa-inbox"></i>Inbox
+								<span class="badge badge-info pull-right">{{state.all}}</span>
+							</a>
+						</li>
+						<li class="list-group-item" data-ng-class="{'active': menu == 'new'}" data-ng-click="menu='new'">
+							<a href="javascript:;">
+								<i class="fa fa-folder-o"></i>New
+								<span class="badge badge-info pull-right">{{state.newCount}}</span>
+							</a>
+						</li>
+						<li class="list-group-item" data-ng-class="{'active': menu == 'read'}" data-ng-click="menu='read'">
+							<a href="javascript:;">
+								<i class="fa fa-folder-open"></i>Read
+								<span class="badge badge-info pull-right">{{state.all - state.newCount}}</span>
+							</a>
+						</li>
+					</ul>
+
+				</section>
+
+
+			</div>
+
+			<div class="col-sm-9">
+				<section class="panel panel-default mail-container">
+					<div class="panel-heading">
+						<strong>
+							<span class="glyphicon glyphicon-th"></span> Inbox
+						</strong>
+					</div>
+
+					<div ng-show="state.isLoading" class="loading text-center" style="margin-left: -48px;">
+                        <span>
+                            <i class="fa fa-spinner fa-5x fa-spin"></i>
+                        </span>
+					</div>
+
+					<div class="row text-center ng-scope" ng-show="!mails || mails.length == 0">
+						<div class="center-block col-md-4" style="float: none;">
+							<h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+							<h2>No results found</h2>
+						</div>
+					</div>
+
+					<div class="mail-options" ng-show="mails.length > 0">
+
+						<div class="btn-group" dropdown="" >
+							<button type="button" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+								Select <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="javascript:;" ng-click="select('all')" >All</a></li>
+								<li><a href="javascript:;" ng-click="select('new')">New</a></li>
+								<li><a href="javascript:;" ng-click="select('read')" >Read</a></li>
+							</ul>
+						</div>
+
+						<span class="space space-md"></span>
+
+						<div ng-if="canUpdate" class="btn-group" dropdown="" ng-show="state.selected.length > 0" tooltip="Mark">
+							<button type="button" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+								<span class="glyphicon glyphicon-tag"></span>
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="javascript:;" ng-click="setState('read', state.selected, state.user)">Read</a></li>
+								<li><a href="javascript:;" ng-click="setState('unread', state.selected, state.user)">Un read</a></li>
+							</ul>
+						</div>
+						<span class="space space-sm"></span>
+
+						<button ng-if="canDelete" class="btn btn-default" ng-show="state.selected.length > 0" ng-click="remove(state.selected, state.user)" tooltip="Remove">
+							<span class="glyphicon glyphicon-trash"></span>
+						</button>
+
+					</div>
+
+					<table class="table table-hover table-responsive" ng-show="mails.length > 0">
+						<tbody>
+						<tr ng-class="{'mail-unread': m.readOn == 0}" data-ng-repeat="m in mails | voiceMailSection:menu | orderBy:'-createdOn'">
+							<td>
+								<label class="ui-checkbox" >
+									<input type="checkbox" ng-model="m.selected" ng-change="selectItem(m.uuid)">
+									<span></span>
+								</label>
+							</td>
+							<td>{{epohTimeToString(m.createdOn)}}</td>
+							<td>{{m.cidNumber}}</td>
+							<td>{{m.cidName}}</td>
+							<td>{{m.messageLen}} sec</td>
+							<td>{{epohTimeToString(m.readOn)}}</td>
+							<!--<td><i class="fa fa-star"></i></td>-->
+						</tr>
+
+						</tbody>
+					</table>
+				</section>
+			</div>
+		</div>
+	</div>
+
+	<!--{{state.selected}}-->
+
+</div>

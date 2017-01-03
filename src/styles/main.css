@@ -11322,3 +11322,125 @@ body {
 .body-wide .introjs-helperLayer,.body-wide .introjs-overlay {
     display: none
 }
+
+
+/*MAIL*/
+
+.mail-categories .list-group .list-group-item {
+    padding: 0
+}
+
+.mail-categories .list-group .list-group-item.active>a {
+    border-left: 3px solid #248AAF;
+    color: #248AAF;
+    background-color: #fafafa
+}
+
+.mail-categories .list-group .list-group-item>a {
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    -webkit-transition: all .25s ease-in-out;
+    -moz-transition: all .25s ease-in-out;
+    transition: all .25s ease-in-out
+}
+
+.mail-categories .list-group .list-group-item>a:hover {
+    border-left: 3px solid #248AAF;
+    color: #248AAF;
+    background-color: #fafafa
+}
+
+.mail-categories .list-group .list-group-item>a>i {
+    font-size: 16px;
+    width: 18px;
+    margin-right: 5px
+}
+
+.mail-categories .list-group .list-group-item>a>i.fa-circle {
+    font-size: 14px
+}
+
+.mail-categories .list-group-item.active,.mail-categories .list-group-item.active:focus,.mail-categories .list-group-item.active:hover {
+    border-color: #eff2f7
+}
+
+.mail-container .mail-options {
+    padding: 12px
+}
+
+.mail-container .table {
+    margin-bottom: 0;
+    border-top: 1px solid #ddd
+}
+
+.mail-container .table tr:hover {
+    cursor: pointer
+}
+
+.mail-container .table tr>td {
+    padding: 12px
+}
+
+.mail-container .table tr>td>.fa-star {
+    color: #ccc
+}
+
+.mail-container .table tr>td>.fa-star.active {
+    color: #E9422E
+}
+
+.mail-container .table label.ui-checkbox {
+    margin-bottom: 0
+}
+
+.mail-container .table .mail-unread {
+    font-weight: 700;
+    color: #333
+}
+
+.mail-container .table .mail-hightlight td {
+    background-color: #FFFAED
+}
+
+.mail-container .mail-header {
+    padding: 15px 0
+}
+
+.mail-container .mail-header h3 {
+    margin-top: 0
+}
+
+.mail-container .mail-info {
+    padding: 10px 15px;
+    border-top: 1px solid #f1f1f1;
+    border-bottom: 1px solid #f1f1f1
+}
+
+.mail-container .mail-info .col-md-4,.mail-container .mail-info .col-md-8 {
+    padding: 0
+}
+
+.mail-container .mail-attachments,.mail-container .mail-content {
+    padding: 15px 0;
+    border-bottom: 1px solid #f1f1f1
+}
+
+.mail-container .mail-attachments .list-attachs img {
+    max-width: 200px;
+    max-height: 200px
+}
+
+.mail-container .mail-actions {
+    margin-top: 10px
+}
+
+.mail-compose .form-group>input,.mail-compose .form-group>input:focus {
+    border: none
+}
+
+.mail-compose .mail-actions {
+    margin-top: 10px
+}
+
+/*END MAIL*/

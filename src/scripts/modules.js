@@ -282,6 +282,16 @@ define(['angular', 'config'], function (angular, config) {
 		iconClass: 'fa fa-play'
 	},
 	{
+		href: "#/vmail",
+		caption: "Voice mail",
+
+		acl: 'vmail',
+		templateUrl: 'modules/vMail/vMailSection.html',
+		controller: 'VoiceMailCtrl',
+		controllerUrl: 'modules/vMail/vMail.js',
+		iconClass: 'fa fa-envelope-o'
+	},
+	{
 		href: "#/acd",
 		caption: "ACD",
 

@@ -429,6 +429,8 @@ define(['angular'], function (angular) {
 
         'book',
         'hook',
+        
+        'vmail',
 
         'cdr',
         'cdr/files',
