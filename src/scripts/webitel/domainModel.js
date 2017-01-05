@@ -130,10 +130,24 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
             webitel.api('DELETE', '/api/v2/domains/' + domainName + '/settings/token/' + uuid, cb);
         }
 
+        function setStateToken(domainName, uuid, state, cb) {
+            if (!domainName)
+                return cb(new Error("Bad domain name"));
+
+            if (!uuid)
+                return cb(new Error("Bad token id"));
+
+            if (typeof state !== 'boolean')
+                return cb(new Error("Bad state"));
+
+            webitel.api('PATCH', '/api/v2/domains/' + domainName + '/settings/token/' + uuid, {state: state}, cb);
+        }
+
         return {
             create: create,
             genToken: genToken,
             removeToken: removeToken,
+            setStateToken: setStateToken,
             usedFileStorage: usedFileStorage,
             item: function (id, cb) {
                 webitel.api('GET', '/api/v2/domains/' + id, function (err, res) {

@@ -144,6 +144,17 @@ define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts
 			});
 
 		}
+		
+		self.setStateApiToken = function (uuid, state) {
+			DomainModel.setStateToken(self.domain.id, uuid, !state, function (err, res) {
+				if (err)
+					return notifi.error(err, 5000);
+
+				for (var i = 0; i < self.tokens.length; i++)
+					if (self.tokens[i].uuid === uuid)
+						return self.tokens[i].enabled = !state;
+			})
+		};
 
 		self.removeApiToken = function (uuid) {
 			$confirm({text: 'Are you sure you want to delete ' + uuid + ' token ?'},  { templateUrl: 'views/confirm.html' })
