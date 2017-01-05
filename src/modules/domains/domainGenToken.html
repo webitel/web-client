@@ -1,0 +1,38 @@
+<div class="modal-header">
+    <h3 class="modal-title">New token</h3>
+</div>
+<div class="modal-body">
+    <form name="domainGenTokenPageForm">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group" ng-class="{ 'has-error' : !expire }">
+
+                    <label for>Expire</label>
+                    <div class="calendar-end-time input-group ui-datepicker">
+                        <input type="text"
+                               class="form-control"
+                               datepicker-popup="dd.MM.yyyy"
+                               ng-model="expire"
+                               is-open="dateOpenedControl"
+                               datepicker-options="dateOptions"
+                        >
+                        <span class="btn input-group-addon" ng-click="toggleOpenExpire($event)"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : domainGenTokenPageForm.role.$invalid }">
+                    <label class="control-label">Role</label>
+                    <select class="form-control" name="role" required ng-model="role"
+                            ng-init="getRoles()">
+                        <option ng-repeat="r in roles" ng-selected="{{r==role}}" value="{{r}}">{{r}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-disabled="domainGenTokenPageForm.$invalid" ng-click="ok()">OK</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+</div>

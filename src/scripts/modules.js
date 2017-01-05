@@ -1,16 +1,16 @@
 define(['angular', 'config'], function (angular, config) {
 	var modules = angular.module('app.modules', []);
 	modules.constant('MODULES', [
-	{
-		href: "#/dashboard",
-		caption: "Dashboard",
-
-		acl:  'account',
-		templateUrl: 'modules/dashboard/dashboard.html',
-		controller: 'DashboardCtrl',
-		controllerUrl: 'modules/dashboard/dashboard.js',
-		iconClass: 'fa fa-dashboard'
-	},
+	// {
+	// 	href: "#/dashboard",
+	// 	caption: "Dashboard",
+    //
+	// 	acl:  'account',
+	// 	templateUrl: 'modules/dashboard/dashboard.html',
+	// 	controller: 'DashboardCtrl',
+	// 	controllerUrl: 'modules/dashboard/dashboard.js',
+	// 	iconClass: 'fa fa-dashboard'
+	// },
 	{
 		href: "#/domains",
 		caption: "Domains",

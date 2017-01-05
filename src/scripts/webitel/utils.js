@@ -276,17 +276,21 @@ define(['angular'], function (angular) {
             data = JSON.stringify(data, undefined, 2);
         }
 
-        var blob = new Blob([data], {type: 'text/json'}),
+        saveDataToDisk(data, filename, 'text/json');
+    }
+    
+    function saveDataToDisk(data, filename, type) {
+        var blob = new Blob([data], {type: type}),
             e = document.createEvent('MouseEvents'),
             a = document.createElement('a');
 
         a.download = filename;
         a.href = window.URL.createObjectURL(blob);
-        a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+        a.dataset.downloadurl = [type, a.download, a.href].join(':');
         e.initMouseEvent('click', true, false, window,
             0, 0, 0, 0, 0, false, false, false, false, 0, null);
         a.dispatchEvent(e);
-    };
+    }
 
 
     function mediaToUri(media) {
@@ -2663,6 +2667,7 @@ define(['angular'], function (angular) {
         resourcesAcl: resourcesAcl,
         switchVar: switchVar,
         saveJsonToPc: saveJsonToPc,
+        saveDataToDisk: saveDataToDisk,
         events: events,
         timeZones: timeZones,
         CSVToArray: CSVToArray,

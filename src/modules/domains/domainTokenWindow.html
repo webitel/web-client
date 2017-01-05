@@ -1,0 +1,34 @@
+<div class="modal-header">
+    <h3 class="modal-title">Token info</h3>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-sm-12">
+            <p>
+                Your token key has been created successfully!
+                <a ng-click="saveToken()" style="cursor: pointer;">Download</a> your key file now or copy it. If you do not download the key file now, you will not be able to retrieve your token key again.
+                To help protect your security, store your token key securely and do not share it.
+            </p>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="form-group">
+                <div class="input-group">
+                    <input disabled type="text" class="form-control ng-animate"  data-ng-model="token" style="">
+
+                 <span class="btn input-group-addon" clipboard text="token" on-copied="onCopied()" on-error="onCopiedFail(err)">
+                    <i class="glyphicon glyphicon-floppy-save"></i>
+                </span>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" type="button" ng-click="close()">Close</button>
+</div>

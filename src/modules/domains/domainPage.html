@@ -31,6 +31,7 @@
                             <small>Used disk space: {{domainUsedStorage}}</small>
                         </blockquote>
                     </div>
+
                 </div>
 
                 <div class="col-sm-6">
@@ -167,6 +168,62 @@
 
                                                 </tbody>
                                             </table>
+                                        </div>
+                                    </div>
+                                </tab>
+
+                                <tab ng-if="domain.id">
+                                    <tab-heading>
+                                        <span>Tokens</span>
+                                    </tab-heading>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <a ng-disabled="disableAction" ng-click="genApiToken()()" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                                <i class="fa fa-plus"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="row text-center ng-scope" ng-if="!tokens || tokens.length == 0">
+                                                <div class="center-block col-md-4" style="float: none;">
+                                                    <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                                                    <h2>No results found</h2>
+                                                </div>
+                                            </div>
+
+                                            <table class="table table-condensed" style="table-layout: fixed; word-wrap: break-word;">
+                                                <thead>
+                                                <tr>
+                                                    <th style="width: 20%">
+                                                        Role
+                                                    </th>
+                                                    <th style="width: 20%">
+                                                        Expire
+                                                    </th>
+                                                    <th style="width: 30%">
+                                                        Created by
+                                                    </th>
+                                                    <th style="width: 20%;">
+                                                        Created on
+                                                    </th>
+
+                                                    <th style="width: 10%;"></th>
+                                                </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                <tr ng-repeat="t in tokens" ng-class="{'bg-danger': t.expire <= Date.now()}">
+                                                    <td>{{t.roleName}}</td>
+                                                    <td>{{timeToDateString(t.expire)}}</td>
+                                                    <td>{{t.createdBy}}</td>
+                                                    <td>{{timeToDateString(t.createdOn)}}</td>
+                                                    <td>
+                                                        <a ng-click="removeApiToken(t.uuid)" class="btn btn-default pull-right"><i class="glyphicon glyphicon-remove"></i></a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+
+
                                         </div>
                                     </div>
                                 </tab>

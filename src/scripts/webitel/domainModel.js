@@ -107,8 +107,33 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
             webitel.api('GET', '/api/v2/domains/' + domainName + '/settings', cb);
         }
 
+        function genToken(domainName, option, cb) {
+            if (!domainName)
+                return cb(new Error("Bad domain name"));
+
+            if (!option)
+                return cb(new Error("Bad options"));
+
+            if (!option.expire || option.expire <= Date.now)
+                return cb(new Error("Bad expire date"));
+
+            webitel.api('POST', '/api/v2/domains/' + domainName + '/settings/token', option, cb);
+        }
+
+        function removeToken(domainName, uuid, cb) {
+            if (!domainName)
+                return cb(new Error("Bad domain name"));
+
+            if (!uuid)
+                return cb(new Error("Bad token id"));
+
+            webitel.api('DELETE', '/api/v2/domains/' + domainName + '/settings/token/' + uuid, cb);
+        }
+
         return {
             create: create,
+            genToken: genToken,
+            removeToken: removeToken,
             usedFileStorage: usedFileStorage,
             item: function (id, cb) {
                 webitel.api('GET', '/api/v2/domains/' + id, function (err, res) {
@@ -116,13 +141,15 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
                         return cb(err);
 
                     var domain = parseDomainObj(res.info, id);
-                    
+                    var tokens = [];
+
                     async.waterfall(
                         [
                             function (cb) {
                                 getDomainSettings(id, function (err, result) {
                                     if (result && result.info) {
-                                        domain.storage = result.info && result.info.storage;
+                                        domain.storage = result.info.storage;
+                                        tokens = result.info.tokens || [];
                                     }
                                     cb();
                                 });
@@ -135,7 +162,7 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
                             }
                         ],
                         function (err) {
-                            return cb(null, domain);
+                            return cb(null, domain, tokens);
                         }
                     );
 
@@ -177,7 +204,7 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
                     requestData.push(key + '=')
                 });
                 angular.forEach(fields, function (item, key) {
-                    if (key === 'email' || key == 'storage') return;
+                    if (key === 'email' || key == 'storage' || key === 'apiToken') return;
 
                     if (key === "default_language") {
                         requestData.push("default_language=" + domain.default_language)

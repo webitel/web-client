@@ -1,59 +1,60 @@
-define(['app', 'scripts/webitel/utils',
-	'scripts/webitel/domainModel'], function (app, utils) {
+define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts/webitel/domainModel'], function (app, utils) {
 
-	 app.controller("DomainsCtrl", ['$scope', '$modal', 'DomainModel', '$routeParams', '$filter',
-	 	'$location', '$route', 'notifi', '$confirm', 'webitel', 'TableSearch', '$timeout',
-	  function ($scope, $modal, DomainModel, $routeParams, $filter, $location, $route, notifi, $confirm, webitel, TableSearch,
-				$timeout) {
+	app.controller("DomainsCtrl", ['$scope', '$modal', 'DomainModel', '$routeParams', '$filter',
+	'$location', '$route', 'notifi', '$confirm', 'webitel', 'TableSearch', '$timeout',
+	function ($scope, $modal, DomainModel, $routeParams, $filter, $location, $route, notifi, $confirm, webitel, TableSearch,
+		$timeout) {
 
 		var self = $scope;
-	  	$scope.displayedCollection = [];
-	  	$scope.remVar = [];
-	  	$scope.isLoading = false;
+		$scope.displayedCollection = [];
+		$scope.remVar = [];
+		$scope.isLoading = false;
+
+		$scope.tokens = [];
 
 		$scope.canDelete = webitel.connection.session.checkResource('domain', 'd');
 		$scope.canUpdate = webitel.connection.session.checkResource('domain', 'u');
 		$scope.canCreate = webitel.connection.session.checkResource('domain', 'c');
 
-	    $scope.changePanel = function (panelStatistic) {
+		$scope.changePanel = function (panelStatistic) {
 			$scope.panelStatistic = !!panelStatistic;
 		};
 
-	  	$scope.query = TableSearch.get('domains');
+		$scope.query = TableSearch.get('domains');
 
-	  	$scope.$watch("query", function (newVal) {
-		  TableSearch.set(newVal, 'domains')
-	  	});
+		$scope.$watch("query", function (newVal) {
+			TableSearch.set(newVal, 'domains')
+		});
 
- 		self.domain = {
- 			"id": null,
- 			"name": "",
- 			"customer_id": "",
- 			"default_language": "",
- 			"variables": []
- 		};
+		self.domain = {
+			"id": null,
+			"name": "",
+			"customer_id": "",
+			"default_language": "",
+			"variables": []
+		};
 
-	    $scope.$watch('domain', function(newValue, oldValue) {
-		  if ($scope.domain._new)
-			  return $scope.isEdit = $scope.isNew = true;
+		$scope.$watch('domain', function(newValue, oldValue) {
+			if ($scope.domain._new)
+				return $scope.isEdit = $scope.isNew = true;
 
-		  return $scope.isEdit = !!oldValue.id;
-	    }, true);
+			return $scope.isEdit = !!oldValue.id;
+		}, true);
 
-		  $scope.cancel = function () {
-			  $scope.domain = angular.copy($scope.oldDomain);
-			  disableEditMode();
-		  };
+		$scope.cancel = function () {
+			$scope.domain = angular.copy($scope.oldDomain);
+			disableEditMode();
+		};
 
-		  function disableEditMode () {
-			  $timeout(function () {
-				  $scope.isEdit = false;
-			  }, 0);
-		  };
+		function disableEditMode () {
+			$timeout(function () {
+				$scope.isEdit = false;
+			}, 0);
+		}
 
- 		self.switchVar = utils.switchVar;
+		self.switchVar = utils.switchVar;
 
- 		self.oldDomain = null;
+		self.oldDomain = null;
 
 		self.reloadData = reloadData;
 		self.closePage = closePage;
@@ -62,6 +63,117 @@ define(['app', 'scripts/webitel/utils',
 		self.edit = edit;
 		self.removeItem = removeItem;
 		self.change = change;
+
+		self.genApiToken = function () {
+
+			var modalInstance = $modal.open({
+				animation: true,
+				templateUrl: '/modules/domains/domainGenToken.html',
+				controller: function (domain, $modalInstance, $scope, AccountModel) {
+					var self = $scope;
+					self.expire = null;
+					self.role = null;
+					self.dateOpenedControl = false;
+					self.roles = [];
+
+					self.getRoles = function () {
+						AccountModel.getRoles(function (err, res) {
+							if (err)
+								return notifi.error(err);
+							self.roles = res;
+						})
+					};
+
+					self.toggleOpenExpire = function ($event) {
+						$event.preventDefault();
+						$event.stopPropagation();
+						return self.dateOpenedControl = !self.dateOpenedControl;
+					};
+
+					self.ok = function () {
+						$modalInstance.close({
+							domain: domain,
+							expire: self.expire,
+							role: self.role
+						});
+					};
+
+					self.cancel = function () {
+						$modalInstance.dismiss('cancel');
+					};
+				},
+				resolve: {
+					domain: function () {
+						return self.domain.id;
+					}
+				}
+			});
+
+			modalInstance.result.then(function (option) {
+				DomainModel.genToken(option.domain, {expire: option.expire.getTime(), role: option.role}, function (err, res) {
+					if (err)
+						return notifi.error(err, 5000);
+
+					var data = res.info && res.info.data;
+					var token = res.info && res.info.token;
+					self.tokens.push(data);
+					showTokenWindow(data, token)
+					
+				})
+			});
+		};
+
+		function showTokenWindow(data, token) {
+			$modal.open({
+				animation: true,
+				templateUrl: '/modules/domains/domainTokenWindow.html',
+				backdrop: 'static',
+				controller: function ($scope, $modalInstance) {
+					var scope = $scope;
+					scope.token = token;
+					scope.onCopied = onCopied;
+					scope.onCopiedFail = onCopiedFail;
+					scope.saveToken = function () {
+						utils.saveDataToDisk(token, data.uuid + '.txt', 'text/plain');
+					};
+
+					scope.close = function () {
+						$modalInstance.dismiss('close');
+					}
+				}
+			});
+
+		}
+
+		self.removeApiToken = function (uuid) {
+			$confirm({text: 'Are you sure you want to delete ' + uuid + ' token ?'},  { templateUrl: 'views/confirm.html' })
+				.then(function() {
+					DomainModel.removeToken(self.domain.id, uuid, function(err, res) {
+
+						if (err)
+							return notifi.error(err, 5000);
+
+						for (var i = 0; i < self.tokens.length; i++) {
+							if (self.tokens[i].uuid == uuid) {
+								self.tokens.splice(i, 1);
+								return
+							}
+						}
+					})
+				});
+		};
+		
+		self.timeToDateString = function (time) {
+			return time && new Date(time).toLocaleDateString()
+		};
+
+		function onCopied() {
+			return notifi.info("Copy", 1000);
+		}
+
+		function onCopiedFail(err) {
+			return notifi.error(err, 5000);
+		}
 
 		function updateOrInsertStorageConfig(storageConfig, storageType, storageNotAllowTypes, cb) {
 			var modalInstance = $modal.open({
@@ -84,11 +196,10 @@ define(['app', 'scripts/webitel/utils',
 			modalInstance.result.then(cb);
 		}
 
-
-	    self.addStorage = function (domain) {
+		self.addStorage = function (domain) {
 			updateOrInsertStorageConfig(null, null, Object.keys((domain.storage && domain.storage.providers) || {}), function (res) {
 				var result = res.data,
-					type = res.type;
+				type = res.type;
 
 				if (!domain.storage) {
 					domain.storage = {
@@ -100,19 +211,19 @@ define(['app', 'scripts/webitel/utils',
 				domain.storage.providers[type] = result;
 			})
 		};
-		  
-	    self.removeStorage = function (key) {
+
+		self.removeStorage = function (key) {
 			if ($scope.domain && $scope.domain.storage) {
 				delete $scope.domain.storage.providers[key];
 				if ($scope.domain.storage.defaultProvider == key)
 					$scope.domain.storage.defaultProvider = '';
 			}
 		};
-		  
+
 		self.updateStorage = function (key, params) {
 			updateOrInsertStorageConfig(angular.copy(params), key, null, function (res) {
 				var result = res.data,
-					type = res.type;
+				type = res.type;
 
 				var domain = $scope.domain;
 				if (!domain.storage) {
@@ -142,25 +253,25 @@ define(['app', 'scripts/webitel/utils',
 
 		function removeItem(domain) {
 			$confirm({text: 'Are you sure you want to delete ' + domain.name + ' ?'},  { templateUrl: 'views/confirm.html' })
-	        .then(function() {
-	          DomainModel.remove(domain.name, function(err, res) {
-	      
-				if (err)
-					return notifi.error(err, 5000);
-				return reloadData();
-	          })
-	        });
-		};
+			.then(function() {
+				DomainModel.remove(domain.name, function(err, res) {
+
+					if (err)
+						return notifi.error(err, 5000);
+					return reloadData();
+				})
+			});
+		}
 
 		function change(field) {
 			if (!~changedFiels.indexOf(field))
 				changedFiels.push(field);
-		};
+		}
 
 		function create() {
 			self.domain = DomainModel.create();
 			self.domain._new = true;
-		};
+		}
 
 		function save() {
 			function cb(err, res) {
@@ -172,8 +283,8 @@ define(['app', 'scripts/webitel/utils',
 				} else {
 					$scope.domain.__time = Date.now();
 					return edit();
-				};
-			};
+				}
+			}
 
 			if (self.domain.id) {
 				var updateValues = utils.diff(self.domain,  self.oldDomain);
@@ -191,12 +302,15 @@ define(['app', 'scripts/webitel/utils',
 		$scope.domainUsedStorage = null;
 		function edit() {
 			var id = $routeParams.id;
-			DomainModel.item(id, function(err, item) {
+			DomainModel.item(id, function(err, item, tokens) {
 				if (err) {
 					return notifi.error(err);
-				};
+				}
+
 				self.oldDomain = angular.copy(item);
 				self.domain = item;
+				self.tokens = tokens;
+
 				disableEditMode();
 				DomainModel.usedFileStorage(id, function (err, res) {
 					if (err || (res && res.size == 0))
@@ -204,11 +318,11 @@ define(['app', 'scripts/webitel/utils',
 					$scope.domainUsedStorage = utils.prettysize(res.size);
 				})
 			});
-		};
+		}
 
 		function closePage() {
-	 		$location.path('/domains');
-	 	};
+			$location.path('/domains');
+		}
 
 
 		function reloadData (hardReset) {
@@ -217,24 +331,24 @@ define(['app', 'scripts/webitel/utils',
 				$scope.isLoading = false;
 				if (err) {
 					return notifi.error(err);
-				};
+				}
 
 				$scope.rowCollection = dataNew;
-	 		}, hardReset);
-		};
+			}, hardReset);
+		}
 
 
-	 	$scope.init = function init () {
-	 		if (!!$route.current.method) {
-	 			return $scope[$route.current.method]();
-	 		}
+		$scope.init = function init () {
+			if (!!$route.current.method) {
+				return $scope[$route.current.method]();
+			}
 
 			if (webitel.connection.session.domain)
 				return $location.path('/domains/' + webitel.connection.session.domain + '/edit');
-	 		reloadData();
-	 	}();
+			reloadData();
+		}();
 
-	 }]);
+	}]);
 
 	app.controller("DomainStatisticCtrl", ["$scope", '$timeout', '$filter', function ($scope, $timeout, $filter) {
 		var timerId = null;
