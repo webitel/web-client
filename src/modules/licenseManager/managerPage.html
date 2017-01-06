@@ -1,65 +1,66 @@
-<div class="page" xmlns="http://www.w3.org/1999/html">
+<div class="page">
 
-    <section class="panel">
+    <form class="panel" name="licenseForm" novalidate role="form">
 
         <div class="panel-body">
 
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="ng-pristine form-validation ng-invalid ng-invalid-required ng-invalid-equal ng-dirty" novalidate role="form">
+                    <div class="form-validation ng-invalid ng-invalid-required ng-invalid-equal ng-dirty" >
 
-                        <div class="form-group" >
-                            <label for>Customer</label>
-                            <input type="text" ng-disabled="!license._new"  class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" required="" data-ng-model="license.cid" style="">
+                        <div class="form-group" ng-class="{'has-error' : licenseForm.customer.$invalid }">
+                            <label class="control-label">Customer</label>
+                            <input type="text" ng-disabled="!license._new" name="customer"  class="form-control" required data-ng-model="license.cid" style="">
+                        </div>
+
+                        <div class="form-group" ng-class="{'has-error' : licenseForm.name.$invalid }">
+                            <label class="control-label">Name</label>
+                            <input type="text" class="form-control" required name="name" data-ng-model="license.name" style="">
                         </div>
 
                         <div class="form-group">
-                            <label for>Name</label>
-                            <input type="text" class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" required="" data-ng-model="license.name" style="">
+                            <label class="control-label">Server Id</label>
+                            <input type="text" class="form-control" data-ng-model="license.sid" style="">
                         </div>
 
                         <div class="form-group">
-                            <label for>Server Id</label>
-                            <input type="text" class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" required="" data-ng-model="license.sid" style="">
-                        </div>
-
-                        <div class="form-group">
-                            <label for>Description</label>
-                            <input type="text" class="form-control ng-animate"  data-ng-model="license.description" style="">
+                            <label class="control-label">Description</label>
+                            <textarea type="text" rows="5" class="form-control"  data-ng-model="license.description" style=""></textarea>
                         </div>
 
                     </div>
                 </div>
 
                 <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for>Users</label>
-                        <input class="form-control" type="number" name="input" ng-model="license.usr"
+                    <div class="form-group" ng-class="{'has-error' : licenseForm.users.$invalid }">
+                        <label class="control-label">Users</label>
+                        <input class="form-control" type="number" name="users" ng-model="license.usr"
                                min="0" required>
                     </div>
 
-
-                    <div class="form-group">
-                        <label for>Expire</label>
+                    <div class="form-group" ng-class="{'has-error' : licenseForm.expire.$invalid || !license.exp }">
+                        <label class="control-label">Expire</label>
                         <div class="input-group ui-datepicker">
                             <input type="text"
                                    class="form-control"
+                                   name="expire"
                                    datepicker-popup="dd.MM.yyyy"
                                    ng-model="license.exp"
                                    is-open="openedDate"
                                    datepicker-options="dateOptions"
-                                   ng-required="true"
+                                   required
                                    show-button-bar="false"
                                     >
                             <span class="btn input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
                         </div>
                     </div>
 
-                    <div class="form-group" ng-if="!license._new">
-                        <label for>Modify</label>
+                    <div class="form-group" ng-if="!license._new" ng-class="{'has-error' : !license.iat }">
+                        <label class="control-label">Modify</label>
                         <div class="input-group ui-datepicker">
                             <input type="text"
                                    class="form-control"
+                                   name="iat"
                                    ng-disabled="true"
                                    datepicker-popup="dd.MM.yyyy"
                                    ng-model="license.iat"
@@ -72,11 +73,12 @@
                         </div>
                     </div>
 
-                    <div class="form-group" ng-if="!license._new">
-                        <label for>Created</label>
+                    <div class="form-group" ng-if="!license._new" ng-class="{'has-error' : !license.nbf }">
+                        <label class="control-label">Created</label>
                         <div class="input-group ui-datepicker">
                             <input type="text"
                                    class="form-control"
+                                   name="nbf"
                                    datepicker-popup="dd.MM.yyyy"
                                    ng-model="license.nbf"
                                    is-open="false"
@@ -89,31 +91,28 @@
                         </div>
                     </div>
 
-                </div>
+                    <div class="form-group" ng-if="!license._new">
+                        <label class="control-label">Token</label>
+                        <div class="input-group">
+                        <input disabled type="text" class="form-control" required="" data-ng-model="license.token" style="">
 
-            </div>
-
-            <div class="row" ng-if="!license._new">
-                <div class="col-sm-12">
-                    <label for>Token</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control ng-animate" required="" data-ng-model="license.token" style="">
-
-                        <span class="btn input-group-addon" clipboard text="license.token" on-copied="onCopied()" on-error="onCopiedFail(err)">
+                        <span  class="btn input-group-addon" clipboard text="license.token" on-copied="onCopied()" on-error="onCopiedFail(err)">
                             <i class="fa fa-files-o"></i>
                         </span>
+                        </div>
                     </div>
 
                 </div>
+
             </div>
 
         </div>
 
         <div class="panel-footer">
-            <button ng-show="isEdit" type="button" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit" ng-disabled="licenseForm.$invalid || !license.exp" type="button" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
-            <div>
-    </section>
+        </div>
+    </form>
 
 </div>

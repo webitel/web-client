@@ -60,6 +60,14 @@ define(['app', 'scripts/webitel/utils', 'modules/licenseManager/managerModel'], 
                     $scope.isEdit = false;
                 }, 0);
             };
+            
+            $scope.getSumUsr = function (collection) {
+                var sum = 0;
+                angular.forEach(collection, function (item) {
+                    sum += item.usr
+                });
+                return sum;
+            };
 
             $scope.removeItem = function (row) {
                 $confirm({text: 'Are you sure you want to delete ' + row.cid + ' ?'},  { templateUrl: 'views/confirm.html' })
