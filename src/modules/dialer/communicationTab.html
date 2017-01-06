@@ -126,9 +126,9 @@
 
                     </td>
                     <td>
-                        <button ng-if="_editRangeRowKey == rowName.code" ng-click="saveRangeName(_editRangeRowRow, rowName, dialer.communications.types)" class="btn btn-default"><i class="glyphicon glyphicon-save"></i></button>
-                        <button ng-if="_editRangeRowKey != rowName.code" ng-click="editRangeName(rowName, rowName.code)" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
-                        <button href="javascript:;" ng-click="removeRangeName(key, dialer.communications.types);" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></button>
+                        <button ng-if="_editRangeRowKey == rowName.code" ng-click="saveRangeName(_editRangeRowRow, rowName, dialer.communications.types)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-save"></i></button>
+                        <button ng-if="_editRangeRowKey != rowName.code" ng-click="editRangeName(rowName, rowName.code)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
+                        <button href="javascript:;" ng-click="removeRangeName(key, dialer.communications.types);" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
                     </td>
                 </tr>
                 <tr ng-repeat-end data-ng-repeat="(key, range) in rowName.ranges | orderBy:'startTime'">
@@ -181,9 +181,9 @@
                     </td>
 
                     <td>
-                        <button ng-if="_editRangeRowKey == rowName.code + $index" ng-click="saveRangeRow(range, rowName.ranges)" class="btn btn-default"><i class="glyphicon glyphicon-save"></i></button>
-                        <button ng-if="_editRangeRowKey != rowName.code + $index" ng-click="editRangeRow(range, rowName.code + $index)" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
-                        <button href="javascript:;" ng-click="removeRange(rowName, range, key);" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></button>
+                        <button ng-if="_editRangeRowKey == rowName.code + $index" ng-click="saveRangeRow(range, rowName.ranges)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-save"></i></button>
+                        <button ng-if="_editRangeRowKey != rowName.code + $index" ng-click="editRangeRow(range, rowName.code + $index)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
+                        <button href="javascript:;" ng-click="removeRange(rowName, range, key);" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
                     </td>
 
                 </tr>

@@ -49,11 +49,13 @@
                     <input  type="text" class="form-control" ng-model="row.value">
                 </td>
                 <td >
-                    <a ng-click="edit(key, row)" ng-show="!editingData[key]" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <div class="pull-right">
+                        <button ng-click="edit(key, row)" ng-show="!editingData[key]" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
 
-                    <a ng-click="save(key, row)" ng-show="editingData[key]" class="btn btn-primary"><i class="glyphicon glyphicon-save"></i></a>
+                        <button ng-click="save(key, row)" ng-show="editingData[key]" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-save"></i></button>
 
-                    <a ng-click="remove(key, row)" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                        <button ng-click="remove(key, row)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
+                    </div>
                 </td>
             </tr>
             </tbody>

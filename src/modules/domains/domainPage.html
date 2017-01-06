@@ -158,10 +158,10 @@
                                                             {{params.accountId || params.accessKeyId || params.client_email}}
                                                         </td>
                                                         <td>
-                                                            <div style="width: 103px" class="pull-right">
+                                                            <div class="pull-right">
                                                                 <i ng-if="key == domain.storage.defaultProvider" class="icon glyphicon glyphicon-asterisk"></i>
-                                                                <a ng-click="removeStorage(key)" ng-if="canUpdate" class="pull-right btn btn-default"><i class="glyphicon glyphicon-remove"></i></a>
-                                                                <a ng-click="updateStorage(key, params)" ng-if="canUpdate" class="pull-right btn btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                                <button ng-click="removeStorage(key)" ng-if="canUpdate" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
+                                                                <button ng-click="updateStorage(key, params)" ng-if="canUpdate" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -199,14 +199,14 @@
                                                     <th style="width: 20%">
                                                         Expire
                                                     </th>
-                                                    <th style="width: 30%">
+                                                    <th style="width: 28%">
                                                         Created by
                                                     </th>
                                                     <th style="width: 20%;">
                                                         Created on
                                                     </th>
 
-                                                    <th style="width: 15%;"></th>
+                                                    <th style="width: 17%;"></th>
                                                 </tr>
                                                 </thead>
 
@@ -216,11 +216,13 @@
                                                     <td>{{timeToDateString(t.expire)}}</td>
                                                     <td>{{t.createdBy}}</td>
                                                     <td>{{timeToDateString(t.createdOn)}}</td>
-                                                    <td class="pull-right">
-                                                        <button ng-show="t.enabled" ng-click="setStateApiToken(t.uuid, t.enabled)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon glyphicon-stop"></i></button>
-                                                        <button ng-show="!t.enabled" ng-click="setStateApiToken(t.uuid, t.enabled)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon glyphicon-play"></i></button>
+                                                    <td >
+                                                        <div class="pull-right">
+                                                            <button ng-show="t.enabled" ng-click="setStateApiToken(t.uuid, t.enabled)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon glyphicon-stop"></i></button>
+                                                            <button ng-show="!t.enabled" ng-click="setStateApiToken(t.uuid, t.enabled)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon glyphicon-play"></i></button>
 
-                                                        <button ng-click="removeApiToken(t.uuid)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
+                                                            <button ng-click="removeApiToken(t.uuid)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                                 </tbody>
