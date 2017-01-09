@@ -79,9 +79,6 @@ define(['app', 'config'], function (app, config) {
             if (!request.name)
                 return cb(new Error("Bad name"));
 
-            if (!request.sid)
-                return cb(new Error("Bad server id"));
-
             if (!request.usr)
                 return cb(new Error("Bad count user"));
 

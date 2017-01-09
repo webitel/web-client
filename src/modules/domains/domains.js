@@ -219,6 +219,9 @@ define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts
 						providers: {}
 					}
 				}
+				if (!domain.storage.providers)
+					domain.storage.providers = {};
+
 				domain.storage.providers[type] = result;
 			})
 		};
@@ -244,6 +247,9 @@ define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts
 						providers: {}
 					}
 				}
+				if (!domain.storage.providers)
+					domain.storage.providers = {};
+
 				domain.storage.providers[type] = result;
 			})
 		};
