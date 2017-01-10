@@ -63,7 +63,14 @@ define(['angular', 'config'], function (angular, config) {
 		templateUrl: 'modules/license/license.html', 
 		controller: 'LicenseCtrl',
 		controllerUrl: 'modules/license/license.js',
-		iconClass: 'fa fa-usd'
+		iconClass: 'fa fa-usd',
+		routes: [{
+			href: '/license/:sid/:cid',
+			templateUrl: 'modules/license/licensePage.html',
+			controller: 'LicenseCtrl',
+			controllerUrl: 'modules/license/license.js',
+			method: "view"
+		}]
 	},
 	{
 		href: "#/server/utils",

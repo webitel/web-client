@@ -15,6 +15,20 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             })
         };
 
+
+        function genLicense(cid, sid, cb) {
+            webitel.api("PATCH", "/api/license/" + cid + '/' + sid, function (err, res, statusCode, e) {
+                if (err) {
+                    if (e && e.errorMsg) {
+                        return cb(new Error(e.errorMsg))
+                    }
+                    return cb(err)
+                }
+                
+                return cb(null, res);
+            })
+        }
+
         function update(token, cb) {
             if (!token || typeof token != 'string' || token.length < 1)
                 return cb(new Error("Bad token"))
@@ -44,6 +58,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         }
 
         return {
+            genLicense: genLicense,
             list: list,
             create: create,
             add: update,

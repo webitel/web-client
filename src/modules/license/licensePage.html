@@ -1,0 +1,88 @@
+<div class="page">
+
+    <form class="panel" name="licenseForm" autocomplete="off">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-6">
+
+                    <div class="form-group" >
+                        <label class="control-label">Customer</label>
+                        <input type="text" disabled  name="customer"  class="form-control" required data-ng-model="license.cid" style="">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Name</label>
+                        <input type="text" disabled class="form-control" required name="name" data-ng-model="license.name" style="">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Server Id</label>
+                        <input type="text" disabled class="form-control" data-ng-model="license.sid" style="">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Description</label>
+                        <textarea disabled type="text" rows="5" class="form-control"  data-ng-model="license.description" style=""></textarea>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-group" >
+                        <label class="control-label">Users</label>
+                        <input class="form-control" disabled type="number" name="users" ng-model="license.usr"
+                               min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Expire</label>
+                        <input type="text"
+                               class="form-control"
+                               value="{{timeToDateString(license.exp)}}"
+                               disabled
+                        >
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="control-label">Modify</label>
+                        <input type="text"
+                               class="form-control"
+                               name="iat"
+                               value="{{timeToDateString(license.iat)}}"
+                               disabled
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Created</label>
+                        <input type="text"
+                               class="form-control"
+                               name="nbf"
+                               value="{{timeToDateString(license.nbf)}}"
+                               disabled
+                        >
+                    </div>
+
+                    <div class="form-group" ng-if="!license._new && license.token">
+                        <label class="control-label">Token</label>
+                        <div class="input-group">
+                            <input disabled type="text" class="form-control" required="" data-ng-model="license.token" style="">
+
+                        <span  class="btn input-group-addon" clipboard text="license.token" on-copied="onCopied()" on-error="onCopiedFail(err)">
+                            <i class="fa fa-files-o"></i>
+                        </span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
+        </div>
+    </form>
+
+
+</div>

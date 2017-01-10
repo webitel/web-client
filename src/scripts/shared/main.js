@@ -12,6 +12,7 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
 				localize.setLanguage('EN');
 				$scope.notifications = webitel.notify.getLink();
 				var modules = [];
+				$scope.main.viewLicense = session.checkResource('license', 'ro') || session.checkResource('license', 'r');
 				angular.forEach(MODULES, function (item) {
 					if ((session.checkResource(item.acl, 'r') || session.checkResource(item.acl, 'ro')) && !item.hide) {
 						if ($location.__initPath.indexOf(item.href.substr(1)) === 0)

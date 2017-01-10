@@ -1,0 +1,19 @@
+<div class="modal-header">
+    <h3>Generate license</h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <div class="form-group" ng-class="{ 'has-error' : !cid }">
+                    <label class="control-label">Customer ID</label>
+                    <input class="form-control" type="text"  ng-model="cid" required>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+</div>

@@ -145,12 +145,7 @@
                     <span data-i18n="Server"></span>
                 </a>
                 <ul class="dropdown-menu with-arrow pull-right">
-                   <li>
-                        <a href="#/license">
-                            <i class="fa fa-usd"></i>
-                            <span data-i18n="License"></span>
-                        </a>
-                    </li>
+
                     <li ng-if="main.licenseManager.enabled">
                         <a href="#/license/manager">
                             <i class="fa fa-barcode"></i>
@@ -189,6 +184,14 @@
                             <!--<span data-i18n="My Profile"></span>-->
                         <!--</a>-->
                     <!--</li>-->
+
+                    <li ng-if="main.viewLicense">
+                        <a href="#/license">
+                            <i class="fa fa-usd"></i>
+                            <span data-i18n="License"></span>
+                        </a>
+                    </li>
+
                     <li>
                         <a href="/docs" target="_blank">
                             <i class="fa fa-book"></i>

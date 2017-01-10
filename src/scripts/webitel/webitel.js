@@ -315,7 +315,7 @@ define(['angular',
 					 });
 				 }
 				 _e.statusCode = statusCode;
-				 cb(_e, {}, statusCode);
+				 cb(_e, {}, statusCode, e);
 			 });
 		 };
 		 var checkedStatus = false;
