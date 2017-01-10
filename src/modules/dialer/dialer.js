@@ -864,7 +864,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                 if (!checkDialerLoad)
                     return;
-                
+
                 _tableState = {
                     "sort": {},
                     "search": {},

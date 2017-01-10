@@ -226,6 +226,34 @@ define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts
 			})
 		};
 
+		self.sendTestEmail = function () {
+			$modal.open({
+				templateUrl : '/modules/domains/sendTestEmail.html',
+				controller : function ($scope, $modalInstance) {
+					$scope.level = "PopupCtrl";
+					$scope.email = "";
+					$scope.ok = function() {
+						$modalInstance.close({email: $scope.email});
+					};
+
+					$scope.cancel = function() {
+						$modalInstance.dismiss('cancel');
+					};
+				},
+				resolve : {
+				}
+			}).result.then(function(result) {
+				DomainModel.sendTestEmail($scope.domain.id, result.email, function (err, res) {
+					if (err)
+						return notifi.error(err);
+
+					var data = (res && res.info) || {};
+					return notifi.info('OK: send to ' + result.email + '\n' + 'Message id: ' + data.messageId + '\n' +
+						'Response: ' + data.response );
+				})
+			});
+		};
+
 		self.removeStorage = function (key) {
 			if ($scope.domain && $scope.domain.storage) {
 				delete $scope.domain.storage.providers[key];

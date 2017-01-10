@@ -142,6 +142,16 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
 
             webitel.api('PATCH', '/api/v2/domains/' + domainName + '/settings/token/' + uuid, {state: state}, cb);
         }
+        
+        function sendTestEmail(domainName, email, cb) {
+            if (!domainName)
+                return cb(new Error("Bad domain"));
+
+            if (!email)
+                return cb(new Error("Bad email"));
+
+            webitel.api('POST', '/api/v2/email/settings/test?domain=' + domainName, {to: email}, cb);
+        }
 
         return {
             create: create,
@@ -149,6 +159,7 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
             removeToken: removeToken,
             setStateToken: setStateToken,
             usedFileStorage: usedFileStorage,
+            sendTestEmail: sendTestEmail,
             item: function (id, cb) {
                 webitel.api('GET', '/api/v2/domains/' + id, function (err, res) {
                     if (err)

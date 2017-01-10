@@ -92,10 +92,21 @@
                                         </div>
 
                                         <div class="col-sm-6">
-                                            <div class="form-group" >
-                                                <label for>Secure</label>
-                                                <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="domain.email.options.secure"><i></i></label>
+                                            <div class="col-sm-6">
+                                                <div class="form-group" >
+                                                    <label for>Secure</label>
+                                                    <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="domain.email.options.secure"><i></i></label>
+                                                </div>
                                             </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group" >
+                                                    <button
+                                                            ng-disabled="!domain.email.options.host || !domain.email.options.port || !domain.email.options.auth.user"
+                                                            data-ng-click="sendTestEmail()" type="button" style="margin-top: 22px;" class="btn btn-w-xs btn-gap-v btn-success">Test</button>
+                                                </div>
+                                            </div>
+
+
                                         </div>
 
                                     </div>
