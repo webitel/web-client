@@ -858,10 +858,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
         $scope.communicationTypes = [];
         $scope.$watch('dialer', function (dialer) {
-            if (checkDialerLoad && dialer && dialer._id) {
+            if (dialer && dialer._id) {
                 if (dialer.communications && angular.isArray(dialer.communications.types))
                     $scope.communicationTypes = dialer.communications.types;
 
+                if (!checkDialerLoad)
+                    return;
+                
                 _tableState = {
                     "sort": {},
                     "search": {},
@@ -873,14 +876,19 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 checkDialerLoad = false;
                 $scope.callServer(_tableState);
             }
-        });
+        }, true);
 
         $scope.getCommunicationDisplayName = function (code) {
+            if (!code)
+                return '-';
+
             var communicationTypes = $scope.communicationTypes;
 
             for (var i = 0; i < communicationTypes.length; i++)
                 if (communicationTypes[i].code === code)
-                    return communicationTypes[i].name
+                    return communicationTypes[i].name;
+
+            return 'error type: ' + code;
         };
 
         $scope.timeToString = timeToString;
@@ -2403,11 +2411,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         $scope.communicationTypes = options.communications;
 
         $scope.displayCommunicationType = function (code, codes) {
+            if (!code) return '-';
+
             if (angular.isArray(codes)) {
                 for (var i = 0; i < codes.length; i++)
                     if (codes[i].code === code)
                         return codes[i].name
             }
+
+            return 'error type: ' + code
         }
 
         $scope.checkCommunicationNumber = function (number) {
