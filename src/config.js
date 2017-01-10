@@ -5,8 +5,7 @@ define(
           "useElastic": true
       },
       "licenseManager": {
-        "enabled": false,
-        "uri": "http://10.10.10.25:1234"
+        "enabled": false
       }
     }
 );

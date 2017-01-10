@@ -23,6 +23,12 @@
                             <input type="text" class="form-control" data-ng-model="license.sid" style="">
                         </div>
 
+                        <div class="form-group" ng-class="{'has-error' : licenseForm.users.$invalid }">
+                            <label class="control-label">Users</label>
+                            <input class="form-control" type="number" name="users" ng-model="license.usr"
+                                   min="0" required>
+                        </div>
+
                         <div class="form-group">
                             <label class="control-label">Description</label>
                             <textarea type="text" rows="5" class="form-control"  data-ng-model="license.description" style=""></textarea>
@@ -32,11 +38,7 @@
                 </div>
 
                 <div class="col-sm-6">
-                    <div class="form-group" ng-class="{'has-error' : licenseForm.users.$invalid }">
-                        <label class="control-label">Users</label>
-                        <input class="form-control" type="number" name="users" ng-model="license.usr"
-                               min="0" required>
-                    </div>
+
 
                     <div class="form-group" ng-class="{'has-error' : licenseForm.expire.$invalid || !license.exp }">
                         <label class="control-label">Expire</label>
@@ -100,6 +102,11 @@
                             <i class="fa fa-files-o"></i>
                         </span>
                         </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Internal description</label>
+                        <textarea type="text" rows="5" class="form-control"  data-ng-model="license.internalDescription" style=""></textarea>
                     </div>
 
                 </div>

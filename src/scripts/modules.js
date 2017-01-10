@@ -54,7 +54,31 @@ define(['angular', 'config'], function (angular, config) {
 		controller: 'StatusCtrl',
 		controllerUrl: 'modules/status/status.js',
 		iconClass: 'fa fa-eye-slash'
-	},		
+	},
+    {
+        href: "#/license/manager",
+        caption: "License manager",
+        disable: !config.licenseManager.enabled,
+        hide: true,
+        acl: 'license',
+        templateUrl: 'modules/licenseManager/manager.html',
+        controller: 'LicenseManagerCtrl',
+        controllerUrl: 'modules/licenseManager/manager.js',
+        iconClass: 'fa fa-usd',
+        routes: [{
+            href: '/license/manager/new',
+            templateUrl: 'modules/licenseManager/managerPage.html',
+            controller: 'LicenseManagerCtrl',
+            controllerUrl: 'modules/licenseManager/manager.js',
+            method: "create"
+        },{
+            href: '/license/manager/:id/edit',
+            templateUrl: 'modules/licenseManager/managerPage.html',
+            controller: 'LicenseManagerCtrl',
+            controllerUrl: 'modules/licenseManager/manager.js',
+            method: "edit"
+        }]
+    },
 	{
 		href: "#/license",
 		caption: "License",
@@ -82,30 +106,7 @@ define(['angular', 'config'], function (angular, config) {
 		controllerUrl: 'modules/server/settings/settings.js',
 		iconClass: 'fa fa-usd'
 	},
-	{
-		href: "#/license/manager",
-		caption: "License manager",
-		disable: !config.licenseManager.enabled,
-		hide: true,
-		acl: 'license',
-		templateUrl: 'modules/licenseManager/manager.html',
-		controller: 'LicenseManagerCtrl',
-		controllerUrl: 'modules/licenseManager/manager.js',
-		iconClass: 'fa fa-usd',
-		routes: [{
-			href: '/license/manager/new',
-			templateUrl: 'modules/licenseManager/managerPage.html',
-			controller: 'LicenseManagerCtrl',
-			controllerUrl: 'modules/licenseManager/manager.js',
-			method: "create"
-		},{
-			href: '/license/manager/:id/edit',
-			templateUrl: 'modules/licenseManager/managerPage.html',
-			controller: 'LicenseManagerCtrl',
-			controllerUrl: 'modules/licenseManager/manager.js',
-			method: "edit"
-		}]
-	},
+
 	{
 		href: "#/accounts",
 		caption: "Directory",

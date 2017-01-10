@@ -5,9 +5,12 @@
 
 define(['app', 'config'], function (app, config) {
     var URI = (config.licenseManager.uri || '').replace(/\/$/, '') + '/api/v1/customers/';
-    app.factory('LicenseManagerModel', ['$http', function ($http) {
+    app.factory('LicenseManagerModel', ['$http', 'webitel', function ($http, webitel) {
 
         function api (method, url, args, cb) {
+            webitel.api(method, url, args, cb);
+
+            return;
             if (typeof args == 'function') {
                 cb = args;
                 args = null;
@@ -36,7 +39,7 @@ define(['app', 'config'], function (app, config) {
 
 
         function list (cb) {
-            api("GET", "", cb)
+            webitel.api("GET", "/api/v2/customers", cb)
         };
 
         function update(license, diff, cb) {
@@ -50,7 +53,7 @@ define(['app', 'config'], function (app, config) {
             if (request.exp)
                 request.exp = setDate(request.exp) / 1000;
 
-            api("PUT", license.cid, request, function (err, res) {
+            webitel.api("PUT", "/api/v2/customers/" + license.cid, request, function (err, res) {
                 if (err)
                     return cb(err);
                 return cb(null, parseResponse(res));
@@ -58,13 +61,14 @@ define(['app', 'config'], function (app, config) {
         };
 
         function remove(id, cb) {
-            api("DELETE", id, cb);
+            webitel.api("DELETE", "/api/v2/customers/" + id, cb);
         };
 
         function add(license, cb) {
             var request = {
                 cid: license.cid,
                 description: license.description,
+                internalDescription: license.internalDescription,
                 exp: license.exp && (setDate(license.exp) / 1000),
                 name: license.name,
                 sid: license.sid,
@@ -82,7 +86,7 @@ define(['app', 'config'], function (app, config) {
             if (!request.usr)
                 return cb(new Error("Bad count user"));
 
-            api("POST", "", request, function (err, res) {
+            webitel.api("POST",  "/api/v2/customers/", request, function (err, res) {
                 if (err)
                     return cb(err);
                 return cb(null, parseResponse(res));
@@ -93,6 +97,7 @@ define(['app', 'config'], function (app, config) {
             return create(
                 res.cid,
                 res.description,
+                res.internalDescription,
                 new Date(res.exp * 1000), // End
                 new Date(res.iat * 1000), // Modify
                 res.name,
@@ -104,17 +109,18 @@ define(['app', 'config'], function (app, config) {
         }
 
         function item(id, cb) {
-            api("GET", id, function (err, res) {
+            webitel.api("GET",  "/api/v2/customers/" + id, function (err, res) {
                 if (err)
                     return cb(err);
                 return cb(null, parseResponse(res))
             })
         }
 
-        function create (cid, description, exp, iat, name, nbf, sid, token, usr) {
+        function create (cid, description, internalDescription, exp, iat, name, nbf, sid, token, usr) {
             return {
                 cid: cid || null,
                 description: description || null,
+                internalDescription: internalDescription || null,
                 exp: exp || 0,
                 iat: iat || 0,
                 name: name || null,
