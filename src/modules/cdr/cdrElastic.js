@@ -178,6 +178,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         filter,
                         queryString,
                         null,
+                        null,
                         cb
                     );
                 }
@@ -536,7 +537,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
 
                 var filter =  getFilter();
 
-                CdrModel.getElasticData(_page, maxNodes, {other: $scope.columnsArr, date: $scope.columnsDateArr}, filter, $scope.queryString, $scope.sort, function (err, res, count) {
+                CdrModel.getElasticData(_page, maxNodes, {other: $scope.columnsArr, date: $scope.columnsDateArr}, filter, $scope.queryString, $scope.sort, null, function (err, res, count) {
                     $scope.isLoading = false;
                     if (err) {
 

@@ -268,7 +268,7 @@ define(["app", "config"], function(app, config) {
                 return cb(null, parseResponse(res));
             });
         };
-        function getElasticData(pageNumber, limit, columns, filter, qs, sort, cb) {
+        function getElasticData(pageNumber, limit, columns, filter, qs, sort, scroll, cb) {
             var body = {};
             body.columns = columns.other; //availableColumns();
             body.columnsDate = columns.date;
@@ -277,6 +277,8 @@ define(["app", "config"], function(app, config) {
             body.query = qs || "*";
             body.filter = filter || {};
             body.sort = sort;
+            if (scroll)
+                body.scroll = scroll;
 
             // TODO BUG!
             body = JSON.stringify(body);
@@ -286,9 +288,24 @@ define(["app", "config"], function(app, config) {
                     err.statusCode = statusCode;
                     return cb(err);
                 };
-                return cb(null, parseElasticResponse(res.hits.hits), res.hits.total);
+                return cb(null, parseElasticResponse(res.hits.hits), res.hits.total, res._scroll_id);
             });
         };
+
+        function scrollElasticData(scroll, scrollId, cb) {
+            var body = {
+                scrollId: scrollId,
+                scroll: scroll
+            };
+
+            webitel.cdr("POST", "/api/v2/cdr/text/scroll", body, function (err, res, statusCode) {
+                if (err) {
+                    err.statusCode = statusCode;
+                    return cb(err);
+                }
+                return cb(null, parseElasticResponse(res.hits.hits), res.hits.total);
+            });
+        }
 
         function parseElasticResponse (res) {
             var data = [];
@@ -368,6 +385,7 @@ define(["app", "config"], function(app, config) {
         return {
             getData: getData,
             getElasticData: getElasticData,
+            scrollElasticData: scrollElasticData,
             getCount: getCount,
             availableColumns: availableColumns,
             mapColumn: getMapColumns,

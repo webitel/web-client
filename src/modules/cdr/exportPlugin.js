@@ -35,6 +35,8 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                         maxNodes = 1000,
                         table = '<table>',
                         _map = [],
+                        scroll = '5m',
+                        scrollId = null,
                         allCount = 0,
                         forceStop = false
                         ;
@@ -44,7 +46,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                     table = setHead(table, mapColumns);
                     table += '<tbody>';
 
-                    function onData(err, res, allCount) {
+                    function onData(err, res) {
                         if (err)
                             return cb(err);
 
@@ -63,11 +65,20 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                                 return cb();
                             }
                         }
-
-                        CdrModel.getElasticData(++_page, maxNodes, columns, filter, qs, sort, onData);
+                        
+                        CdrModel.scrollElasticData(scroll, scrollId, onData)
                     }
 
-                    onData();
+                    // onData();
+
+                    CdrModel.getElasticData(++_page, maxNodes, columns, filter, qs, sort, scroll, function (err, data, total, _scrollId) {
+                        if (err)
+                            return cb(err);
+
+                        scrollId = _scrollId;
+                        allCount = total;
+                        onData(null, data);
+                    });
 
                     function endTable (table) {
                         return table += '</tbody></table>'
@@ -95,6 +106,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                         //return '=TEXT(DATE(1970;1;1)+' + timestamp + '/60/60/24/1000/1000;"yyyy-mm-dd hh:mm:ss")'; //
                         return timestamp ? new Date(timestamp).toLocaleString() : '-';
                     }
+
                     function setHead(table, columns) {
                         table += '<thead><tr>';
                         for (var key in columns) {
@@ -352,10 +364,10 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                             loadFiles(res, function (e) {
                                 if (e)
                                     return cb(e);
-                                CdrModel.getElasticData(++_page, maxNodes, columns, filter, qs, sort, onData);
+                                CdrModel.getElasticData(++_page, maxNodes, columns, filter, qs, sort, null, onData);
                             });
                         } else {
-                            CdrModel.getElasticData(++_page, maxNodes, columns, filter, qs, sort, onData);
+                            CdrModel.getElasticData(++_page, maxNodes, columns, filter, qs, sort, null, onData);
                         }
                     }
 
