@@ -6,4 +6,3 @@ ENV VERSION
 COPY src /webitel/client
 
 VOLUME ["/webitel/client"]
-ENTRYPOINT ["true"]
