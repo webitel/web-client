@@ -1,4 +1,4 @@
-FROM busybox
+FROM scratch
 MAINTAINER Vitaly Kovalyshyn "v.kovalyshyn@webitel.com"
 
 ENV VERSION
