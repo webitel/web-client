@@ -230,7 +230,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
 
         function genString(num) {
             var text = "";
-            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%^&*";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_+";
 
             for( var i=0; i < num; i++ )
                 text += possible.charAt(Math.floor(Math.random() * possible.length));
