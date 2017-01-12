@@ -219,6 +219,25 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.save = save;
         $scope.getRoles = getRoles;
 
+        $scope.viewPassword = false;
+        $scope.genPassword = function (ac) {
+            ac.password = genString(16);
+        };
+
+        $scope.toggleViewPassword = function () {
+            $scope.viewPassword = !$scope.viewPassword;
+        };
+
+        function genString(num) {
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%^&*";
+
+            for( var i=0; i < num; i++ )
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+            return text;
+        }
+
         $scope.removeItem = function (row) {
             $confirm({text: 'Are you sure you want to delete ' + row.id+ ' ?'},  { templateUrl: 'views/confirm.html' })
                 .then(function() {
@@ -233,6 +252,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         function closePage() {
             $location.path('/accounts');
         };
+            
 
         function save(exit) {
             // TODO
