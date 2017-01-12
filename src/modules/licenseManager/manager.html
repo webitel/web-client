@@ -41,14 +41,14 @@
             <thead>
                 <tr ng-show="rowCollection.length > 0">
                     <th st-sort="cid" >Customer</th>
-                    <th st-sort="sid" >SID</th>
+                    <!--<th st-sort="sid" >SID</th>-->
                     <th st-sort="name" >Name</th>
                     <th st-sort="usr" >Usr: {{getSumUsr(displayedCollection)}}</th>
                     <th st-sort="exp" >Expire</th>
                     <th st-sort="iat" >Modify</th>
                     <th st-sort="nbf" >Created</th>
 
-                    <th>Count: {{displayedCollection.length}}</th>
+                    <th style="text-align: end">Count: {{displayedCollection.length}}</th>
                 </tr>
             </thead>
             <tbody ng-show="rowCollection.length > 0">
@@ -58,7 +58,7 @@
                         {{row.cid}}
                     </a>
                 </td>
-                <td >{{row.sid}}</td>
+                <!--<td >{{row.sid}}</td>-->
                 <td >{{row.name}}</td>
                 <td >{{row.usr}}</td>
                 <td >{{convertTime(row.exp)}}</td>
