@@ -28,6 +28,11 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
             "sipProvider": {
                 fields: {
+                    password: {
+                        caption: "Password",
+                        type: "password",
+                        position: 2
+                    },
                     realm: {
                         caption: "Host/IP",
                         position: 0
@@ -35,11 +40,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     username: {
                         caption: "User Name",
                         position: 1
-                    },
-                    password: {
-                        caption: "Password",
-                        position: 2
-                    },
+                    }
                 },
                 params: {
                     "register": "true",

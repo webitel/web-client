@@ -187,6 +187,31 @@ define(['app', 'scripts/webitel/utils', 'modules/gateways/gatewayModel', 'script
             debugger
         }
 
+        $scope.sortPositionFiled = function (obj) {
+            var array = [];
+            if (!obj)
+                return array;
+
+            Object.keys(obj).forEach(function (key) {
+                // inject key into each object so we can refer to it from the template
+                // obj[key].name = key;
+                obj[key].fieldName = key;
+                array.push(obj[key]);
+            });
+            // apply a custom sorting function
+            array.sort(function (a, b) {
+                return a.position - b.position;
+            });
+            return array;
+        };
+
+        $scope.viewPassword = false;
+
+        $scope.toggleViewPassword = function () {
+            $scope.viewPassword = !$scope.viewPassword;
+        };
+
+
         $scope.removeItem = function (row) {
             $confirm({text: 'Are you sure you want to delete ' + row.id + ' ?'},  { templateUrl: 'views/confirm.html' })
                 .then(function() {
@@ -285,5 +310,5 @@ define(['app', 'scripts/webitel/utils', 'modules/gateways/gatewayModel', 'script
             };
         }();
 
-    }])
+    }]);
 });
