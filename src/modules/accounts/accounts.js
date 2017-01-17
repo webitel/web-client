@@ -368,8 +368,237 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
             }, function () {
 
             });
+        };
+            
+        $scope.showImportPage = function () {
+            var modalInstance = $modal.open({
+                animation: true,
+                templateUrl: '/modules/accounts/importCsv.html',
+                controller: AccountImportCtrl,
+                size: 'lg',
+                resolve: {
+                    options: function () {
+                        return {
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (result) {
+
+                if (result.headers)
+                    result.data.shift();
+
+                async.eachSeries(result.data,
+                    function (item, cb) {
+                        createAccountFromTemplate(item, result.template, cb)
+                    },
+                    
+                    function (err) {
+                        if (err)
+                            return notifi.error(err);
+                    }
+                )
+
+            });
+
+            function createAccountFromTemplate(data, template, cb) {
+                var account = AccountModel.create();
+                var updateValues = {};
+                angular.forEach(template, function (val, key) {
+                    if (key === 'variables') {
+                        angular.forEach(template.variables, function (val, key) {
+                            account.variables.push({
+                                key: key,
+                                value: data[template.variables[key]]
+                            })
+                        });
+
+                        if (account.variables && account.variables.length > 0)
+                            updateValues.variables = account.variables;
+
+                    } else {
+                        var _val = data[template[key]];
+                        if (key === "cc-agent") {
+                            if (!isNaN(_val)) {
+                                _val = +_val > 0;
+                            } else {
+                                _val = _val.toLowerCase() === 'true'
+                            }
+                        }
+                        updateValues[key] = account[key] = _val
+                    }
+                });
+
+                if (!account.id)
+                    return cb();
+
+                findAgentInCollection($scope.domain, account.id, function (err, data) {
+                    if (err) {
+                        notifi.error(err, 5000);
+                        return cb()
+                    }
+
+                    if (data) {
+                        angular.extend(account, data);
+                        delete updateValues.id;
+                        AccountModel.update(account, $scope.domain, updateValues, $scope.remVar, function (err, res) {
+                            if (err) {
+                                notifi.error(err, 5000);
+                            } else {
+                                notifi.info('Updated ' + account.id, 5000);
+                            }
+                            return cb()
+                        })
+                    } else {
+                        account.domain = $scope.domain;
+                        AccountModel.add(account, function (err, res) {
+                            if (err) {
+                                notifi.error(err, 5000);
+                            } else {
+                                notifi.info('Created ' + account.id, 5000);
+                            }
+                            return cb()
+                        })
+                    }
+                });
+            }
+
+
+            function findAgentInCollection(domainName, id, cb) {
+                if (!$scope.rowCollection)
+                    return cb(null, null);
+
+                for (var i = 0; i < $scope.rowCollection.length; i++) {
+                    if ($scope.rowCollection[i].id == id) {
+                        return AccountModel.item(domainName, id, cb)
+                    }
+                }
+                return cb(null, null)
+            }
         }
     }]);
+
+    
+    function AccountImportCtrl($scope, $modalInstance, notifi) {
+        $scope.settings = {
+            separator: ';',
+            headers: true,
+            charSet: 'utf-8',
+            data: [],
+            template: {}
+        };
+
+        $scope.previewData = [];
+        $scope.columns = [];
+
+
+        $scope.fileCsvOnLoad = function (data) {
+            var members = utils.CSVToArray(data, $scope.settings.separator);
+            $scope.settings.data = members;
+            $scope.columns = [];
+
+            $scope.previewData = members.slice(0, 5);
+
+            for (var i = 0; i < $scope.previewData[0].length; i++)
+                $scope.columns.push({
+                    id: i,
+                    value: ""
+                });
+        };
+
+        $scope.ok = function () {
+            var template = {
+                id: null,
+                variables: {}
+            };
+
+            angular.forEach($scope.columns, function (item) {
+                var c = $scope.AccountColumns[item.value];
+                if (c) {
+                    if (!c.type) {
+                        template[c.field] = item.id;
+                    } else if (c.type === 'variable' && item.varName) {
+                        template.variables[item.varName] = item.id;
+                    }
+                }
+            });
+            if (template.id === null)
+                return notifi.error(new Error('Bad settings.'), 5000);
+
+            $scope.settings.template = template;
+            $modalInstance.close($scope.settings, 5000);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        $scope.AccountColumns = {
+            "id": {
+                selected: false,
+                name: "Number (Id)",
+                field: 'id'
+            },
+            "password": {
+                selected: false,
+                name: "Password",
+                field: 'password'
+            },
+            "vm-password": {
+                selected: false,
+                name: "Access PIN",
+                field: 'vm-password'
+            },
+            "variable_account_role": {
+                selected: false,
+                name: "Role",
+                field: 'variable_account_role'
+            },
+            "variable_effective_caller_id_name": {
+                selected: false,
+                name: "Name",
+                field: 'variable_effective_caller_id_name'
+            },
+            "variable": {
+                "name": "Variable",
+                "field": "variable",
+                "type": "variable",
+                "value": "",
+                "varName": ""
+            },
+            "cc-agent": {
+                name: "Agent",
+                field: "cc-agent"
+            },
+            "cc-agent-contact": {
+                name: "Call timeout",
+                field: "cc-agent-contact"
+            },
+            "cc-agent-wrap-up-time": {
+                name: "Wrap up time",
+                field: "cc-agent-wrap-up-time"
+            },
+            "cc-agent-max-no-answer": {
+                name: "Max no answer",
+                field: "cc-agent-max-no-answer"
+            },
+            "cc-agent-busy-delay-time": {
+                name: "Busy delay time",
+                field: "cc-agent-busy-delay-time"
+            },
+            "cc-agent-reject-delay-time": {
+                name: "Reject delay time",
+                field: "cc-agent-reject-delay-time"
+            },
+            "cc-agent-no-answer-delay-time": {
+                name: "No answer delay time",
+                field: "cc-agent-no-answer-delay-time"
+            }
+        };
+
+        $scope.CharSet = utils.CharSet;
+    }
     
     app.controller('AccountStatisticCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
         var timerId = null;
