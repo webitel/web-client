@@ -29,16 +29,13 @@
                             <label class="control-label">Password</label>
                             <!--<input autocomplete="off" name="password" ng-required="account._new" type="text" style="-webkit-text-security: disc;" class="form-control" data-ng-model="account.password">-->
                             <div class="input-group">
-                                <input type="text" class="form-control" name="password" ng-required="account._new"  autocomplete="off" data-ng-model="account.password" ng-style="{'-webkit-text-security': viewPassword ? '' : 'disc' }">
+                                <input type="text" class="form-control" name="password" ng-required="account._new"  autocomplete="off" data-ng-model="account.password" >
                                     <span class="input-group-btn">
+                                        <button ng-show="account.password.length > 0" class="btn btn-default" type="button" clipboard text="account.password" on-copied="onCopied()" on-error="onCopiedFail(err)">
+                                            <i class="fa fa-files-o"></i>
+                                        </button>
                                         <button ng-click="genPassword(account)" class="btn btn-default" type="button">
                                             <i class="glyphicon glyphicon-flash"></i>
-                                        </button>
-                                        <button ng-show="!viewPassword" ng-click="toggleViewPassword()" class="btn btn-default" type="button">
-                                            <i class="glyphicon glyphicon-eye-open"></i>
-                                        </button>
-                                        <button ng-show="viewPassword" ng-click="toggleViewPassword()" class="btn btn-default" type="button">
-                                            <i class="glyphicon glyphicon-eye-close"></i>
                                         </button>
                                     </span>
                             </div>

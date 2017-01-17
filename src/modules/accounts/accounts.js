@@ -219,14 +219,20 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.save = save;
         $scope.getRoles = getRoles;
 
-        $scope.viewPassword = false;
         $scope.genPassword = function (ac) {
             ac.password = genString(16);
         };
 
-        $scope.toggleViewPassword = function () {
-            $scope.viewPassword = !$scope.viewPassword;
-        };
+        function onCopied() {
+            return notifi.info("Copy", 1000);
+        }
+
+        function onCopiedFail(err) {
+            return notifi.error(err, 5000);
+        }
+
+        $scope.onCopied = onCopied;
+        $scope.onCopiedFail = onCopiedFail;
 
         function genString(num) {
             var text = "";
