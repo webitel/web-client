@@ -76,20 +76,20 @@
                                                 <input type="text" class="form-control" name="emailUser" data-ng-model="domain.email.options.auth.user">
                                             </div>
                                         </div>
-                                        
+
                                         <div class="col-sm-6">
                                             <div class="form-group" ng-class="{ 'has-error' : domainForm.emailPass.$invalid }">
                                                 <label class="control-label">Password</label>
                                                 <div class="input-group" >
                                                     <input  name="emailPass"  class="form-control" ng-model="domain.email.options.auth.pass" ng-style="{'-webkit-text-security': viewPassword ? '' : 'disc' }">
-                                                <span class="input-group-btn">
-                                                    <button ng-show="!viewPassword" ng-click="toggleViewPassword()" class="btn btn-default" type="button">
-                                                        <i class="glyphicon glyphicon-eye-open"></i>
-                                                    </button>
-                                                    <button ng-show="viewPassword" ng-click="toggleViewPassword()" class="btn btn-default" type="button">
-                                                        <i class="glyphicon glyphicon-eye-close"></i>
-                                                    </button>
-                                                </span>
+                                                    <span class="input-group-btn">
+                                                        <button ng-show="!viewPassword" ng-click="toggleViewPassword()" class="btn btn-default" type="button">
+                                                            <i class="glyphicon glyphicon-eye-open"></i>
+                                                        </button>
+                                                        <button ng-show="viewPassword" ng-click="toggleViewPassword()" class="btn btn-default" type="button">
+                                                            <i class="glyphicon glyphicon-eye-close"></i>
+                                                        </button>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
