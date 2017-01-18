@@ -54,6 +54,11 @@ define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts
 
 		self.switchVar = utils.switchVar;
 
+		self.viewPassword = false;
+		self.toggleViewPassword = function () {
+			self.viewPassword = !self.viewPassword;
+		};
+
 		self.oldDomain = null;
 
 		self.reloadData = reloadData;
