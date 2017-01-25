@@ -32,6 +32,7 @@ define(['app', 'scripts/webitel/utils', 'modules/gateways/gatewayModel', 'script
             "caller-id-in-from",
             "extension",
             "proxy",
+            "outbound-proxy",
             "expire-seconds",
             "retry-seconds",
             "from-user",
@@ -39,7 +40,7 @@ define(['app', 'scripts/webitel/utils', 'modules/gateways/gatewayModel', 'script
             "register-proxy",
             "contact-params",
             "register-transport"
-        ]
+        ];
 
         var changeDomainEvent = $rootScope.$on('webitel:changeDomain', function (e, domainName) {
             $scope.domain = domainName;

@@ -431,7 +431,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 fileModel.getJsonObject(id, function(err, res) {
 
 
-                    var jsonData = JSON.stringify(res);
+                    var jsonData = JSON.stringify(res, null, '\t');
 
                     var jsonWindow = window.open("", id, "width=800, height=600");
 
@@ -454,7 +454,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                             var textFileAsBlob = new Blob([jsonData], {type: 'application/json'}),
                                 downloadLink = document.createElement("a");
 
-                            downloadLink.download = $scope.currentRowId.slice(2) + ".json";
+                            downloadLink.download = id + ".json";
                             downloadLink.innerHTML = "Download File";
 
                             if (window.webkitURL !== null) {
