@@ -375,6 +375,9 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     "maxTryCount" : angular.isNumber(option.parameters && option.parameters.maxTryCount) ? option.parameters.maxTryCount : 5,
                     "intervalTryCount" : angular.isNumber(option.parameters && option.parameters.intervalTryCount) ? option.parameters.intervalTryCount : 60,
                     "wrapUpTime" : angular.isNumber(option.parameters && option.parameters.wrapUpTime) ? option.parameters.wrapUpTime : 60,
+                    "predictAdjust" : angular.isNumber(option.parameters && option.parameters.predictAdjust) ? option.parameters.predictAdjust : 150,
+                    "targetPredictiveSilentCalls" : angular.isNumber(option.parameters && option.parameters.targetPredictiveSilentCalls) ? option.parameters.targetPredictiveSilentCalls : 2.5,
+                    "maxPredictiveSilentCalls" : angular.isNumber(option.parameters && option.parameters.maxPredictiveSilentCalls) ? option.parameters.maxPredictiveSilentCalls : 3,
                     'waitingForResultStatus': option.parameters && option.parameters.waitingForResultStatus,
                     'recordSession': (option.parameters && option.parameters.recordSession) === undefined ? true : option.parameters.recordSession
                 },
@@ -403,6 +406,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "causesOK": causesOK,
                 "causesMinus": causesMinus,
                 "agentStrategy": option.agentStrategy,
+                "numberStrategy": option.numberStrategy,
                 "variables" : {},
                 "skills" : skills,
                 "resources" : angular.isArray(option.resources) ? option.resources : [],

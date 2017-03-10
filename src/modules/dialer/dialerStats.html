@@ -1,19 +1,239 @@
-<div class="row">
-    <div class="col-sm-12">
-        <a ng-click="reload()"style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
-            <i class="glyphicon glyphicon-refresh"></i>
-        </a>
-    </div>
+<div class="page page-dashboard">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <a  href="#/dialer/{{id}}/edit?domain={{domain}}" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                <i class="fa fa-reply"></i>
+            </a>
+
+            <a ng-click="reload()"style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                <i class="glyphicon glyphicon-refresh"></i>
+            </a>
+
+        </div>
 
 
-    <div class="col-sm-12">
-        <div class="panel panel-default">
-            <!--<div class="panel-heading">-->
-                <!--<h3 class="panel-title">End cause</h3>-->
-            <!--</div>-->
-            <div class="panel-body">
-                <nvd3 options="causeCart.options" data="causeCart.data"></nvd3>
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ui-tab-container ui-tab-dark">
+                        <div class="ui-tab">
+                            <tabset>
+                                <tab select="onSelectTabGeneral()">
+                                    <tab-heading>
+                                        <span>General</span>
+                                    </tab-heading>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top" data-ng-class="{'bg-success': processState, 'bg-info': !processState}" style="padding: 10px 20px;">
+                                                    <i class="fa fa-calendar text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{lastProcessOnDate}}</p>
+                                                    <p class="size-h4">{{lastProcessOnTime}}</p>
+                                                    <p class="text-muted">{{processState ? 'Start' : 'End'}} time</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-info" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-info-sign text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{dialerStateStr}}</p>
+                                                    <br>
+                                                    <p class="text-muted">{{dialer._cause}}</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-earphone text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h1">{{activeCalls}}</p>
+                                                    <p class="text-muted">Active</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-asterisk text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h1">{{connectRate.toFixed(1)}}</p>
+                                                    <p class="text-muted">Connect rate</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-transfer text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h1">{{attempts}}</p>
+                                                    <p class="text-muted">Attempts</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-danger" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-remove text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h1">{{abandoned.toFixed(1)}}%</p>
+                                                    <p class="text-muted">Abandoned</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-info" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-user text-large"></i>
+                                                </div>
+                                                <div class="list-justified-container" style="padding: 0">
+                                                    <ul class="list-justified text-center">
+                                                        <li>
+                                                            <p class="size-h3"> {{sumAgentsStates['LOGGED-OUT']}}</p>
+                                                            <p class="text-muted">LOGGED-OUT</p>
+                                                        </li>
+                                                        <li>
+                                                            <p class="size-h3">{{sumAgentsStates['WAITING']}}</p>
+                                                            <p class="text-muted">WAITING</p>
+                                                        </li>
+                                                        <li>
+                                                            <p class="size-h3">{{sumAgentsStates['CALL']}}</p>
+                                                            <p class="text-muted">CALL</p>
+                                                        </li>
+                                                        <li>
+                                                            <p class="size-h3">{{sumAgentsStates['ON-BREAK']}}</p>
+                                                            <p class="text-muted">ON-BREAK</p>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </section>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <nvd3 options="causeCartComplete.options" data="causeCartComplete.data"></nvd3>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <nvd3 options="amdState.options" data="amdState.data"></nvd3>
+                                                </div>
+                                                <!--amdState-->
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <nvd3 options="causeCart.options" data="causeCart.data"></nvd3>
+                                        </div>
+                                    </div>
+                                </tab>
+                                <tab>
+                                    <tab-heading>
+                                        <span>Agents</span>
+                                    </tab-heading>
+                                    <div class="row">
+                                        <div class="col-sm-2" data-ng-repeat="ag in agents">
+                                            <section class="agent-container agent-container-border {{ag.stateName}}">
+                                                <header>
+                                                    <a href="#/accounts/{{ag.number}}/edit?domain={{domain}}">{{ag.number}}</a>
+                                                </header>
+                                                <div class="agent-body">
+                                                    <div id="{{ag.id}}" class="agent-state {{ag.stateName}}">
+                                                        <strong>{{ag.stateName}}</strong>
+                                                    </div>
+                                                    <ul>
+                                                        <li>
+                                                            Call count: <strong>{{ag.dialer.callCount}}</strong>
+                                                        </li>
+                                                        <li tooltip-popup-delay="800" tooltip="Average Talk Time (ATT) is, quite simply, the amount of time an agent spends talking to customers.">
+                                                            ATT: <strong>{{( (ag.dialer.callTimeSec / ag.dialer.callCount) || 0).toFixed(2)}}</strong>
+                                                        </li>
+                                                        <li tooltip-popup-delay="800" tooltip="Average Speed of Answer (ASA) is a metric calculating the amount of time it takes to answer a typical call once it has been routed to the contact centre.">
+                                                            ASA: <strong>{{( (ag.dialer.connectedTimeSec / ag.dialer.callCount) || 0).toFixed(2)}}</strong>
+                                                        </li>
+                                                        <li>
+                                                            Last Offered Call: <strong>{{ag.dialer._lastBridgeCallTimeStart}}</strong>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                    </div>
+                                </tab>
+                                <tab>
+                                    <tab-heading>
+                                        <span>Resources</span>
+                                    </tab-heading>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Route</th>
+                                                    <th>Name</th>
+                                                    <th>Dial string</th>
+                                                    <th style="width: 20px">Enabled</th>
+                                                    <th>Limit / Used</th>
+                                                    <th>Stats</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat-start="res in resources" class="bg-gray">
+                                                        <td></td>
+                                                        <td colspan="6">{{res.dialedNumber}}</td>
+                                                    </tr>
+                                                    <tr ng-repeat-end ng-repeat="(key, des) in res.destinations">
+                                                        <td >
+                                                            {{key}}
+                                                        </td>
+                                                        <td></td>
+                                                        <td>
+                                                            {{des.gwName || des.gwProto}}
+                                                        </td>
+                                                        <td>
+                                                            {{des.dialString}}
+                                                        </td>
+                                                        <td>
+                                                            <span ng-show="!des.enabled" class="color-danger"><i class="fa fa-level-down"></i></span>
+                                                            <span ng-show="des.enabled" class="color-success"><i class="fa fa-level-up"></i></span>
+                                                        </td>
+                                                        <td>
+                                                            {{des.limit}} / {{des.usedCount || 0}}
+                                                        </td>
+                                                        <td style="width: 240px;">
+                                                            <div class="progressbar-xs no-margin progress ">
+                                                                <div class="progress-bar {{des.class}}" role="progressbar" style="width: {{des.usedPercent || 0}}%;" ></div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </tab>
+                            </tabset>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </div>

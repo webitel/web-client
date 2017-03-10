@@ -346,6 +346,16 @@ define(['angular', 'config'], function (angular, config) {
 		}]
 	},
 	{
+		href: "#/dialer/:id/stats",
+		caption: "Dialer stats",
+		hide: true,
+		acl: 'dialer',
+		templateUrl: 'modules/dialer/dialerStats.html',
+		controller: 'StatsDialerCtrl',
+		controllerUrl: 'modules/dialer/dialer.js',
+		iconClass: 'fa fa-eject'
+	},
+	{
 		href: "#/hooks",
 		caption: "Hooks",
 

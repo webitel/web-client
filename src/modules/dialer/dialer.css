@@ -1,0 +1,89 @@
+.agent-container .agent-state.CALL {
+    background-color: #E9422E;
+    border-bottom: 3px solid #d82b17
+}
+
+.agent-container .agent-state.WAITING {
+    background-color: #3CBC8D;
+    border-bottom: 3px solid #329d76
+}
+
+.agent-container .agent-state.ON-BREAK {
+    background-color: #FAC552;
+    border-bottom: 3px solid #f9b82a
+}
+.agent-container .agent-state.LOGGED-OUT {
+    background-color: #242633;
+    border-bottom: 3px solid #13141b
+}
+
+
+.agent-container {
+    margin-bottom: 10px;
+    text-align: center;
+    background-color: #fcfcfc;
+    color: #767676;
+    border-radius: 6px;
+}
+
+.agent-container.agent-container-border.CALL {
+    box-shadow: 0 0 4px #E9422E
+}
+.agent-container.agent-container-border.WAITING {
+    box-shadow: 0 0 4px #3CBC8D
+}
+.agent-container.agent-container-border.ON-BREAK {
+    box-shadow: 0 0 4px #FAC552
+}
+.agent-container.agent-container-border.LOGGED-OUT {
+    box-shadow: 0 0 4px #242633
+}
+
+.agent-container>header {
+    display: block;
+    margin: 0;
+    padding: 10px 0px;
+    font-size: 22px;
+    line-height: 1;
+    font-weight: 700;
+    text-transform: uppercase
+}
+
+.agent-container .agent-state {
+    padding: 8px;
+    font-size: 12px;
+    color: #fff;
+    background-color: #ccc;
+    border-bottom: 3px solid #b8b8b8
+}
+
+.agent-container .agent-body>ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px
+}
+
+.agent-container .agent-body>ul>li {
+    padding: 7px;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    background-color: #f9f9f9
+}
+
+.agent-container .agent-body>ul>li:nth-child(odd) {
+    background-color: #eee
+}
+
+.agent-container .agent-body>ul>li strong {
+    color: #242633
+}
+
+.agent-container>footer {
+    padding: 30px 40px
+}
+
+.agent-container>footer>a {
+    display: block;
+    margin: 0;
+    font-size: 16px
+}

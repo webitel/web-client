@@ -82,7 +82,7 @@
             <th colspan="1">
                 <select st-search="_lock" class="form-control">
                     <option value="">All</option>
-                    <option value="true">Active</option>
+                    <option value="lock id">Active</option>
                     <option value="false">No active</option>
                 </select>
             </th>
@@ -136,7 +136,7 @@
             <td>{{getCommunicationDisplayName(t.communications[0].type)}}</td>
             <td>{{t.communications[0].state}}</td>
             <td rowspan="{{t.communications.length}}">
-                <div style="width: 63px" ng-if="!t._lock">
+                <div style="width: 63px" ng-if="true || !t._lock">
                     <a ng-click="editMember(t, $index)" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
 
                     <a href="javascript:;" ng-click="removeMember(t, $index)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>

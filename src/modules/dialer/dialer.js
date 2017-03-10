@@ -1,6 +1,6 @@
 define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/cdr/libs/fileSaver', 'moment', 'modules/gateways/gatewayModel',
     'modules/dialer/dialerModel', 'modules/calendar/calendarModel',  'modules/cdr/libs/json-view/jquery.jsonview',
-    'modules/cdr/fileModel', 'modules/accounts/accountModel', 'modules/media/mediaModel'], function (app, async, utils, aceEditor, callflowUtils, fileSaver, moment) {
+    'modules/cdr/fileModel', 'modules/accounts/accountModel', 'modules/media/mediaModel', 'modules/dialer/agentModel', 'css!modules/dialer/dialer.css'], function (app, async, utils, aceEditor, callflowUtils, fileSaver, moment) {
 
 
     function moveUp (arr, value, by) {
@@ -464,6 +464,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     val: "longest_idle_agent"
                 }
             ];
+            $scope.numberStrategy = [
+                {
+                    name: "Top-down",
+                    val: "top-down"
+                },
+                {
+                    name: "By priority",
+                    val: "by-priority"
+                }
+            ];
 
             $scope.addTiers = function (all) {
                 var collection = all ? $scope.agents : $scope.selAgents;
@@ -611,8 +621,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.editRangeName = function (rowName, key) {
                 $scope._editRangeRowRow = {
                     "name": rowName.name,
-                    "code": rowName.code,
-                    "priority": rowName.priority
+                    "code": rowName.code
                 };
                 $scope._editRangeRowKey = key;
             };
@@ -630,7 +639,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                 oldRow.name = newRow.name;
                 oldRow.code = newRow.code;
-                oldRow.priority = newRow.priority;
                 $scope._editRangeRowRow = {};
                 $scope._editRangeRowKey = null;
             };
@@ -647,7 +655,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     "startMinute": startTime.minute,
                     "endHour": endTime.hour,
                     "endMinute": endTime.minute,
-                    "attempts": row.attempts
+                    "attempts": row.attempts,
+                    "priority": row.priority || 0
                 };
                 $scope._editRangeRowKey = key;
             };
@@ -742,7 +751,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 return {
                     "startTime": startTime,
                     "endTime": endTime,
-                    "attempts": range.attempts
+                    "attempts": range.attempts,
+                    "priority": range.priority
                 }
             }
 
@@ -2524,8 +2534,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         };
     }]);
     
-    app.controller('StatsDialerCtrl', ['$scope', 'DialerModel', 'notifi',
-        function ($scope, DialerModel, notifi) {
+    app.controller('StatsDialerCtrl', ['$scope', 'DialerModel', 'AgentModel', 'notifi', 'webitel', '$routeParams', '$interval', '$timeout',
+        function ($scope, DialerModel, AgentModel, notifi, webitel, $routeParams, $interval, $timeout) {
+
             var aggCause = [
                 {
                     $group: {
@@ -2537,30 +2548,283 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
             ];
 
-            var aggCountLock = [
-                {$match: {"_lock": {$ne: null}}},
-                { '$group': { _id: 'active', count: { '$sum': 1 } } }
+            var dialerStates = [
+                "Idle",
+                "Work",
+                "Sleep",
+                "Process stop",
+                "End"
             ];
 
-            var domain = '';
-            var id = '';
-            var maxCall = 0;
+            $scope.domain = $routeParams.domain;
+            $scope.id = $routeParams.id;
 
-            $scope.reload = reloadCause;
+            var timerId = null;
+            
+            function reload() {
+                DialerModel.item($scope.id, $scope.domain, function(err, item) {
+                    if (err)
+                        return notifi.error(err, 5000);
 
-            $scope.$watch('dialer', function (dialer) {
-                if (dialer && dialer._id) {
-                    domain = dialer.domain;
-                    maxCall = dialer.parameters.limit;
-                    id= dialer._id;
+                    $scope.dialer = item;
+                    $scope.dialerStateStr = dialerStates[item.state];
                     reloadCause();
+                    setStats($scope.dialer.stats);
+                    loadResources($scope.dialer.resources, $scope.dialer.stats);
+                    loadAgents($scope.dialer.domain, $scope.dialer.agents, $scope.dialer.skills);
+
+                    if (!timerId)
+                        timerId = $interval(reload, 10000);
+                });
+            }
+
+            reload();
+
+            $scope.onSelectTabGeneral = function () {
+                $timeout(function(){
+                    window.dispatchEvent(new Event('resize'));
+                }, 0);
+            };
+
+            $scope.reload = reload;
+            $scope.resources = [];
+            function loadResources(resources, stats) {
+                var usedResources = (stats && stats.resource) || {};
+                if (angular.isArray(resources)) {
+                    for (var i = 0; i < resources.length; i++) {
+                        if (angular.isArray(resources[i].destinations)) {
+                            var destinations = resources[i].destinations;
+                            for (var j = 0; j < destinations.length; j++) {
+                                if (usedResources.hasOwnProperty(destinations[j].uuid)) {
+                                    destinations[j].usedPercent = (usedResources[destinations[j].uuid] * 100) / destinations[j].limit;
+                                    destinations[j].usedCount = usedResources[destinations[j].uuid];
+
+                                    if (destinations[j].usedPercent < 50) {
+                                        destinations[j].class = 'progress-bar-success'
+                                    } else if (destinations[j].usedPercent < 75) {
+                                        destinations[j].class = 'progress-bar-warning'
+                                    } else {
+                                        destinations[j].class = 'progress-bar-danger'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $scope.resources = resources;
                 }
+            }
+
+            $scope.sumAgentsStates = {
+                "LOGGED-OUT": 0,
+                "WAITING": 0,
+                "CALL": 0,
+                "ON-BREAK": 0
+            };
+
+            function loadAgents(domain, agents, skills) {
+                var $or = [];
+
+                function joinDomain (agent) {
+                    return agent + '@' + domain
+                }
+
+                if (angular.isArray(agents))
+                    $or.push({'agentId': {$in: agents.map(joinDomain)}});
+
+                if (angular.isArray(skills))
+                    $or.push({skills: {$in: skills}});
+
+                AgentModel.list(domain, {$or: $or}, {}, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    $scope.sumAgentsStates = {
+                        "LOGGED-OUT": 0,
+                        "WAITING": 0,
+                        "CALL": 0,
+                        "ON-BREAK": 0
+                    };
+
+                    $scope.agents = res.map(function (item) {
+                        var stateName = getAgentSummaryState(item.state, item.status);
+                        $scope.sumAgentsStates[stateName]++;
+                        return {
+                            id: item.agentId,
+                            number: item.agentId.split('@')[0],
+                            state: item.state,
+                            status: item.status,
+                            stateName: stateName,
+                            class: getAgentClass(item.state, item.status),
+                            dialer: getAgentDilerInfo($scope.id, item)
+                        }
+                    });
+                })
+            }
+
+            function getAgentDilerInfo(dialerId, agent) {
+                if (angular.isArray(agent.dialer)) {
+                    for (var i = 0; i < agent.dialer.length; i++) {
+                        if (agent.dialer[i]._id === dialerId) {
+                            if (agent.dialer[i].lastBridgeCallTimeStart)
+                                agent.dialer[i]._lastBridgeCallTimeStart = new Date(agent.dialer[i].lastBridgeCallTimeStart).toLocaleTimeString();
+                            return agent.dialer[i];
+                        }
+                    }
+                }
+                return {}
+            }
+
+            function getAgentClass(state, status) {
+                if (state === 'Waiting' && (status === 'Available' || status === 'Available (On Demand)')) {
+                    return 'bg-success'
+                } else if (status === 'Logged Out') {
+                    return 'bg-gray'
+                } else if (state === 'Idle' || state === 'Reserved') {
+                    return 'bg-danger'
+                } else {
+                    return 'bg-warning'
+                }
+            };;
+            $scope.getAgentClass = getAgentClass;
+
+            function getAgentSummaryState (state, status) {
+                if (state === 'Waiting' && (status === 'Available' || status === 'Available (On Demand)')) {
+                    return 'WAITING'
+                } else if (status === 'Logged Out') {
+                    return 'LOGGED-OUT'
+                } else if (state === 'Idle' || state === 'Reserved') {
+                    return 'CALL'
+                } else {
+                    return 'ON-BREAK'
+                }
+            }
+
+            function fnOnUserStatusChange(e) {
+                var agent = findAgent(e['CC-Agent']);
+                if (agent) {
+                    agent.status = e['CC-Agent-Status'];
+                    agent.stateName = getAgentSummaryState(agent.state, agent.status);
+
+                    //agent.class = getAgentClass(agent.state, agent.status);
+                }
+            }
+
+            function fnOnUserStateChange(e) {
+                var agent = findAgent(e['CC-Agent']);
+                if (agent) {
+                    agent.state = e['CC-Agent-State'];
+                    agent.stateName = getAgentSummaryState(agent.state, agent.status);
+
+                   // $('#agent-' + agent.id).
+                   // agent.class = getAgentClass(agent.state, agent.status);
+                }
+            }
+
+
+            
+            function findAgent(id) {
+                var agents = $scope.agents;
+                if (angular.isArray(agents)) {
+                    for (var i = 0; i < agents.length; i++ ) {
+                        if (agents[i].id === id) {
+                            return agents[i];
+                        }
+                    }
+                }
+            }
+
+            var interval = setInterval(function () {
+                $scope.$apply();
+            }, 500);
+
+            $scope.$on('$destroy', function () {
+                if (timerId) {
+                    console.error('DESTROY TIMER');
+                    $interval.cancel(timerId);
+                }
+
+                clearInterval(interval);
+                unSubscribeGridEvents();
             });
 
+            webitel.connection.instance.onServerEvent("CC::AGENT-STATE-CHANGE", fnOnUserStateChange,  {all: true});
+            webitel.connection.instance.onServerEvent("CC::AGENT-STATUS-CHANGE", fnOnUserStatusChange,  {all: true});
+            
+            function unSubscribeGridEvents() {
+                webitel.connection.instance.unServerEvent('CC::AGENT-STATE-CHANGE', {all: true}, fnOnUserStateChange);
+                webitel.connection.instance.unServerEvent('CC::AGENT-STATUS-CHANGE', {all: true}, fnOnUserStatusChange);
+            }
 
+            function setStats(stats) {
+
+                $scope.activeCalls = (stats && stats.active) || 0;
+                $scope.connectRate = ((stats && stats.callCount) / (stats && stats.bridgedCall)) || 0;
+                $scope.abandoned = ((stats.predictAbandoned * 100) / stats.callCount) || 0;
+                $scope.attempts = (stats.callCount || 0);
+                $scope.lastProcessOnDate = null;
+                $scope.lastProcessOnTime = null;
+                $scope.processState = null;
+                if (stats.readyOn) {
+                    var date = new Date(stats.readyOn);
+                    $scope.lastProcessOnDate = date.toLocaleDateString();
+                    $scope.lastProcessOnTime = date.toLocaleTimeString();
+                    $scope.processState = 1;
+                } else if (stats.stopOn) {
+                    var date = new Date(stats.stopOn);
+                    $scope.lastProcessOnDate = date.toLocaleDateString();
+                    $scope.lastProcessOnTime = date.toLocaleTimeString();
+                }
+
+                if (stats.amd) {
+                    var data = [];
+                    for (var key in stats.amd) {
+                        data.push({
+                            key: key,
+                            y: stats.amd[key]
+                        })
+                    }
+                    $scope.amdState = {
+                        data: data,
+                        options: {
+                            chart: {
+                                type: 'pieChart',
+                                margin: {
+                                    top: 40,
+                                    right: 0,
+                                    bottom: 0,
+                                    left: 0
+                                },
+                                tooltip: {
+                                    enabled: true,
+                                    valueFormatter: function (d) {
+                                        return d3.format(',f')(d)
+                                    }
+                                },
+
+                                height: 350,
+                                x: function(d){
+                                    return d.key;
+                                },
+                                y: function(d){
+                                    return d.y;
+                                },
+                                title: "AMD",
+                                showLabels: true,
+                                showLegend: false,
+                                //  donutRatio: 0.3,
+                                donut: true,
+                                // transitionDuration: 500,
+                                // labelThreshold: 0.02,
+                                // legendPosition: "right"
+                            },
+                            data: [] // {key, y}
+                        }
+                    };
+                }
+            }
 
             function reloadCause() {
-                if (!id || !domain)
+                if (!$scope.id || !$scope.domain)
                     return notifi.error(new Error("Bad parameters (id, domain is required)."));
 
                 // DialerModel.members.aggregate(domain, id, aggCountLock, function (err, res) {
@@ -2594,21 +2858,42 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 //     }
                 // });
 
-                DialerModel.members.aggregate(domain, id, aggCause, function (err, res) {
+                DialerModel.members.aggregate($scope.domain, $scope.id, aggCause, function (err, res) {
                     if (err)
                         return notifi.error(err);
 
                     var rows = [];
+                    var waiting = 0;
+                    var end = 0;
                     angular.forEach(res, function (item) {
 
-                        rows.push({
-                            key: !item._id ? "WAITING" : item._id,
-                            y: item.count
-                        })
+                        if (!item._id) {
+                            rows.push({
+                                label: "WAITING",
+                                value: item.count
+                            });
+                            waiting = item.count;
+                        } else {
+                            rows.push({
+                                label: item._id,
+                                value: item.count
+                            });
+                            end += item.count;
+                        }
+
                     });
 
-                    $scope.causeCart = {
-                        data: rows,
+                    $scope.causeCartComplete = {
+                        data: [
+                            {
+                                key: "waiting",
+                                y: waiting
+                            },
+                            {
+                                key: "completed",
+                                y: end
+                            }
+                        ],
                         options: {
                             chart: {
                                 type: 'pieChart',
@@ -2625,23 +2910,56 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                     }
                                 },
 
-                                height: 500,
+                                height: 350,
                                 x: function(d){
                                     return d.key;
                                 },
                                 y: function(d){
                                     return d.y;
                                 },
-                                title: "End cause",
-                                // showLabels: false,
-                                showLegend: true,
-                                donutRatio: 0.3,
+                                title: "Completed " + (Math.ceil( (end * 100) / (end + waiting) )) + ' %',
+                                showLabels: false,
+                                showLegend: false,
+                              //  donutRatio: 0.3,
                                 donut: true,
-                                transitionDuration: 500,
-                                labelThreshold: 0.02,
+                                // transitionDuration: 500,
+                                // labelThreshold: 0.02,
                                 // legendPosition: "right"
                             },
                             data: [] // {key, y}
+                        }
+                    };
+
+                    $scope.causeCart = {
+                        data: [{
+                            key: "End cause",
+                            values: rows
+                        }],
+                        options: {
+                            chart: {
+                                type: 'discreteBarChart',
+                                height: 480,
+                                margin : {
+                                    top: 20,
+                                    right: 20,
+                                    bottom: 50,
+                                    left: 70
+                                },
+                                x: function(d){return d.label;},
+                                y: function(d){return d.value;},
+                                showValues: true,
+                                valueFormat: function(d){
+                                    return d3.format(',f')(d);
+                                },
+                                duration: 500,
+                                xAxis: {
+                                    axisLabel: 'Cause'
+                                },
+                                yAxis: {
+                                    axisLabel: 'Count',
+                                    axisLabelDistance: 0
+                                }
+                            }
                         }
                     };
                 });
