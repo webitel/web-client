@@ -120,7 +120,7 @@
         </tr>
         </thead>
 
-        <tbody ng-show="membersRowCollection.length > 0" ng-repeat="t in membersRowCollection" data-ng-class="{'bg-success':t._lock}">
+        <tbody ng-show="membersRowCollection.length > 0" ng-repeat="t in membersRowCollection" data-ng-class="{'bg-warning':t._waitingForResultStatusCb === 1 && !t._lock, 'bg-success':t._lock}">
         <tr>
             <td rowspan="{{t.communications.length}}">
                 {{timeToString(t.createdOn)}}

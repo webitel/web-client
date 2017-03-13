@@ -914,7 +914,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 filter: tableState.search.predicateObject || {},
                 page: _page,
                 limit: $scope.CountItemsByPage,
-                columns: ["createdOn", "name", "priority", "timezone", "communications", "_endCause", "_lock"]
+                columns: ["createdOn", "name", "priority", "timezone", "communications", "_endCause", "_lock", "_waitingForResultStatusCb"]
             };
 
             if (((tableState.pagination.start / tableState.pagination.number) || 0) === 0) {
@@ -2868,10 +2868,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     angular.forEach(res, function (item) {
 
                         if (!item._id) {
-                            rows.push({
-                                label: "WAITING",
-                                value: item.count
-                            });
+                            // rows.push({
+                            //     label: "WAITING",
+                            //     value: item.count
+                            // });
                             waiting = item.count;
                         } else {
                             rows.push({
