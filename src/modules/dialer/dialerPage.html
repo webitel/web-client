@@ -51,13 +51,30 @@
                                                             <input ng-disabled="true" type="text"  class="form-control" value="{{toDateString(dialer.nextTick)}}" >
                                                         </div>
 
-                                                        <div class="form-group">
-                                                            <label class="control-label">Record session</label>
-                                                            <br>
-                                                            <label class="switch switch-success">
-                                                                <input type="checkbox" ng-model="dialer.parameters.recordSession"><i></i>
-                                                            </label>
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Eternal queue</label>
+                                                                    <br>
+                                                                    <label class="switch switch-success">
+                                                                        <input type="checkbox" ng-model="dialer.parameters.eternalQueue"><i></i>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Record session</label>
+                                                                    <br>
+                                                                    <label class="switch switch-success">
+                                                                        <input type="checkbox" ng-model="dialer.parameters.recordSession"><i></i>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
                                                         </div>
+
+
+
+
 
                                                     </div>
 
