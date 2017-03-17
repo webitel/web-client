@@ -27,6 +27,18 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             var canDeleteCDR = $scope.canDeleteCDR = webitel.connection.session.checkResource('cdr', 'd');
 
 
+            if (!webitel.connection.session.domain) {
+                var changeDomainEvent = $rootScope.$on('webitel:changeDomain', function (e, domainName) {
+                    $scope.domain = domainName;
+                    $scope.applyFilter();
+                });
+                $scope.domain = webitel.domain();
+
+                $scope.$on('$destroy', function () {
+                    changeDomainEvent();
+                });
+            };
+
             var defSettings = TableSearch.get('cdrElastic');
             if (defSettings) {
                 $scope.queryString = defSettings.queryString || "";
@@ -108,7 +120,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             $scope.runExportCdr = function (fnExportCdr) {
                 $scope.exportProcessExcel = true;
                 var filter =  getFilter();
-                fnExportCdr($scope.mapColumns, {other: $scope.columnsArr, date: $scope.columnsDateArr}, filter, $scope.queryString, $scope.sort, function (err) {
+                fnExportCdr($scope.mapColumns, {domain: $scope.domain, other: $scope.columnsArr, date: $scope.columnsDateArr}, filter, $scope.queryString, $scope.sort, function (err) {
                     if (err)
                         notifi.error(err);
                     $scope.exportProcessExcel = false;
@@ -537,7 +549,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
 
                 var filter =  getFilter();
 
-                CdrModel.getElasticData(_page, maxNodes, {other: $scope.columnsArr, date: $scope.columnsDateArr}, filter, $scope.queryString, $scope.sort, null, function (err, res, count) {
+                CdrModel.getElasticData(_page, maxNodes, {domain: $scope.domain, other: $scope.columnsArr, date: $scope.columnsDateArr}, filter, $scope.queryString, $scope.sort, null, function (err, res, count) {
                     $scope.isLoading = false;
                     if (err) {
 

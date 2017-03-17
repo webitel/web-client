@@ -277,6 +277,10 @@ define(["app", "config"], function(app, config) {
             body.query = qs || "*";
             body.filter = filter || {};
             body.sort = sort;
+            
+            if (columns.domain)
+                body.domain = columns.domain;
+
             if (scroll)
                 body.scroll = scroll;
 
