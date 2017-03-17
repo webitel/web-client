@@ -106,6 +106,11 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
         function getDomainSettings(domainName, cb) {
             webitel.api('GET', '/api/v2/domains/' + domainName + '/settings', cb);
         }
+        
+        function listExpireToken(domain, minDate,  cb) {
+            webitel.httpApi('GET', '/api/v2/domains/' + (domain || '*') +
+                '/settings/token?filter=' + encodeURIComponent(JSON.stringify({"tokens.expire": {$lt: minDate}})), cb)
+        }
 
         function genToken(domainName, option, cb) {
             if (!domainName)

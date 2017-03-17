@@ -43,6 +43,7 @@ define(['app', 'scripts/webitel/utils', 'scripts/webitel/domainModel'], function
 			};
 
 			webitel.checkLicenseStatus();
+			webitel.listExpireToken();
         	webitel.api("GET", "/api/v2/status", function (err, res) {
         		if (err)
     				return notifi.error(err, 5000);

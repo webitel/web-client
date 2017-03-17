@@ -230,6 +230,7 @@ define(['angular',
 						return cb(err);
 					doCb(null, res);
 					checkLicenseStatus();
+					listExpireToken();
 				})
 			} else {
 				cb(new Error('Bad request.'))
@@ -344,6 +345,48 @@ define(['angular',
 			 });
 		 }
 
+		 function parseDate(timestamp) {
+			 var d = new Date(timestamp);
+			 return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+		 }
+
+		 function locateDomain(domain) {
+			 return "#/domains/" + domain + "/edit"
+		 }
+
+		 var checkTokenExpiresStatus = false;
+		 function listExpireToken() {
+			 if (checkTokenExpiresStatus || !connection.session.checkResource('domain', 'ro')) {
+				 return;
+			 }
+			 checkTokenExpiresStatus = true;
+			 var uri = '/api/v2/domains/' + (connection.session.domain || '*') +
+				 '/settings/token?filter=' + encodeURIComponent(JSON.stringify({"tokens.expire": {$lte: Date.now() + 5184000000}})) +
+				 '&columns=' + encodeURIComponent(JSON.stringify({name: 1, "tokens.$": 1}));
+
+			 httpApi("GET", uri, function (err, res) {
+				 if (err)
+					 return notifi.error(err, 5000);
+				 debugger
+				 var currentTime = Date.now();
+
+				 angular.forEach(res && res.info, function (item) {
+					 var token = item.tokens && item.tokens[0];
+					 if (token) {
+						 if (token.expire <= currentTime) {
+							 notifyHeader.add('Token: ' + item.name, 'Expired ' + parseDate(token.expire), {class: "btn-danger", link: locateDomain(item.name)});
+						 } else if (( token.expire - currentTime - 2592000000) <= 0) {
+							 notifyHeader.add('Token: ' + item.name, 'Expire ' + parseDate(token.expire), {class: "btn-warning", link: locateDomain(item.name)});
+
+						 } else if (( token.expire - currentTime - 5184000000) <= 0) {
+							 notifyHeader.add('Token: ' + item.name, 'Expire ' + parseDate(token.expire), {class: "btn-info", link: locateDomain(item.name)});
+							 // warn.push(row.customer + ': ' + row.expire);
+						 }
+					 }
+				 });
+			 });
+		 }
+
 		return {
 			"signin": signin,
 			"signout": signout,
@@ -357,7 +400,8 @@ define(['angular',
 			"$scope": $scope,
 			"destroyLocalSession": destroyLocalSession,
 			"notify": notifyHeader,
-			"checkLicenseStatus": checkLicenseStatus
+			"checkLicenseStatus": checkLicenseStatus,
+			"listExpireToken": listExpireToken
 		};
 	}]);
 	
