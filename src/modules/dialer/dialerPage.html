@@ -215,7 +215,7 @@
 
                                                                         <div class="col-sm-6" ng-if="dialer.parameters.waitingForResultStatus && dialer.type!=diealerTypes[0]">
                                                                             <div class="form-group" ng-class="{ 'has-error' : dialerForm.wrapUpTime.$invalid }">
-                                                                                <label class="control-label">Wrap up time</label>
+                                                                                <label class="control-label">Result timeout</label>
                                                                                 <input ng-disabled="false || dialer.active1" class="form-control" type="number" name="wrapUpTime" ng-model="dialer.parameters.wrapUpTime" min="0">
                                                                             </div>
                                                                         </div>

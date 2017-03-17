@@ -103,7 +103,7 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-9">
+        <div class="col-sm-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Reload module
@@ -128,7 +128,21 @@
             </div>
         </div>
 
-        <div class="col-sm-3">
+        <div class="col-sm-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    HTTP cache
+                </div>
+                <div class="panel-body">
+                    <div class="form-group" style="padding-top: 5px;">
+                        <label></label>
+                        <button style="width: 100%" ng-disabled="reloadProcess" type="button" ng-click="cache('clear')" class="btn btn-warning">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-2">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Reload XML

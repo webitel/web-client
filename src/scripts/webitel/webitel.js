@@ -109,7 +109,7 @@ define(['angular',
 	              account: this.username,
 	              key: this.key,
 	              token: this.token,
-	              debug  : 1,
+	              debug  : true,
 	              reconnect: 15
 	        };
 

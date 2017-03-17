@@ -39,6 +39,17 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                     return notifi.info('Reload ' + name + ': ' + res.info, 5000);
                 })
             };
+
+            $scope.cache = function (action) {
+                $scope.reloadProcess = true;
+                ServerSettingsModel.cache(action, function (err, res) {
+                    $scope.reloadProcess = false;
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    return notifi.info('HTTP ' + action + ': ' + res.info, 5000);
+                })
+            };
             
             $scope.runDelFiles = function (params) {
                 if (!params.from || !params.to) {

@@ -43,11 +43,19 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
             webitel.api('PUT', '/api/v2/system/reload/' + name, cb)
         }
+        
+        function cache(action, cb) {
+            if (!action)
+                return cb(new Error('Bad action name'));
+
+            webitel.api('PUT', '/api/v2/system/cache/' + action, cb)
+        }
 
 
         return {
             removeNonExistentFiles: removeNonExistentFiles,
             removeFiles: removeFiles,
+            cache: cache,
             reload: reload
         }
     }]);
