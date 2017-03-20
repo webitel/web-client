@@ -367,7 +367,7 @@ define(['angular',
 			 httpApi("GET", uri, function (err, res) {
 				 if (err)
 					 return notifi.error(err, 5000);
-				 debugger
+				 
 				 var currentTime = Date.now();
 
 				 angular.forEach(res && res.info, function (item) {
