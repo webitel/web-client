@@ -216,7 +216,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         };
                         // timerId = $timeout(tick, 1500);
                         if (active)
-                            return notifi.info('Please wait... active call: ' + res.members, 10000);
+                            return notifi.info('Please wait...', 10000);
                         else return notifi.info('Please wait... Set ready', 2000);
 
                     });
@@ -365,6 +365,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             function closePage() {
                 $location.path('/dialer');
+            }
+            
+            $scope.gotoUrl = function (url) {
+                $location.path(url);
             };
 
             function edit (callback) {

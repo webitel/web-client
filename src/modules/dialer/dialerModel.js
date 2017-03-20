@@ -6,7 +6,7 @@
 define(['app', 'scripts/webitel/utils'], function (app, utils) {
     app.factory('DialerModel', ["webitel", function (webitel) {
 
-        var COLUMNS_LIST = 'columns=_id,name,type,priority,state,_cause,nextTick';
+        var COLUMNS_LIST = 'columns=_id,name,type,priority,state,_cause,stats.active,stats.callCount';
 
         var CODE_RESPONSE_ERRORS = ["UNALLOCATED_NUMBER", "NO_ROUTE", "MEMBER_EXPIRED", "INVALID_NUMBER_FORMAT", "NETWORK_OUT_OF_ORDER", "OUTGOING_CALL_BARRED", "SERVICE_UNAVAILABLE", "CHAN_NOT_IMPLEMENTED", "SERVICE_NOT_IMPLEMENTED", "INCOMPATIBLE_DESTINATION", "MANDATORY_IE_MISSING", "PROGRESS_TIMEOUT", "GATEWAY_DOWN"];
         var CODE_RESPONSE_RETRY = ["NO_ROUTE_DESTINATION", "DESTINATION_OUT_OF_ORDER", "USER_BUSY", "CALL_REJECTED", "NO_USER_RESPONSE", "NO_ANSWER", "SUBSCRIBER_ABSENT", "NUMBER_CHANGED", "NORMAL_UNSPECIFIED", "NORMAL_TEMPORARY_FAILURE", "NORMAL_CIRCUIT_CONGESTION", "ORIGINATOR_CANCEL", "LOSE_RACE", "USER_NOT_REGISTERED"];

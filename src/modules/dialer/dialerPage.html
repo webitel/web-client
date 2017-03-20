@@ -508,7 +508,7 @@
                                     </div>
                                 </tab>
 
-                                <tab ngd-if=" dialer.type==diealerTypes[2]">
+                                <tab>
                                     <tab-heading>
                                         <span>Resources</span>
                                     </tab-heading>
@@ -520,29 +520,32 @@
                                                 <section class="categories panel panel-default">
                                                     <div class="panel-heading">
 
-                                                        <a  ng-disabled="false || dialer.active1" ng-click="editResourceDialString(getDefaultResource())" ng-if="canUpdate" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                                        <a ng-click="editResourceDialString(getDefaultResource())" ng-if="canUpdate" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
                                                             <i class="fa fa-plus"></i>
                                                         </a>
                                                     </div>
                                                     <ul class="list-group" style="max-height: 250px; overflow-y: auto;">
                                                         <li ng-click="setActiveResource(row)" class="list-group-item" ng-class="{'active': activeResource == row}"
                                                             ng-repeat="(key, row) in dialer.resources">
-                                                            <a href="javascript:;" >
+                                                            <a href="javascript:;">
                                                                 {{row.dialedNumber}}
 
-                                                                <p ng-if="!dialer.active"  class="pull-right" >
-                                                                    <span ng-click="setDialStringPosition(dialer.resources, row, true,  $event)" style="padding: 0;" class="text-muted btn">
-                                                                        <i style="line-height: 0;" class="glyphicon glyphicon-chevron-up"></i>
-                                                                    </span>
-                                                                    <span class="space space-xs"></span>
-                                                                    <span ng-click="setDialStringPosition(dialer.resources, row, false, $event)" style="padding: 0;" class="text-muted btn">
-                                                                        <i style="line-height: 0;" class="glyphicon glyphicon-chevron-down"></i>
-                                                                    </span>
-                                                                    <span class="space space-xs"></span>
-                                                                    <span href="javascript:;" ng-click="editResourceDialString(row)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></span>
-                                                                    <span class="space space-xs"></span>
-                                                                    <span href="javascript:;" ng-click="removeResource(key, row)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-remove"></i></span>
-                                                                </p>
+                                                                <span href="javascript:;" ng-click="removeResource(key, row)" ng-if="canUpdate" class="pull-right btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default">
+                                                                    <i class="glyphicon glyphicon-remove"></i>
+                                                                </span>
+
+                                                                <span href="javascript:;" ng-click="editResourceDialString(row)" ng-if="canUpdate" class="pull-right btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default">
+                                                                    <i class="glyphicon glyphicon-pencil"></i>
+                                                                </span>
+
+                                                                <span ng-click="setDialStringPosition(dialer.resources, row, false, $event)" class="pull-right btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default">
+                                                                    <i style="line-height: 0;" class="glyphicon glyphicon-chevron-down"></i>
+                                                                </span>
+
+
+                                                                <span ng-click="setDialStringPosition(dialer.resources, row, true,  $event)"  class="pull-right btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default">
+                                                                    <i  class="glyphicon glyphicon-chevron-up"></i>
+                                                                </span>
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -553,7 +556,7 @@
                                                 <section class="panel panel-default">
                                                     <div class="panel-heading ">
 
-                                                        <a ng-disabled="dialer.active || !activeResource" ng-click="editResourceDestination(getDefaultResourceDestination())" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                                        <a ng-click="editResourceDestination(getDefaultResourceDestination())" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
                                                             <i class="fa fa-plus"></i>
                                                         </a>
                                                     </div>
@@ -572,7 +575,7 @@
                                                             <th width="30%">Dial string</th>
                                                             <th width="10%">Limit</th>
                                                             <th width="10%">Enabled</th>
-                                                            <th width="20%">Action</th>
+                                                            <th width="20%" style="text-align: center">Action</th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
@@ -581,20 +584,23 @@
                                                             <td>{{item.dialString}}</td>
                                                             <td>{{item.limit}}</td>
                                                             <td>{{item.enabled}}</td>
-                                                            <td>
-                                                                <p ng-if="!dialer.active">
-                                                                    <span ng-click="setDialStringPosition(activeResource.destinations, item, true,  $event)" style="padding: 0;" class="text-muted btn">
-                                                                        <i style="line-height: 0;" class="glyphicon glyphicon-chevron-up"></i>
-                                                                    </span>
-                                                                    <span class="space space-xs"></span>
-                                                                    <span ng-click="setDialStringPosition(activeResource.destinations, item, false, $event)" style="padding: 0;" class="text-muted btn">
-                                                                        <i style="line-height: 0;" class="glyphicon glyphicon-chevron-down"></i>
-                                                                    </span>
-                                                                    <span class="space space-xs"></span>
-                                                                    <a ng-click="editResourceDestination(item)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-pencil"></i></a>
-                                                                    <span class="space space-xs"></span>
-                                                                    <a href="javascript:;" ng-click="removeResourceDestination(key, item)" ng-if="canUpdate" class="text-muted"><i class="glyphicon glyphicon-remove"></i></a>
-                                                                </p>
+                                                            <td  style="text-align: end; min-width: 150px">
+
+                                                                <a href="javascript:;" ng-click="setDialStringPosition(activeResource.destinations, item, true,  $event)" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default">
+                                                                    <i  class="glyphicon glyphicon-chevron-up"></i>
+                                                                </a>
+
+                                                                <a href="javascript:;" ng-click="setDialStringPosition(activeResource.destinations, item, false, $event)" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default">
+                                                                    <i style="line-height: 0;" class="glyphicon glyphicon-chevron-down"></i>
+                                                                </a>
+
+                                                                <a href="javascript:;" ng-click="editResourceDestination(item)" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default">
+                                                                    <i class="glyphicon glyphicon-pencil"></i>
+                                                                </a>
+
+                                                                <a href="javascript:;" ng-click="removeResourceDestination(key, item)" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default">
+                                                                    <i class="glyphicon glyphicon-remove"></i>
+                                                                </a>
                                                             </td>
                                                         </tr>
                                                         </tbody>
@@ -694,6 +700,7 @@
             <button ng-show="isEdit" type="button" ng-disabled="dialerForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
+            <button  type="button" ng-click="gotoUrl('/dialer/' + dialer._id + '/stats')" class="btn btn-w-md btn-gap-v btn-info pull-right">Stats</button>
         </div>
 
     </div>

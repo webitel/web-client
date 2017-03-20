@@ -41,14 +41,15 @@
                 <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" st-search search-watch-model="query">
                     <thead>
                     <tr ng-show="rowCollection.length > 0">
-                        <th style="width: 25%" st-skip-natural="true" st-sort="name" >Name</th>
+                        <th style="width: 20%" st-skip-natural="true" st-sort="name" >Name</th>
                         <th style="width: 15%" st-skip-natural="true" st-sort="type" >Type</th>
                         <th style="width: 10%" st-skip-natural="true" st-sort="state" >State</th>
-                        <th style="width: 15%" st-skip-natural="true" st-sort="nextTick" >Sleeping till</th>
-                        <th style="width: 20%" st-skip-natural="true" st-sort="_cause" >Last cause</th>
+                        <th style="width: 10%" st-skip-natural="true"  >Active calls</th>
+                        <th style="width: 10%" st-skip-natural="true"  >All calls</th>
+                        <th style="width: 15%" st-skip-natural="true" st-sort="_cause" >Last cause</th>
                         <th style="width: 5%" st-skip-natural="true" st-sort="priority" >Priority</th>
 
-                        <th style="width: 10%; min-width: 83px; text-align: end;">
+                        <th style="width: 15%; min-width: 116px; text-align: end;">
                             Count: {{displayedCollection.length}}
                         </th>
                     </tr>
@@ -66,7 +67,8 @@
                         </td>
                         <td>{{row.type}}</td>
                         <td>{{stateDialerToString(row.state)}}</td>
-                        <td>{{toDateString(row.nextTick)}}</td>
+                        <td>{{row.stats.active}}</td>
+                        <td>{{row.stats.callCount}}</td>
                         <td>{{row._cause}}</td>
                         <td>{{row.priority}}</td>
                         <td style="text-align: end">
