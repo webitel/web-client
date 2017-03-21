@@ -952,48 +952,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             });
         };
 
-        var mapColums = {
-            _endCause: function (v) {
-                return {
-                    $regex: '^' + v
-                };
-            },
-            _lock: function (v) {
-                return v === 'true'
-            },
-            communications_number: function (v) {
-                return {
-                    $regex: '^' + v
-                };
-            },
-            communications_priority: function (v) {
-                return +v;
-            },
-            communications_state: function (v) {
-                return +v;
-            },
-            name: function (v) {
-                return {
-                    $regex: '^' + v
-                };
-            },
-            priority: function (v) {
-                return +v;
-            }
-        };
-
         function removeMembers() {
-            var filter = {};
-            angular.forEach(_tableState.search.predicateObject, function (i, key) {
-                if (mapColums.hasOwnProperty(key)) {
-                    var name = (key != '_endCause' && key != '_lock') ? key.replace('_', '.') : key;
-                    filter[name] = mapColums[key](i)
-                }
-            });
-
-            $confirm({text: 'Are you sure you want to delete ' + $scope.count + ' members ?'},  { templateUrl: 'views/confirm.html' })
+            $confirm({text: 'Are you sure you want to delete ' + ($scope.count || 0) + ' members ?'},  { templateUrl: 'views/confirm.html' })
                 .then(function() {
-                    DialerModel.members.removeMulti($scope.dialer._id, filter, $scope.domain, function (err, res) {
+                    DialerModel.members.removeMulti($scope.dialer._id, _tableState.search.predicateObject, $scope.domain, function (err, res) {
                         if (err)
                             return notifi.error(err, 5000);
                         notifi.info('Remove ' + res.n + ' members.', 5000);
@@ -1363,15 +1325,21 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         };
         
         $scope.showResetPage = function () {
-            $confirm({text: 'Reset members ?'},  { templateUrl: '/modules/dialer/resetMemberPage.html' })
-                .then(function(clearLog) {
-                    DialerModel.members.reset($scope.dialer._id, $scope.domain, clearLog, function (err, count) {
-                        if (err)
-                            return notifi.error(err, 5000);
+            DialerModel.members.countEndMembers($scope.domain, $scope.dialer._id, function (err, count) {
+                if (err)
+                    return notifi.error(err, 5000);
 
-                        return notifi.info('OK: reset ' + count + ' members.', 5000);
-                    })
-                });
+                $confirm({text: 'Reset ' + (count || 0) + ' unsuccessful members ?'},  { templateUrl: '/modules/dialer/resetMemberPage.html' })
+                    .then(function(clearLog) {
+                        DialerModel.members.reset($scope.dialer._id, $scope.domain, clearLog, function (err, count) {
+                            if (err)
+                                return notifi.error(err, 5000);
+
+                            $scope.reloadData();
+                            return notifi.info('OK: reset ' + count + ' members.', 5000);
+                        })
+                    });
+            });
         }
 
     }]);

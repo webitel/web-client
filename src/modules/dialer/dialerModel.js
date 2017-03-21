@@ -15,6 +15,45 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
         var ALL_CODE = [].concat(CODE_RESPONSE_ERRORS, CODE_RESPONSE_RETRY, CODE_RESPONSE_OK, CODE_RESPONSE_MINUS_PROBE);
 
+        var mapColumns = {
+            _endCause: function (v) {
+                return {
+                    $regex: '^' + v
+                };
+            },
+            _lock: function (v) {
+                if (v === 'true') {
+                    return {$ne: null}
+                } else {
+                    return null;
+                }
+            },
+            communications_number: function (v) {
+                return {
+                    $regex: '^' + v
+                };
+            },
+            communications_priority: function (v) {
+                return +v;
+            },
+            communications_type: function (v) {
+                return {
+                    $regex: '^' + v
+                };
+            },
+            communications_state: function (v) {
+                return +v;
+            },
+            name: function (v) {
+                return {
+                    $regex: '^' + v
+                };
+            },
+            priority: function (v) {
+                return +v;
+            }
+        };
+
         function listMembers (domainName, dialerId, option, cb) {
             if (!domainName)
                 return cb(new Error("Domain is required."));
@@ -22,39 +61,51 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
              if (!dialerId)
                 return cb(new Error("DialerId is required."));
 
-            var page = option.page || 1;
 
-            var _q = '?&domain=' + domainName + '&page=' + page;
+            var page = option.page || 1;
+            var _q = ["domain=" + domainName, "page=" + page];
 
             if (option.limit)
-                _q += '&limit=' + option.limit;
+                _q.push("limit=" + option.limit);
 
             var sortKey = Object.keys(option.sort || {})[0];
-            if (sortKey)
-                _q += '&sort=' +  (sortKey !='_endCause' ? sortKey.replace('_', '.')  : sortKey) + '=' + option.sort[sortKey];
+            if (sortKey) {
+                var sort = {};
+                sort[sortKey] = option.sort[sortKey];
+                _q.push("sort=" + encodeURIComponent(JSON.stringify(sort)))
+            }
 
             if (option.columns) {
-                _q += '&columns=';
+                var col = {};
                 angular.forEach(option.columns, function (v) {
-                    _q += v + ',';
+                    col[v] =  1
                 });
+                _q.push("columns=" + encodeURIComponent(JSON.stringify(col)))
 
             }
-            _q += '&filter=';
-            angular.forEach(option.filter, function (v, k, i) {
-                if (k == 'communications_number' || k == 'name' || k == '_endCause')
-                    v = '^' + v;
-                _q += /^_/.test(k) ? k + '=' + v + ',' :  k.replace('_', '.') + '=' + v + ',';
-            });
 
+            if (Object.keys(option.filter).length > 0) {
+                _q.push("filter=" + encodeURIComponent(JSON.stringify(parseFilter(option.filter))))
+            }
 
-            webitel.api('GET', '/api/v2/dialer/' + dialerId + '/members' + _q, function(err, res) {
+            webitel.api('GET', '/api/v2/dialer/' + dialerId + '/members?' + _q.join('&'), function(err, res) {
                 var queues = res.data || res.info;
                 angular.forEach(queues, function (item) {
                     item.enable = item.enable == 'true';
                 });
                 return cb && cb(err, queues);
             });
+        }
+
+        function parseFilter (filter) {
+            var _f = {};
+            angular.forEach(filter, function (i, key) {
+                if (mapColumns.hasOwnProperty(key)) {
+                    var name = (key != '_endCause' && key != '_lock') ? key.replace('_', '.') : key;
+                    _f[name] = mapColumns[key](i)
+                }
+            });
+            return _f;
         }
 
         function countMembers (domainName, dialerId, option, cb) {
@@ -65,22 +116,33 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 return cb(new Error("DialerId is required."));
 
 
-            var _q = '?&domain=' + domainName;
+            var _q = ["domain=" + domainName];
 
-            _q += '&filter=';
-            angular.forEach(option.filter, function (v, k, i) {
-                if (k == 'communications_number' || k == 'name' || k == '_endCause')
-                    v = '^' + v;
-                _q += /^_/.test(k) ? k + '=' + v + ',' :  k.replace('_', '.') + '=' + v + ',';
+            if (Object.keys(option.filter).length > 0) {
+                _q.push("filter=" + encodeURIComponent(JSON.stringify(parseFilter(option.filter))))
+            }
+
+            webitel.api('GET', '/api/v2/dialer/' + dialerId + '/members/count?' + _q.join('&'), function(err, res) {
+                return cb && cb(err, res.data || res.info);
             });
+        }
+
+        function countEndMembers (domainName, dialerId, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!dialerId)
+                return cb(new Error("DialerId is required."));
 
 
-            webitel.api('GET', '/api/v2/dialer/' + dialerId + '/members/count' + _q, function(err, res) {
-                var queues = res.data || res.info;
-                angular.forEach(queues, function (item) {
-                    item.enable = item.enable == 'true';
-                });
-                return cb && cb(err, queues);
+            var _q = ["domain=" + domainName];
+
+            _q.push("filter=" + encodeURIComponent(JSON.stringify({
+                    _endCause: {$ne: null}
+                })));
+
+            webitel.api('GET', '/api/v2/dialer/' + dialerId + '/members/count?' + _q.join('&'), function(err, res) {
+                return cb && cb(err, res.data || res.info);
             });
         }
 
@@ -140,7 +202,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 return cb && cb(err, member);
             })
         }
-        // TODO BUGGGG!!!
+        
         function updateMember (domainName, dialerId, id, member, cb) {
             if (!domainName)
                 return cb(new Error("Domain is required."));
@@ -321,8 +383,12 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             if (!dialerId)
                 return cb(new Error("Dialer is required."));
 
+            var body = {};
+            if (Object.keys(filter).length > 0) {
+                body = parseFilter(filter);
+            }
 
-            webitel.api('DELETE', '/api/v2/dialer/' + dialerId + '/members?&domain=' + domainName, JSON.stringify(filter), function(err, res) {
+            webitel.api('DELETE', '/api/v2/dialer/' + dialerId + '/members?&domain=' + domainName, JSON.stringify(body), function(err, res) {
                 var data = res.data || res.info;
                 return cb && cb(err, data);
             });
@@ -437,8 +503,6 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "number": option.number || "",
                 "priority": angular.isNumber(option.priority) ? option.priority : 0,
                 "type": option.type,
-                "_range": option._range,
-                "_probe": option._probe || 0,
                 "status": angular.isNumber(option.status) ? option.status : 0,
                 "state": angular.isNumber(option.state) ? option.state : 0,
                 "description": option.description || ""
@@ -474,6 +538,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             members: {
                 list: listMembers,
                 count: countMembers,
+                countEndMembers: countEndMembers,
                 add: addMember,
                 item: itemMember,
                 create: createMember,
