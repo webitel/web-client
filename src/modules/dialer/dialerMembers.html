@@ -1,16 +1,25 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="no-border pull-left">
-            <a  ng-click="addMember()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+            <a ng-click="addMember()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success"
+               tooltip-popup-delay="800" tooltip="Add"
+                >
                 <i class="fa fa-plus"></i>
             </a>
 
-            <a ng-click="reloadData()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+            <a ng-click="reloadData()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary"
+               tooltip-popup-delay="800" tooltip="Refresh">
                 <i class="glyphicon glyphicon-refresh"></i>
             </a>
 
-            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  ng-click="showImportPage()" style="padding: 0">
+            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  ng-click="showImportPage()" style="padding: 0"
+                  tooltip-popup-delay="800" tooltip="Import">
                     <i class="glyphicon glyphicon-cloud-upload"></i>
+            </span>
+
+            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  ng-click="showResetPage()" style="padding: 0"
+                  tooltip-popup-delay="800" tooltip="Reset">
+                    <i class="glyphicon glyphicon-retweet"></i>
             </span>
 
         </div>

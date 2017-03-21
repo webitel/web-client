@@ -444,6 +444,18 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "description": option.description || ""
             }
         }
+        
+        function resetMembers(dialerId, domainName, log, cb) {
+            if (!domainName)
+                return dialerId(new Error("Domain is required."));
+            if (!dialerId)
+                return cb(new Error("Dialer is required."));
+
+            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/members/reset?&domain=' + domainName + '&_log=' + (log === true), function(err, res) {
+                var data = res.data || res.info;
+                return cb && cb(err, data);
+            });
+        }
 
         return {
             list: list,
@@ -468,7 +480,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 update: updateMember,
                 remove: removeMember,
                 aggregate: aggregateMember,
-                removeMulti: removeMulti
+                removeMulti: removeMulti,
+                reset: resetMembers
             }
         }
     }]);

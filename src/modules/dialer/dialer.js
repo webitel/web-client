@@ -1360,6 +1360,18 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     DialerModel.members.list($scope.domain, $scope.dialer._id, option, process);
                 })();
             })
+        };
+        
+        $scope.showResetPage = function () {
+            $confirm({text: 'Reset members ?'},  { templateUrl: '/modules/dialer/resetMemberPage.html' })
+                .then(function(clearLog) {
+                    DialerModel.members.reset($scope.dialer._id, $scope.domain, clearLog, function (err, count) {
+                        if (err)
+                            return notifi.error(err, 5000);
+
+                        return notifi.info('OK: reset ' + count + ' members.', 5000);
+                    })
+                });
         }
 
     }]);
