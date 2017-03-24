@@ -384,7 +384,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 return cb(new Error("Dialer is required."));
 
             var body = {};
-            if (Object.keys(filter).length > 0) {
+            if (filter && Object.keys(filter).length > 0) {
                 body = parseFilter(filter);
             }
 
@@ -521,6 +521,16 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
         }
 
+        function resetProcess(dialerId, domainName, cb) {
+            if (!domainName)
+                return dialerId(new Error("Domain is required."));
+            if (!dialerId)
+                return cb(new Error("Dialer is required."));
+
+
+            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/reset?domain=' + domainName, cb)
+        }
+
         return {
             list: list,
             item: item,
@@ -529,6 +539,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             add: add,
             update: update,
             setState: setState,
+            resetProcess: resetProcess,
             ALL_CODE: ALL_CODE,
             CODE_RESPONSE_ERRORS: CODE_RESPONSE_ERRORS,
             CODE_RESPONSE_RETRY: CODE_RESPONSE_RETRY,

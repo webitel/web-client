@@ -168,13 +168,30 @@
                                                 <tr ng-repeat="probe in member._log.slice().reverse()">
                                                     <td>
                                                         <p>
-                                                            <h5 class="">
-                                                                {{timeToString(probe.steps[0].time)}}
-                                                            </h5>
+                                                            <dt>Number</dt>
+                                                            <dd>{{probe.callNumber}}</dd>
 
-                                                            <h5>{{probe.cause}}</h5>
+                                                            <dt>Call time</dt>
+                                                            <dd>{{timeToString(probe.callTime)}}</dd>
 
-                                                            <button ng-click="showJsonPreview(probe.callUUID)" class="btn btn-default btn-sm btn-block">
+                                                            <dt>Bridge time</dt>
+                                                            <dd>{{probe.bridgedTime ? timeToString(probe.bridgedTime) : "Not bridged"}}</dd>
+
+                                                            <div ng-if="!!probe.agentId">
+                                                                <dt>Agent</dt>
+                                                                <dd>{{probe.agentId}}</dd>
+                                                            </div>
+
+                                                            <div ng-if="!!probe.amdResult">
+                                                                <dt>AMD result</dt>
+                                                                <dd>{{probe.amdResult}}</dd>
+                                                            </div>
+
+                                                            <dt>Hangup cause</dt>
+                                                            <dd style="text-decoration: underline;">{{probe.cause}}</dd>
+                                                            <br>
+
+                                                            <button ng-if="!!probe.callUUID" ng-click="showJsonPreview(probe.callUUID)" class="btn btn-default btn-sm btn-block">
                                                                 {{ probe.callUUID }}
                                                                 <i class="fa fa-file-code-o"></i>
                                                             </button>

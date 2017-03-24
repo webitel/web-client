@@ -700,7 +700,12 @@
             <button ng-show="isEdit" type="button" ng-disabled="dialerForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
-            <button  type="button" ng-click="gotoUrl('/dialer/' + dialer._id + '/stats')" class="btn btn-w-md btn-gap-v btn-info pull-right">Stats</button>
+
+            <div class="pull-right" ng-show="!isNew">
+                <button ng-disabled="dialer.active" type="button" ng-click="resetProcess(dialer._id, dialer.domain)" class="btn btn-w-md btn-gap-v btn-default">Reset process</button>
+                <button  type="button" ng-click="gotoUrl('/dialer/' + dialer._id + '/stats')" class="btn btn-w-md btn-gap-v btn-info">Stats</button>
+            </div>
+
         </div>
 
     </div>

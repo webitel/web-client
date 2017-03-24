@@ -614,6 +614,23 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.selectTabStats = function () {
                 window.dispatchEvent(new Event('resize'));
             };
+            
+            $scope.resetProcess = function (id, domain) {
+                DialerModel.resetProcess(id, domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err);
+
+                    var data = res && (res.data || res.info);
+                    if (!data)
+                        return notifi.error('No response from server.');
+
+                    if (data.n === 0) {
+                        return notifi.warn('Please stop dialer. And try now.', 5000)
+                    } else {
+                        return notifi.info('OK.', 2000)
+                    }
+                })
+            };
 
             // region Communication type logic
 
@@ -1258,11 +1275,17 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                         case "attempt_cause":
                                             val = atempt.cause;
                                             break;
+                                        case "attempt_amd_result":
+                                            val = atempt.amdResult;
+                                            break;
                                         case "priority_number":
                                             val = atempt.callPriority;
                                             break;
                                         case "state":
                                             val = atempt.callState;
+                                            break;
+                                        case "callSuccessful":
+                                            val = atempt.callSuccessful;
                                             break;
                                         case "description":
                                             val = row.communications[atempt.callPositionIndex]
@@ -2327,6 +2350,20 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             "attempt_cause": {
                 "name": "Attempt end cause",
                 "field": "attempt_cause",
+                filter: {
+                    "allProbe": true
+                }
+            },
+            "attempt_agent": {
+                "name": "Agent",
+                "field": "attempt_agent",
+                filter: {
+                    "allProbe": true
+                }
+            },
+            "attempt_amd_result": {
+                "name": "AMD result",
+                "field": "attempt_amd_result",
                 filter: {
                     "allProbe": true
                 }
