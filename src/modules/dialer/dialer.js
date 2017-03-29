@@ -2938,11 +2938,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                 y: function(d){
                                     return d.y;
                                 },
-                                title: "Completed " + (Math.ceil( (end * 100) / (end + waiting) )) + ' %',
+                                title: "Completed " + ((end * 100) / (end + waiting) ).toFixed(2) + ' %',
                                 showLabels: false,
                                 showLegend: false,
                               //  donutRatio: 0.3,
-                                donut: true,
+                                donut: true
                                 // transitionDuration: 500,
                                 // labelThreshold: 0.02,
                                 // legendPosition: "right"
@@ -2970,15 +2970,19 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                 y: function(d){return d.value;},
                                 showValues: true,
                                 valueFormat: function(d){
-                                    return d3.format(',f')(d);
+                                    return d3.format(',d')(d);
                                 },
+
                                 duration: 500,
                                 xAxis: {
                                     axisLabel: 'Cause'
                                 },
                                 yAxis: {
                                     axisLabel: 'Count',
-                                    axisLabelDistance: 0
+                                    axisLabelDistance: 0,
+                                    tickFormat: function(d){
+                                        return d3.format(',d')(d);
+                                    }
                                 }
                             }
                         }
