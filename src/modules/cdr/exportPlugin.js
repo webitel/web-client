@@ -283,10 +283,14 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                     }
                 });
                 
-                var exportFiles = function (_filter, qs, sort, cb) {
+                var exportFiles = function (_filter, qs, sort, domain, cb) {
                     var _page = 0,
                         maxNodes = 100,
                         columns = {other: ["variables.uuid", "variables.record_seconds"]};
+
+                    if (domain) {
+                        columns.domain = domain;
+                    }
 
                     var filter = [_filter, {"range": {"variables.record_seconds": {"gt": 0}}}];
 

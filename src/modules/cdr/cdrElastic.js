@@ -130,7 +130,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             $scope.runExportFiles = function (fnExport) {
                 $scope.exportProcessExcel = true;
                 var filter =  getFilter();
-                fnExport(filter, $scope.queryString, $scope.sort, function (err) {
+                fnExport(filter, $scope.queryString, $scope.sort, $scope.domain, function (err) {
                     if (err)
                         notifi.error(err);
                     $timeout(function () {
@@ -186,7 +186,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     CdrModel.getElasticData(
                         null,
                         10000,
-                        {other: ["variables.uuid"], date: []},
+                        {other: ["variables.uuid"], date: [], domain: $scope.domain},
                         filter,
                         queryString,
                         null,
