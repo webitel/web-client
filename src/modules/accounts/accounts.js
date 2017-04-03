@@ -346,12 +346,13 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                 // size: 'md',
                 resolve: {
                     options: function () {
-                        var state, status, id, isAgent, domain;
+                        var state, status, id, isAgent, domain, descript;
                         if (row) {
                             id = row.id;
                             domain = row.domain;
                             state = row.state;
                             status = row.status;
+                            descript = row.descript;
                             isAgent = row.agent === 'true';
                         } else {
                             // TODO page
@@ -361,6 +362,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                             domain: domain,
                             state: state,
                             status: status,
+                            descript: descript,
                             isAgent: isAgent
                         };
                     }
@@ -828,7 +830,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
     app.controller('AccountStateCtrl', ['$scope', 'options', '$modalInstance', 'AcdModel', 'notifi', 'AccountModel',
     function ($scope, options, $modalInstance, AcdModel, notifi, AccountModel) {
         $scope.states = ["ONHOOK", "ISBUSY"];
-        $scope.statuses = ["DND", "ONBREAK"];
+        $scope.statuses = ["DND", "ONBREAK", "CALLFORWARD"];
 
         $scope.agentStates = ["Waiting", "Idle"];
         $scope.agentStatuses = ["Logged Out", "Available", "Available (On Demand)", "On Break"];
@@ -857,6 +859,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.ac = {
             state: options.state,
             status: options.state == $scope.states[0] ? null : options.status,
+            description: options.descript,
             agent: {
                 state: null,
                 status: null
@@ -865,7 +868,8 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         
         $scope.changeUser = function () {
             var status = $scope.ac.state == $scope.states[0] ? $scope.states[0] : $scope.ac.status;
-            AccountModel.setStatus(options.id, options.domain, status, function (err, res) {
+
+            AccountModel.setStatus(options.id, options.domain, status, $scope.ac.description, function (err, res) {
                 if (err)
                     return notifi.error(err, 5000);
 

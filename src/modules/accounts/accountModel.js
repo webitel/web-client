@@ -161,10 +161,14 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
             webitel.api('PUT', '/api/v2/accounts/'+ id + '?domain=' + domainName, request, cb)
         };
         
-        function setStatus(id, domainName, status, cb) {
+        function setStatus(id, domainName, status, desc, cb) {
             var request = {
                 "parameters": ["status=" + status]
             };
+
+            if (status !== "ONHOOK" && desc) {
+                request.parameters[0] += ('(' + desc + ')');
+            }
             webitel.api('PUT', '/api/v2/accounts/'+ id + '?domain=' + domainName, request, cb)
         }
 

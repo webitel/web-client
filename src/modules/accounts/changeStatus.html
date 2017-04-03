@@ -20,13 +20,20 @@
                             </ui-select>
                         </div>
                         <div class="form-group" ng-show="ac.state == states[1]" ng-class="{ 'has-error' : !ac.status }">
-                            <label class="col-sm-2 control-label">State</label>
+                            <label class="col-sm-2 control-label">Status</label>
                             <ui-select class="col-sm-10" ng-required="ac.state == states[1]" name="status" data-ng-model="ac.status" theme="bootstrap"  title="Choose a status">
                                 <ui-select-match placeholder="Select or search status...">{{$select.selected}}</ui-select-match>
                                 <ui-select-choices repeat="ss in statuses | filter: $select.search">
                                     <span ng-bind-html="ss | highlight: $select.search"></span>
                                 </ui-select-choices>
                             </ui-select>
+                        </div>
+
+                        <div class="form-group" ng-show="ac.state == states[1]">
+                            <label class="col-sm-2 control-label">Description</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="description" class="form-control" data-ng-model="ac.description">
+                            </div>
                         </div>
 
                         <div class="row">
