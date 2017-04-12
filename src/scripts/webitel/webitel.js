@@ -356,7 +356,7 @@ define(['angular',
 
 		 var checkTokenExpiresStatus = false;
 		 function listExpireToken() {
-			 if (checkTokenExpiresStatus || !connection.session.checkResource('domain', 'ro')) {
+			 if (checkTokenExpiresStatus || (!connection.session.checkResource('domain', 'ro') || !connection.session.checkResource('license', 'ro') )) {
 				 return;
 			 }
 			 checkTokenExpiresStatus = true;

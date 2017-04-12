@@ -69,15 +69,21 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
             return res.join(',');
         }
 
-        function parseToAgentContact (time, id, domain) {
+        function parseToAgentContact (time, id, domain, name) {
             //"{originate_timeout=123,presence_id=100@10.10.10.144}{webitel_call_uuid=${create_uuid()},sip_invite_domain=10.10.10.144}${sofia_contact(*/100@10.10.10.144)},${verto_contact(100@10.10.10.144)}"
             if (!+time)
                 time = '';
+
+            if (!name)
+                name = '';
+
             return "'{originate_timeout=" + time +
+                ",agent_name='" + name + "'" +
+                ",api_on_answer=\\\'uuid_setvar ${uuid} agent_name " + name  + "\\\'"+
                 ",presence_id=" + id + "@" + domain + "}{webitel_call_uuid=${create_uuid()},sip_invite_domain=" + domain +
                 "}${sofia_contact(*/" + id + "@" + domain +
                 ")},${verto_contact(" + id + "@" + domain + ")}'";
-        };
+        }
 
         function add (account, cb) {
             // ?domain=
@@ -114,7 +120,7 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
                     return;
 
                 if (key === 'cc-agent-contact')
-                    return request.parameters.push(key + '=' + parseToAgentContact(value, account.id, account.domain));
+                    return request.parameters.push(key + '=' + parseToAgentContact(value, account.id, account.domain, account.variable_effective_caller_id_name));
                 request.parameters.push(key + '=' + value);
             });
             webitel.api('POST', '/api/v2/accounts?domain=' + account.domain, request, cb)
@@ -138,7 +144,8 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
 
             request.variables.push('skills='  + '\'' + skillsToString(account.variable_skills) + '\'');
 
-            
+            var agentDialString = null;
+
             angular.forEach(diffAttr, function (value, key) {
                 if (key === 'variables') {
                     angular.forEach(account.variables, function (attr, i) {
@@ -146,17 +153,23 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
                     });
                     return;
                 }
+
                 if (key === 'variable_skills') {
                     return;
                 }
-                if (key === 'cc-agent-contact')
-                    return request.parameters.push(key + '=' + parseToAgentContact(value, id, domainName));
+                if (key === 'cc-agent-contact' || key === 'variable_effective_caller_id_name')
+                    agentDialString = 'cc-agent-contact=' + parseToAgentContact(account['cc-agent-contact'], id, domainName, account.variable_effective_caller_id_name);
+
 
                 if (/^variable_/.test(key))
                     return request.variables.push(key.replace(/^variable_/, '') + '=\'' + value + '\'');
 
                 return request.parameters.push(key + '=\'' + value + '\'');
             });
+
+            if (agentDialString) {
+                request.parameters.push(agentDialString);
+            }
 
             webitel.api('PUT', '/api/v2/accounts/'+ id + '?domain=' + domainName, request, cb)
         };
