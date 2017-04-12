@@ -8,17 +8,17 @@
                 <div class="col-sm-6">
                     <div class="form-group" ng-class="{ 'has-error' : domainForm.id.$invalid }">
                         <label class="control-label">Name</label>
-                        <input type="text" ng-disabled="domain.id"  class="form-control" required data-ng-model="domain.name" name="id">
+                        <input type="text" ng-disabled="domain.id || viewMode"  class="form-control" required data-ng-model="domain.name" name="id">
                     </div>
 
                     <div class="form-group" ng-class="{ 'has-error' : domainForm.customerId.$invalid }">
                         <label class="control-label">Customer</label>
-                        <input type="text" ng-disabled="domain.id" class="form-control" name="customerId" required data-ng-model="domain.customer_id">
+                        <input type="text" ng-disabled="domain.id || viewMode" class="form-control" name="customerId" required data-ng-model="domain.customer_id">
                     </div>
 
                     <div class="form-group" ng-class="{ 'has-error' : domainForm.language.$invalid }">
                         <label class="control-label">Language</label>
-                        <select class="form-control" name="language" required ng-change="change('default_language')" ng-model="domain.default_language">
+                        <select ng-disabled="viewMode" class="form-control" name="language" required ng-change="change('default_language')" ng-model="domain.default_language">
                             <option>ru</option>
                             <option>en</option>
                         </select>
@@ -59,21 +59,21 @@
                                         <div class="col-sm-6">
                                             <div class="form-group" ng-class="{ 'has-error' : domainForm.emailHost.$invalid }">
                                                 <label class="control-label">Host</label>
-                                                <input type="text" class="form-control" name="emailHost" data-ng-model="domain.email.options.host">
+                                                <input ng-disabled="viewMode" type="text" class="form-control" name="emailHost" data-ng-model="domain.email.options.host">
                                             </div>
                                         </div>
 
                                         <div class="col-sm-6">
                                             <div class="form-group" ng-class="{ 'has-error' : domainForm.emailPort.$invalid }">
                                                 <label class="control-label">Port</label>
-                                                <input type="number" min="1" max="65535" class="form-control" name="emailPort" data-ng-model="domain.email.options.port">
+                                                <input ng-disabled="viewMode" type="number" min="1" max="65535" class="form-control" name="emailPort" data-ng-model="domain.email.options.port">
                                             </div>
                                         </div>
 
                                         <div class="col-sm-6">
                                             <div class="form-group" ng-class="{ 'has-error' : domainForm.emailUser.$invalid }">
                                                 <label class="control-label">Login</label>
-                                                <input type="text" class="form-control" name="emailUser" data-ng-model="domain.email.options.auth.user">
+                                                <input ng-disabled="viewMode" type="text" class="form-control" name="emailUser" data-ng-model="domain.email.options.auth.user">
                                             </div>
                                         </div>
 
@@ -81,7 +81,7 @@
                                             <div class="form-group" ng-class="{ 'has-error' : domainForm.emailPass.$invalid }">
                                                 <label class="control-label">Password</label>
                                                 <div class="input-group" >
-                                                    <input  name="emailPass"  class="form-control" ng-model="domain.email.options.auth.pass" ng-style="{'-webkit-text-security': viewPassword ? '' : 'disc' }">
+                                                    <input  ng-disabled="viewMode" name="emailPass"  class="form-control" ng-model="domain.email.options.auth.pass" ng-style="{'-webkit-text-security': viewPassword ? '' : 'disc' }">
                                                     <span class="input-group-btn">
                                                         <button ng-show="!viewPassword" ng-click="toggleViewPassword()" class="btn btn-default" type="button">
                                                             <i class="glyphicon glyphicon-eye-open"></i>
@@ -97,7 +97,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group" ng-class="{ 'has-error' : domainForm.emailFrom.$invalid }">
                                                 <label class="control-label">From</label>
-                                                <input type="text" class="form-control" name="emailFrom" data-ng-model="domain.email.from">
+                                                <input ng-disabled="viewMode" type="text" class="form-control" name="emailFrom" data-ng-model="domain.email.from">
                                             </div>
                                         </div>
 
@@ -105,13 +105,13 @@
                                             <div class="col-sm-6">
                                                 <div class="form-group" >
                                                     <label for>Secure</label>
-                                                    <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="domain.email.options.secure"><i></i></label>
+                                                    <label style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="domain.email.options.secure"><i></i></label>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group" >
                                                     <button
-                                                            ng-disabled="!domain.email.options.host || !domain.email.options.port || !domain.email.options.auth.user"
+                                                            ng-disabled="!domain.email.options.host || !domain.email.options.port || !domain.email.options.auth.user || viewMode"
                                                             data-ng-click="sendTestEmail()" type="button" style="margin-top: 22px;" class="btn btn-w-xs btn-gap-v btn-success">Test</button>
                                                 </div>
                                             </div>
@@ -129,14 +129,14 @@
 
                                     <div class="row">
                                         <div class="col-sm-1">
-                                            <a ng-disabled="domain.storage.providers.s3 && domain.storage.providers.b2" ng-click="addStorage(domain)" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                            <a ng-disabled="(domain.storage.providers.s3 && domain.storage.providers.b2) || viewMode" ng-click="addStorage(domain)" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
                                                 <i class="fa fa-plus"></i>
                                             </a>
                                         </div>
 
                                         <div class="col-sm-11">
                                             <div class="form-group">
-                                                <select ng-disabled="!domain.storage.providers.s3 && !domain.storage.providers.b2" class="form-control"  data-ng-model="domain.storage.defaultProvider">
+                                                <select ng-disabled="(!domain.storage.providers.s3 && !domain.storage.providers.b2) || viewMode" class="form-control"  data-ng-model="domain.storage.defaultProvider">
                                                     <option ng-selected="{{!domain.storage.defaultProvider}}" value="">Webitel storage</option>
                                                     <option ng-selected="{{key==domain.storage.defaultProvider}}" data-ng-repeat="(key, params) in domain.storage.providers" value="{{key}}">{{key}}</option>
                                                 </select>
@@ -148,7 +148,7 @@
                                         <div class="col-sm-12">
                                             <div class="form-group" ng-class="{ 'has-error' : domainForm.storageExpiresDays.$invalid }">
                                                 <label class="control-label color-danger">How long to keep records ({{domain.storage.expiresDays}} days) ?</label>
-                                                <input type="number" min="0" max="65535" class="form-control" name="storageExpiresDays" data-ng-model="domain.storage.expiresDays">
+                                                <input ng-disabled="viewMode" type="number" min="0" max="65535" class="form-control" name="storageExpiresDays" data-ng-model="domain.storage.expiresDays">
                                             </div>
                                         </div>
                                     </div>
@@ -157,7 +157,7 @@
                                         <div class="col-sm-12" ng-if="domain.storage.defaultProvider">
                                             <div class="form-group" ng-class="{ 'has-error' : !domain.storage.maskPath}">
                                                 <label class="control-label">Mask path</label>
-                                                <input type="text" class="form-control" required data-ng-model="domain.storage.maskPath">
+                                                <input ng-disabled="viewMode" type="text" class="form-control" required data-ng-model="domain.storage.maskPath">
                                             </div>
                                         </div>
 
@@ -181,8 +181,8 @@
                                                         <td>
                                                             <div class="pull-right">
                                                                 <i ng-if="key == domain.storage.defaultProvider" class="icon glyphicon glyphicon-asterisk"></i>
-                                                                <button ng-click="removeStorage(key)" ng-if="canUpdate" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
-                                                                <button ng-click="updateStorage(key, params)" ng-if="canUpdate" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                                <button ng-disabled="viewMode" ng-click="removeStorage(key)" ng-if="canUpdate" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
+                                                                <button ng-disabled="viewMode" ng-click="updateStorage(key, params)" ng-if="canUpdate" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -199,7 +199,7 @@
                                     </tab-heading>
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <a ng-disabled="disableAction" ng-click="genApiToken()()" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                            <a ng-disabled="disableAction || viewMode" ng-click="genApiToken()()" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
                                                 <i class="fa fa-plus"></i>
                                             </a>
                                         </div>
@@ -238,7 +238,7 @@
                                                     <td>{{t.createdBy}}</td>
                                                     <td>{{timeToDateString(t.createdOn)}}</td>
                                                     <td >
-                                                        <div class="pull-right">
+                                                        <div class="pull-right" ng-if="!viewMode">
                                                             <button ng-show="t.enabled" ng-click="setStateApiToken(t.uuid, t.enabled)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon glyphicon-stop"></i></button>
                                                             <button ng-show="!t.enabled" ng-click="setStateApiToken(t.uuid, t.enabled)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon glyphicon-play"></i></button>
 
@@ -263,8 +263,8 @@
         </form>
 
         <div class="panel-footer">
-            <button ng-show="isEdit" type="button" ng-disabled="domainForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
-            <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button ng-show="isEdit && !viewMode" type="button" ng-disabled="domainForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
         </div>
 

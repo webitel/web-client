@@ -12,18 +12,18 @@
                     <div class="col-sm-4">
                         <div class="form-group" ng-class="{ 'has-error' : extensionForm.name.$invalid }">
                             <label class="control-label">Name</label>
-                            <input type="text" name="name" required class="form-control"  placeholder="Name" ng-model="extension.name">
+                            <input ng-disabled="viewMode" type="text" name="name" required class="form-control"  placeholder="Name" ng-model="extension.name">
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group" ng-class="{ 'has-error' : extensionForm.number.$invalid }">
                             <label class="control-label">Number</label>
-                            <input type="text" name="number" required class="form-control"  placeholder="Number" ng-model="extension.destination_number">
+                            <input ng-disabled="viewMode" type="text" name="number" required class="form-control"  placeholder="Number" ng-model="extension.destination_number">
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <label class="control-label">Time zone</label>
-                        <input typeahead-editable="false" typeahead-focus-on-select="true" typeahead-select-on-exact="true" typeahead-on-select="onSelectTimeZone" type="text" class="form-control"  placeholder="Time zone" ng-model="extension.fs_timezone"  typeahead="zone as zone.name for zone in timeZones | filter:{name:$viewValue}" >
+                        <input ng-disabled="viewMode" typeahead-editable="false" typeahead-focus-on-select="true" typeahead-select-on-exact="true" typeahead-on-select="onSelectTimeZone" type="text" class="form-control"  placeholder="Time zone" ng-model="extension.fs_timezone"  typeahead="zone as zone.name for zone in timeZones | filter:{name:$viewValue}" >
                     </div>
                 </div>
 
@@ -39,7 +39,7 @@
                                         <span>Callflow</span>
                                     </tab-heading>
                                     <div class="form-group">
-                                        <div ng-model="$parent.cf" ui-ace="{
+                                        <div ng-readonly="viewMode" ng-model="$parent.cf" ui-ace="{
 									  useWrapMode : true,
 									  showGutter: true,
 									  theme:'github',
@@ -63,7 +63,7 @@
                                         <span>On disconnect</span>
                                     </tab-heading>
                                     <div class="form-group">
-                                        <div data-ng-model="$parent.cfOnDisconnect" ui-ace="{
+                                        <div ng-readonly="viewMode" data-ng-model="$parent.cfOnDisconnect" ui-ace="{
 									  useWrapMode : true,
 									  showGutter: true,
 									  theme:'github',
@@ -90,8 +90,8 @@
         </div>
 
         <div class="panel-footer">
-            <button ng-show="isEdit" type="button" ng-disabled="extensionForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
-            <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button ng-show="isEdit && !viewMode" type="button" ng-disabled="extensionForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
         </div>
     </form>

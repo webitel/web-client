@@ -1,23 +1,23 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="no-border pull-left">
-            <a ng-click="addMember()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success"
+            <a ng-click="addMember()" ng-disabled="!domain || !canUpdate" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success"
                tooltip-popup-delay="800" tooltip="Add"
                 >
                 <i class="fa fa-plus"></i>
             </a>
 
-            <a ng-click="reloadData()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary"
+            <a ng-click="reloadData()" ng-disabled="!domain || !canUpdate" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary"
                tooltip-popup-delay="800" tooltip="Refresh">
                 <i class="glyphicon glyphicon-refresh"></i>
             </a>
 
-            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  ng-click="showImportPage()" style="padding: 0"
+            <span ng-disabled="!domain || !canUpdate" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  ng-click="showImportPage()" style="padding: 0"
                   tooltip-popup-delay="800" tooltip="Import">
                     <i class="glyphicon glyphicon-cloud-upload"></i>
             </span>
 
-            <span class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  ng-click="showResetPage()" style="padding: 0"
+            <span ng-disabled="!domain || !canUpdate" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  ng-click="showResetPage()" style="padding: 0"
                   tooltip-popup-delay="800" tooltip="Reset">
                     <i class="glyphicon glyphicon-retweet"></i>
             </span>
@@ -147,6 +147,7 @@
             <td rowspan="{{t.communications.length}}">
                 <div style="width: 63px" ng-if="true || !t._lock">
                     <a ng-click="editMember(t, $index)" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <a ng-click="editMember(t, $index, true)" ng-if="viewMode" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-file"></i></a>
 
                     <a href="javascript:;" ng-click="removeMember(t, $index)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                 </div>

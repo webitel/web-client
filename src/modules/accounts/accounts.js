@@ -6,13 +6,37 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.domain = webitel.domain();
         $scope.account = {};
         $scope.userVariables = utils.switchVar;
+
+        var myId = webitel.connection.session._id;
         $scope.canDelete = webitel.connection.session.checkResource('account', 'd');
         $scope.canUpdate = webitel.connection.session.checkResource('account', 'u');
+        var canUpdateO = webitel.connection.session.checkResource('account', 'uo');
         $scope.canCreate = webitel.connection.session.checkResource('account', 'c');
 
         $scope.canReadQueue = webitel.connection.session.checkResource('cc/queue', 'r');
         $scope.canCreateTier = webitel.connection.session.checkResource('cc/tiers', 'c');
         $scope.canDeleteTier = webitel.connection.session.checkResource('cc/tiers', 'd');
+            
+        $scope.getAccessRo = function (id) {
+            return canUpdateO && id === myId;
+        };
+
+        $scope.viewMode = !$scope.canUpdate;
+            
+        $scope.view = function () {
+            var id = $routeParams.id;
+            var domain = $routeParams.domain;
+
+            $scope.viewMode = !$scope.getAccessRo(id);
+
+            AccountModel.item(domain, id, function(err, item) {
+                if (err) {
+                    return notifi.error(err, 5000);
+                }
+                $scope.account = item;
+                disableEditMode();
+            });
+        };
 
         $scope.remVar = [];
         $scope.roles = [];
@@ -304,6 +328,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         };
 
         function edit () {
+            $scope.viewMode = false;
             var id = $routeParams.id;
             var domain = $routeParams.domain;
 

@@ -128,7 +128,14 @@ define(['angular', 'config'], function (angular, config) {
 			controller: 'AccountsCtrl',
 			controllerUrl: 'modules/accounts/accounts.js',
 			method: "edit"
-		}]
+		},{
+			href: '/accounts/:id/view',
+			templateUrl: 'modules/accounts/accountPage.html',
+			controller: 'AccountsCtrl',
+			controllerUrl: 'modules/accounts/accounts.js',
+			method: "view"
+		}
+		]
 	},
 	{
 		href: "#/gateways",
@@ -151,7 +158,13 @@ define(['angular', 'config'], function (angular, config) {
 			controller: 'GatewaysCtrl',
 			controllerUrl: 'modules/gateways/gateways.js',
 			method: "edit"
-		}]
+		},{
+            href: '/gateways/:id/view',
+            templateUrl: 'modules/gateways/gatewayPage.html',
+            controller: 'GatewaysCtrl',
+            controllerUrl: 'modules/gateways/gateways.js',
+            method: "view"
+        }]
 	},
 	{
 		href: "#/callflows",
@@ -187,6 +200,12 @@ define(['angular', 'config'], function (angular, config) {
 			controllerUrl: 'modules/callflows/default/default.js',
 			method: "edit"
 		},{
+            href: '/callflows/default/:id/view',
+            templateUrl: 'modules/callflows/default/defaultPage.html',
+            controller: 'CallflowDefaultCtrl',
+            controllerUrl: 'modules/callflows/default/default.js',
+            method: "view"
+        },{
 			list: true,
 			acl: 'rotes/public',
 			caption: 'Public',
@@ -208,7 +227,14 @@ define(['angular', 'config'], function (angular, config) {
 			controller: 'CallflowPublicCtrl',
 			controllerUrl: 'modules/callflows/public/public.js',
 			method: "edit"
-		}, {
+		},{
+            list: true,
+            href: '/callflows/public/:id/view',
+            templateUrl: 'modules/callflows/public/publicPage.html',
+            controller: 'CallflowPublicCtrl',
+            controllerUrl: 'modules/callflows/public/public.js',
+            method: "view"
+        }, {
 			list: true,
 			acl: 'rotes/extension',
 			caption: 'Extension',
@@ -222,7 +248,13 @@ define(['angular', 'config'], function (angular, config) {
 			controller: 'CallflowExtensionCtrl',
 			controllerUrl: 'modules/callflows/extension/extension.js',
 			method: "edit"
-		}, {
+		},{
+            href: '/callflows/extension/:id/view',
+            templateUrl: 'modules/callflows/extension/extensionPage.html',
+            controller: 'CallflowExtensionCtrl',
+            controllerUrl: 'modules/callflows/extension/extension.js',
+            method: "view"
+        }, {
 			list: true,
 			acl: 'blacklist',
 			caption: "Blacklists",
@@ -245,6 +277,13 @@ define(['angular', 'config'], function (angular, config) {
 			controller: 'BlackListCtrl',
 			controllerUrl: 'modules/callflows/blacklists/blacklists.js',
 			method: "edit"
+		}, {
+			list: true,
+			href: '/callflows/blacklists/:id/view',
+			templateUrl: 'modules/callflows/blacklists/blacklistPage.html',
+			controller: 'BlackListCtrl',
+			controllerUrl: 'modules/callflows/blacklists/blacklists.js',
+			method: "view"
 		},{
 			list: true,
 			acl: 'rotes/domain',
@@ -277,6 +316,12 @@ define(['angular', 'config'], function (angular, config) {
 			controller: 'CalendarCtrl',
 			controllerUrl: 'modules/calendar/calendar.js',
 			method: "edit"
+		},{
+			href: '/calendars/:id/view',
+			templateUrl: 'modules/calendar/calendarPage.html',
+			controller: 'CalendarCtrl',
+			controllerUrl: 'modules/calendar/calendar.js',
+			method: "view"
 		}]
 	},
 	{
@@ -320,6 +365,12 @@ define(['angular', 'config'], function (angular, config) {
 			controller: 'ACDCtrl',
 			controllerUrl: 'modules/acd/acd.js',
 			method: "edit"
+		},{
+			href: '/acd/:id/view',
+			templateUrl: 'modules/acd/acdPage.html',
+			controller: 'ACDCtrl',
+			controllerUrl: 'modules/acd/acd.js',
+			method: "view"
 		}]
 	},
 	{
@@ -343,6 +394,12 @@ define(['angular', 'config'], function (angular, config) {
 			controller: 'DialerCtrl',
 			controllerUrl: 'modules/dialer/dialer.js',
 			method: "edit"
+		},{
+			href: '/dialer/:id/view',
+			templateUrl: 'modules/dialer/dialerPage.html',
+			controller: 'DialerCtrl',
+			controllerUrl: 'modules/dialer/dialer.js',
+			method: "view"
 		}]
 	},
 	{
@@ -376,6 +433,12 @@ define(['angular', 'config'], function (angular, config) {
 			controller: 'HookCtrl',
 			controllerUrl: 'modules/hooks/hook.js',
 			method: "edit"
+		},{
+			href: '/hooks/:id/view',
+			templateUrl: 'modules/hooks/hookPage.html',
+			controller: 'HookCtrl',
+			controllerUrl: 'modules/hooks/hook.js',
+			method: "view"
 		}]
 	},
 	{

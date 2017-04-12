@@ -58,6 +58,24 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        $scope.canUpdate = webitel.connection.session.checkResource('rotes/default', 'u');
 	        $scope.canCreate = webitel.connection.session.checkResource('rotes/default', 'c');
 
+			$scope.viewMode = !$scope.canUpdate;
+			$scope.view = function () {
+				initPage();
+				var id = $routeParams.id;
+				var domain = $routeParams.domain;
+				CallflowDefaultModel.item(id, domain, function (err, res) {
+					if (err)
+						return notifi.error(err);
+					$scope.default = res;
+					var cf = callflowUtils.replaceExpression(res.callflow);
+					var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
+					$scope.cf = aceEditor.getStrFromJson(cf);
+					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
+					disableEditMode();
+				});
+			};
+
+
 	        $scope.closePage = closePage;
 	        $scope.edit = edit;
 	        $scope.create = create;

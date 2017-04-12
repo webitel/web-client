@@ -29,7 +29,7 @@
                 </tr>
                 <tr>
                     <th>
-                        <input typeahead-editable="true"
+                        <input ng-disabled="viewMode" typeahead-editable="true"
                                autocomplete="off"
                                typeahead-focus-on-select="true"
                                typeahead-select-on-exact="true"
@@ -42,7 +42,7 @@
                     </th>
 
                     <th style="border-right-style: solid;">
-                        <input typeahead-editable="true"
+                        <input ng-disabled="viewMode" typeahead-editable="true"
                                autocomplete="off"
                                typeahead-focus-on-select="true"
                                typeahead-select-on-exact="true"
@@ -57,11 +57,11 @@
 
                     <th class="text-center">
                         <div class="form-inline">
-                            <select class="form-control" data-ng-model="rangeType.startHour">
+                            <select ng-disabled="viewMode" class="form-control" data-ng-model="rangeType.startHour">
                                 <option value="{{i}}" ng-selected="{{i==rangeType.startHour}}" ng-repeat="i in getNumber(24) track by $index">{{i}}</option>
                             </select>
                             <label>:</label>
-                            <select class="form-control" data-ng-model="rangeType.startMinute">
+                            <select ng-disabled="viewMode" class="form-control" data-ng-model="rangeType.startMinute">
                                 <option value="{{i}}" ng-selected="{{i==rangeType.startMinute}}" ng-repeat="i in getNumber(60) track by $index">{{i}}</option>
                             </select>
                         </div>
@@ -72,28 +72,28 @@
                     </th>
                     <th class="text-center">
                         <div class="form-inline">
-                            <select class="form-control" ng-model="rangeType.endHour">
+                            <select ng-disabled="viewMode" class="form-control" ng-model="rangeType.endHour">
                                 <option value="{{i}}" ng-selected="{{i==rangeType.endHour}}" ng-repeat="i in getNumber(24) track by $index">{{i}}</option>
                             </select>
                             <label>:</label>
-                            <select class="form-control" data-ng-model="rangeType.endMinute" ng-init="17">
+                            <select ng-disabled="viewMode" class="form-control" data-ng-model="rangeType.endMinute" ng-init="17">
                                 <option value="{{i}}" ng-selected="{{i==rangeType.endMinute}}" ng-repeat="i in getNumber(60) track by $index">{{i}}</option>
                             </select>
                         </div>
                     </th>
 
                     <th >
-                        <input class="form-control" type="number"  ng-model="rangeType.priority" style="max-width: 70px; "
+                        <input ng-disabled="viewMode" class="form-control" type="number"  ng-model="rangeType.priority" style="max-width: 70px; "
                                min="0" max="999">
                     </th>
 
                     <th>
-                        <input class="form-control" type="number"  ng-model="rangeType.attempts" style="max-width: 70px;"
+                        <input ng-disabled="viewMode" class="form-control" type="number"  ng-model="rangeType.attempts" style="max-width: 70px;"
                                min="0" max="999">
                     </th>
 
                     <th class="text-center">
-                        <button class="btn btn-default" ng-click="addRangeType(rangeType, dialer.communications)">Add</button>
+                        <button ng-disabled="viewMode" class="btn btn-default" ng-click="addRangeType(rangeType, dialer.communications)">Add</button>
                     </th>
                 </tr>
                 </thead>
@@ -122,9 +122,9 @@
 
                     </td>
                     <td>
-                        <button ng-if="_editRangeRowKey == rowName.code" ng-click="saveRangeName(_editRangeRowRow, rowName, dialer.communications.types)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-save"></i></button>
-                        <button ng-if="_editRangeRowKey != rowName.code" ng-click="editRangeName(rowName, rowName.code)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
-                        <button href="javascript:;" ng-click="removeRangeName(key, dialer.communications.types);" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
+                        <button ng-disabled="viewMode" ng-if="_editRangeRowKey == rowName.code" ng-click="saveRangeName(_editRangeRowRow, rowName, dialer.communications.types)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-save"></i></button>
+                        <button ng-disabled="viewMode" ng-if="_editRangeRowKey != rowName.code" ng-click="editRangeName(rowName, rowName.code)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
+                        <button ng-disabled="viewMode" ng-click="removeRangeName(key, dialer.communications.types);" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
                     </td>
                 </tr>
                 <tr ng-repeat-end data-ng-repeat="(key, range) in rowName.ranges | orderBy:'startTime'">
@@ -185,9 +185,9 @@
                     </td>
 
                     <td>
-                        <button ng-if="_editRangeRowKey == rowName.code + $index" ng-click="saveRangeRow(range, rowName.ranges)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-save"></i></button>
-                        <button ng-if="_editRangeRowKey != rowName.code + $index" ng-click="editRangeRow(range, rowName.code + $index)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
-                        <button href="javascript:;" ng-click="removeRange(rowName, range, key);" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
+                        <button ng-disabled="viewMode" ng-if="_editRangeRowKey == rowName.code + $index" ng-click="saveRangeRow(range, rowName.ranges)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-save"></i></button>
+                        <button ng-disabled="viewMode" ng-if="_editRangeRowKey != rowName.code + $index" ng-click="editRangeRow(range, rowName.code + $index)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
+                        <button ng-disabled="viewMode" ng-click="removeRange(rowName, range, key);" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
                     </td>
 
                 </tr>

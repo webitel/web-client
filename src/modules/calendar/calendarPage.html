@@ -9,11 +9,11 @@
                 <div class="col-sm-6">
                     <div class="form-group" ng-class="{ 'has-error' : calendarForm.name.$invalid }">
                         <label class="control-label">Name</label>
-                        <input type="text" class="form-control" name="name" required data-ng-model="calendar.name" style="">
+                        <input ng-disabled="viewMode" type="text" class="form-control" name="name" required data-ng-model="calendar.name" style="">
                     </div>
                     <div class="form-group" ng-class="{ 'has-error' : calendarForm.description.$invalid }">
                         <label class="control-label">Description</label>
-                        <input type="text" class="form-control" name="description" required data-ng-model="calendar.description" style="">
+                        <input ng-disabled="viewMode" type="text" class="form-control" name="description" required data-ng-model="calendar.description" style="">
                     </div>
                 </div>
 
@@ -26,7 +26,8 @@
                             <div class="form-group">
                                 <label for>Start</label>
                                 <div class="input-group ui-datepicker">
-                                    <input type="text"
+                                    <input ng-disabled="viewMode"
+                                           type="text"
                                            class="form-control"
                                            datepicker-popup="dd.MM.yyyy"
                                            ng-model="calendar._startDate"
@@ -34,7 +35,7 @@
                                            datepicker-options="dateOptions"
                                            ng-change="changeDate('startDate')"
                                             >
-                                    <span class="btn input-group-addon" ng-click="openDate($event, 'openedDateStart')"><i class="fa fa-calendar"></i></span>
+                                    <span ng-disabled="viewMode" class="btn input-group-addon" ng-click="openDate($event, 'openedDateStart')"><i class="fa fa-calendar"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -43,7 +44,8 @@
 
                                 <label for>End</label>
                                 <div class="calendar-end-time input-group ui-datepicker">
-                                    <input type="text"
+                                    <input ng-disabled="viewMode"
+                                           type="text"
                                            class="form-control"
                                            datepicker-popup="dd.MM.yyyy"
                                            ng-model="calendar._endDate"
@@ -51,7 +53,7 @@
                                            datepicker-options="dateOptions"
                                            ng-change="changeDate('endDate')"
                                             >
-                                    <span class="btn input-group-addon" ng-click="openDate($event,'openedDateEnd')"><i class="fa fa-calendar"></i></span>
+                                    <span ng-disabled="viewMode" class="btn input-group-addon" ng-click="openDate($event,'openedDateEnd')"><i class="fa fa-calendar"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -59,7 +61,8 @@
 
                     <div class="form-group" ng-class="{ 'has-error' :  calendarForm.timezone.$invalid}">
                         <label class="control-label">Time zone</label>
-                        <input typeahead-editable="false"
+                        <input ng-disabled="viewMode"
+                                typeahead-editable="false"
                                required
                                typeahead-focus-on-select="true"
                                typeahead-select-on-exact="true"
@@ -82,17 +85,17 @@
                     <thead ng-class="{'bg-danger': _hourError, 'bg-gray':!_hourError}">
                         <tr>
                             <th>
-                                <select class="form-control" data-ng-model="newAccept.weekDay">
+                                <select ng-disabled="viewMode" class="form-control" data-ng-model="newAccept.weekDay">
                                     <option value="{{key}}"  ng-selected="{{key==newAccept.weekDay}}" ng-repeat="(key, day) in mapDays">{{day}}</option>
                                 </select>
                             </th>
                             <th class="text-center">
                                 <div class="form-inline">
-                                    <select class="form-control" data-ng-model="newAccept.startHour">
+                                    <select  ng-disabled="viewMode" class="form-control" data-ng-model="newAccept.startHour">
                                         <option value="{{i}}" ng-selected="{{i==newAccept.startHour}}" ng-repeat="i in getNumber(24) track by $index">{{i}}</option>
                                     </select>
                                     <label>:</label>
-                                    <select class="form-control" data-ng-model="newAccept.startMinute">
+                                    <select ng-disabled="viewMode" class="form-control" data-ng-model="newAccept.startMinute">
                                         <option value="{{i}}" ng-selected="{{i==newAccept.startMinute}}" ng-repeat="i in getNumber(60) track by $index">{{i}}</option>
                                     </select>
                                 </div>
@@ -103,18 +106,18 @@
                             </th>
                             <th class="text-center">
                                 <div class="form-inline">
-                                    <select class="form-control" ng-model="newAccept.endHour">
+                                    <select ng-disabled="viewMode" class="form-control" ng-model="newAccept.endHour">
                                         <option value="{{i}}" ng-selected="{{i==newAccept.endHour}}" ng-repeat="i in getNumber(24) track by $index">{{i}}</option>
                                     </select>
                                     <label>:</label>
-                                    <select class="form-control" data-ng-model="newAccept.endMinute" ng-init="17">
+                                    <select ng-disabled="viewMode" class="form-control" data-ng-model="newAccept.endMinute" ng-init="17">
                                         <option value="{{i}}" ng-selected="{{i==newAccept.endMinute}}" ng-repeat="i in getNumber(60) track by $index">{{i}}</option>
                                     </select>
                                 </div>
                             </th>
 
                             <th class="text-center">
-                                <button class="btn btn-default" ng-click="addAcceptDay(newAccept)">Add</button>
+                                <button ng-disabled="viewMode" class="btn btn-default" ng-click="addAcceptDay(newAccept)">Add</button>
                             </th>
                         </tr>
                     </thead>
@@ -168,12 +171,9 @@
 
 
                             <td>
-                                <p>
-                                    <a ng-if="editRowWorkWeekKey == key" ng-click="saveEditWorkWeekRow(row, key)" class="text-muted ng-scope"><i class="glyphicon glyphicon-save"></i></a>
-                                    <a ng-if="editRowWorkWeekKey != key" ng-click="setEditWorkWeekRow(row, key)" class="text-muted ng-scope"><i class="glyphicon glyphicon-pencil"></i></a>
-                                    <span class="space space-xs"></span>
-                                    <a href="javascript:;" ng-click="removeRowByKey(row, 'accept');" class="text-muted ng-scope"><i class="glyphicon glyphicon-remove"></i></a>
-                                </p>
+                                <a href="javascript:;" ng-disabled="viewMode" ng-if="editRowWorkWeekKey == key" ng-click="saveEditWorkWeekRow(row, key)" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-save"></i></a>
+                                <a href="javascript:;" ng-disabled="viewMode" ng-if="editRowWorkWeekKey != key" ng-click="setEditWorkWeekRow(row, key)" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                                <a href="javascript:;" ng-disabled="viewMode" ng-click="removeRowByKey(row, 'accept');" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
 
                             </td>
 
@@ -210,11 +210,11 @@
 
                         <tr ng-class="{'bg-danger': _hourError_, 'bg-gray':!_hourError_}">
                             <td>
-                                <input type="text" class="form-control" data-ng-model="holiday.name" style="">
+                                <input  ng-disabled="viewMode" type="text" class="form-control" data-ng-model="holiday.name" style="">
                             </td>
                             <td id="test" class="text-center" style="width: 300px">
                                 <div class="calendar-popup-top input-group ui-datepicker">
-                                    <input type="text"
+                                    <input  ng-disabled="viewMode" type="text"
                                            class="form-control"
                                            datepicker-popup="dd.MM.yyyy"
                                            ng-model="holiday.date"
@@ -222,19 +222,19 @@
                                            datepicker-options="dateOptions"
                                            show-button-bar="true"
                                             >
-                                    <span class=" btn input-group-addon" ng-click="openDate($event, 'openedHolidays')"><i class="fa fa-calendar"></i></span>
+                                    <span  ng-disabled="viewMode" class=" btn input-group-addon" ng-click="openDate($event, 'openedHolidays')"><i class="fa fa-calendar"></i></span>
                                 </div>
                             </td>
 
                             <td class="text-center">
-                                <select class="form-control" data-ng-model="holiday.repeat" >
+                                <select  ng-disabled="viewMode" class="form-control" data-ng-model="holiday.repeat" >
                                     <option value="0">Never</option>
                                     <option value="1">Each year</option>
                                 </select>
                             </td>
 
                             <td class="text-center">
-                                <button class="btn btn-default" ng-click="addHoliday(holiday)">Add</button>
+                                <button  ng-disabled="viewMode" class="btn btn-default" ng-click="addHoliday(holiday)">Add</button>
                             </td>
                         </tr>
 
@@ -254,7 +254,7 @@
                                 <p>
                                     <!--<a href="javascript:;" ng-click="calendar.except.splice(key, 1)" class="text-muted ng-scope"><i class="glyphicon glyphicon-pencil"></i></a>-->
                                     <!--<span class="space space-xs"></span>-->
-                                    <a href="javascript:;" ng-click="removeExcept(row)" class="text-muted ng-scope"><i class="glyphicon glyphicon-remove"></i></a>
+                                    <a href="javascript:;"  ng-disabled="viewMode" ng-click="removeExcept(row)" class="text-muted ng-scope"><i class="glyphicon glyphicon-remove"></i></a>
                                 </p>
 
                             </td>
@@ -267,8 +267,8 @@
 
         <div class="panel-footer">
             <!--<btn-save-exit save="save" save-exit="save"></btn-save-exit>-->
-            <button ng-show="isEdit" type="button" ng-disabled="calendarForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
-            <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button ng-show="isEdit && !viewMode" type="button" ng-disabled="calendarForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
         </div>
 

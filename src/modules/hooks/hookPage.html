@@ -17,12 +17,12 @@
                                         <div class="col-sm-6">
                                             <div class="form-group" ng-class="{ 'has-error' : !hook.action.url }">
                                                 <label class="control-label">URI</label>
-                                                <input type="text" name="url" class="form-control" required data-ng-model="hook.action.url">
+                                                <input ng-disabled="viewMode" type="text" name="url" class="form-control" required data-ng-model="hook.action.url">
                                             </div>
 
                                             <div class="form-group" ng-class="{ 'has-error' : hookForm.method.$invalid }">
                                                 <label class="control-label">Method</label>
-                                                <select class="form-control" name="method" ng-model="hook.action.method">
+                                                <select ng-disabled="viewMode" class="form-control" name="method" ng-model="hook.action.method">
                                                     <option>GET</option>
                                                     <option>POST</option>
                                                     <option>PUT</option>
@@ -32,24 +32,24 @@
 
                                             <div class="form-group" ng-class="{ 'has-error' : !hook.event}">
                                                 <label class="control-label" >Event</label>
-                                                <select class="form-control" name="event" ng-model="hook.event" required >
+                                                <select ng-disabled="viewMode" class="form-control" name="event" ng-model="hook.event" required >
                                                     <option ng-repeat="option in EVENTS" value="{{option}}">{{option}}</option>
                                                 </select>
                                             </div>
 
                                             <div class="form-group" >
                                                 <label for>Description</label>
-                                                <input type="text" class="form-control" data-ng-model="hook.description" style="">
+                                                <input ng-disabled="viewMode" type="text" class="form-control" data-ng-model="hook.description" style="">
                                             </div>
 
                                             <div class="form-inline">
                                                 <div class="form-group" >
                                                     <label for>Enable</label>
-                                                    <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="hook.enable"><i></i></label>
+                                                    <label style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="hook.enable"><i></i></label>
                                                 </div>
                                                 <div class="form-group " >
                                                     <label for>Auth</label>
-                                                    <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="hook.auth.enabled"><i></i></label>
+                                                    <label style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="hook.auth.enabled"><i></i></label>
                                                 </div>
                                             </div>
 
@@ -98,12 +98,12 @@
                                         <div class="col-sm-6">
                                             <div class="form-group" ng-class="{ 'has-error' : !hook.auth.url }">
                                                 <label class="control-label">Auth URI</label>
-                                                <input type="text" name="authUrl" class="form-control" required data-ng-model="hook.auth.url">
+                                                <input ng-disabled="viewMode" type="text" name="authUrl" class="form-control" required data-ng-model="hook.auth.url">
                                             </div>
 
                                             <div class="form-group" ng-class="{ 'has-error' : !hook.auth.method }">
                                                 <label class="control-label">Method</label>
-                                                <select class="form-control" name="authMethod" ng-model="hook.auth.method">
+                                                <select ng-disabled="viewMode" class="form-control" name="authMethod" ng-model="hook.auth.method">
                                                     <option>GET</option>
                                                     <option>POST</option>
                                                     <option>PUT</option>
@@ -113,7 +113,7 @@
 
                                             <div class="form-group " >
                                                 <label for>Export cookie</label>
-                                                <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="hook.auth.cookie"><i></i></label>
+                                                <label style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="hook.auth.cookie"><i></i></label>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -150,8 +150,8 @@
 
         <div class="panel-footer">
             <!--<btn-save-exit save="save" save-exit="save"></btn-save-exit>-->
-            <button ng-show="isEdit" type="button" ng-disabled="!hook.action.url || !hook.event || !hook.event || (hook.auth.enabled && (!hook.auth.url || !hook.auth.method))" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
-            <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button ng-show="isEdit && !viewMode" type="button" ng-disabled="!hook.action.url || !hook.event || !hook.event || (hook.auth.enabled && (!hook.auth.url || !hook.auth.method))" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
         </div>
 

@@ -10,25 +10,25 @@
 
                     <div class="form-group" ng-class="{ 'has-error' : memberForm.name.$invalid}">
                         <label class="control-label">Name</label>
-                        <input type="text"  class="form-control" name="name" required ng-model="member.name" >
+                        <input ng-disabled="viewMode" type="text"  class="form-control" name="name" required ng-model="member.name" >
                     </div>
 
                     <div class="form-group" ng-class="{ 'has-error' : memberForm.priority.$invalid}">
                         <label class="control-label">Priority</label>
-                        <input class="form-control" type="number" name="priority" ng-model="member.priority" min="0"  required>
+                        <input ng-disabled="viewMode" class="form-control" type="number" name="priority" ng-model="member.priority" min="0"  required>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label">Expire</label>
                         <div class="input-group ui-datepicker">
-                            <input type="text"
+                            <input ng-disabled="viewMode" type="text"
                                    class="form-control"
                                    datetime-picker="dd.MM.yyyy HH:mm"
                                    ng-model="member._expire"
                                    ng-change="changeDate()"
                                    is-open="dateOpenedControl"
                             >
-                            <span class="btn input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
+                            <span ng-disabled="viewMode" class="btn input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
                         </div>
                     </div>
 
@@ -49,7 +49,7 @@
 
                     <div class="form-group" ng-if="false">
                         <label for>Time zone</label>
-                        <input typeahead-show-hint="true" typeahead-min-length="0"
+                        <input ng-disabled="viewMode" typeahead-show-hint="true" typeahead-min-length="0"
                                type="text" class="form-control"
                                ng-model="member.timezone"
                                placeholder="Time zone"
@@ -72,7 +72,7 @@
                                     <tab-heading>
                                         <span>Communications</span>
                                     </tab-heading>
-                                        <a ng-click="addCommunication(member)" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                                        <a ng-disabled="viewMode" ng-click="addCommunication(member)" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
                                             <i class="fa fa-plus"></i>
                                         </a>
                                         <div class="row">
@@ -120,16 +120,16 @@
                                                         <td style="white-space: nowrap">
                                                             <!-- form -->
                                                             <form editable-form name="rowform"  ng-show="rowform.$visible" onaftersave="checkCommunication($data)" class="form-buttons form-inline" shown="inserted == communication">
-                                                                <button type="submit" ng-disabled="rowform.$waiting"  class="btn btn-sm btn-primary">
+                                                                <button type="submit" ng-disabled="rowform.$waiting || viewMode"  class="btn btn-sm btn-primary">
                                                                     <i class="glyphicon glyphicon-save"></i>
                                                                 </button>
-                                                                <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                                                                <button type="button" ng-disabled="rowform.$waiting || viewMode" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
                                                                     <i class="glyphicon glyphicon-repeat"></i>
                                                                 </button>
                                                             </form>
                                                             <div class="buttons" ng-show="!rowform.$visible">
-                                                                <button ng-click="rowform.$show()" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
-                                                                <button ng-click="removeCommunication($index)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
+                                                                <button ng-disabled="viewMode" ng-click="rowform.$show()" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                                <button ng-disabled="viewMode" ng-click="removeCommunication($index)" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -263,6 +263,6 @@
         </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="ok()">Save</button>
-    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+    <button ng-show="!viewMode" class="btn btn-primary" type="button" ng-click="ok()">Save</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Close</button>
 </div>

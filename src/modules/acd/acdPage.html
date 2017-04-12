@@ -6,12 +6,12 @@
                 <div class="col-sm-5">
                     <div class="form-group" ng-class="{ 'has-error' : acdForm.name.$invalid }">
                         <label class="control-label">Name</label>
-                        <input type="text" name="name" class="form-control" required ng-disabled="!queue._new" data-ng-model="queue.id" style="">
+                        <input type="text" name="name" class="form-control" required ng-disabled="!queue._new || viewMode" data-ng-model="queue.id" style="">
                     </div>
 
                     <div class="form-group" ng-class="{ 'has-error' : acdForm.strategy.$invalid }">
                         <label class="control-label">Strategy</label>
-                        <select class="form-control" required name="strategy" ng-model="queue.strategy">
+                        <select ng-disabled="viewMode" class="form-control" required name="strategy" ng-model="queue.strategy">
                             <option value="longest-idle-agent">Longest-idle-agent</option>
                             <option value="ring-all">Ring-all</option>
                             <option value="round-robin">Round-robin</option>
@@ -26,12 +26,12 @@
 
                     <div class="form-group" >
                         <label class="control-label">Description</label>
-                        <input type="text" class="form-control"  data-ng-model="queue.description" style="">
+                        <input ng-disabled="viewMode" type="text" class="form-control"  data-ng-model="queue.description" style="">
                     </div>
 
                     <div ng-if="!queue._new" class="form-group" >
                         <label for>Enabled</label>
-                        <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-change="toggleQueueStatus(queue, queue.id)" ng-model="queue.enable" class="ng-valid ng-dirty"><i></i></label>
+                        <label style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-change="toggleQueueStatus(queue, queue.id)" ng-model="queue.enable" class="ng-valid ng-dirty"><i></i></label>
                     </div>
 
                 </div>
@@ -45,11 +45,11 @@
                                     </tab-heading>
                                     <div class="form-group" >
                                         <label class="control-label">Moh sound</label>
-                                        <input type="text" class="form-control" data-ng-model="queue['moh-sound']"  typeahead-on-select="onSelectMedia($item, $model, $label, $event)" typeahead="itm as itm.name for itm in getMedia($viewValue) | filter:$viewValue | limitTo:8">
+                                        <input ng-disabled="viewMode" type="text" class="form-control" data-ng-model="queue['moh-sound']"  typeahead-on-select="onSelectMedia($item, $model, $label, $event)" typeahead="itm as itm.name for itm in getMedia($viewValue) | filter:$viewValue | limitTo:8">
                                     </div>
                                     <div class="form-group" >
                                         <label class="control-label">Time base score</label>
-                                        <select class="form-control" required ng-model="queue['time-base-score']">
+                                        <select ng-disabled="viewMode" class="form-control" required ng-model="queue['time-base-score']">
                                             <option value="system">System</option>
                                             <option value="queue">Queue</option>
                                         </select>
@@ -59,13 +59,13 @@
                                         <div class="row">
                                             <div class="col-sm-6" ng-class="{ 'has-error' : acdForm.discard.$invalid }">
                                                 <label class="control-label">Discard abandoned after</label>
-                                                <input class="form-control" type="number" name="discard" ng-model="queue['discard-abandoned-after']"
+                                                <input ng-disabled="viewMode" class="form-control" type="number" name="discard" ng-model="queue['discard-abandoned-after']"
                                                        min="0" max="999" required>
                                             </div>
 
                                             <div class="col-sm-6" >
                                                 <label for>Abandoned resume allowed</label>
-                                                <label style="width: 100%;"  class="switch switch-success"><input type="checkbox" ng-model="queue['abandoned-resume-allowed']"><i></i></label>
+                                                <label style="width: 100%;"  class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="queue['abandoned-resume-allowed']"><i></i></label>
                                             </div>
                                         </div>
                                     </div>
@@ -81,7 +81,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group" ng-class="{ 'has-error' : acdForm.maxWaitTime.$invalid }">
                                                 <label class="control-label">Max wait time</label>
-                                                <input class="form-control" type="number" name="maxWaitTime" ng-model="queue['max-wait-time']"
+                                                <input ng-disabled="viewMode" class="form-control" type="number" name="maxWaitTime" ng-model="queue['max-wait-time']"
                                                        min="0" max="999999" required>
                                             </div>
                                         </div>
@@ -89,7 +89,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group" ng-class="{ 'has-error' : acdForm.maxWaitNoAgent.$invalid }">
                                                 <label class="control-label">Max wait time with no agent</label>
-                                                <input class="form-control" type="number" name="maxWaitNoAgent" ng-model="queue['max-wait-time-with-no-agent']"
+                                                <input ng-disabled="viewMode" class="form-control" type="number" name="maxWaitNoAgent" ng-model="queue['max-wait-time-with-no-agent']"
                                                        min="0" max="999999" required>
                                             </div>
                                         </div>
@@ -97,7 +97,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group" ng-class="{ 'has-error' : acdForm.maxWaitNoAgentReached.$invalid }">
                                                 <label class="control-label">Max wait time with no agent time reached</label>
-                                                <input class="form-control" type="number" name="maxWaitNoAgentReached" ng-model="queue['max-wait-time-with-no-agent-time-reached']"
+                                                <input ng-disabled="viewMode" class="form-control" type="number" name="maxWaitNoAgentReached" ng-model="queue['max-wait-time-with-no-agent-time-reached']"
                                                        min="0" max="999999" required>
                                             </div>
                                         </div>
@@ -105,7 +105,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group" ng-class="{ 'has-error' : acdForm.ringProgressive.$invalid }">
                                                 <label class="control-label">Ring progressively delay</label>
-                                                <input class="form-control" type="number" name="ringProgressive" ng-model="queue['ring-progressively-delay']"
+                                                <input ng-disabled="viewMode" class="form-control" type="number" name="ringProgressive" ng-model="queue['ring-progressively-delay']"
                                                        min="0" max="999999" required>
                                             </div>
                                         </div>
@@ -238,8 +238,8 @@
         </div>
 
         <div class="panel-footer">
-            <button ng-show="isEdit" type="button" ng-disabled="acdForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
-            <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button ng-show="isEdit && !viewMode" type="button" ng-disabled="acdForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
         </div>
 

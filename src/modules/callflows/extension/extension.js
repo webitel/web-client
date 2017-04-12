@@ -11,6 +11,27 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
             $scope.extension = {};
             $scope.isLoading = false;
 
+            $scope.canDelete = webitel.connection.session.checkResource('rotes/extension', 'd');
+            $scope.canUpdate = webitel.connection.session.checkResource('rotes/extension', 'u');
+            $scope.canCreate = webitel.connection.session.checkResource('rotes/extension', 'c');
+
+            $scope.viewMode = !$scope.canUpdate;
+            
+            $scope.view = function () {
+                var id = $routeParams.id;
+                var domain = $routeParams.domain;
+                CallflowExtensionModel.item(id, domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err);
+                    $scope.extension = res;
+                    var cf = callflowUtils.replaceExpression(res.callflow);
+                    var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
+                    $scope.cf = aceEditor.getStrFromJson(cf);
+                    $scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
+                    disableEditMode();
+                });
+            };
+
             $scope.query = TableSearch.get('extensions');
 
             $scope.$watch("query", function (newVal) {

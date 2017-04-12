@@ -36,6 +36,12 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/hooks/hookModel'], fu
         $scope.canCreate = webitel.connection.session.checkResource('hook', 'c');
         $scope.EVENTS = utils.events;
 
+        $scope.viewMode = !$scope.canUpdate;
+        $scope.view = function () {
+            $scope.viewMode = true;
+            edit();
+        };
+
         $scope.remVar = [];
         $scope.roles = [];
         $scope.queues = {};

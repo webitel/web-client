@@ -14,6 +14,21 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/acd/acdModel', 'module
             $scope.canDeleteTiers = webitel.connection.session.checkResource('cc/tiers', 'd');
             $scope.canReadTiers   = webitel.connection.session.checkResource('cc/tiers', 'r');
 
+            $scope.viewMode = !$scope.canUpdate;
+            $scope.view = function () {
+                var id = $routeParams.id;
+                var domain = $routeParams.domain;
+
+                AcdModel.item(id, domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err);
+                    $scope.queue = res;
+                    $scope.queue.id  = id;
+                    reloadTiers($scope.queue.id);
+                    disableEditMode();
+                })
+            };
+
             $scope.domain = webitel.domain();
             $scope.queue = {};
 

@@ -8,6 +8,19 @@ define(['app', 'scripts/webitel/utils', 'moment', 'modules/calendar/calendarMode
             $scope.canUpdate = webitel.connection.session.checkResource('calendar', 'u');
             $scope.canCreate = webitel.connection.session.checkResource('calendar', 'c');
 
+            $scope.viewMode = !$scope.canUpdate;
+            $scope.view = function () {
+                var id = $routeParams.id;
+                var domain = $routeParams.domain;
+                CalendarModel.item(domain, id, function(err, item) {
+                    if (err) {
+                        return notifi.error(err, 5000);
+                    }
+                    $scope.calendar = item;
+                    disableEditMode();
+                });
+            };
+
             $scope.domain = webitel.domain();
 
             $scope.timeZones = utils.timeZones;

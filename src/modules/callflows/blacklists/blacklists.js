@@ -17,6 +17,15 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'scripts/webitel/utils', '
         $scope.canUpdate = webitel.connection.session.checkResource('blacklist', 'u');
         $scope.canCreate = webitel.connection.session.checkResource('blacklist', 'c');
 
+        $scope.viewMode = !$scope.canUpdate;
+        $scope.view = function () {
+            var id = $routeParams.id;
+            var domain = $routeParams.domain;
+
+            $scope.blacklist.name = id;
+            $scope.isEdit = true;
+        };
+
         $scope.isLoading = false;
         $scope.query = TableSearch.get('blacklists');
 

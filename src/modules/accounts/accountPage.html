@@ -14,23 +14,23 @@
                                     <label class="control-label">
                                         {{options.multiInsert ? 'Id (from)' : 'Id'}}
                                     </label>
-                                    <input type="text" name="id" class="form-control" required ng-disabled="!account._new" data-ng-model="account.id">
+                                    <input type="text" name="id" class="form-control" required ng-disabled="!account._new || viewMode" data-ng-model="account.id">
                                 </div>
                             </div>
                             <div ng-if="options.multiInsert" class="col-sm-6">
                                 <div class="form-group" ng-class="{ 'has-error' : accountForm.id.$invalid }">
                                     <label class="control-label">Id (to)</label>
-                                    <input type="text" name="id" class="form-control" required ng-disabled="!account._new" data-ng-model="options.to">
+                                    <input type="text" name="id" class="form-control" required ng-disabled="!account._new || viewMode" data-ng-model="options.to">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group" ng-class="{ 'has-error' : accountForm.password.$invalid }">
+                        <div ng-if="!viewMode" class="form-group" ng-class="{ 'has-error' : accountForm.password.$invalid }">
                             <label class="control-label">Password</label>
                             <!--<input autocomplete="off" name="password" ng-required="account._new" type="text" style="-webkit-text-security: disc;" class="form-control" data-ng-model="account.password">-->
                             <div class="input-group">
                                 <input type="text" class="form-control" name="password" ng-required="account._new"  autocomplete="off" data-ng-model="account.password" >
-                                    <span class="input-group-btn">
+                                    <span class="input-group-btn" >
                                         <button ng-show="account.password.length > 0" class="btn btn-default" type="button" clipboard text="account.password" on-copied="onCopied()" on-error="onCopiedFail(err)">
                                             <i class="fa fa-files-o"></i>
                                         </button>
@@ -43,12 +43,12 @@
 
                         <div class="form-group" >
                             <label class="control-label">Access PIN</label>
-                            <input type="text"  class="form-control" data-ng-model="account['vm-password']">
+                            <input ng-disabled="viewMode" type="text"  class="form-control" data-ng-model="account['vm-password']">
                         </div>
 
                         <div class="form-group" ng-class="{ 'has-error' : accountForm.role.$invalid }">
                             <label class="control-label">Role</label>
-                            <select class="form-control" name="role" required ng-model="account.variable_account_role"
+                            <select ng-disabled="viewMode"  class="form-control" name="role" required ng-model="account.variable_account_role"
                                     ng-init="getRoles()">
                                 <option ng-repeat="role in roles" ng-selected="{{role==account.variable_account_role}}" value="{{role}}">{{role}}</option>
                             </select>
@@ -58,12 +58,12 @@
                     <div class="col-sm-6">
                         <div class="form-group" >
                             <label for>Name</label>
-                            <input type="text"  class="form-control"  ng-model="account.variable_effective_caller_id_name" style="">
+                            <input ng-disabled="viewMode"  type="text"  class="form-control disabled"  ng-model="account.variable_effective_caller_id_name" style="">
                         </div>
 
                         <div class="form-group"  ng-class="{ 'has-error' : !account['auth-acl'] && accountForm.aclIp.$invalid }" >
                             <label for>Auth ACL (mask IP)</label>
-                            <input type="text" data-ng-pattern="/([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}\/\d+/" name="aclIp"  class="form-control"  ng-model="account['auth-acl']" style="">
+                            <input ng-disabled="viewMode"  type="text" data-ng-pattern="/([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}\/\d+/" name="aclIp"  class="form-control"  ng-model="account['auth-acl']" style="">
                         </div>
 
                         <!--<div class="form-group" >-->
@@ -71,14 +71,14 @@
                         <!--<input type="text"  class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" data-ng-model="account['webitel-extensions']" style="">-->
                         <!--</div>-->
 
-                        <div class="form-group" >
+                        <div   class="form-group" >
                             <label for>Agent</label>
-                            <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="account['cc-agent']"><i></i></label>
+                            <label style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="account['cc-agent']"><i></i></label>
                         </div>
 
                         <div class="form-group" >
                             <label for>Use voicemail</label>
-                            <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="account['vm-enabled']"><i></i></label>
+                            <label  style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="account['vm-enabled']"><i></i></label>
                         </div>
                     </div>
                 </div>
@@ -111,19 +111,19 @@
                                             <div class="col-sm-6">
                                                 <div class="form-group" ng-class="{ 'has-error' : accountForm.agentContact.$invalid }">
                                                     <label class="control-label">Call timeout</label>
-                                                    <input class="form-control" type="number" ng-required="account['cc-agent']" name="agentContact" ng-model="account['cc-agent-contact']"
+                                                    <input ng-disabled="viewMode" class="form-control" type="number" ng-required="account['cc-agent']" name="agentContact" ng-model="account['cc-agent-contact']"
                                                            min="0" max="999">
                                                 </div>
 
                                                 <div class="form-group" ng-class="{ 'has-error' : accountForm.agentWrap.$invalid }">
                                                     <label class="control-label">Wrap up time</label>
-                                                    <input class="form-control" type="number" name="agentWrap" ng-model="account['cc-agent-wrap-up-time']"
+                                                    <input ng-disabled="viewMode" class="form-control" type="number" name="agentWrap" ng-model="account['cc-agent-wrap-up-time']"
                                                            min="0" max="999" ng-required="account['cc-agent']">
                                                 </div>
 
                                                 <div class="form-group" ng-class="{ 'has-error' : accountForm.agentMaxNoAns.$invalid }">
                                                     <label class="control-label">Max no answer</label>
-                                                    <input class="form-control" type="number" name="agentMaxNoAns" ng-model="account['cc-agent-max-no-answer']"
+                                                    <input ng-disabled="viewMode" class="form-control" type="number" name="agentMaxNoAns" ng-model="account['cc-agent-max-no-answer']"
                                                            min="0" max="999" ng-required="account['cc-agent']">
                                                 </div>
 
@@ -133,19 +133,19 @@
 
                                                 <div class="form-group" ng-class="{ 'has-error' : accountForm.agentBusyTime.$invalid }">
                                                     <label class="control-label">Busy delay time</label>
-                                                    <input class="form-control" type="number" name="agentBusyTime" ng-model="account['cc-agent-busy-delay-time']"
+                                                    <input ng-disabled="viewMode" class="form-control" type="number" name="agentBusyTime" ng-model="account['cc-agent-busy-delay-time']"
                                                            min="0" max="999" ng-required="account['cc-agent']">
                                                 </div>
 
                                                 <div class="form-group" ng-class="{ 'has-error' : accountForm.agentRejectTime.$invalid }">
                                                     <label class="control-label">Reject delay time</label>
-                                                    <input class="form-control" type="number" name="agentRejectTime" ng-model="account['cc-agent-reject-delay-time']"
+                                                    <input ng-disabled="viewMode" class="form-control" type="number" name="agentRejectTime" ng-model="account['cc-agent-reject-delay-time']"
                                                            min="0" max="999" ng-required="account['cc-agent']">
                                                 </div>
 
                                                 <div class="form-group" ng-class="{ 'has-error' : accountForm.agentAnswerTime.$invalid }">
                                                     <label class="control-label">No answer delay time</label>
-                                                    <input class="form-control" type="number" name="agentAnswerTime" ng-model="account['cc-agent-no-answer-delay-time']"
+                                                    <input ng-disabled="viewMode" class="form-control" type="number" name="agentAnswerTime" ng-model="account['cc-agent-no-answer-delay-time']"
                                                            min="0" max="999" ng-required="account['cc-agent']">
                                                 </div>
                                             </div>
@@ -185,7 +185,7 @@
 
                                                 <td>
                                                     <label class="ui-checkbox">
-                                                        <input type="checkbox" ng-change="toggleTier(key, row)" ng-model="row.active" class="ng-pristine ng-valid">
+                                                        <input ng-disabled="viewMode" type="checkbox" ng-change="toggleTier(key, row)" ng-model="row.active" class="ng-pristine ng-valid">
                                                         <span></span>
                                                     </label>
                                                 </td>
@@ -211,8 +211,8 @@
 
         <div class="panel-footer">
             <!--<btn-save-exit save="save" save-exit="save"></btn-save-exit>-->
-            <button ng-show="isEdit" type="button" ng-disabled="accountForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
-            <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button ng-show="isEdit && !viewMode" type="button" ng-disabled="accountForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
 
 

@@ -8,14 +8,14 @@
 
                 <div class="form-group" ng-class="{ 'has-error' : dialerResource.gwProto.$invalid }">
                     <label for>Type</label>
-                    <select class="form-control" name="gwProto" ng-model="resource.gwProto">
+                    <select ng-disabled="viewMode" class="form-control" name="gwProto" ng-model="resource.gwProto">
                         <option ng-repeat="t in Types" ng-selected="{{t==resource.gwProto}}" value="{{t}}">{{t}}</option>
                     </select>
                 </div>
 
                 <div class="form-group" ng-show="resource.gwProto == 'sip'" ng-class="{ 'has-error' : dialerResource.gwName.$invalid }">
                     <label for>Gateway</label>
-                    <ui-select ng-required="resource.gwProto == 'sip'" name="gwName" ng-model="resource.gwName" theme="bootstrap"  title="Choose a gateway">
+                    <ui-select ng-disabled="viewMode" ng-required="resource.gwProto == 'sip'" name="gwName" ng-model="resource.gwName" theme="bootstrap"  title="Choose a gateway">
                         <ui-select-match placeholder="Select or search gateway...">{{$select.selected}}</ui-select-match>
                         <ui-select-choices repeat="gw in gateways | filter: $select.search">
                             <span ng-bind-html="gw | highlight: $select.search"></span>
@@ -29,12 +29,12 @@
 
                 <div class="form-group" ng-class="{ 'has-error' : dialerResource.dialString.$invalid }" >
                     <label for>Dial string</label>
-                    <input type="text" class="form-control" required name="dialString" data-ng-model="resource.dialString" >
+                    <input ng-disabled="viewMode" type="text" class="form-control" required name="dialString" data-ng-model="resource.dialString" >
                 </div>
 
                 <div class="form-group"  ng-class="{ 'has-error' : dialerResource.limit.$invalid }">
                     <label for>Limit</label>
-                    <input class="form-control" type="number" name="limit" ng-model="resource.limit"
+                    <input ng-disabled="viewMode" class="form-control" type="number" name="limit" ng-model="resource.limit"
                            min="0" required>
                 </div>
 
@@ -45,12 +45,12 @@
 
                 <div class="form-group"  ng-class="{ 'has-error' : dialerResource.callerIdNumber.$invalid }">
                     <label for>Caller number</label>
-                    <input type="text" class="form-control" required name="callerIdNumber" data-ng-model="resource.callerIdNumber" >
+                    <input ng-disabled="viewMode" type="text" class="form-control" required name="callerIdNumber" data-ng-model="resource.callerIdNumber" >
                 </div>
 
                 <div class="form-group" >
                     <label for>Enabled</label>
-                    <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="resource.enabled" class="ng-valid ng-dirty"><i></i></label>
+                    <label  style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="resource.enabled" class="ng-valid ng-dirty"><i></i></label>
                 </div>
 
             </div>
@@ -59,6 +59,6 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-disabled="dialerResource.$invalid" ng-click="ok()">OK</button>
-    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary" ng-if="!viewMode" type="button" ng-disabled="dialerResource.$invalid" ng-click="ok()">Save</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Close</button>
 </div>

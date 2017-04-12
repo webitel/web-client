@@ -13,6 +13,18 @@ define(['app', 'scripts/webitel/utils', 'modules/gateways/gatewayModel', 'script
         $scope.canUpdate = webitel.connection.session.checkResource('gateway', 'u');
         $scope.canCreate = webitel.connection.session.checkResource('gateway', 'c');
 
+        $scope.viewMode = !$scope.canDelete;
+            
+        $scope.view = function () {
+            var id = $routeParams.id;
+            GatewayModel.item(id, $scope.domain, function (err, gw) {
+                if (err)
+                    return notifi.error(err, 5000);
+                $scope.gateway = gw;
+                disableEditMode();
+            })
+        };
+
         $scope.template = GatewayModel.template;
 
         $scope.displayedCollection = [];

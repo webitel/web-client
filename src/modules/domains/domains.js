@@ -16,6 +16,8 @@ define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts
 		$scope.canUpdate = webitel.connection.session.checkResource('domain', 'u');
 		$scope.canCreate = webitel.connection.session.checkResource('domain', 'c');
 
+		$scope.viewMode = !$scope.canUpdate;
+
 		$scope.changePanel = function (panelStatistic) {
 			$scope.panelStatistic = !!panelStatistic;
 		};

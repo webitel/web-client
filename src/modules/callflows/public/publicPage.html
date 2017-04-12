@@ -12,21 +12,21 @@
 					<div class="col-sm-5">
 						<div class="form-group" ng-class="{ 'has-error' : publicForm.name.$invalid }">
 							<label class="control-label">Name</label>
-							<input type="text" name="name" required class="form-control"  placeholder="Name" ng-model="public.name">
+							<input ng-disabled="viewMode" type="text" name="name" required class="form-control"  placeholder="Name" ng-model="public.name">
 						</div>
 					</div>
 					<div class="col-sm-5">
 						<div class="form-group" ng-class="{ 'has-error' : publicForm.timezone.$invalid }">
 							<label class="control-label">Time zone</label>
 							<!--<label class="control-label">Time zone</label>-->
-							<input required name="timezone" typeahead-editable="false" typeahead-focus-on-select="true" typeahead-select-on-exact="true" typeahead-on-select="onSelectTimeZone" type="text" class="form-control"  placeholder="Time zone" ng-model="public.fs_timezone"  typeahead="zone as zone.name for zone in timeZones | filter:{name:$viewValue}" >
+							<input ng-disabled="viewMode" required name="timezone" typeahead-editable="false" typeahead-focus-on-select="true" typeahead-select-on-exact="true" typeahead-on-select="onSelectTimeZone" type="text" class="form-control"  placeholder="Time zone" ng-model="public.fs_timezone"  typeahead="zone as zone.name for zone in timeZones | filter:{name:$viewValue}" >
 						</div>
 					</div>
 
 					<div class="col-sm-2">
 						<div class="form-group" >
 							<label class="control-label">Disabled</label>
-							<label style="width: 100%;" class="switch switch-danger"><input type="checkbox" ng-model="public.disabled"><i></i></label>
+							<label style="width: 100%;" class="switch switch-danger"><input ng-disabled="viewMode" type="checkbox" ng-model="public.disabled"><i></i></label>
 						</div>
 					</div>
 				</div>
@@ -53,7 +53,7 @@
 										<span>Callflow</span>
 									</tab-heading>
 									<div class="form-group">
-										<div ng-model="$parent.cf" ui-ace="{
+										<div ng-readonly="viewMode"  ng-model="$parent.cf" ui-ace="{
 									  useWrapMode : true,
 									  showGutter: true,
 									  theme:'github',
@@ -77,7 +77,7 @@
 										<span>On disconnect</span>
 									</tab-heading>
 									<div class="form-group">
-										<div data-ng-model="$parent.cfOnDisconnect" ui-ace="{
+										<div ng-readonly="viewMode" data-ng-model="$parent.cfOnDisconnect" ui-ace="{
 									  useWrapMode : true,
 									  showGutter: true,
 									  theme:'github',
@@ -104,8 +104,8 @@
         </div>
 
         <div class="panel-footer">
-            <button ng-show="isEdit" type="button" ng-disabled="publicForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
-            <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button ng-show="isEdit && !viewMode" type="button" ng-disabled="publicForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
 		</div>
     </form>

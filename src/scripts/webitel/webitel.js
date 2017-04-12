@@ -104,6 +104,8 @@ define(['angular',
 			setTokenKey(this.token, this.key);
 			this.setCdrLocation();
 
+			this._id = this.username.split('@')[0];
+
 			var config = {
 	              server : connection._ws,
 	              account: this.username,
@@ -114,8 +116,6 @@ define(['angular',
 	        };
 
 	        var instance = connection.instance = new Webitel(config);
-	        // TODO delete 
-	        window.ws = instance;
 
 	        // Subscribe events
 	        instance.onError(function (err) {

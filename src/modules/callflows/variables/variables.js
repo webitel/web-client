@@ -11,6 +11,9 @@ define(['app', 'modules/callflows/variables/variablesModel'], function (app) {
 
             $scope.domain = webitel.domain();
             $scope.canUpdate = webitel.connection.session.checkResource('rotes/domain', 'u');
+
+            $scope.viewMode = !$scope.canUpdate;
+
             $scope.variables = [];
             $scope.rem = [];
             $scope.reloadData = reloadData;

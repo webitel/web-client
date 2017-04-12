@@ -51,6 +51,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.domain = webitel.domain();
             $scope.dialer = {};
 
+
+            $scope.viewMode = !$scope.canUpdate;
+
+            $scope.view = function () {
+                $scope.viewMode = true;
+                edit();
+            };
+
+
             $scope.query = TableSearch.get('dialer');
            // $scope.cf = aceEditor.getStrFromJson([]);
             $scope.aceLoaded = aceEditor.init;
@@ -273,12 +282,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 });
             };
 
-            $scope.editResourceDestination = function (resource) {
+            $scope.editResourceDestination = function (resource, viewMode) {
                 var modalInstance = $modal.open({
                     animation: true,
                     templateUrl: '/modules/dialer/resourcePage.html',
                     controller: 'DialerResourceCtrl',
                     resolve: {
+                        viewMode: function () {
+                            return viewMode;
+                        },
                         resource: function () {
                             return resource;
                         },
@@ -842,9 +854,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
     }]);
     
-    app.controller('DialerResourceCtrl', ["$scope", '$modalInstance', 'resource', 'domain', 'GatewayModel', 'notifi',
-        function ($scope, $modalInstance, resource, domain, GatewayModel, notifi) {
+    app.controller('DialerResourceCtrl', ["$scope", '$modalInstance', 'resource', 'domain', 'viewMode', 'GatewayModel', 'notifi',
+        function ($scope, $modalInstance, resource, domain, viewMode, GatewayModel, notifi) {
         $scope.resource = angular.copy(resource);
+        $scope.viewMode = viewMode;
         var id = resource.$$hashKey;
 
         $scope.ok = function () {
@@ -1024,7 +1037,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             });
         };
 
-        $scope.editMember = function (member, index) {
+        $scope.editMember = function (member, index, viewMode) {
             var modalInstance = $modal.open({
                 animation: true,
                 templateUrl: '/modules/dialer/memberPage.html',
@@ -1034,6 +1047,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 resolve: {
                     options: function () {
                         return {
+                            viewMode: viewMode,
                             member: member,
                             dialerId: $scope.dialer._id,
                             setSource: $scope.setSource,
@@ -2426,6 +2440,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 _variables: []
             };
         };
+
+        $scope.viewMode = options.viewMode;
         
         $scope.addCommunication = function (member) {
             $scope.inserted = {
