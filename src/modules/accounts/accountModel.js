@@ -79,7 +79,7 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
 
             return "'{originate_timeout=" + time +
                 ",agent_name='" + name + "'" +
-                ",api_on_answer=\\\'uuid_setvar ${uuid} agent_name " + name  + "\\\'"+
+                // ",api_on_answer=\\\'uuid_setvar ${uuid} agent_name " + name  + "\\\'"+
                 ",presence_id=" + id + "@" + domain + "}{webitel_call_uuid=${create_uuid()},sip_invite_domain=" + domain +
                 "}${sofia_contact(*/" + id + "@" + domain +
                 ")},${verto_contact(" + id + "@" + domain + ")}'";
