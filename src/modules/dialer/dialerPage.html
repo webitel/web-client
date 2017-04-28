@@ -46,6 +46,13 @@
                                                             <input ng-disabled="true" type="text"  class="form-control" ng-model="dialer._cause" >
                                                         </div>
 
+                                                        <div  class="form-group" ng-class="{ 'has-error' : !dialer.membersStrategy }">
+                                                            <label class="control-label">Members strategy</label>
+                                                            <select ng-disabled="viewMode" class="form-control" name="type" ng-model="dialer.membersStrategy" required >
+                                                                <option ng-repeat="type in membersStrategy" ng-selected="{{type==dialer.membersStrategy}}"  value="{{type.val}}">{{type.name}}</option>
+                                                            </select>
+                                                        </div>
+
                                                         <div  class="form-group" ng-if="dialer.nextTick">
                                                             <label class="control-label">Sleeping till</label>
                                                             <input ng-disabled="true" type="text"  class="form-control" value="{{toDateString(dialer.nextTick)}}" >

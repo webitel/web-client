@@ -491,6 +491,17 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
             ];
 
+            $scope.membersStrategy = [
+                {
+                    name: "Strict circuit",
+                    val: "strict-circuit"
+                },
+                {
+                    name: "Next tries circuit",
+                    val: "next-tries-circuit"
+                }
+            ];
+
             $scope.addTiers = function (all) {
                 var collection = all ? $scope.agents : $scope.selAgents;
                 if (!collection.length) {

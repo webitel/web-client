@@ -476,6 +476,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "numberStrategy": option.numberStrategy,
                 "variables" : {},
                 "skills" : skills,
+                "membersStrategy" : option.membersStrategy || null,
                 "resources" : angular.isArray(option.resources) ? option.resources : [],
                 "strategy" : option.strategy || "myStrategy",
                 "agents" : angular.isArray(option.agents) ? option.agents : [],
