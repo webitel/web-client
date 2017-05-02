@@ -1383,15 +1383,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 templateUrl: '/modules/dialer/resetMemberPage.html',
                 controller: function ($scope, $modalInstance, notifi, options) {
                     $scope.dateOpenedControl = false;
-                    $scope.remFromDate = null;
 
-                    $scope.openDate = function ($event) {
-                        return $event.preventDefault(),
-                            $event.stopPropagation(),
-                            $scope.dateOpenedControl = !0
-                    };
-
-                    $scope.count = 0;
 
                     $scope.changeDate = function () {
                         if (!$scope.remFromDate) {
@@ -1407,6 +1399,24 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         });
                     };
 
+
+                    var date = new Date();
+                    date.setHours(0);
+                    date.setMinutes(0);
+                    date.setMilliseconds(0);
+
+                    $scope.remFromDate = date;
+
+                    $scope.openDate = function ($event) {
+                        return $event.preventDefault(),
+                            $event.stopPropagation(),
+                            $scope.dateOpenedControl = !0
+                    };
+
+                    $scope.count = 0;
+
+
+
                     $scope.ok = function (clearLog) {
                        $modalInstance.close({
                            domain: options.domain,
@@ -1419,6 +1429,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     $scope.cancel = function () {
                         $modalInstance.dismiss('cancel');
                     };
+
+                    $scope.changeDate();
                 },
                 resolve: {
                     options: function () {
