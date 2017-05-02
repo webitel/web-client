@@ -3,11 +3,26 @@
 </div>
 
 <div class="modal-body">
-    {{data.text}}
+    <div class="form-group" data-ng-class="{'has-error': !remFromDate}">
+
+        <label for>From</label>
+        <div class="calendar-end-time input-group ui-datepicker">
+            <input type="text"
+                   class="form-control"
+                   datetime-picker="dd.MM.yyyy HH:mm"
+                   ng-model="remFromDate"
+                   is-open="dateOpenedControl"
+                   datepicker-options="dateOptions"
+                   ng-change="changeDate('from')"
+            >
+            <span class="btn input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
+        </div>
+    </div>
+    Reset {{(count || 0)}} unsuccessful members ?
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="ok(true)">Reset and clear log</button>
-    <button class="btn btn-primary" ng-click="ok(false)">Reset</button>
-    <button class="btn btn-default" ng-click="cancel()">{{data.cancel}}</button>
+    <button ng-disabled="!remFromDate" class="btn btn-warning" ng-click="ok(true)">Reset and clear log</button>
+    <button ng-disabled="!remFromDate" class="btn btn-primary" ng-click="ok(false)">Reset</button>
+    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
 </div>

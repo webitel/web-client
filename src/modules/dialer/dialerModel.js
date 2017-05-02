@@ -127,18 +127,23 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
         }
 
-        function countEndMembers (domainName, dialerId, cb) {
+        function countEndMembers (domainName, dialerId, from, cb) {
             if (!domainName)
                 return cb(new Error("Domain is required."));
 
             if (!dialerId)
                 return cb(new Error("DialerId is required."));
 
+            if (!from)
+                return cb(new Error("From date is required."));
+
 
             var _q = ["domain=" + domainName];
 
             _q.push("filter=" + encodeURIComponent(JSON.stringify({
-                    _endCause: {$ne: null}
+                    _endCause: {$ne: null},
+                    createdOn: {$gte: from},
+                    callSuccessful: {$ne: true}
                 })));
 
             webitel.api('GET', '/api/v2/dialer/' + dialerId + '/members/count?' + _q.join('&'), function(err, res) {
@@ -510,13 +515,17 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             }
         }
         
-        function resetMembers(dialerId, domainName, log, cb) {
+        function resetMembers(dialerId, domainName, log, from, cb) {
             if (!domainName)
                 return dialerId(new Error("Domain is required."));
+
             if (!dialerId)
                 return cb(new Error("Dialer is required."));
 
-            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/members/reset?&domain=' + domainName + '&_log=' + (log === true), function(err, res) {
+            if (!from)
+                return cb(new Error("From date is required."));
+
+            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/members/reset?&domain=' + domainName + '&_log=' + (log === true) + '&from=' + from, function(err, res) {
                 var data = res.data || res.info;
                 return cb && cb(err, data);
             });

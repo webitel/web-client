@@ -1373,20 +1373,72 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         };
         
         $scope.showResetPage = function () {
-            DialerModel.members.countEndMembers($scope.domain, $scope.dialer._id, function (err, count) {
-                if (err)
-                    return notifi.error(err, 5000);
 
-                $confirm({text: 'Reset ' + (count || 0) + ' unsuccessful members ?'},  { templateUrl: '/modules/dialer/resetMemberPage.html' })
-                    .then(function(clearLog) {
-                        DialerModel.members.reset($scope.dialer._id, $scope.domain, clearLog, function (err, count) {
+
+            var modalInstance = $modal.open({
+                animation: true,
+                templateUrl: '/modules/dialer/resetMemberPage.html',
+                controller: function ($scope, $modalInstance, notifi, options) {
+                    $scope.dateOpenedControl = false;
+                    $scope.remFromDate = null;
+
+                    $scope.openDate = function ($event) {
+                        return $event.preventDefault(),
+                            $event.stopPropagation(),
+                            $scope.dateOpenedControl = !0
+                    };
+
+                    $scope.count = 0;
+
+                    $scope.changeDate = function () {
+                        if (!$scope.remFromDate) {
+                            $scope.count = 0;
+                            return;
+                        }
+
+                        DialerModel.members.countEndMembers(options.domain, options.dialerId, $scope.remFromDate.getTime(), function (err, count) {
                             if (err)
                                 return notifi.error(err, 5000);
 
-                            $scope.reloadData();
-                            return notifi.info('OK: reset ' + count + ' members.', 5000);
-                        })
-                    });
+                            $scope.count = count;
+                        });
+                    };
+
+                    $scope.ok = function (clearLog) {
+                       $modalInstance.close({
+                           domain: options.domain,
+                           dialerId: options.dialerId,
+                           dateFrom: $scope.remFromDate.getTime(),
+                           clearLog: clearLog
+                       }, 5000);
+                    };
+
+                    $scope.cancel = function () {
+                        $modalInstance.dismiss('cancel');
+                    };
+                },
+                resolve: {
+                    options: function () {
+                        return {
+                            domain: $scope.domain,
+                            dialerId: $scope.dialer._id
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (result) {
+
+                DialerModel.members.reset(result.dialerId, result.domain, result.clearLog, result.dateFrom, function (err, count) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    $scope.reloadData();
+                    return notifi.info('OK: reset ' + count + ' members.', 5000);
+                })
+                
+            }, function () {
+
             });
         }
 
