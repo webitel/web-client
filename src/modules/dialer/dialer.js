@@ -1278,6 +1278,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     if (settings.allProbe) {
                         if (angular.isArray(row._log)) {
                             angular.forEach(row._log, function (atempt) {
+                                if (!atempt.hasOwnProperty('callNumber')) {
+                                    return;
+                                }
                                 angular.forEach(settings.data, function (i, index) {
                                     var val;
                                     switch (i.field) {
