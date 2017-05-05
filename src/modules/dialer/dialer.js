@@ -2605,6 +2605,12 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             })
         };
 
+        $scope.secToString = function (sec) {
+            if (!isFinite(sec))
+                return '';
+            return utils.secondsToString(sec)
+        };
+
         $scope.play = play;
 
         function play(log) {

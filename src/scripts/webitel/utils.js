@@ -62,7 +62,7 @@ define(['angular'], function (angular) {
         function pad(ss){
             return (ss < 10 ? '0' : '') + ss;
         }
-        var d, h, m, s;
+        var d, h, m, s, str = '';
         s = Math.floor(seconds);
         m = Math.floor(s / 60);
         s = s % 60;
@@ -71,7 +71,9 @@ define(['angular'], function (angular) {
         d = Math.floor(h / 24);
         h = h % 24;
 
-        return d + ' days ' + pad(h) + ':' + pad(m) + ':' + pad(s);
+        if (d > 0)
+            str = d + ' days ';
+        return str + pad(h) + ':' + pad(m) + ':' + pad(s);
     }
 
     function WebitelHashCollection() {

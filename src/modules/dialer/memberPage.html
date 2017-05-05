@@ -177,8 +177,8 @@
                                                             <dt>Bridge time</dt>
                                                             <dd>{{probe.bridgedTime ? timeToString(probe.bridgedTime) : "Not bridged"}}</dd>
 
-                                                            <dt>Talk</dt>
-                                                            <dd>{{probe.talkSec || 0}} seconds</dd>
+                                                            <dt>Talk time</dt>
+                                                            <dd>{{secToString(probe.talkSec)}}</dd>
 
                                                             <div ng-if="!!probe.agentId">
                                                                 <dt>Agent</dt>
