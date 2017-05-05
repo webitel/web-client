@@ -451,7 +451,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     "maxPredictiveSilentCalls" : angular.isNumber(option.parameters && option.parameters.maxPredictiveSilentCalls) ? option.parameters.maxPredictiveSilentCalls : 3,
                     'waitingForResultStatus': option.parameters && option.parameters.waitingForResultStatus,
                     'recordSession': (option.parameters && option.parameters.recordSession) === undefined ? true : option.parameters.recordSession,
-                    'eternalQueue': (option.parameters && option.parameters.eternalQueue)
+                    'eternalQueue': (option.parameters && option.parameters.eternalQueue),
+                    'retryAbandoned': (option.parameters && option.parameters.retryAbandoned)
                 },
                 "agentParams": {
                     "callTimeout": option.agentParams && option.agentParams.callTimeout,
