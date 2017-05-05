@@ -539,7 +539,16 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 return cb(new Error("Dialer is required."));
 
 
-            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/reset?domain=' + domainName, cb)
+            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/reset?domain=' + domainName, {resetProcess: true, resetAgents: true}, cb)
+        }
+
+        function cleanStatistic(dialerId, domainName, cb) {
+            if (!domainName)
+                return dialerId(new Error("Domain is required."));
+            if (!dialerId)
+                return cb(new Error("Dialer is required."));
+
+            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/reset?domain=' + domainName, {resetStats: true}, cb)
         }
 
         return {
@@ -551,6 +560,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             update: update,
             setState: setState,
             resetProcess: resetProcess,
+            cleanStatistic: cleanStatistic,
             ALL_CODE: ALL_CODE,
             CODE_RESPONSE_ERRORS: CODE_RESPONSE_ERRORS,
             CODE_RESPONSE_RETRY: CODE_RESPONSE_RETRY,

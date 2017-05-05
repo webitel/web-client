@@ -2649,8 +2649,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         };
     }]);
     
-    app.controller('StatsDialerCtrl', ['$scope', 'DialerModel', 'AgentModel', 'notifi', 'webitel', '$routeParams', '$interval', '$timeout',
-        function ($scope, DialerModel, AgentModel, notifi, webitel, $routeParams, $interval, $timeout) {
+    app.controller('StatsDialerCtrl', ['$scope', 'DialerModel', 'AgentModel', 'notifi', 'webitel', '$routeParams',
+        '$interval', '$timeout', '$confirm',
+        function ($scope, DialerModel, AgentModel, notifi, webitel, $routeParams, $interval, $timeout, $confirm) {
 
             var aggCause = [
                 {
@@ -2692,6 +2693,20 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         timerId = $interval(reload, 10000);
                 });
             }
+
+            $scope.cleanStats = function () {
+                $confirm({text: 'Are you sure you want to clean statistic ?'},  { templateUrl: 'views/confirm.html' })
+                    .then(function() {
+                        DialerModel.cleanStatistic($scope.id, $scope.domain, function (err, res) {
+                            if (err)
+                                return notifi.error(err, 5000);
+
+                            reload();
+                            notifi.info("Clean statistics", 5000);
+                        })
+                    });
+
+            };
 
             reload();
 
