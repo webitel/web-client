@@ -192,6 +192,7 @@ define(['angular', 'config'], function (angular, config) {
 			templateUrl: 'modules/callflows/default/defaultPage.html',
 			controller: 'CallflowDefaultCtrl',
 			controllerUrl: 'modules/callflows/default/default.js',
+			caption: 'Default',
 			method: "create"
 		},{
 			href: '/callflows/default/:id/edit',
@@ -219,6 +220,7 @@ define(['angular', 'config'], function (angular, config) {
 			templateUrl: 'modules/callflows/public/publicPage.html',
 			controller: 'CallflowPublicCtrl',
 			controllerUrl: 'modules/callflows/public/public.js',
+			caption: 'Public',
 			method: "create"
 		},{
 			list: true,
@@ -269,6 +271,7 @@ define(['angular', 'config'], function (angular, config) {
 			templateUrl: 'modules/callflows/blacklists/blacklistPage.html',
 			controller: 'BlackListCtrl',
 			controllerUrl: 'modules/callflows/blacklists/blacklists.js',
+			caption: "Blacklists",
 			method: "create"
 		}, {
 			list: true,

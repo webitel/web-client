@@ -10,6 +10,8 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
 				$scope.main.acl = session.acl;
 				$scope.admin.domain = session.domain;
 				localize.setLanguage('EN');
+
+                $scope.addHotLinks = [];
 				$scope.notifications = webitel.notify.getLink();
 				var modules = [];
 				$scope.main.viewLicense = session.checkResource('license', 'ro') || session.checkResource('license', 'r');
@@ -24,6 +26,20 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
 								link.list = session.checkResource(link.acl, 'r')
 							})
 						};
+
+                        if (session.checkResource(item.acl, 'c') && item.routes) {
+                            for (var i = 0; i < item.routes.length; i++) {
+                                if (item.routes[i].method === 'create') {
+                                    $scope.addHotLinks.push({
+                                        href: item.routes[i].href,
+                                        caption: item.routes[i].caption || item.caption,
+                                        isDomain: item.acl === 'domain',
+                                        iconClass: item.iconClass
+                                    })
+                                }
+                            }
+                        }
+
 						modules.push(item);
 					}
 				});
@@ -121,12 +137,24 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
 				})
 			}
 		}])
-	  	.controller('HeaderCtrl', ['$scope', 'webitel', '$modal', function($scope, webitel, $modal) {
+	  	.controller('HeaderCtrl', ['$scope', 'webitel', '$modal', '$rootScope', 'MODULES', function($scope, webitel, $modal, $rootScope, MODULES) {
 	  		$scope.signout = function () {
 	  			webitel.signout(function () {
 					window.location.href = "/"
 	  			});
 	  		};
+
+			$scope.isSelectedDomain = function () {
+                return !!webitel.domain();
+            };
+
+            $scope.$watch('addHotLinks', function (newVal) {
+                if (newVal && newVal.length > 0) {
+                    $scope.addLinks = newVal;
+                }
+            });
+
+			$scope.addLinks = [];
 			
 			$scope.showContributors = function () {
 				$modal.open({
@@ -179,12 +207,11 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
 			}
 	  	}])
 		.controller('NavContainerCtrl', ['$scope', function($scope) {
-			
+
 		}])
 
 		.controller('NavCtrl', [
 	    '$scope', function($scope) {
-
 	    }])
 	    .controller('DashboardCtrl', ['$scope', function($scope) {}])
 		.controller('HomeCtrl', ['$scope', function ($scope) {
