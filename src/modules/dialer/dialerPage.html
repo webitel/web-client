@@ -443,17 +443,22 @@
                                                         <div class="form-group" >
                                                             <div class="form-group-sm">
                                                                 <label>Tiers</label>
+                                                                <label class="pull-right">Count: {{tiersListFiltered.length}}</label>
                                                             </div>
                                                             <div class="input-group">
                                                                 <span class="input-group-addon"><i class="fa fa-search text-muted"></i></span>
                                                                 <input ng-model="searchTextTiers" type="text" class="form-control" placeholder="Search...">
 
-                                        <span  ng-click="removeTiers()"  ng-if="canUpdate" class="btn input-group-addon">
-                                            <i class="glyphicon glyphicon-chevron-right"></i>
-                                        </span>
-                                        <span  ng-click="removeTiers(true)" ng-if="canUpdate" class="btn input-group-addon">
-                                             <i class="glyphicon glyphicon-forward"></i>
-                                        </span>
+                                                                <span  ng-click="copyList(tiersListFiltered, false, 'tiers')" class="btn input-group-addon">
+                                                                    <i class="fa fa-files-o"></i>
+                                                                </span>
+
+                                                                <span  ng-click="removeTiers()"  ng-if="canUpdate" class="btn input-group-addon">
+                                                                    <i class="glyphicon glyphicon-chevron-right"></i>
+                                                                </span>
+                                                                <span  ng-click="removeTiers(true)" ng-if="canUpdate" class="btn input-group-addon">
+                                                                     <i class="glyphicon glyphicon-forward"></i>
+                                                                </span>
                                                             </div>
 
 
@@ -483,15 +488,19 @@
                                                         <div class="form-group" >
                                                             <div class="form-group-sm">
                                                                 <label>Agents</label>
+                                                                <label class="pull-right">Count: {{getCountAgents(agentsListFiltered)}}</label>
                                                             </div>
 
                                                             <div class="input-group">
-                                        <span  ng-disabled="false || dialer.active1" ng-if="canUpdate"  ng-click="addTiers(true)" class="btn input-group-addon">
-                                            <i class="glyphicon glyphicon-backward"></i>
-                                        </span>
-                                        <span  ng-disabled="false || dialer.active1" ng-if="canUpdate"  ng-click="addTiers()" class="btn input-group-addon">
-                                            <i class="glyphicon glyphicon-chevron-left"></i>
-                                        </span>
+                                                                <span  ng-if="canUpdate"  ng-click="addTiers(true)" class="btn input-group-addon">
+                                                                    <i class="glyphicon glyphicon-backward"></i>
+                                                                </span>
+                                                                <span  ng-if="canUpdate"  ng-click="addTiers()" class="btn input-group-addon">
+                                                                    <i class="glyphicon glyphicon-chevron-left"></i>
+                                                                </span>
+                                                                <span  ng-click="copyList(agentsListFiltered, true, 'agents')" class="btn input-group-addon">
+                                                                    <i class="fa fa-files-o"></i>
+                                                                </span>
 
                                                                 <input ng-model="searchTextAgents" type="text" class="form-control" placeholder="Search...">
                                                                 <span class="input-group-addon"><i class="fa fa-search text-muted"></i></span>

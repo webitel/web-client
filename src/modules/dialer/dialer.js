@@ -522,9 +522,56 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 $scope.selTiers = {};
             };
 
-            $scope.isAgentInTier = function (a) {
-                return !~$scope.dialer.agents.indexOf(a.id);
+            $scope.getCountAgents = function (agents) {
+                if (agents && agents.length > 0) {
+                    var i = 0;
+                    angular.forEach(agents, function (agent) {
+                        if (isAgentInTier(agent)) {
+                            i++;
+                        }
+                    });
+                    return i;
+                }
+                return 0;
             };
+
+            function isAgentInTier(a) {
+                return !~$scope.dialer.agents.indexOf(a.id);
+            }
+
+            $scope.copyList = function (list, skipTiers, filename) {
+                var text = 'number,name,state,status,role\n';
+                angular.forEach(list, function (item) {
+                    if (skipTiers && !isAgentInTier(item)) {
+                        return;
+                    }
+
+                    if (typeof item === 'string') {
+                        item = findAgentById(item);
+                        if (!item) {
+                            console.error('findAgentById not found ', item);
+                            return;
+                        }
+                    }
+                    text += item.id + ',' + item.name + ',' + item.state + ',' + item.status + ',' + item.role + '\n';
+                });
+
+                utils.saveDataToDisk(text, filename + '.csv', 'text/csv');
+            };
+            
+            function findAgentById(agentId) {
+                var agents = $scope.agents;
+                if (!angular.isArray(agents)) {
+                    return null;
+                }
+
+                for (var i = 0; i < agents.length; i++) {
+                    if (agents[i].id === agentId)
+                        return agents[i]
+                }
+            }
+
+            $scope.isAgentInTier = isAgentInTier;
             
             $scope.removeTiers = function (all) {
                 if (all) {
