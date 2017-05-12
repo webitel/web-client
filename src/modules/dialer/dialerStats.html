@@ -23,7 +23,7 @@
                     <div class="ui-tab-container ui-tab-dark">
                         <div class="ui-tab">
                             <tabset>
-                                <tab select="onSelectTabGeneral()">
+                                <tab select="onSelectTabPleaseResize()">
                                     <tab-heading>
                                         <span>General</span>
                                     </tab-heading>
@@ -103,6 +103,7 @@
                                         </div>
 
                                     </div>
+
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <section class="panel panel-box">
@@ -130,25 +131,75 @@
                                                     </ul>
                                                 </div>
                                             </section>
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <nvd3 options="causeCartComplete.options" data="causeCartComplete.data"></nvd3>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <nvd3 options="amdState.options" data="amdState.data"></nvd3>
-                                                </div>
-                                                <!--amdState-->
-                                            </div>
                                         </div>
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-phone-alt text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{ (sumAgentCallCount / agents.length).toFixed(2) }}</p>
+                                                    <br>
+                                                    <p class="text-muted">Avg call count by agent</p>
+                                                </div>
+                                            </section>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-headphones text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{(sumAgentATT / agents.length).toFixed(2)}}</p>
+                                                    <br>
+                                                    <p class="text-muted">Avg ATT by agent</p>
+                                                </div>
+                                            </section>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-time text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{(sumAgentASA / agents.length).toFixed(2)}}</p>
+                                                    <br>
+                                                    <p class="text-muted">Avg ASA by agent</p>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <nvd3 options="causeCartComplete.options" data="causeCartComplete.data"></nvd3>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
                                         <div class="col-sm-6">
                                             <nvd3 options="causeCart.options" data="causeCart.data"></nvd3>
                                         </div>
+                                        <div class="col-sm-6">
+                                            <nvd3 options="causeByAttemptCart.options" data="causeByAttemptCart.data"></nvd3>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <nvd3 options="byCommunicationWaitingType.options" data="byCommunicationWaitingType.data"></nvd3>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <nvd3 options="amdState.options" data="amdState.data"></nvd3>
+                                        </div>
                                     </div>
+
                                 </tab>
-                                <tab>
+                                <tab select="onSelectTabPleaseResize()">
                                     <tab-heading>
                                         <span>Agents</span>
                                     </tab-heading>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <nvd3 options="accountState.options" data="accountState.data"></nvd3>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-sm-2" data-ng-repeat="ag in agents">
                                             <section class="agent-container agent-container-border {{ag.stateName}}">

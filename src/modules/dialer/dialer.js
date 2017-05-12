@@ -2708,11 +2708,51 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             var aggCause = [
                 {
-                    $group: {
-                        _id: '$_endCause',
-                        count: {
-                            $sum: 1
-                        }
+                    $facet: {
+                        "byTypeStateStart": [
+                            {
+                                $unwind: "$communications"
+                            },
+                            {
+                                $match: {"communications.state": 0}
+                            },
+                            {
+                                $group: {
+                                    _id: '$communications.type',
+                                    count: {
+                                        $sum: 1
+                                    }
+                                }
+                            }
+
+                        ],
+                        "causeByAttempt": [
+                            {
+                                $unwind: "$_log"
+                            },
+                            {
+                                $match: {"_log.cause": {$ne: null}}
+                            },
+                            {
+                                $group: {
+                                    _id: '$_log.cause',
+                                    count: {
+                                        $sum: 1
+                                    }
+                                }
+                            }
+
+                        ],
+                        "byCause": [
+                            {
+                                $group: {
+                                    _id: '$_endCause',
+                                    count: {
+                                        $sum: 1
+                                    }
+                                }
+                            }
+                        ]
                     }
                 }
             ];
@@ -2727,6 +2767,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             $scope.domain = $routeParams.domain;
             $scope.id = $routeParams.id;
+
 
             var timerId = null;
             
@@ -2763,7 +2804,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             reload();
 
-            $scope.onSelectTabGeneral = function () {
+            $scope.onSelectTabPleaseResize = function () {
                 $timeout(function(){
                     window.dispatchEvent(new Event('resize'));
                 }, 0);
@@ -2804,6 +2845,14 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 "ON-BREAK": 0
             };
 
+            function resetAgentSummaryByDialer() {
+                $scope.sumAgentCallCount = 0;
+                $scope.sumAgentATT = 0;
+                $scope.sumAgentASA = 0;
+            }
+
+            resetAgentSummaryByDialer();
+
             function loadAgents(domain, agents, skills) {
                 var $or = [];
 
@@ -2828,9 +2877,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         "ON-BREAK": 0
                     };
 
+                    resetAgentSummaryByDialer();
+
                     $scope.agents = res.map(function (item) {
                         var stateName = getAgentSummaryState(item.state, item.status);
                         $scope.sumAgentsStates[stateName]++;
+                        var dialer = getAgentDilerInfo($scope.id, item);
+                        $scope.sumAgentCallCount += dialer.callCount || 0;
+                        $scope.sumAgentATT += ((dialer.callTimeSec / dialer.callCount) || 0);
+                        $scope.sumAgentASA += ((dialer.connectedTimeSec / dialer.callCount) || 0);
+                     
                         return {
                             id: item.agentId,
                             number: item.agentId.split('@')[0],
@@ -2838,7 +2894,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             status: item.status,
                             stateName: stateName,
                             class: getAgentClass(item.state, item.status),
-                            dialer: getAgentDilerInfo($scope.id, item)
+                            dialer: dialer
                         }
                     });
                 })
@@ -2867,7 +2923,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 } else {
                     return 'bg-warning'
                 }
-            };;
+            };
             $scope.getAgentClass = getAgentClass;
 
             function getAgentSummaryState (state, status) {
@@ -2903,6 +2959,31 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
             }
 
+            var stateSettings = {
+                "WAITING": {
+                    color: "#3cbc8d"
+                },
+                "ON-BREAK": {
+                    color: "#fac552"
+                },
+                "LOGGED-OUT": {
+                    color: "#242633"
+                },
+                "CALL": {
+                    color: "#e9422e"
+                }
+            };
+
+            function clearAgentLiveState() {
+                $scope.liveAgentsStates = {
+                    "WAITING": 0,
+                    "CALL": 0,
+                    "ON-BREAK": 0,
+                    "LOGGED-OUT": 0
+                };
+            }
+
+            clearAgentLiveState();
 
             
             function findAgent(id) {
@@ -2916,10 +2997,75 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
             }
 
+            var liveAgentsStates = [];
+
             var interval = setInterval(function () {
+                clearAgentLiveState();
+                angular.forEach($scope.agents, function (item) {
+                    $scope.liveAgentsStates[item.stateName]++;
+                });
+
+                liveAgentsStates = [];
+                angular.forEach($scope.liveAgentsStates, function (val, key) {
+                    liveAgentsStates.push({
+                        x: key,
+                        y: val
+                    })
+                });
+
+                //console.log(liveAgentsStates);
+                $scope.accountState.data[0].values = liveAgentsStates;
                 $scope.$apply();
             }, 500);
 
+
+            $scope.accountState = {
+                data: [
+                    {
+                        key: 'State',
+                        values: liveAgentsStates
+                    }
+                ],
+                options: {
+                    "chart": {
+                        "type": "multiBarHorizontalChart",
+                        "height": 250,
+                        "showControls": false,
+                        "showValues": true,
+                        "showLegend": false,
+                        margin : {
+                            top: 20,
+                            right: 20,
+                            bottom: 50,
+                            left: 100
+                        },
+                        valueFormat: function (d) {
+                            return d3.format(',f')(d)
+                        },
+                        "barColor": function (i) {
+                            if (stateSettings.hasOwnProperty(i.x)) {
+                                return stateSettings[i.x].color;
+                            }
+                        },
+                        //  "duration": 500,
+                        tooltip: {
+                            enabled: true,
+                            valueFormatter: function (d) {
+                                return d3.format(',f')(d)
+                            }
+                        },
+                        "xAxis": {
+                            "showMaxMin": false
+                        },
+                        "yAxis": {
+                            "axisLabel": "Values",
+                            tickFormat: function (d) {
+                                return d3.format(',f')(d)
+                            }
+                        }
+                    }
+                }
+            };
             $scope.$on('$destroy', function () {
                 if (timerId) {
                     console.error('DESTROY TIMER');
@@ -2972,10 +3118,14 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     $scope.amdState = {
                         data: data,
                         options: {
+                            title: {
+                                enable: true,
+                                text: "AMD"
+                            },
                             chart: {
                                 type: 'pieChart',
                                 margin: {
-                                    top: 40,
+                                    top: 5,
                                     right: 0,
                                     bottom: 0,
                                     left: 0
@@ -2986,7 +3136,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                         return d3.format(',f')(d)
                                     }
                                 },
-
+                                // pie: {
+                                //     startAngle: function(d) { return d.startAngle/2 -Math.PI/2 },
+                                //     endAngle: function(d) { return d.endAngle/2 -Math.PI/2 }
+                                // },
                                 height: 350,
                                 x: function(d){
                                     return d.key;
@@ -2994,7 +3147,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                 y: function(d){
                                     return d.y;
                                 },
-                                title: "AMD",
                                 showLabels: true,
                                 showLegend: false,
                                 //  donutRatio: 0.3,
@@ -3049,9 +3201,17 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         return notifi.error(err);
 
                     var rows = [];
+                    var rowsNumberTypeStart = [];
+                    var rowsCauseByAttempt = [];
+
                     var waiting = 0;
                     var end = 0;
-                    angular.forEach(res, function (item) {
+
+                    var byCause = res[0].byCause;
+                    var byTypeStateStart = res[0].byTypeStateStart;
+                    var causeByAttempt = res[0].causeByAttempt;
+
+                    angular.forEach(byCause, function (item) {
 
                         if (!item._id) {
                             // rows.push({
@@ -3069,59 +3229,79 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                     });
 
+                    angular.forEach(causeByAttempt, function (item) {
+
+                        if (!item._id) {
+
+                        } else {
+                            rowsCauseByAttempt.push({
+                                label: item._id,
+                                value: item.count
+                            });
+                        }
+
+                    });
+
+                    angular.forEach(byTypeStateStart, function (item) {
+
+                        if (!item._id) {
+                            rowsNumberTypeStart.push({
+                                key: "EMPTY",
+                                y: item.count
+                            });
+                        } else {
+                            rowsNumberTypeStart.push({
+                                key: item._id,
+                                y: item.count
+                            });
+                        }
+
+                    });
+
                     $scope.causeCartComplete = {
-                        data: [
-                            {
-                                key: "waiting",
-                                y: waiting
-                            },
-                            {
-                                key: "completed",
-                                y: end
-                            }
-                        ],
+                        data: {
+                            "ranges": [0, end + waiting],
+                            "rangeLabels": ["Start", "Total"],
+                            "measures": [waiting],
+                            "measureLabels": ["Waiting"],
+                            "markers": [end],
+                            "markerLabels": ["Done"]
+                        },
                         options: {
                             chart: {
-                                type: 'pieChart',
+                                type: 'bulletChart',
                                 margin: {
-                                    top: 40,
-                                    right: 0,
-                                    bottom: 0,
-                                    left: 0
+                                    top: 10,
+                                    right: 20,
+                                    bottom: 10,
+                                    left: 20
                                 },
                                 tooltip: {
                                     enabled: true,
                                     valueFormatter: function (d) {
                                         return d3.format(',f')(d)
                                     }
-                                },
-
-                                height: 350,
-                                x: function(d){
-                                    return d.key;
-                                },
-                                y: function(d){
-                                    return d.y;
-                                },
-                                title: "Completed " + ((end * 100) / (end + waiting) ).toFixed(2) + ' %',
-                                showLabels: false,
-                                showLegend: false,
-                              //  donutRatio: 0.3,
-                                donut: true
-                                // transitionDuration: 500,
-                                // labelThreshold: 0.02,
-                                // legendPosition: "right"
+                                }
                             },
-                            data: [] // {key, y}
+                            title: {
+                                enable: true,
+                                text: "Members completed " + ((end * 100) / (end + waiting) ).toFixed(2) + ' %'
+                            }
                         }
                     };
 
                     $scope.causeCart = {
-                        data: [{
-                            key: "End cause",
-                            values: rows
-                        }],
+                        data: [
+                            {
+                                key: "End cause",
+                                values: rows
+                            }
+                        ],
                         options: {
+                            title: {
+                                enable: true,
+                                text: "End cause"
+                            },
                             chart: {
                                 type: 'discreteBarChart',
                                 height: 480,
@@ -3129,8 +3309,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                     top: 20,
                                     right: 20,
                                     bottom: 50,
-                                    left: 70
+                                    left: 50
                                 },
+                                showXAxis: false,
                                 x: function(d){return d.label;},
                                 y: function(d){return d.value;},
                                 showValues: true,
@@ -3141,6 +3322,89 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                 duration: 500,
                                 xAxis: {
                                     axisLabel: 'Cause'
+                                },
+                                yAxis: {
+                                    axisLabel: 'Count',
+                                    axisLabelDistance: 0,
+                                    tickFormat: function(d){
+                                        return d3.format(',d')(d);
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    $scope.causeByAttemptCart = {
+                        data: [
+                            {
+                                key: "Cause",
+                                values: rowsCauseByAttempt
+                            }
+                        ],
+                        options: {
+                            title: {
+                                enable: true,
+                                text: "Cause by attempts"
+                            },
+                            chart: {
+                                type: 'discreteBarChart',
+                                height: 480,
+                                margin : {
+                                    top: 20,
+                                    right: 20,
+                                    bottom: 50,
+                                    left: 50
+                                },
+                                x: function(d){return d.label;},
+                                y: function(d){return d.value;},
+                                //showValues: true,
+                                valueFormat: function(d){
+                                    return d3.format(',d')(d);
+                                },
+
+                                duration: 500,
+                                showXAxis: false,
+                                xAxis: {
+                                    axisLabel: 'Cause'
+                                },
+                                yAxis: {
+                                    axisLabel: 'Count',
+                                    axisLabelDistance: 0,
+                                    tickFormat: function(d){
+                                        return d3.format(',d')(d);
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    $scope.byCommunicationWaitingType = {
+                        data: rowsNumberTypeStart,
+                        options: {
+                            title: {
+                                enable: true,
+                                text: "Communication types"
+                            },
+                            chart: {
+                                type: 'pieChart',
+                                height: 350,
+                                margin : {
+                                    top: 5,
+                                    right: 0,
+                                    bottom: 0,
+                                    left: 0
+                                },
+                                donut: true,
+                                x: function(d){return d.key;},
+                                y: function(d){return d.y;},
+                                showValues: true,
+                                showLegend: false,
+                                valueFormat: function(d){
+                                    return d3.format(',d')(d);
+                                },
+
+                                duration: 500,
+                                xAxis: {
+                                    axisLabel: 'Type'
                                 },
                                 yAxis: {
                                     axisLabel: 'Count',
