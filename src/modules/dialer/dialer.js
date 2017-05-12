@@ -2941,7 +2941,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             function setStats(stats) {
 
                 $scope.activeCalls = (stats && stats.active) || 0;
-                $scope.connectRate = ((stats && stats.callCount) / (stats && stats.bridgedCall)) || 0;
+                $scope.connectRate = ((stats && stats.callCount) / (stats && stats.bridgedCall));
+                if (!isFinite($scope.connectRate)) {
+                    $scope.connectRate = 0;
+                }
                 $scope.abandoned = ((stats.predictAbandoned * 100) / stats.callCount) || 0;
                 $scope.attempts = (stats.callCount || 0);
                 $scope.lastProcessOnDate = null;
