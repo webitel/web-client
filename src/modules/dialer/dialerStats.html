@@ -138,7 +138,7 @@
                                                     <i class="glyphicon glyphicon-phone-alt text-large"></i>
                                                 </div>
                                                 <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{ (sumAgentCallCount / agents.length).toFixed(2) }}</p>
+                                                    <p class="size-h4">{{ ((sumAgentCallCount / agents.length) || 0).toFixed(2) }}</p>
                                                     <br>
                                                     <p class="text-muted">Avg calls by agent</p>
                                                 </div>
@@ -150,7 +150,7 @@
                                                     <i class="glyphicon glyphicon-headphones text-large"></i>
                                                 </div>
                                                 <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{(sumAgentATT / agents.length).toFixed(2)}}</p>
+                                                    <p class="size-h4">{{ ((sumAgentATT / agents.length) || 0).toFixed(2)}}</p>
                                                     <br>
                                                     <p class="text-muted">Avg ATT by agent</p>
                                                 </div>
@@ -162,7 +162,7 @@
                                                     <i class="glyphicon glyphicon-time text-large"></i>
                                                 </div>
                                                 <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{(sumAgentASA / agents.length).toFixed(2)}}</p>
+                                                    <p class="size-h4">{{((sumAgentASA / agents.length) || 0).toFixed(2)}}</p>
                                                     <br>
                                                     <p class="text-muted">Avg ASA by agent</p>
                                                 </div>

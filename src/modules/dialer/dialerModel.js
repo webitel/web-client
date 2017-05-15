@@ -452,7 +452,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     'waitingForResultStatus': option.parameters && option.parameters.waitingForResultStatus,
                     'recordSession': (option.parameters && option.parameters.recordSession) === undefined ? true : option.parameters.recordSession,
                     'eternalQueue': (option.parameters && option.parameters.eternalQueue),
-                    'retryAbandoned': (option.parameters && option.parameters.retryAbandoned)
+                    'retryAbandoned': (option.parameters && option.parameters.retryAbandoned),
+                    'retriesByNumber': (option.parameters && option.parameters.retriesByNumber)
                 },
                 "agentParams": {
                     "callTimeout": option.agentParams && option.agentParams.callTimeout,
