@@ -2592,7 +2592,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             }
 
             return 'error type: ' + code
-        }
+        };
 
         $scope.checkCommunicationNumber = function (number) {
             if (!number)
@@ -2770,6 +2770,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
 
             var timerId = null;
+            var communicationTypes = {};
             
             function reload() {
                 DialerModel.item($scope.id, $scope.domain, function(err, item) {
@@ -2777,6 +2778,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         return notifi.error(err, 5000);
 
                     $scope.dialer = item;
+                    communicationTypes = {};
+                    if (item.communications) {
+                        angular.forEach(item.communications.types, function (v) {
+                            communicationTypes[v.code] = v.name;
+                        })
+                    }
+
                     $scope.dialerStateStr = dialerStates[item.state];
                     reloadCause();
                     setStats($scope.dialer.stats);
@@ -2886,7 +2894,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         $scope.sumAgentCallCount += dialer.callCount || 0;
                         $scope.sumAgentATT += ((dialer.callTimeSec / dialer.callCount) || 0);
                         $scope.sumAgentASA += ((dialer.connectedTimeSec / dialer.callCount) || 0);
-                     
+
                         return {
                             id: item.agentId,
                             number: item.agentId.split('@')[0],
@@ -3251,7 +3259,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             });
                         } else {
                             rowsNumberTypeStart.push({
-                                key: item._id,
+                                key: communicationTypes[item._id] ? communicationTypes[item._id] : "EMPTY",
                                 y: item.count
                             });
                         }
@@ -3311,6 +3319,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                     bottom: 50,
                                     left: 50
                                 },
+                                showLegend: false,
                                 showXAxis: false,
                                 x: function(d){return d.label;},
                                 y: function(d){return d.value;},
