@@ -155,6 +155,14 @@
                                                                 <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.autoResetStats"><i></i>
                                                             </label>
                                                         </div>
+
+                                                        <div class="form-group">
+                                                            <label class="control-label">One day task</label>
+                                                            <br>
+                                                            <label class="switch switch-success">
+                                                                <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.parameters.oneDayTask"><i></i>
+                                                            </label>
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -318,6 +326,13 @@
                                                                             <label class="control-label">Minimum word length (ms)</label>
                                                                             <input ng-disabled="viewMode" class="form-control" type="number" name="minWordLength" ng-model="dialer.amd.minWordLength" min="0">
                                                                         </div>
+
+                                                                        <div class="form-group" style=" margin-bottom: 10px;">
+                                                                            <label class="control-label">Transfer NOTSURE to an agent</label>
+                                                                            <label  style="width: 100%;" class="switch switch-success">
+                                                                                <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.amd.allowNotSure" ><i></i></label>
+                                                                        </div>
+
                                                                     </div>
 
                                                                     <div class="col-sm-6">

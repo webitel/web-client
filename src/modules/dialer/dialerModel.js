@@ -453,7 +453,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     'recordSession': (option.parameters && option.parameters.recordSession) === undefined ? true : option.parameters.recordSession,
                     'eternalQueue': (option.parameters && option.parameters.eternalQueue),
                     'retryAbandoned': (option.parameters && option.parameters.retryAbandoned),
-                    'retriesByNumber': (option.parameters && option.parameters.retriesByNumber)
+                    'retriesByNumber': (option.parameters && option.parameters.retriesByNumber),
+                    'oneDayTask': (option.parameters && option.parameters.oneDayTask)
                 },
                 "agentParams": {
                     "callTimeout": option.agentParams && option.agentParams.callTimeout,
@@ -465,6 +466,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 },
                 "amd": {
                     "enabled": amd.enabled,
+                    "allowNotSure": amd.allowNotSure,
                     "maximumWordLength": amd.maximumWordLength || 5000,
                     "maximumNumberOfWords": amd.maximumNumberOfWords || 3,
                     "betweenWordsSilence": amd.betweenWordsSilence || 50,
