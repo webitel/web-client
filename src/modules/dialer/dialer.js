@@ -2991,6 +2991,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 };
             }
 
+            $scope.showAgentStatus = {
+                "WAITING": true,
+                "CALL": true,
+                "ON-BREAK": true,
+                "LOGGED-OUT": true
+            }
+
             clearAgentLiveState();
 
             
@@ -3041,11 +3048,12 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         "showControls": false,
                         "showValues": true,
                         "showLegend": false,
+                        "showXAxis": false,
                         margin : {
                             top: 20,
                             right: 20,
                             bottom: 50,
-                            left: 100
+                            left: 20
                         },
                         valueFormat: function (d) {
                             return d3.format(',f')(d)

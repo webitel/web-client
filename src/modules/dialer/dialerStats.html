@@ -195,15 +195,28 @@
                                     <tab-heading>
                                         <span>Agents</span>
                                     </tab-heading>
+
+                                    <div class="row">
+                                        <div class="col-sm-12 text-center">
+                                            <p>
+                                                <button ng-class="{'btn-success': showAgentStatus['WAITING'], 'btn-default': !showAgentStatus['WAITING']}" ng-click="showAgentStatus['WAITING'] = !showAgentStatus['WAITING']" class="btn">WAITING</button>
+                                                <button ng-class="{'btn-danger': showAgentStatus['CALL'], 'btn-default': !showAgentStatus['CALL']}" ng-click="showAgentStatus['CALL'] = !showAgentStatus['CALL']" class="btn">CALL</button>
+                                                <button ng-class="{'btn-warning': showAgentStatus['ON-BREAK'], 'btn-default': !showAgentStatus['ON-BREAK']}" ng-click="showAgentStatus['ON-BREAK'] = !showAgentStatus['ON-BREAK']" class="btn">ON-BREAK</button>
+                                                <button ng-class="{'btn-dark': showAgentStatus['LOGGED-OUT'], 'btn-default': !showAgentStatus['LOGGED-OUT']}" ng-click="showAgentStatus['LOGGED-OUT'] = !showAgentStatus['LOGGED-OUT']" class="btn">LOGGED-OUT</button>
+                                            </p>
+                                        </div>
+                                    </div>
+
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <nvd3 options="accountState.options" data="accountState.data"></nvd3>
                                         </div>
                                     </div>
+
                                     <div class="row">
-                                        <div data-ng-repeat="ag in agents">
-                                            <div class="clearfix" ng-if="$index % 6 == 0"></div>
-                                            <div class="col-sm-2" >
+                                        <div data-ng-repeat="ag in agents | orderBy:'+number'" >
+                                            <!--<div class="clearfix" ng-if="$index % 6 == 0"></div>-->
+                                            <div class="col-sm-2" ng-show="showAgentStatus[ag.stateName]">
                                                 <section class="agent-container agent-container-border {{ag.stateName}}">
                                                     <header>
                                                         <a href="#/accounts/{{ag.number}}/edit?domain={{domain}}">{{ag.number}}</a>
@@ -222,8 +235,9 @@
                                                             <li tooltip-popup-delay="800" tooltip="Average Speed of Answer (ASA) is a metric calculating the amount of time it takes to answer a typical call once it has been routed to the contact centre.">
                                                                 ASA: <strong>{{( (ag.dialer.connectedTimeSec / ag.dialer.callCount) || 0).toFixed(2)}}</strong>
                                                             </li>
-                                                            <li>
-                                                                Last Offered Call: <strong>{{ag.dialer._lastBridgeCallTimeStart}}</strong>
+                                                            <li style="min-height: 50px">
+                                                                <div>Last Offered Call</div>
+                                                                <strong>{{ag.dialer._lastBridgeCallTimeStart}} </strong>
                                                             </li>
                                                         </ul>
                                                     </div>
