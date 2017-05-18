@@ -201,31 +201,34 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-2" data-ng-repeat="ag in agents">
-                                            <section class="agent-container agent-container-border {{ag.stateName}}">
-                                                <header>
-                                                    <a href="#/accounts/{{ag.number}}/edit?domain={{domain}}">{{ag.number}}</a>
-                                                </header>
-                                                <div class="agent-body">
-                                                    <div id="{{ag.id}}" class="agent-state {{ag.stateName}}">
-                                                        <strong>{{ag.stateName}}</strong>
+                                        <div data-ng-repeat="ag in agents">
+                                            <div class="clearfix" ng-if="$index % 6 == 0"></div>
+                                            <div class="col-sm-2" >
+                                                <section class="agent-container agent-container-border {{ag.stateName}}">
+                                                    <header>
+                                                        <a href="#/accounts/{{ag.number}}/edit?domain={{domain}}">{{ag.number}}</a>
+                                                    </header>
+                                                    <div class="agent-body">
+                                                        <div id="{{ag.id}}" class="agent-state {{ag.stateName}}">
+                                                            <strong>{{ag.stateName}}</strong>
+                                                        </div>
+                                                        <ul>
+                                                            <li>
+                                                                Call count: <strong>{{ag.dialer.callCount}}</strong>
+                                                            </li>
+                                                            <li tooltip-popup-delay="800" tooltip="Average Talk Time (ATT) is, quite simply, the amount of time an agent spends talking to customers.">
+                                                                ATT: <strong>{{( (ag.dialer.callTimeSec / ag.dialer.callCount) || 0).toFixed(2)}}</strong>
+                                                            </li>
+                                                            <li tooltip-popup-delay="800" tooltip="Average Speed of Answer (ASA) is a metric calculating the amount of time it takes to answer a typical call once it has been routed to the contact centre.">
+                                                                ASA: <strong>{{( (ag.dialer.connectedTimeSec / ag.dialer.callCount) || 0).toFixed(2)}}</strong>
+                                                            </li>
+                                                            <li>
+                                                                Last Offered Call: <strong>{{ag.dialer._lastBridgeCallTimeStart}}</strong>
+                                                            </li>
+                                                        </ul>
                                                     </div>
-                                                    <ul>
-                                                        <li>
-                                                            Call count: <strong>{{ag.dialer.callCount}}</strong>
-                                                        </li>
-                                                        <li tooltip-popup-delay="800" tooltip="Average Talk Time (ATT) is, quite simply, the amount of time an agent spends talking to customers.">
-                                                            ATT: <strong>{{( (ag.dialer.callTimeSec / ag.dialer.callCount) || 0).toFixed(2)}}</strong>
-                                                        </li>
-                                                        <li tooltip-popup-delay="800" tooltip="Average Speed of Answer (ASA) is a metric calculating the amount of time it takes to answer a typical call once it has been routed to the contact centre.">
-                                                            ASA: <strong>{{( (ag.dialer.connectedTimeSec / ag.dialer.callCount) || 0).toFixed(2)}}</strong>
-                                                        </li>
-                                                        <li>
-                                                            Last Offered Call: <strong>{{ag.dialer._lastBridgeCallTimeStart}}</strong>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </section>
+                                                </section>
+                                            </div>
                                         </div>
 
                                     </div>
