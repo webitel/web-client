@@ -980,7 +980,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             }
         }, true);
 
-        $scope.getCommunicationDisplayName = function (code) {
+        var getCommunicationDisplayName = function (code) {
             if (!code)
                 return '-';
 
@@ -992,6 +992,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             return 'error type: ' + code;
         };
+
+        $scope.getCommunicationDisplayName = getCommunicationDisplayName;
 
         $scope.timeToString = timeToString;
 
@@ -1352,6 +1354,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                             break;
                                         case "attempt_amd_result":
                                             val = atempt.amdResult;
+                                            break;
+                                        case "attempt_communication_type_code":
+                                            val = atempt.callTypeCode;
+                                            break;
+                                        case "attempt_agent":
+                                            val = atempt.agentId || "";
+                                            break;
+                                        case "attempt_communication_type_name":
+                                            val = getCommunicationDisplayName(atempt.callTypeCode);
                                             break;
                                         case "priority_number":
                                             val = atempt.callPriority;
@@ -2503,6 +2514,20 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             "attempt_amd_result": {
                 "name": "AMD result",
                 "field": "attempt_amd_result",
+                filter: {
+                    "allProbe": true
+                }
+            },
+            "attempt_communication_type_name": {
+                "name": "Communication type name",
+                "field": "attempt_communication_type_name",
+                filter: {
+                    "allProbe": true
+                }
+            },
+            "attempt_communication_type_code": {
+                "name": "Communication type code",
+                "field": "attempt_communication_type_code",
                 filter: {
                     "allProbe": true
                 }
