@@ -284,6 +284,29 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
         }
 
+        function listHistory (domainName, dialerId, options, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            var page = 1;
+            var limit = 200;
+
+            if (options.page)
+                page = options.page;
+
+            if (options.limit)
+                limit = options.limit;
+
+            var sort = JSON.stringify({createdOn: -1});
+
+
+            webitel.api('GET', '/api/v2/dialer/' + dialerId + '/history?limit=' + limit + '&page=' + page +
+                '&domain=' + domainName + '&sort=' + sort, function(err, res) {
+                var data = res.data || res.info;
+                return cb && cb(err, data);
+            });
+        }
+
         function parseDialer (domainName, data) {
             var dialer = create(domainName, data);
             angular.forEach(data._variables, function (item) {
@@ -565,6 +588,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             setState: setState,
             resetProcess: resetProcess,
             cleanStatistic: cleanStatistic,
+            listHistory: listHistory,
             ALL_CODE: ALL_CODE,
             CODE_RESPONSE_ERRORS: CODE_RESPONSE_ERRORS,
             CODE_RESPONSE_RETRY: CODE_RESPONSE_RETRY,

@@ -300,6 +300,44 @@
                                         </div>
                                     </div>
                                 </tab>
+
+                                <tab>
+                                    <tab-heading>
+                                        <span>History</span>
+                                    </tab-heading>
+
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Date</th>
+                                                    <th>Action</th>
+                                                    <th>Value</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="res in historyCollection">
+                                                    <td>
+                                                        {{$index + 1}}
+                                                    </td>
+                                                    <td>
+                                                        {{timeToString(res.createdOn)}}
+                                                    </td>
+                                                    <td>
+                                                        {{res.action}}
+                                                    </td>
+                                                    <td>
+                                                        {{res.value}}
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </tab>
                             </tabset>
                         </div>
                     </div>

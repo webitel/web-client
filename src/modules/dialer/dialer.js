@@ -3025,6 +3025,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             clearAgentLiveState();
 
+            $scope.historyCollection = [];
+
+            $scope.timeToString = timeToString;
+            DialerModel.listHistory($scope.domain, $scope.id, {}, function (err, data) {
+                if (err)
+                    return notifi.error(err, 5000);
+
+                $scope.historyCollection = $scope.historyCollection.concat(data)
+            });
+
             
             function findAgent(id) {
                 var agents = $scope.agents;
