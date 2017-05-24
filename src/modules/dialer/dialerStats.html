@@ -84,8 +84,8 @@
                                                     <i class="glyphicon glyphicon-transfer text-large"></i>
                                                 </div>
                                                 <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h1">{{attempts}}</p>
-                                                    <p class="text-muted">Attempts</p>
+                                                    <p class="size-h1">{{attempts}}/{{bridgedCall}}</p>
+                                                    <p class="text-muted">Attempts/Bridged</p>
                                                 </div>
                                             </section>
                                         </div>
@@ -97,7 +97,7 @@
                                                 </div>
                                                 <div class="panel-bottom bg-reverse">
                                                     <p class="size-h1">{{abandoned.toFixed(1)}}%</p>
-                                                    <p class="text-muted">Abandoned</p>
+                                                    <p class="text-muted">Service level</p>
                                                 </div>
                                             </section>
                                         </div>
@@ -171,6 +171,9 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-12">
+                                            <div class="text-center h4">{{causeCartCompleteStr}}</div>
+                                        </div>
+                                        <div class="col-sm-12">
                                             <nvd3 options="causeCartComplete.options" data="causeCartComplete.data"></nvd3>
                                         </div>
                                     </div>
@@ -187,6 +190,10 @@
                                         </div>
                                         <div class="col-sm-6">
                                             <nvd3 options="amdState.options" data="amdState.data"></nvd3>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <nvd3 options="callbackType.options" data="callbackType.data"></nvd3>
                                         </div>
                                     </div>
 

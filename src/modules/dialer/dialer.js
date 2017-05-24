@@ -2768,6 +2768,17 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             }
 
                         ],
+                        "callbackStatus": [
+                            {$unwind: "$_callback"},
+                            {
+                                $group: {
+                                    _id: '$_callback.data.success',
+                                    count: {
+                                        $sum: 1
+                                    }
+                                }
+                            }
+                        ],
                         "byCause": [
                             {
                                 $group: {
@@ -3119,7 +3130,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             };
             $scope.$on('$destroy', function () {
                 if (timerId) {
-                    console.error('DESTROY TIMER');
+                    console.log('DESTROY TIMER');
                     $interval.cancel(timerId);
                 }
 
@@ -3144,6 +3155,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
                 $scope.abandoned = ((stats.predictAbandoned * 100) / stats.callCount) || 0;
                 $scope.attempts = (stats.callCount || 0);
+                $scope.bridgedCall = (stats.bridgedCall || 0);
                 $scope.lastProcessOnDate = null;
                 $scope.lastProcessOnTime = null;
                 $scope.processState = null;
@@ -3212,6 +3224,193 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
             }
 
+            $scope.causeCartCompleteStr = ""; 
+            $scope.causeCartComplete = {
+                data: {
+
+                },
+                options: {
+                    chart: {
+                        type: 'bulletChart',
+                        margin: {
+                            top: 10,
+                            right: 20,
+                            bottom: 10,
+                            left: 20
+                        },
+                        tooltip: {
+                            enabled: true,
+                            valueFormatter: function (d) {
+                                return d3.format(',f')(d)
+                            }
+                        }
+                    },
+                    title: {
+                        enable: false,
+                        text: ""
+                    }
+                }
+            };
+
+            $scope.causeCart = {
+                data: [],
+                options: {
+                    title: {
+                        enable: true,
+                        text: "End cause"
+                    },
+                    chart: {
+                        type: 'discreteBarChart',
+                        height: 480,
+                        margin : {
+                            top: 20,
+                            right: 20,
+                            bottom: 50,
+                            left: 50
+                        },
+                        showLegend: false,
+                        showXAxis: false,
+                        x: function(d){return d.label;},
+                        y: function(d){return d.value;},
+                        showValues: true,
+                        valueFormat: function(d){
+                            return d3.format(',d')(d);
+                        },
+
+                        duration: 500,
+                        xAxis: {
+                            axisLabel: 'Cause'
+                        },
+                        yAxis: {
+                            axisLabel: 'Count',
+                            axisLabelDistance: 0,
+                            tickFormat: function(d){
+                                return d3.format(',d')(d);
+                            }
+                        }
+                    }
+                }
+            };
+            $scope.causeByAttemptCart = {
+                data: [],
+                options: {
+                    title: {
+                        enable: true,
+                        text: "Cause by attempts"
+                    },
+                    chart: {
+                        type: 'discreteBarChart',
+                        height: 480,
+                        margin : {
+                            top: 20,
+                            right: 20,
+                            bottom: 50,
+                            left: 50
+                        },
+                        x: function(d){return d.label;},
+                        y: function(d){return d.value;},
+                        //showValues: true,
+                        valueFormat: function(d){
+                            return d3.format(',d')(d);
+                        },
+
+                        duration: 500,
+                        showXAxis: false,
+                        xAxis: {
+                            axisLabel: 'Cause'
+                        },
+                        yAxis: {
+                            axisLabel: 'Count',
+                            axisLabelDistance: 0,
+                            tickFormat: function(d){
+                                return d3.format(',d')(d);
+                            }
+                        }
+                    }
+                }
+            };
+
+            $scope.byCommunicationWaitingType = {
+                data: [],
+                options: {
+                    title: {
+                        enable: true,
+                        text: "Communication types"
+                    },
+                    chart: {
+                        type: 'pieChart',
+                        height: 350,
+                        margin : {
+                            top: 5,
+                            right: 0,
+                            bottom: 0,
+                            left: 0
+                        },
+                        donut: true,
+                        x: function(d){return d.key;},
+                        y: function(d){return d.y;},
+                        showValues: true,
+                        showLegend: false,
+                        valueFormat: function(d){
+                            return d3.format(',d')(d);
+                        },
+
+                        duration: 500,
+                        xAxis: {
+                            axisLabel: 'Type'
+                        },
+                        yAxis: {
+                            axisLabel: 'Count',
+                            axisLabelDistance: 0,
+                            tickFormat: function(d){
+                                return d3.format(',d')(d);
+                            }
+                        }
+                    }
+                }
+            };
+
+
+            $scope.callbackType = {
+                data: [],
+                options: {
+                    title: {
+                        enable: true,
+                        text: "Callback"
+                    },
+                    chart: {
+                        type: 'pieChart',
+                        height: 350,
+                        margin : {
+                            top: 5,
+                            right: 0,
+                            bottom: 0,
+                            left: 0
+                        },
+                        donut: true,
+                        x: function(d){return d.key;},
+                        y: function(d){return d.y;},
+                        showValues: true,
+                        showLegend: false,
+                        valueFormat: function(d){
+                            return d3.format(',d')(d);
+                        },
+
+                        duration: 500,
+                        xAxis: {
+                            axisLabel: 'Type'
+                        },
+                        yAxis: {
+                            axisLabel: 'Count',
+                            axisLabelDistance: 0,
+                            tickFormat: function(d){
+                                return d3.format(',d')(d);
+                            }
+                        }
+                    }
+                }
+            };
+
             function reloadCause() {
                 if (!$scope.id || !$scope.domain)
                     return notifi.error(new Error("Bad parameters (id, domain is required)."));
@@ -3254,6 +3453,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     var rows = [];
                     var rowsNumberTypeStart = [];
                     var rowsCauseByAttempt = [];
+                    var rowsCallbackStatus = [];
 
                     var waiting = 0;
                     var end = 0;
@@ -3261,6 +3461,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     var byCause = res[0].byCause;
                     var byTypeStateStart = res[0].byTypeStateStart;
                     var causeByAttempt = res[0].causeByAttempt;
+                    var callbackStatus = res[0].callbackStatus;
 
                     angular.forEach(byCause, function (item) {
 
@@ -3308,166 +3509,209 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         }
 
                     });
-
-                    $scope.causeCartComplete = {
-                        data: {
-                            "ranges": [0, end + waiting],
-                            "rangeLabels": ["Start", "Total"],
-                            "measures": [waiting],
-                            "measureLabels": ["Waiting"],
-                            "markers": [end],
-                            "markerLabels": ["Done"]
-                        },
-                        options: {
-                            chart: {
-                                type: 'bulletChart',
-                                margin: {
-                                    top: 10,
-                                    right: 20,
-                                    bottom: 10,
-                                    left: 20
-                                },
-                                tooltip: {
-                                    enabled: true,
-                                    valueFormatter: function (d) {
-                                        return d3.format(',f')(d)
-                                    }
-                                }
-                            },
-                            title: {
-                                enable: true,
-                                text: "Members completed " + ((end * 100) / (end + waiting) ).toFixed(2) + ' %'
-                            }
+                    
+                    angular.forEach(callbackStatus, function (item) {
+                        if (!item._id) {
+                            rowsCallbackStatus.push({
+                                key: "Timeout old",
+                                y: item.count
+                            });
+                        } else {
+                            rowsCallbackStatus.push({
+                                key: item._id,
+                                y: item.count
+                            });
                         }
+                    });
+
+                    $scope.causeCartComplete.data = {
+                        "ranges": [0, end + waiting],
+                        "rangeLabels": ["Start", "Total"],
+                        "measures": [waiting],
+                        "measureLabels": ["Waiting"],
+                        "markers": [end],
+                        "markerLabels": ["Done"]
                     };
+                    $scope.causeCartCompleteStr = "Members completed " + ((end * 100) / (end + waiting) ).toFixed(2) + ' %';
 
-                    $scope.causeCart = {
-                        data: [
-                            {
-                                key: "End cause",
-                                values: rows
-                            }
-                        ],
-                        options: {
-                            title: {
-                                enable: true,
-                                text: "End cause"
-                            },
-                            chart: {
-                                type: 'discreteBarChart',
-                                height: 480,
-                                margin : {
-                                    top: 20,
-                                    right: 20,
-                                    bottom: 50,
-                                    left: 50
-                                },
-                                showLegend: false,
-                                showXAxis: false,
-                                x: function(d){return d.label;},
-                                y: function(d){return d.value;},
-                                showValues: true,
-                                valueFormat: function(d){
-                                    return d3.format(',d')(d);
-                                },
-
-                                duration: 500,
-                                xAxis: {
-                                    axisLabel: 'Cause'
-                                },
-                                yAxis: {
-                                    axisLabel: 'Count',
-                                    axisLabelDistance: 0,
-                                    tickFormat: function(d){
-                                        return d3.format(',d')(d);
-                                    }
-                                }
-                            }
+                    $scope.causeCart.data = [
+                        {
+                            key: "End cause",
+                            values: rows
                         }
-                    };
-                    $scope.causeByAttemptCart = {
-                        data: [
-                            {
-                                key: "Cause",
-                                values: rowsCauseByAttempt
-                            }
-                        ],
-                        options: {
-                            title: {
-                                enable: true,
-                                text: "Cause by attempts"
-                            },
-                            chart: {
-                                type: 'discreteBarChart',
-                                height: 480,
-                                margin : {
-                                    top: 20,
-                                    right: 20,
-                                    bottom: 50,
-                                    left: 50
-                                },
-                                x: function(d){return d.label;},
-                                y: function(d){return d.value;},
-                                //showValues: true,
-                                valueFormat: function(d){
-                                    return d3.format(',d')(d);
-                                },
+                    ];
 
-                                duration: 500,
-                                showXAxis: false,
-                                xAxis: {
-                                    axisLabel: 'Cause'
-                                },
-                                yAxis: {
-                                    axisLabel: 'Count',
-                                    axisLabelDistance: 0,
-                                    tickFormat: function(d){
-                                        return d3.format(',d')(d);
-                                    }
-                                }
-                            }
+                    $scope.causeByAttemptCart.data = [
+                        {
+                            key: "Cause",
+                            values: rowsCauseByAttempt
                         }
-                    };
+                    ];
 
-                    $scope.byCommunicationWaitingType = {
-                        data: rowsNumberTypeStart,
-                        options: {
-                            title: {
-                                enable: true,
-                                text: "Communication types"
-                            },
-                            chart: {
-                                type: 'pieChart',
-                                height: 350,
-                                margin : {
-                                    top: 5,
-                                    right: 0,
-                                    bottom: 0,
-                                    left: 0
-                                },
-                                donut: true,
-                                x: function(d){return d.key;},
-                                y: function(d){return d.y;},
-                                showValues: true,
-                                showLegend: false,
-                                valueFormat: function(d){
-                                    return d3.format(',d')(d);
-                                },
+                    $scope.byCommunicationWaitingType.data = rowsNumberTypeStart;
+                    $scope.callbackType.data= rowsCallbackStatus;
 
-                                duration: 500,
-                                xAxis: {
-                                    axisLabel: 'Type'
-                                },
-                                yAxis: {
-                                    axisLabel: 'Count',
-                                    axisLabelDistance: 0,
-                                    tickFormat: function(d){
-                                        return d3.format(',d')(d);
-                                    }
-                                }
-                            }
-                        }
-                    };
+
+                    //
+                    // $scope.causeCartComplete.data = {
+                    //     data: {
+                    //         "ranges": [0, end + waiting],
+                    //         "rangeLabels": ["Start", "Total"],
+                    //         "measures": [waiting],
+                    //         "measureLabels": ["Waiting"],
+                    //         "markers": [end],
+                    //         "markerLabels": ["Done"]
+                    //     },
+                    //     options: {
+                    //         chart: {
+                    //             type: 'bulletChart',
+                    //             margin: {
+                    //                 top: 10,
+                    //                 right: 20,
+                    //                 bottom: 10,
+                    //                 left: 20
+                    //             },
+                    //             tooltip: {
+                    //                 enabled: true,
+                    //                 valueFormatter: function (d) {
+                    //                     return d3.format(',f')(d)
+                    //                 }
+                    //             }
+                    //         },
+                    //         title: {
+                    //             enable: true,
+                    //             text: "Members completed " + ((end * 100) / (end + waiting) ).toFixed(2) + ' %'
+                    //         }
+                    //     }
+                    // };
+
+                    // $scope.causeCart = {
+                    //     data: [
+                    //         {
+                    //             key: "End cause",
+                    //             values: rows
+                    //         }
+                    //     ],
+                    //     options: {
+                    //         title: {
+                    //             enable: true,
+                    //             text: "End cause"
+                    //         },
+                    //         chart: {
+                    //             type: 'discreteBarChart',
+                    //             height: 480,
+                    //             margin : {
+                    //                 top: 20,
+                    //                 right: 20,
+                    //                 bottom: 50,
+                    //                 left: 50
+                    //             },
+                    //             showLegend: false,
+                    //             showXAxis: false,
+                    //             x: function(d){return d.label;},
+                    //             y: function(d){return d.value;},
+                    //             showValues: true,
+                    //             valueFormat: function(d){
+                    //                 return d3.format(',d')(d);
+                    //             },
+                    //
+                    //             duration: 500,
+                    //             xAxis: {
+                    //                 axisLabel: 'Cause'
+                    //             },
+                    //             yAxis: {
+                    //                 axisLabel: 'Count',
+                    //                 axisLabelDistance: 0,
+                    //                 tickFormat: function(d){
+                    //                     return d3.format(',d')(d);
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // };
+                    // $scope.causeByAttemptCart = {
+                    //     data: [
+                    //         {
+                    //             key: "Cause",
+                    //             values: rowsCauseByAttempt
+                    //         }
+                    //     ],
+                    //     options: {
+                    //         title: {
+                    //             enable: true,
+                    //             text: "Cause by attempts"
+                    //         },
+                    //         chart: {
+                    //             type: 'discreteBarChart',
+                    //             height: 480,
+                    //             margin : {
+                    //                 top: 20,
+                    //                 right: 20,
+                    //                 bottom: 50,
+                    //                 left: 50
+                    //             },
+                    //             x: function(d){return d.label;},
+                    //             y: function(d){return d.value;},
+                    //             //showValues: true,
+                    //             valueFormat: function(d){
+                    //                 return d3.format(',d')(d);
+                    //             },
+                    //
+                    //             duration: 500,
+                    //             showXAxis: false,
+                    //             xAxis: {
+                    //                 axisLabel: 'Cause'
+                    //             },
+                    //             yAxis: {
+                    //                 axisLabel: 'Count',
+                    //                 axisLabelDistance: 0,
+                    //                 tickFormat: function(d){
+                    //                     return d3.format(',d')(d);
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // };
+
+                    // $scope.byCommunicationWaitingType = {
+                    //     data: rowsNumberTypeStart,
+                    //     options: {
+                    //         title: {
+                    //             enable: true,
+                    //             text: "Communication types"
+                    //         },
+                    //         chart: {
+                    //             type: 'pieChart',
+                    //             height: 350,
+                    //             margin : {
+                    //                 top: 5,
+                    //                 right: 0,
+                    //                 bottom: 0,
+                    //                 left: 0
+                    //             },
+                    //             donut: true,
+                    //             x: function(d){return d.key;},
+                    //             y: function(d){return d.y;},
+                    //             showValues: true,
+                    //             showLegend: false,
+                    //             valueFormat: function(d){
+                    //                 return d3.format(',d')(d);
+                    //             },
+                    //
+                    //             duration: 500,
+                    //             xAxis: {
+                    //                 axisLabel: 'Type'
+                    //             },
+                    //             yAxis: {
+                    //                 axisLabel: 'Count',
+                    //                 axisLabelDistance: 0,
+                    //                 tickFormat: function(d){
+                    //                     return d3.format(',d')(d);
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // };
                 });
             };
 

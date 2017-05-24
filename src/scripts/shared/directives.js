@@ -437,6 +437,15 @@ define(['angular'],
       }
     };
   })
+  .directive("uiRangeSlider", [function() {
+    return {
+      restrict: "A",
+      link: function(scope, ele) {
+        return ele.slider()
+      }
+    }
+  }
+  ])
   .filter('groupBy',
     function () {
       return function (collection, key) {
