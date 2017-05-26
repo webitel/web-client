@@ -28,31 +28,31 @@
                                         <span>General</span>
                                     </tab-heading>
                                     <div class="row">
-                                        <div class="col-sm-2">
-                                            <section class="panel panel-box">
-                                                <div class="panel-top" data-ng-class="{'bg-success': processState, 'bg-info': !processState}" style="padding: 10px 20px;">
-                                                    <i class="fa fa-calendar text-large"></i>
-                                                </div>
-                                                <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{lastProcessOnDate}}</p>
-                                                    <p class="size-h4">{{lastProcessOnTime}}</p>
-                                                    <p class="text-muted">{{processState ? 'Start' : 'End'}} time</p>
-                                                </div>
-                                            </section>
-                                        </div>
+                                        <!--<div class="col-sm-2">-->
+                                            <!--<section class="panel panel-box">-->
+                                                <!--<div class="panel-top" data-ng-class="{'bg-success': processState, 'bg-info': !processState}" style="padding: 10px 20px;">-->
+                                                    <!--<i class="fa fa-calendar text-large"></i>-->
+                                                <!--</div>-->
+                                                <!--<div class="panel-bottom bg-reverse">-->
+                                                    <!--<p class="size-h4">{{lastProcessOnDate}}</p>-->
+                                                    <!--<p class="size-h4">{{lastProcessOnTime}}</p>-->
+                                                    <!--<p class="text-muted">{{processState ? 'Start' : 'End'}} time</p>-->
+                                                <!--</div>-->
+                                            <!--</section>-->
+                                        <!--</div>-->
 
-                                        <div class="col-sm-2">
-                                            <section class="panel panel-box">
-                                                <div class="panel-top bg-info" style="padding: 10px 20px;">
-                                                    <i class="glyphicon glyphicon-info-sign text-large"></i>
-                                                </div>
-                                                <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{dialerStateStr}}</p>
-                                                    <br>
-                                                    <p class="text-muted">{{dialer._cause}}</p>
-                                                </div>
-                                            </section>
-                                        </div>
+                                        <!--<div class="col-sm-2">-->
+                                            <!--<section class="panel panel-box">-->
+                                                <!--<div class="panel-top bg-info" style="padding: 10px 20px;">-->
+                                                    <!--<i class="glyphicon glyphicon-info-sign text-large"></i>-->
+                                                <!--</div>-->
+                                                <!--<div class="panel-bottom bg-reverse">-->
+                                                    <!--<p class="size-h4">{{dialerStateStr}}</p>-->
+                                                    <!--<br>-->
+                                                    <!--<p class="text-muted">{{dialer._cause}}</p>-->
+                                                <!--</div>-->
+                                            <!--</section>-->
+                                        <!--</div>-->
 
                                         <div class="col-sm-2">
                                             <section class="panel panel-box">
@@ -80,18 +80,6 @@
 
                                         <div class="col-sm-2">
                                             <section class="panel panel-box">
-                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
-                                                    <i class="glyphicon glyphicon-transfer text-large"></i>
-                                                </div>
-                                                <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h1">{{attempts}}/{{bridgedCall}}</p>
-                                                    <p class="text-muted">Attempts/Bridged</p>
-                                                </div>
-                                            </section>
-                                        </div>
-
-                                        <div class="col-sm-2">
-                                            <section class="panel panel-box">
                                                 <div class="panel-top bg-danger" style="padding: 10px 20px;">
                                                     <i class="glyphicon glyphicon-remove text-large"></i>
                                                 </div>
@@ -102,9 +90,71 @@
                                             </section>
                                         </div>
 
+                                        <div class="col-sm-6">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-transfer text-large"></i>
+                                                </div>
+                                                <div class="list-justified-container" style="padding: 0">
+                                                    <ul class="list-justified text-center">
+                                                        <li>
+                                                            <p class="size-h3">{{attempts}}</p>
+                                                            <p class="text-muted">Attempts</p>
+                                                        </li>
+                                                        <li>
+                                                            <p class="size-h3">{{bridgedCall}}</p>
+                                                            <p class="text-muted">Bridged</p>
+                                                        </li>
+                                                        <li>
+                                                            <p class="size-h3">{{connectedCall}}</p>
+                                                            <p class="text-muted">Connected</p>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </section>
+                                        </div>
+
                                     </div>
 
                                     <div class="row">
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-phone-alt text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{ ((sumAgentCallCount / agents.length) || 0).toFixed(2) }}</p>
+                                                    <br>
+                                                    <p class="text-muted">Avg calls by agent</p>
+                                                </div>
+                                            </section>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-headphones text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{secToString(((sumAgentATT / agents.length) || 0))}}</p>
+                                                    <br>
+                                                    <p class="text-muted">Avg ATT by agent</p>
+                                                </div>
+                                            </section>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-time text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{(secToString(sumAgentASA / agents.length) || 0)}}</p>
+                                                    <br>
+                                                    <p class="text-muted">Avg ASA by agent</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
                                         <div class="col-sm-6">
                                             <section class="panel panel-box">
                                                 <div class="panel-top bg-info" style="padding: 10px 20px;">
@@ -129,42 +179,6 @@
                                                             <p class="text-muted">ON-BREAK</p>
                                                         </li>
                                                     </ul>
-                                                </div>
-                                            </section>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <section class="panel panel-box">
-                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
-                                                    <i class="glyphicon glyphicon-phone-alt text-large"></i>
-                                                </div>
-                                                <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{ ((sumAgentCallCount / agents.length) || 0).toFixed(2) }}</p>
-                                                    <br>
-                                                    <p class="text-muted">Avg calls by agent</p>
-                                                </div>
-                                            </section>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <section class="panel panel-box">
-                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
-                                                    <i class="glyphicon glyphicon-headphones text-large"></i>
-                                                </div>
-                                                <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{ ((sumAgentATT / agents.length) || 0).toFixed(2)}}</p>
-                                                    <br>
-                                                    <p class="text-muted">Avg ATT by agent</p>
-                                                </div>
-                                            </section>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <section class="panel panel-box">
-                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
-                                                    <i class="glyphicon glyphicon-time text-large"></i>
-                                                </div>
-                                                <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{((sumAgentASA / agents.length) || 0).toFixed(2)}}</p>
-                                                    <br>
-                                                    <p class="text-muted">Avg ASA by agent</p>
                                                 </div>
                                             </section>
                                         </div>
@@ -237,10 +251,10 @@
                                                                 Call count: <strong>{{ag.dialer.callCount}}</strong>
                                                             </li>
                                                             <li tooltip-popup-delay="800" tooltip="Average Talk Time (ATT) is, quite simply, the amount of time an agent spends talking to customers.">
-                                                                ATT: <strong>{{( (ag.dialer.callTimeSec / ag.dialer.callCount) || 0).toFixed(2)}}</strong>
+                                                                ATT: <strong>{{( secToString(ag.dialer.callTimeSec / ag.dialer.callCount) || 0)}}</strong>
                                                             </li>
                                                             <li tooltip-popup-delay="800" tooltip="Average Speed of Answer (ASA) is a metric calculating the amount of time it takes to answer a typical call once it has been routed to the contact centre.">
-                                                                ASA: <strong>{{( (ag.dialer.connectedTimeSec / ag.dialer.callCount) || 0).toFixed(2)}}</strong>
+                                                                ASA: <strong>{{( secToString(ag.dialer.connectedTimeSec / ag.dialer.callCount) || 0)}}</strong>
                                                             </li>
                                                             <li style="min-height: 50px">
                                                                 <div>Last Offered Call</div>

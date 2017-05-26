@@ -2805,6 +2805,12 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.id = $routeParams.id;
 
 
+            $scope.secToString = function (sec) {
+                if (!isFinite(sec))
+                    return '';
+                return utils.secondsToString(sec, true)
+            };
+
             var timerId = null;
             var communicationTypes = {};
             
@@ -3156,6 +3162,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 $scope.abandoned = ((stats.predictAbandoned * 100) / stats.callCount) || 0;
                 $scope.attempts = (stats.callCount || 0);
                 $scope.bridgedCall = (stats.bridgedCall || 0);
+                $scope.connectedCall = (stats.connectedCall || 0);
                 $scope.lastProcessOnDate = null;
                 $scope.lastProcessOnTime = null;
                 $scope.processState = null;

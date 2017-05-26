@@ -445,35 +445,6 @@ define(['angular', 'config'], function (angular, config) {
             }]
         },
         {
-            href: "#/clickToCall",
-            caption: "Click to call",
-
-            acl: 'hook',
-            templateUrl: 'modules/c2c/c2c.html',
-            controller: 'ClickToCallCtrl',
-            controllerUrl: 'modules/c2c/c2c.js',
-            iconClass: 'fa fa-magic',
-            routes: [{
-                href: '/clickToCall/new',
-                templateUrl: 'modules/c2c/c2cPage.html',
-                controller: 'ClickToCallCtrl',
-                controllerUrl: 'modules/c2c/c2c.js',
-                method: "create"
-            },{
-                href: '/clickToCall/:id/edit',
-                templateUrl: 'modules/c2c/c2cPage.html',
-                controller: 'ClickToCallCtrl',
-                controllerUrl: 'modules/c2c/c2c.js',
-                method: "edit"
-            },{
-                href: '/clickToCall/:id/view',
-                templateUrl: 'modules/c2c/c2csPage.html',
-                controller: 'ClickToCallCtrl',
-                controllerUrl: 'modules/c2c/c2c.js',
-                method: "view"
-            }]
-        },
-        {
             href: "#/cdr",
             caption: "CDR",
 

@@ -58,7 +58,7 @@ define(['angular'], function (angular) {
         return mysize;
     }
 
-    function secondsToString(seconds){
+    function secondsToString(seconds, skipHours){
         function pad(ss){
             return (ss < 10 ? '0' : '') + ss;
         }
@@ -73,7 +73,11 @@ define(['angular'], function (angular) {
 
         if (d > 0)
             str = d + ' days ';
-        return str + pad(h) + ':' + pad(m) + ':' + pad(s);
+
+        if (!skipHours || h > 0)
+            str += pad(h) + ':';
+
+        return str + pad(m) + ':' + pad(s);
     }
 
     function WebitelHashCollection() {
