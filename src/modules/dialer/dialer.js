@@ -3126,7 +3126,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             "showMaxMin": false
                         },
                         "yAxis": {
-                            "axisLabel": "Values",
                             tickFormat: function (d) {
                                 return d3.format(',f')(d)
                             }
