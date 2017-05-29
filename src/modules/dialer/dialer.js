@@ -3517,7 +3517,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     });
                     
                     angular.forEach(callbackStatus, function (item) {
-                        if (!item._id) {
+                        if (item._id === null) {
                             rowsCallbackStatus.push({
                                 key: "Timeout old",
                                 y: item.count
