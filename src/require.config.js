@@ -137,5 +137,5 @@ require.config({
       'css': 'bower_components/require-css/css.min' // or whatever the path to require-css is
     }
   },
-  waitSeconds: 60
+  waitSeconds: 180
 });
