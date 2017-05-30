@@ -2897,6 +2897,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             function resetAgentSummaryByDialer() {
                 $scope.sumAgentCallCount = 0;
+                $scope.gotAgentCount = 0;
                 $scope.sumAgentATT = 0;
                 $scope.sumAgentASA = 0;
             }
@@ -2933,9 +2934,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         var stateName = getAgentSummaryState(item.state, item.status);
                         $scope.sumAgentsStates[stateName]++;
                         var dialer = getAgentDilerInfo($scope.id, item);
-                        $scope.sumAgentCallCount += dialer.callCount || 0;
-                        $scope.sumAgentATT += ((dialer.callTimeSec / dialer.callCount) || 0);
-                        $scope.sumAgentASA += ((dialer.connectedTimeSec / dialer.callCount) || 0);
+
+                        if (dialer.lastBridgeCallTimeStart > 0) {
+                            $scope.gotAgentCount++;
+                            $scope.sumAgentCallCount += dialer.callCount || 0;
+                            $scope.sumAgentATT += ((dialer.callTimeSec / dialer.callCount) || 0);
+                            $scope.sumAgentASA += ((dialer.connectedTimeSec / dialer.callCount) || 0);
+                        }
 
                         return {
                             id: item.agentId,
