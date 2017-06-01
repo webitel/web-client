@@ -109,6 +109,10 @@
                                                             <p class="size-h3">{{connectedCall}}</p>
                                                             <p class="text-muted">Connected</p>
                                                         </li>
+                                                        <li>
+                                                            <p class="size-h3">{{ amdMachine.toFixed(0) }}%</p>
+                                                            <p class="text-muted">Machine</p>
+                                                        </li>
                                                     </ul>
                                                 </div>
                                             </section>
@@ -154,8 +158,20 @@
                                                 </div>
                                             </section>
                                         </div>
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-compressed text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{ loggedAgentInDay > 0 ? (sumUtilization / loggedAgentInDay).toFixed(2) + '%': '---'}}</p>
+                                                    <br>
+                                                    <p class="text-muted">Utilization</p>
+                                                </div>
+                                            </section>
+                                        </div>
 
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <section class="panel panel-box">
                                                 <div class="panel-top bg-info" style="padding: 10px 20px;">
                                                     <i class="glyphicon glyphicon-user text-large"></i>
@@ -171,8 +187,8 @@
                                                             <p class="text-muted">WAITING</p>
                                                         </li>
                                                         <li>
-                                                            <p class="size-h3">{{sumAgentsStates['CALL']}}</p>
-                                                            <p class="text-muted">CALL</p>
+                                                            <p class="size-h3">{{sumAgentsStates['BUSY']}}</p>
+                                                            <p class="text-muted">BUSY</p>
                                                         </li>
                                                         <li>
                                                             <p class="size-h3">{{sumAgentsStates['ON-BREAK']}}</p>
@@ -220,9 +236,9 @@
                                     <div class="row">
                                         <div class="col-sm-12 text-center">
                                             <p>
-                                                <button ng-class="{'btn-success': showAgentStatus['WAITING'], 'btn-default': !showAgentStatus['WAITING']}" ng-click="showAgentStatus['WAITING'] = !showAgentStatus['WAITING']" class="btn">WAITING</button>
-                                                <button ng-class="{'btn-danger': showAgentStatus['CALL'], 'btn-default': !showAgentStatus['CALL']}" ng-click="showAgentStatus['CALL'] = !showAgentStatus['CALL']" class="btn">CALL</button>
-                                                <button ng-class="{'btn-warning': showAgentStatus['ON-BREAK'], 'btn-default': !showAgentStatus['ON-BREAK']}" ng-click="showAgentStatus['ON-BREAK'] = !showAgentStatus['ON-BREAK']" class="btn">ON-BREAK</button>
+                                                <button ng-class="{'btn-success dlr-bg.success': showAgentStatus['WAITING'], 'btn-default': !showAgentStatus['WAITING']}" ng-click="showAgentStatus['WAITING'] = !showAgentStatus['WAITING']" class="btn">WAITING</button>
+                                                <button ng-class="{'btn-danger dlr-bg-danger': showAgentStatus['BUSY'], 'btn-default': !showAgentStatus['BUSY']}" ng-click="showAgentStatus['BUSY'] = !showAgentStatus['BUSY']" class="btn">BUSY</button>
+                                                <button ng-class="{'btn-warning dlr-bg-warning': showAgentStatus['ON-BREAK'], 'btn-default': !showAgentStatus['ON-BREAK']}" ng-click="showAgentStatus['ON-BREAK'] = !showAgentStatus['ON-BREAK']" class="btn">ON-BREAK</button>
                                                 <button ng-class="{'btn-dark': showAgentStatus['LOGGED-OUT'], 'btn-default': !showAgentStatus['LOGGED-OUT']}" ng-click="showAgentStatus['LOGGED-OUT'] = !showAgentStatus['LOGGED-OUT']" class="btn">LOGGED-OUT</button>
                                             </p>
                                         </div>
@@ -235,38 +251,49 @@
                                     </div>
 
                                     <div class="row">
-                                        <div data-ng-repeat="ag in agents | orderBy:'+number'" >
-                                            <!--<div class="clearfix" ng-if="$index % 6 == 0"></div>-->
-                                            <div class="col-sm-2" ng-show="showAgentStatus[ag.stateName]">
-                                                <section class="agent-container agent-container-border {{ag.stateName}}">
-                                                    <header>
-                                                        <a href="#/accounts/{{ag.number}}/edit?domain={{domain}}">{{ag.number}}</a>
-                                                    </header>
-                                                    <div class="agent-body">
-                                                        <div id="{{ag.id}}" class="agent-state {{ag.stateName}}">
-                                                            <strong>{{ag.stateName}}</strong>
-                                                        </div>
-                                                        <ul>
-                                                            <li>
-                                                                Call count: <strong>{{ag.dialer.callCount}}</strong>
-                                                            </li>
-                                                            <li tooltip-popup-delay="800" tooltip="Average Talk Time (ATT) is, quite simply, the amount of time an agent spends talking to customers.">
-                                                                ATT: <strong>{{( secToString(ag.dialer.callTimeSec / ag.dialer.callCount) || 0)}}</strong>
-                                                            </li>
-                                                            <li tooltip-popup-delay="800" tooltip="Average Speed of Answer (ASA) is a metric calculating the amount of time it takes to answer a typical call once it has been routed to the contact centre.">
-                                                                ASA: <strong>{{( secToString(ag.dialer.connectedTimeSec / ag.dialer.callCount) || 0)}}</strong>
-                                                            </li>
-                                                            <li style="min-height: 50px">
-                                                                <div>Last Offered Call</div>
-                                                                <strong>{{ag.dialer._lastBridgeCallTimeStart}} </strong>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </section>
-                                            </div>
-                                        </div>
+                                        <div class="col-sm-12" style="padding-left: 35px">
+                                            <table class="agent-dialer-table table table-striped cf">
+                                                <thead class="agent-dialer-table-head">
+                                                <tr>
+                                                    <th>Number</th>
+                                                    <th>State</th>
+                                                    <th>Calls</th>
+                                                    <th>ATT</th>
+                                                    <th>ASA</th>
+                                                    <th>Utilization</th>
+                                                    <th>AVG IDLE</th>
+                                                    <th>SUM IDLE</th>
+                                                    <th>Today logged in time</th>
+                                                    <th>Last Offered Call</th>
+                                                    <th>Today logged in</th>
+                                                    <th>Logged out</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr class="agent-container {{ag.stateName}}" id="{{ag.id}}" data-ng-repeat="ag in agents | orderBy:'+number'" ng-show="showAgentStatus[ag.stateName]">
+                                                    <td><a href="#/accounts/{{ag.number}}/edit?domain={{domain}}">{{ag.number}}</a></td>
+                                                    <td>
+                                                        <span class="label">
+                                                            {{ag.stateName}}
+                                                        </span>
+                                                    </td>
+                                                    <td>{{ag.dialer.callCount || 0}}</td>
+                                                    <td>{{( secToString(ag.dialer.callTimeSec / ag.dialer.callCount) || 0)}}</td>
+                                                    <td>{{ ( secToString(ag.dialer.connectedTimeSec / ag.dialer.callCount) || 0) }}</td>
+                                                    <td>{{ ag.utilization.toFixed(2) }}</td>
+                                                    <td>{{ secToString(ag.avgIdleSec) }}</td>
+                                                    <td>{{ secToString(ag.sumIdleSec) }}</td>
+                                                    <td>{{ secToString(ag.loggedInSec) }}</td>
+                                                    <td>{{ toLocaleTimeString(ag.dialer.lastBridgeCallTimeStart) }}</td>
+                                                    <td>{{ toLocaleTimeString(ag.loggedInOfDayTime) }}</td>
+                                                    <td>{{ toLocaleTimeString(ag.loggedOutTime) }}</td>
+                                                </tr>
+                                                </tbody>
 
+                                            </table>
+                                        </div>
                                     </div>
+
                                 </tab>
                                 <tab>
                                     <tab-heading>

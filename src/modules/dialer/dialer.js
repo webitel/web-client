@@ -2891,7 +2891,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.sumAgentsStates = {
                 "LOGGED-OUT": 0,
                 "WAITING": 0,
-                "CALL": 0,
+                "BUSY": 0,
                 "ON-BREAK": 0
             };
 
@@ -2900,6 +2900,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 $scope.gotAgentCount = 0;
                 $scope.sumAgentATT = 0;
                 $scope.sumAgentASA = 0;
+                $scope.sumUtilization = 0;
+                $scope.loggedAgentInDay = 0;
             }
 
             resetAgentSummaryByDialer();
@@ -2924,7 +2926,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     $scope.sumAgentsStates = {
                         "LOGGED-OUT": 0,
                         "WAITING": 0,
-                        "CALL": 0,
+                        "BUSY": 0,
                         "ON-BREAK": 0
                     };
 
@@ -2942,6 +2944,33 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             $scope.sumAgentASA += ((dialer.connectedTimeSec / dialer.callCount) || 0);
                         }
 
+                        var loggedOutTime = item.loggedOutTime || 0;
+                        var loggedInSec = item.loggedInSec || 0;
+                        var avgIdleSec = 0;
+
+                        if (!dialer.callTimeSec) {
+                            dialer.callTimeSec = 0
+                        }
+
+                        if (!dialer.idleSec) {
+                            dialer.idleSec = 0
+                        }
+                        if (dialer.idleSec && dialer.callCount) {
+                            avgIdleSec = Math.round(dialer.idleSec / dialer.callCount)
+                        }
+                        if (item.lastLoggedInTime) {
+                            loggedOutTime = 0;
+                            loggedInSec += Math.round( (Date.now() - item.lastLoggedInTime) / 1000 );
+                        }
+
+                        var utilization =  0;
+
+                        if (loggedInSec > 0 &&  (dialer.callTimeSec +  dialer.idleSec) ) {
+                            utilization = ( (dialer.callTimeSec / ( dialer.callTimeSec +  dialer.idleSec)) ) * 100;
+                            $scope.sumUtilization += utilization;
+                            $scope.loggedAgentInDay++;
+                        }
+
                         return {
                             id: item.agentId,
                             number: item.agentId.split('@')[0],
@@ -2949,7 +2978,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             status: item.status,
                             stateName: stateName,
                             class: getAgentClass(item.state, item.status),
-                            dialer: dialer
+                            dialer: dialer,
+                            loggedInOfDayTime: item.loggedInOfDayTime,
+                            loggedOutTime: loggedOutTime,
+                            loggedInSec: loggedInSec,
+                            avgIdleSec: avgIdleSec,
+                            sumIdleSec: dialer.idleSec || 0,
+                            utilization: utilization
                         }
                     });
                 })
@@ -2961,12 +2996,20 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         if (agent.dialer[i]._id === dialerId) {
                             if (agent.dialer[i].lastBridgeCallTimeStart)
                                 agent.dialer[i]._lastBridgeCallTimeStart = new Date(agent.dialer[i].lastBridgeCallTimeStart).toLocaleTimeString();
+
                             return agent.dialer[i];
                         }
                     }
                 }
                 return {}
             }
+            
+            $scope.toLocaleTimeString = function (time) {
+                if (!time)
+                    return '---';
+
+                return new Date(time).toLocaleTimeString()
+            };
 
             function getAgentClass(state, status) {
                 if (state === 'Waiting' && (status === 'Available' || status === 'Available (On Demand)')) {
@@ -2987,7 +3030,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 } else if (status === 'Logged Out') {
                     return 'LOGGED-OUT'
                 } else if (state === 'Idle' || state === 'Reserved') {
-                    return 'CALL'
+                    return 'BUSY'
                 } else {
                     return 'ON-BREAK'
                 }
@@ -3016,23 +3059,23 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             var stateSettings = {
                 "WAITING": {
-                    color: "#3cbc8d"
+                    color: "#57c17b"
                 },
                 "ON-BREAK": {
-                    color: "#fac552"
+                    color: "#f39c12"
                 },
                 "LOGGED-OUT": {
-                    color: "#242633"
+                    color: "rgba(171, 171, 171, 0.36)"
                 },
-                "CALL": {
-                    color: "#e9422e"
+                "BUSY": {
+                    color: "#bf4048"
                 }
             };
 
             function clearAgentLiveState() {
                 $scope.liveAgentsStates = {
                     "WAITING": 0,
-                    "CALL": 0,
+                    "BUSY": 0,
                     "ON-BREAK": 0,
                     "LOGGED-OUT": 0
                 };
@@ -3040,7 +3083,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             $scope.showAgentStatus = {
                 "WAITING": true,
-                "CALL": true,
+                "BUSY": true,
                 "ON-BREAK": true,
                 "LOGGED-OUT": true
             }
@@ -3183,12 +3226,22 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                 if (stats.amd) {
                     var data = [];
+                    var notMachine = 0;
+
                     for (var key in stats.amd) {
+                        if (key !== 'MACHINE') {
+                            notMachine += stats.amd[key]
+                        }
                         data.push({
                             key: key,
                             y: stats.amd[key]
                         })
+                    };
+
+                    if (notMachine) {
+                        $scope.amdMachine = ((stats.amd["MACHINE"] || 0) * 100) / notMachine;
                     }
+
                     $scope.amdState = {
                         data: data,
                         options: {
@@ -3228,8 +3281,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                 // transitionDuration: 500,
                                 // labelThreshold: 0.02,
                                 // legendPosition: "right"
-                            },
-                            data: [] // {key, y}
+                            }
                         }
                     };
                 }
@@ -3421,6 +3473,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     }
                 }
             };
+
+            $scope.amdMachine = 0;
 
             function reloadCause() {
                 if (!$scope.id || !$scope.domain)
