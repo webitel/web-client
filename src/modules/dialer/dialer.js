@@ -3594,7 +3594,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         "markers": [end],
                         "markerLabels": ["Done"]
                     };
-                    $scope.causeCartCompleteStr = "Members completed " + ((end * 100) / (end + waiting) ).toFixed(2) + ' %';
+                    if ((end + waiting) > 0) {
+                        $scope.causeCartCompleteStr = "Members completed " + ((end * 100) / (end + waiting) ).toFixed(2) + ' %';
+                    } else {
+                        $scope.causeCartCompleteStr = "Members completed 0%";
+                    }
 
                     $scope.causeCart.data = [
                         {
