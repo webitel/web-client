@@ -3133,54 +3133,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 $scope.$apply();
             }, 500);
 
-
-            $scope.accountState = {
-                data: [
-                    {
-                        key: 'State',
-                        values: liveAgentsStates
-                    }
-                ],
-                options: {
-                    "chart": {
-                        "type": "multiBarHorizontalChart",
-                        "height": 250,
-                        "showControls": false,
-                        "showValues": true,
-                        "showLegend": false,
-                        "showXAxis": false,
-                        margin : {
-                            top: 20,
-                            right: 20,
-                            bottom: 50,
-                            left: 20
-                        },
-                        valueFormat: function (d) {
-                            return d3.format(',f')(d)
-                        },
-                        "barColor": function (i) {
-                            if (stateSettings.hasOwnProperty(i.x)) {
-                                return stateSettings[i.x].color;
-                            }
-                        },
-                        //  "duration": 500,
-                        tooltip: {
-                            enabled: true,
-                            valueFormatter: function (d) {
-                                return d3.format(',f')(d)
-                            }
-                        },
-                        "xAxis": {
-                            "showMaxMin": false
-                        },
-                        "yAxis": {
-                            tickFormat: function (d) {
-                                return d3.format(',f')(d)
-                            }
-                        }
-                    }
-                }
-            };
             $scope.$on('$destroy', function () {
                 if (timerId) {
                     console.log('DESTROY TIMER');
@@ -3236,54 +3188,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             key: key,
                             y: stats.amd[key]
                         })
-                    };
+                    }
 
                     if (notMachine) {
                         $scope.amdMachine = ((stats.amd["MACHINE"] || 0) * 100) / notMachine;
                     }
 
-                    $scope.amdState = {
-                        data: data,
-                        options: {
-                            title: {
-                                enable: true,
-                                text: "AMD"
-                            },
-                            chart: {
-                                type: 'pieChart',
-                                margin: {
-                                    top: 5,
-                                    right: 0,
-                                    bottom: 0,
-                                    left: 0
-                                },
-                                tooltip: {
-                                    enabled: true,
-                                    valueFormatter: function (d) {
-                                        return d3.format(',f')(d)
-                                    }
-                                },
-                                // pie: {
-                                //     startAngle: function(d) { return d.startAngle/2 -Math.PI/2 },
-                                //     endAngle: function(d) { return d.endAngle/2 -Math.PI/2 }
-                                // },
-                                height: 350,
-                                x: function(d){
-                                    return d.key;
-                                },
-                                y: function(d){
-                                    return d.y;
-                                },
-                                showLabels: true,
-                                showLegend: false,
-                                //  donutRatio: 0.3,
-                                donut: true,
-                                // transitionDuration: 500,
-                                // labelThreshold: 0.02,
-                                // legendPosition: "right"
-                            }
-                        }
-                    };
+                    $scope.amdState.data = data;
                 }
             }
 
@@ -3314,7 +3225,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     }
                 }
             };
-
             $scope.causeCart = {
                 data: [],
                 options: {
@@ -3392,7 +3302,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     }
                 }
             };
-
             $scope.byCommunicationWaitingType = {
                 data: [],
                 options: {
@@ -3432,8 +3341,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     }
                 }
             };
-
-
             $scope.callbackType = {
                 data: [],
                 options: {
@@ -3468,6 +3375,95 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             axisLabelDistance: 0,
                             tickFormat: function(d){
                                 return d3.format(',d')(d);
+                            }
+                        }
+                    }
+                }
+            };
+            $scope.amdState = {
+                data: [],
+                options: {
+                    title: {
+                        enable: true,
+                        text: "AMD"
+                    },
+                    chart: {
+                        type: 'pieChart',
+                        margin: {
+                            top: 5,
+                            right: 0,
+                            bottom: 0,
+                            left: 0
+                        },
+                        tooltip: {
+                            enabled: true,
+                            valueFormatter: function (d) {
+                                return d3.format(',f')(d)
+                            }
+                        },
+                        // pie: {
+                        //     startAngle: function(d) { return d.startAngle/2 -Math.PI/2 },
+                        //     endAngle: function(d) { return d.endAngle/2 -Math.PI/2 }
+                        // },
+                        height: 350,
+                        x: function(d){
+                            return d.key;
+                        },
+                        y: function(d){
+                            return d.y;
+                        },
+                        showLabels: true,
+                        showLegend: false,
+                        //  donutRatio: 0.3,
+                        donut: true,
+                        // transitionDuration: 500,
+                        // labelThreshold: 0.02,
+                        // legendPosition: "right"
+                    }
+                }
+            };
+            $scope.accountState = {
+                data: [
+                    {
+                        key: 'State',
+                        values: liveAgentsStates
+                    }
+                ],
+                options: {
+                    "chart": {
+                        "type": "multiBarHorizontalChart",
+                        "height": 250,
+                        "showControls": false,
+                        "showValues": true,
+                        "showLegend": false,
+                        "showXAxis": false,
+                        margin : {
+                            top: 20,
+                            right: 20,
+                            bottom: 50,
+                            left: 20
+                        },
+                        valueFormat: function (d) {
+                            return d3.format(',f')(d)
+                        },
+                        "barColor": function (i) {
+                            if (stateSettings.hasOwnProperty(i.x)) {
+                                return stateSettings[i.x].color;
+                            }
+                        },
+                        //  "duration": 500,
+                        tooltip: {
+                            enabled: true,
+                            valueFormatter: function (d) {
+                                return d3.format(',f')(d)
+                            }
+                        },
+                        "xAxis": {
+                            "showMaxMin": false
+                        },
+                        "yAxis": {
+                            tickFormat: function (d) {
+                                return d3.format(',f')(d)
                             }
                         }
                     }
@@ -3614,169 +3610,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     ];
 
                     $scope.byCommunicationWaitingType.data = rowsNumberTypeStart;
-                    $scope.callbackType.data= rowsCallbackStatus;
-
-
-                    //
-                    // $scope.causeCartComplete.data = {
-                    //     data: {
-                    //         "ranges": [0, end + waiting],
-                    //         "rangeLabels": ["Start", "Total"],
-                    //         "measures": [waiting],
-                    //         "measureLabels": ["Waiting"],
-                    //         "markers": [end],
-                    //         "markerLabels": ["Done"]
-                    //     },
-                    //     options: {
-                    //         chart: {
-                    //             type: 'bulletChart',
-                    //             margin: {
-                    //                 top: 10,
-                    //                 right: 20,
-                    //                 bottom: 10,
-                    //                 left: 20
-                    //             },
-                    //             tooltip: {
-                    //                 enabled: true,
-                    //                 valueFormatter: function (d) {
-                    //                     return d3.format(',f')(d)
-                    //                 }
-                    //             }
-                    //         },
-                    //         title: {
-                    //             enable: true,
-                    //             text: "Members completed " + ((end * 100) / (end + waiting) ).toFixed(2) + ' %'
-                    //         }
-                    //     }
-                    // };
-
-                    // $scope.causeCart = {
-                    //     data: [
-                    //         {
-                    //             key: "End cause",
-                    //             values: rows
-                    //         }
-                    //     ],
-                    //     options: {
-                    //         title: {
-                    //             enable: true,
-                    //             text: "End cause"
-                    //         },
-                    //         chart: {
-                    //             type: 'discreteBarChart',
-                    //             height: 480,
-                    //             margin : {
-                    //                 top: 20,
-                    //                 right: 20,
-                    //                 bottom: 50,
-                    //                 left: 50
-                    //             },
-                    //             showLegend: false,
-                    //             showXAxis: false,
-                    //             x: function(d){return d.label;},
-                    //             y: function(d){return d.value;},
-                    //             showValues: true,
-                    //             valueFormat: function(d){
-                    //                 return d3.format(',d')(d);
-                    //             },
-                    //
-                    //             duration: 500,
-                    //             xAxis: {
-                    //                 axisLabel: 'Cause'
-                    //             },
-                    //             yAxis: {
-                    //                 axisLabel: 'Count',
-                    //                 axisLabelDistance: 0,
-                    //                 tickFormat: function(d){
-                    //                     return d3.format(',d')(d);
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // };
-                    // $scope.causeByAttemptCart = {
-                    //     data: [
-                    //         {
-                    //             key: "Cause",
-                    //             values: rowsCauseByAttempt
-                    //         }
-                    //     ],
-                    //     options: {
-                    //         title: {
-                    //             enable: true,
-                    //             text: "Cause by attempts"
-                    //         },
-                    //         chart: {
-                    //             type: 'discreteBarChart',
-                    //             height: 480,
-                    //             margin : {
-                    //                 top: 20,
-                    //                 right: 20,
-                    //                 bottom: 50,
-                    //                 left: 50
-                    //             },
-                    //             x: function(d){return d.label;},
-                    //             y: function(d){return d.value;},
-                    //             //showValues: true,
-                    //             valueFormat: function(d){
-                    //                 return d3.format(',d')(d);
-                    //             },
-                    //
-                    //             duration: 500,
-                    //             showXAxis: false,
-                    //             xAxis: {
-                    //                 axisLabel: 'Cause'
-                    //             },
-                    //             yAxis: {
-                    //                 axisLabel: 'Count',
-                    //                 axisLabelDistance: 0,
-                    //                 tickFormat: function(d){
-                    //                     return d3.format(',d')(d);
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // };
-
-                    // $scope.byCommunicationWaitingType = {
-                    //     data: rowsNumberTypeStart,
-                    //     options: {
-                    //         title: {
-                    //             enable: true,
-                    //             text: "Communication types"
-                    //         },
-                    //         chart: {
-                    //             type: 'pieChart',
-                    //             height: 350,
-                    //             margin : {
-                    //                 top: 5,
-                    //                 right: 0,
-                    //                 bottom: 0,
-                    //                 left: 0
-                    //             },
-                    //             donut: true,
-                    //             x: function(d){return d.key;},
-                    //             y: function(d){return d.y;},
-                    //             showValues: true,
-                    //             showLegend: false,
-                    //             valueFormat: function(d){
-                    //                 return d3.format(',d')(d);
-                    //             },
-                    //
-                    //             duration: 500,
-                    //             xAxis: {
-                    //                 axisLabel: 'Type'
-                    //             },
-                    //             yAxis: {
-                    //                 axisLabel: 'Count',
-                    //                 axisLabelDistance: 0,
-                    //                 tickFormat: function(d){
-                    //                     return d3.format(',d')(d);
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // };
+                    $scope.callbackType.data = rowsCallbackStatus;
                 });
             };
 
