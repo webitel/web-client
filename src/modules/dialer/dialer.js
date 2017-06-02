@@ -3191,7 +3191,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     }
 
                     if (notMachine) {
-                        $scope.amdMachine = ((stats.amd["MACHINE"] || 0) * 100) / notMachine;
+                        var m = stats.amd["MACHINE"] || 0;
+                        $scope.amdMachine = (m * 100) / (notMachine + m);
                     }
 
                     $scope.amdState.data = data;
