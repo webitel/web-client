@@ -2902,6 +2902,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 $scope.sumAgentASA = 0;
                 $scope.sumUtilization = 0;
                 $scope.loggedAgentInDay = 0;
+                $scope.sumIdleAgents = 0;
             }
 
             resetAgentSummaryByDialer();
@@ -2956,7 +2957,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             dialer.idleSec = 0
                         }
                         if (dialer.idleSec && dialer.callCount) {
-                            avgIdleSec = Math.round(dialer.idleSec / dialer.callCount)
+                            avgIdleSec = Math.round(dialer.idleSec / dialer.callCount);
+                            $scope.sumIdleAgents += avgIdleSec;
                         }
                         if (item.lastLoggedInTime) {
                             loggedOutTime = 0;
@@ -3439,10 +3441,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         "showLegend": false,
                         "showXAxis": false,
                         margin : {
-                            top: 20,
+                            top: 10,
                             right: 20,
                             bottom: 50,
-                            left: 20
+                            left: 5
                         },
                         valueFormat: function (d) {
                             return d3.format(',f')(d)
@@ -3589,15 +3591,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     $scope.causeCartComplete.data = {
                         "ranges": [0, end + waiting],
                         "rangeLabels": ["Start", "Total"],
-                        "measures": [waiting],
-                        "measureLabels": ["Waiting"],
-                        "markers": [end],
-                        "markerLabels": ["Done"]
+                        "measures": [end],
+                        "measureLabels": ["Done"],
+                        "markers": [waiting],
+                        "markerLabels": ["Waiting"]
                     };
                     if ((end + waiting) > 0) {
-                        $scope.causeCartCompleteStr = "Members completed " + ((end * 100) / (end + waiting) ).toFixed(2) + ' %';
+                        $scope.causeCartCompleteStr = ((end * 100) / (end + waiting) ).toFixed(2) + '% members completed';
                     } else {
-                        $scope.causeCartCompleteStr = "Members completed 0%";
+                        $scope.causeCartCompleteStr = '0% members completed';
                     }
 
                     $scope.causeCart.data = [

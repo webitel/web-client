@@ -28,6 +28,14 @@ table.agent-dialer-table.table thead.agent-dialer-table-head tr th {
     background-color: rgba(171, 171, 171, 0.36);
 }
 
+.dlr-agents-control {
+    padding-top: 35px;
+}
+
+.dlr-agents-control > button {
+    line-height: 27px
+}
+
 table.agent-dialer-table.table .agent-container .label {
     display: inline;
     padding: .2em .6em .3em;

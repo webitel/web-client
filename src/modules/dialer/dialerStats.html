@@ -27,34 +27,22 @@
                                     <tab-heading>
                                         <span>General</span>
                                     </tab-heading>
+
                                     <div class="row">
-                                        <!--<div class="col-sm-2">-->
-                                            <!--<section class="panel panel-box">-->
-                                                <!--<div class="panel-top" data-ng-class="{'bg-success': processState, 'bg-info': !processState}" style="padding: 10px 20px;">-->
-                                                    <!--<i class="fa fa-calendar text-large"></i>-->
-                                                <!--</div>-->
-                                                <!--<div class="panel-bottom bg-reverse">-->
-                                                    <!--<p class="size-h4">{{lastProcessOnDate}}</p>-->
-                                                    <!--<p class="size-h4">{{lastProcessOnTime}}</p>-->
-                                                    <!--<p class="text-muted">{{processState ? 'Start' : 'End'}} time</p>-->
-                                                <!--</div>-->
-                                            <!--</section>-->
-                                        <!--</div>-->
+                                        <div class="col-sm-3">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top" data-ng-class="{'bg-success': processState, 'bg-info': !processState}" style="padding: 10px 20px;">
+                                                    <i class="fa fa-calendar text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{lastProcessOnDate}}</p>
+                                                    <p class="size-h4">{{lastProcessOnTime}}</p>
+                                                    <p class="text-muted">{{processState ? 'Start' : 'End'}} time</p>
+                                                </div>
+                                            </section>
+                                        </div>
 
-                                        <!--<div class="col-sm-2">-->
-                                            <!--<section class="panel panel-box">-->
-                                                <!--<div class="panel-top bg-info" style="padding: 10px 20px;">-->
-                                                    <!--<i class="glyphicon glyphicon-info-sign text-large"></i>-->
-                                                <!--</div>-->
-                                                <!--<div class="panel-bottom bg-reverse">-->
-                                                    <!--<p class="size-h4">{{dialerStateStr}}</p>-->
-                                                    <!--<br>-->
-                                                    <!--<p class="text-muted">{{dialer._cause}}</p>-->
-                                                <!--</div>-->
-                                            <!--</section>-->
-                                        <!--</div>-->
-
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-3">
                                             <section class="panel panel-box">
                                                 <div class="panel-top bg-success" style="padding: 10px 20px;">
                                                     <i class="glyphicon glyphicon-earphone text-large"></i>
@@ -66,22 +54,10 @@
                                             </section>
                                         </div>
 
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-3">
                                             <section class="panel panel-box">
                                                 <div class="panel-top bg-success" style="padding: 10px 20px;">
-                                                    <i class="glyphicon glyphicon-asterisk text-large"></i>
-                                                </div>
-                                                <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h1">{{connectRate.toFixed(1)}}</p>
-                                                    <p class="text-muted">Connect rate</p>
-                                                </div>
-                                            </section>
-                                        </div>
-
-                                        <div class="col-sm-2">
-                                            <section class="panel panel-box">
-                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
-                                                    <i class="glyphicon glyphicon-remove text-large"></i>
+                                                    <i class="glyphicon glyphicon-warning-sign text-large"></i>
                                                 </div>
                                                 <div class="panel-bottom bg-reverse">
                                                     <p class="size-h1">{{abandoned.toFixed(1)}}%</p>
@@ -89,6 +65,24 @@
                                                 </div>
                                             </section>
                                         </div>
+
+
+                                        <div class="col-sm-3">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-compressed text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h1">{{ loggedAgentInDay > 0 ? (sumUtilization / loggedAgentInDay).toFixed(2) + '%': '---'}}</p>
+                                                    <p class="text-muted">Utilization</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row">
 
                                         <div class="col-sm-6">
                                             <section class="panel panel-box">
@@ -118,60 +112,7 @@
                                             </section>
                                         </div>
 
-                                    </div>
-
-                                    <div class="row">
-
-                                        <div class="col-sm-2">
-                                            <section class="panel panel-box">
-                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
-                                                    <i class="glyphicon glyphicon-phone-alt text-large"></i>
-                                                </div>
-                                                <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{ ((sumAgentCallCount / gotAgentCount) || 0).toFixed(2) }}</p>
-                                                    <br>
-                                                    <p class="text-muted">Avg calls per agent</p>
-                                                </div>
-                                            </section>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <section class="panel panel-box">
-                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
-                                                    <i class="glyphicon glyphicon-headphones text-large"></i>
-                                                </div>
-                                                <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{secToString(((sumAgentATT / gotAgentCount) || 0))}}</p>
-                                                    <br>
-                                                    <p class="text-muted">Avg ATT by agent</p>
-                                                </div>
-                                            </section>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <section class="panel panel-box">
-                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
-                                                    <i class="glyphicon glyphicon-time text-large"></i>
-                                                </div>
-                                                <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{(secToString(sumAgentASA / gotAgentCount) || 0)}}</p>
-                                                    <br>
-                                                    <p class="text-muted">Avg ASA by agent</p>
-                                                </div>
-                                            </section>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <section class="panel panel-box">
-                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
-                                                    <i class="glyphicon glyphicon-compressed text-large"></i>
-                                                </div>
-                                                <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{ loggedAgentInDay > 0 ? (sumUtilization / loggedAgentInDay).toFixed(2) + '%': '---'}}</p>
-                                                    <br>
-                                                    <p class="text-muted">Utilization</p>
-                                                </div>
-                                            </section>
-                                        </div>
-
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-6">
                                             <section class="panel panel-box">
                                                 <div class="panel-top bg-info" style="padding: 10px 20px;">
                                                     <i class="glyphicon glyphicon-user text-large"></i>
@@ -199,6 +140,84 @@
                                             </section>
                                         </div>
                                     </div>
+
+                                    <div class="row">
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-asterisk text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{connectRate.toFixed(1)}}</p>
+                                                    <p class="text-muted">Connect rate</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-phone-alt text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{ ((sumAgentCallCount / gotAgentCount) || 0).toFixed(2) }}</p>
+                                                    <p class="text-muted">Calls per agent</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-pause text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{secToString( (sumIdleAgents / loggedAgentInDay) || 0)}}</p>
+                                                    <p class="text-muted">Avg idle time</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-headphones text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{secToString(((sumAgentATT / gotAgentCount) || 0))}}</p>
+                                                    <p class="text-muted">Avg ATT by agent</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-time text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{(secToString(sumAgentASA / gotAgentCount) || 0)}}</p>
+                                                    <p class="text-muted">Avg ASA by agent</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-info-sign text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{dialerStateStr}}</p>
+                                                    <p class="text-muted">{{dialer._cause}}</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                    </div>
+
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="text-center h4">{{causeCartCompleteStr}}</div>
@@ -218,9 +237,9 @@
                                         <div class="col-sm-6">
                                             <nvd3 options="byCommunicationWaitingType.options" data="byCommunicationWaitingType.data"></nvd3>
                                         </div>
-                                        <div class="col-sm-6">
-                                            <nvd3 options="amdState.options" data="amdState.data"></nvd3>
-                                        </div>
+                                        <!--<div class="col-sm-6">-->
+                                            <!--<nvd3 options="amdState.options" data="amdState.data"></nvd3>-->
+                                        <!--</div>-->
 
                                         <div class="col-sm-6">
                                             <nvd3 options="callbackType.options" data="callbackType.data"></nvd3>
@@ -233,21 +252,25 @@
                                         <span>Agents</span>
                                     </tab-heading>
 
-                                    <div class="row">
-                                        <div class="col-sm-12 text-center">
-                                            <p>
-                                                <button ng-class="{'btn-success dlr-bg.success': showAgentStatus['WAITING'], 'btn-default': !showAgentStatus['WAITING']}" ng-click="showAgentStatus['WAITING'] = !showAgentStatus['WAITING']" class="btn">WAITING</button>
-                                                <button ng-class="{'btn-danger dlr-bg-danger': showAgentStatus['BUSY'], 'btn-default': !showAgentStatus['BUSY']}" ng-click="showAgentStatus['BUSY'] = !showAgentStatus['BUSY']" class="btn">BUSY</button>
-                                                <button ng-class="{'btn-warning dlr-bg-warning': showAgentStatus['ON-BREAK'], 'btn-default': !showAgentStatus['ON-BREAK']}" ng-click="showAgentStatus['ON-BREAK'] = !showAgentStatus['ON-BREAK']" class="btn">ON-BREAK</button>
-                                                <button ng-class="{'btn-dark': showAgentStatus['LOGGED-OUT'], 'btn-default': !showAgentStatus['LOGGED-OUT']}" ng-click="showAgentStatus['LOGGED-OUT'] = !showAgentStatus['LOGGED-OUT']" class="btn">LOGGED-OUT</button>
+                                    <div class="row">.
+                                        <div class="col-sm-2 text-center">
+                                            <p class="dlr-agents-control">
+                                                <button ng-class="{'btn-success dlr-bg.success': showAgentStatus['WAITING'], 'btn-default': !showAgentStatus['WAITING']}" ng-click="showAgentStatus['WAITING'] = !showAgentStatus['WAITING']" class="btn btn-block">WAITING</button>
+                                                <button ng-class="{'btn-danger dlr-bg-danger': showAgentStatus['BUSY'], 'btn-default': !showAgentStatus['BUSY']}" ng-click="showAgentStatus['BUSY'] = !showAgentStatus['BUSY']" class="btn btn-block">BUSY</button>
+                                                <button ng-class="{'btn-warning dlr-bg-warning': showAgentStatus['ON-BREAK'], 'btn-default': !showAgentStatus['ON-BREAK']}" ng-click="showAgentStatus['ON-BREAK'] = !showAgentStatus['ON-BREAK']" class="btn btn-block">ON-BREAK</button>
+                                                <button ng-class="{'btn-dark': showAgentStatus['LOGGED-OUT'], 'btn-default': !showAgentStatus['LOGGED-OUT']}" ng-click="showAgentStatus['LOGGED-OUT'] = !showAgentStatus['LOGGED-OUT']" class="btn btn-block">LOGGED-OUT</button>
                                             </p>
                                         </div>
+
+                                        <div class="col-sm-10">
+                                            <nvd3 options="accountState.options" data="accountState.data"></nvd3>
+                                        </div>
+
+
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-sm-12">
-                                            <nvd3 options="accountState.options" data="accountState.data"></nvd3>
-                                        </div>
+
                                     </div>
 
                                     <div class="row">
@@ -255,14 +278,30 @@
                                             <table class="agent-dialer-table table table-striped cf">
                                                 <thead class="agent-dialer-table-head">
                                                 <tr>
-                                                    <th>Number</th>
+                                                    <th>
+                                                        Extension
+                                                    </th>
                                                     <th>State</th>
                                                     <th>Calls</th>
-                                                    <th>ATT</th>
-                                                    <th>ASA</th>
+                                                    <th>
+                                                        <span tooltip-popup-delay="800" tooltip="Average Talk Time (ATT) is, quite simply, the amount of time an agent spends talking to customers.">ATT</span>
+                                                    </th>
+                                                    <th>
+                                                        <span tooltip-popup-delay="800" tooltip="Average Speed of Answer (ASA) is a metric calculating the amount of time it takes to answer a typical call once it has been routed to the contact centre.">
+                                                            ASA
+                                                        </span>
+                                                    </th>
                                                     <th>Utilization</th>
-                                                    <th>AVG IDLE</th>
-                                                    <th>SUM IDLE</th>
+                                                    <th>
+                                                        <span tooltip-popup-delay="800" tooltip="Average agent's idle time.">
+                                                            AIT
+                                                        </span>
+                                                    </th>
+                                                    <th>
+                                                        <span tooltip-popup-delay="800" tooltip="Total agent's idle time.">
+                                                            TIT
+                                                        </span>
+                                                    </th>
                                                     <th>Today logged in time</th>
                                                     <th>Last Offered Call</th>
                                                     <th>Today logged in</th>
