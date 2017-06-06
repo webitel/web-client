@@ -3281,13 +3281,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         valueFormat: function(d){
                             return d3.format(',d')(d);
                         },
-                        tooltip: {
-                            enabled: true,
-                            keyFormatter: function (a,b,c) {
-                                console.log(arguments);
-                                return a;
-                            }
-                        },
 
                         duration: 500,
                         xAxis: {
@@ -3326,14 +3319,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         y: function(d){return d.value;},
                         showValues: true,
                         valueFormat: function(d){
-                            return d3.format(',.2f')(d);
-                        },
-                        tooltip: {
-                            enabled: true,
-                            keyFormatter: function (a,b,c) {
-                                console.log(arguments);
-                                return a;
-                            }
+                            return d3.format(',.2%')(d);
                         },
 
                         duration: 500,
@@ -3343,11 +3329,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             fontSize: 10
                         },
                         yAxis: {
-                            axisLabel: 'Count',
-                            axisLabelDistance: 0,
+                            // axisLabel: '%',
+                           // axisLabelDistance: 0,
                             showMaxMin: false,
                             tickFormat: function(d){
-                                return d3.format(',d')(d) + '%';
+                                return d3.format(',.2%')(d);
                             }
                         }
                     }
@@ -3599,7 +3585,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             rowsCauseByAttempt.push({
                                 label: _attempt.keys[i],
                                 count: _attempt.sumValues[i],
-                                value: _attempt.percentages[i] * 100
+                                value: _attempt.percentages[i]// * 100
                             });
                         }
                     }
