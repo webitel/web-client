@@ -860,6 +860,8 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.agentStates = ["Waiting", "Idle"];
         $scope.agentStatuses = ["Logged Out", "Available", "Available (On Demand)", "On Break"];
 
+        $scope.disableConsoleStatus = !!options.disableConsoleStatus;
+
         $scope.isAgent = options.isAgent;
 
         var agentDump = {};

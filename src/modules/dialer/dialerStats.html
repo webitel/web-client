@@ -291,20 +291,27 @@
                                                             ASA
                                                         </span>
                                                     </th>
-                                                    <th>Utilization</th>
                                                     <th>
                                                         <span tooltip-popup-delay="800" tooltip="Average agent's idle time.">
                                                             AIT
                                                         </span>
                                                     </th>
                                                     <th>
+                                                        Utilization
+                                                    </th>
+                                                    <th>At work</th>
+                                                    <th>
                                                         <span tooltip-popup-delay="800" tooltip="Total agent's idle time.">
-                                                            TIT
+                                                            Available
                                                         </span>
                                                     </th>
-                                                    <th>Today logged in time</th>
+
+                                                    <th>
+                                                        In Call
+                                                    </th>
+
                                                     <th>Last Offered Call</th>
-                                                    <th>Today logged in</th>
+                                                    <th>Logged In</th>
                                                     <th style="min-width: 95px;">Logged out</th>
                                                 </tr>
                                                 </thead>
@@ -312,17 +319,18 @@
                                                 <tr class="agent-container {{ag.stateName}}" id="{{ag.id}}" data-ng-repeat="ag in agents | orderBy:'+number'" ng-show="showAgentStatus[ag.stateName]">
                                                     <td><a href="#/accounts/{{ag.number}}/edit?domain={{domain}}">{{ag.number}}</a></td>
                                                     <td>
-                                                        <span class="label">
+                                                        <span class="label btn btn-default" ng-click="canUpdateAgent && changeStatus(ag.id)">
                                                             {{ag.stateName}}
                                                         </span>
                                                     </td>
                                                     <td>{{ag.dialer.callCount || 0}}</td>
                                                     <td>{{( secToString(ag.dialer.callTimeSec / ag.dialer.callCount) || 0)}}</td>
                                                     <td>{{ ( secToString(ag.dialer.connectedTimeSec / ag.dialer.callCount) || 0) }}</td>
-                                                    <td>{{ ag.utilization.toFixed(2) }}</td>
                                                     <td>{{ secToString(ag.avgIdleSec) }}</td>
-                                                    <td>{{ secToString(ag.sumIdleSec) }}</td>
+                                                    <td>{{ ag.utilization.toFixed(2) }}</td>
                                                     <td>{{ secToString(ag.loggedInSec) }}</td>
+                                                    <td>{{ secToString(ag.sumIdleSec) }}</td>
+                                                    <td>{{ secToString(ag.dialer.callTimeSec) }}</td>
                                                     <td>{{ toLocaleTimeString(ag.dialer.lastBridgeCallTimeStart) }}</td>
                                                     <td>{{ toLocaleTimeString(ag.loggedInOfDayTime) }}</td>
                                                     <td>{{ toLocaleTimeString(ag.loggedOutTime) }}</td>

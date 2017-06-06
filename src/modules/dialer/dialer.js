@@ -1,6 +1,9 @@
-define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/cdr/libs/fileSaver', 'moment', 'modules/gateways/gatewayModel',
-    'modules/dialer/dialerModel', 'modules/calendar/calendarModel',  'modules/cdr/libs/json-view/jquery.jsonview',
-    'modules/cdr/fileModel', 'modules/accounts/accountModel', 'modules/media/mediaModel', 'modules/dialer/agentModel', 'css!modules/dialer/dialer.css'], function (app, async, utils, aceEditor, callflowUtils, fileSaver, moment) {
+define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/callflows/callflowUtils',
+    'modules/cdr/libs/fileSaver', 'moment', 'modules/gateways/gatewayModel', 'modules/dialer/dialerModel',
+    'modules/calendar/calendarModel',  'modules/cdr/libs/json-view/jquery.jsonview', 'modules/cdr/fileModel',
+    'modules/accounts/accountModel', 'modules/media/mediaModel', 'modules/dialer/agentModel', 'css!modules/dialer/dialer.css',
+    'modules/accounts/accounts'
+], function (app, async, utils, aceEditor, callflowUtils, fileSaver, moment) {
 
 
     function moveUp (arr, value, by) {
@@ -2728,8 +2731,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     }]);
     
     app.controller('StatsDialerCtrl', ['$scope', 'DialerModel', 'AgentModel', 'notifi', 'webitel', '$routeParams',
-        '$interval', '$timeout', '$confirm',
-        function ($scope, DialerModel, AgentModel, notifi, webitel, $routeParams, $interval, $timeout, $confirm) {
+        '$interval', '$timeout', '$confirm', '$modal', 'AccountModel',
+        function ($scope, DialerModel, AgentModel, notifi, webitel, $routeParams, $interval, $timeout, $confirm, $modal, AccountModel) {
 
             var aggCause = [
                 {
@@ -2800,6 +2803,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 "Process stop",
                 "End"
             ];
+
+            $scope.canUpdateAgent = webitel.connection.session.checkResource('account', 'u');
 
             $scope.domain = $routeParams.domain;
             $scope.id = $routeParams.id;
@@ -3618,6 +3623,37 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                     $scope.byCommunicationWaitingType.data = rowsNumberTypeStart;
                     $scope.callbackType.data = rowsCallbackStatus;
+                });
+            };
+
+            $scope.changeStatus = function (accountId) {
+                var modalInstance = $modal.open({
+                    animation: true,
+                    templateUrl: '/modules/accounts/changeStatus.html',
+                    controller: 'AccountStateCtrl',
+                    // size: 'md',
+                    resolve: {
+                        options: function () {
+                            return {
+                                id: accountId.split('@')[0],
+                                domain: $scope.domain,
+                                state: '',
+                                status: '',
+                                descript: '',
+                                isAgent: true,
+                                disableConsoleStatus: true
+                            };
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (result) {
+                    if (result.update) {
+                        // reloadData();
+
+                    }
+                }, function () {
+
                 });
             };
 
