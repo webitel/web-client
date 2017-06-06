@@ -1297,6 +1297,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                 function addRow(row) {
 
+                    if (settings.allProbe && !angular.isArray(row._log)) {
+                        return;
+                    }
                     function addNoAtempt() {
                         angular.forEach(settings.data, function (i, index) {
                             var val;
@@ -2761,6 +2764,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             {
                                 $match: {"_log.cause": {$ne: null}}
                             },
+
                             {
                                 $group: {
                                     _id: '$_log.cause',
@@ -2768,6 +2772,24 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                         $sum: 1
                                     }
                                 }
+                            },
+                            {
+                                $sort: {count: -1}
+                            },
+
+                            {
+                                $group: {
+                                    _id: 0,
+                                    keys : { $push : "$_id" },
+                                    sumValues : { $push : "$count" },
+                                    total : { $sum : "$count" }
+                                }
+                            },
+                            {
+                                "$project" : {
+                                    "keys" : "$keys",
+                                    "sumValues" : "$sumValues",
+                                    "percentages" : { "$map" : { "input" : "$sumValues", "as" : "s", "in" : { "$divide" : ["$$s", "$total"] } } } }
                             }
 
                         ],
@@ -2790,6 +2812,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                         $sum: 1
                                     }
                                 }
+                            },
+                            {
+                                $sort: {count: -1}
                             }
                         ]
                     }
@@ -3238,7 +3263,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 options: {
                     title: {
                         enable: true,
-                        text: "End cause"
+                        text: "Members by end cause"
                     },
                     chart: {
                         type: 'discreteBarChart',
@@ -3246,21 +3271,29 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         margin : {
                             top: 20,
                             right: 20,
-                            bottom: 50,
+                            bottom: 150,
                             left: 50
                         },
-                        showLegend: false,
-                        showXAxis: false,
+                        // yDomain: [0, 100],
                         x: function(d){return d.label;},
                         y: function(d){return d.value;},
                         showValues: true,
                         valueFormat: function(d){
                             return d3.format(',d')(d);
                         },
+                        tooltip: {
+                            enabled: true,
+                            keyFormatter: function (a,b,c) {
+                                console.log(arguments);
+                                return a;
+                            }
+                        },
 
                         duration: 500,
                         xAxis: {
-                            axisLabel: 'Cause'
+                            rotateYLabel: true,
+                            rotateLabels: 45,
+                            fontSize: 10
                         },
                         yAxis: {
                             axisLabel: 'Count',
@@ -3277,7 +3310,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 options: {
                     title: {
                         enable: true,
-                        text: "Cause by attempts"
+                        text: "TOP 10 hangup causes"
                     },
                     chart: {
                         type: 'discreteBarChart',
@@ -3285,26 +3318,36 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         margin : {
                             top: 20,
                             right: 20,
-                            bottom: 50,
+                            bottom: 150,
                             left: 50
                         },
+                        // yDomain: [0, 100],
                         x: function(d){return d.label;},
                         y: function(d){return d.value;},
-                        //showValues: true,
+                        showValues: true,
                         valueFormat: function(d){
-                            return d3.format(',d')(d);
+                            return d3.format(',.2f')(d);
+                        },
+                        tooltip: {
+                            enabled: true,
+                            keyFormatter: function (a,b,c) {
+                                console.log(arguments);
+                                return a;
+                            }
                         },
 
                         duration: 500,
-                        showXAxis: false,
                         xAxis: {
-                            axisLabel: 'Cause'
+                            rotateYLabel: true,
+                            rotateLabels: 45,
+                            fontSize: 10
                         },
                         yAxis: {
                             axisLabel: 'Count',
                             axisLabelDistance: 0,
+                            showMaxMin: false,
                             tickFormat: function(d){
-                                return d3.format(',d')(d);
+                                return d3.format(',d')(d) + '%';
                             }
                         }
                     }
@@ -3550,18 +3593,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                     });
 
-                    angular.forEach(causeByAttempt, function (item) {
-
-                        if (!item._id) {
-
-                        } else {
+                    var _attempt = causeByAttempt && causeByAttempt[0];
+                    if (_attempt && _attempt.keys) {
+                        for (var i = 0, len = _attempt.keys.length; i < len && i < 15; i++) {
                             rowsCauseByAttempt.push({
-                                label: item._id,
-                                value: item.count
+                                label: _attempt.keys[i],
+                                count: _attempt.sumValues[i],
+                                value: _attempt.percentages[i] * 100
                             });
                         }
-
-                    });
+                    }
 
                     angular.forEach(byTypeStateStart, function (item) {
 
