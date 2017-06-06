@@ -3333,7 +3333,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                            // axisLabelDistance: 0,
                             showMaxMin: false,
                             tickFormat: function(d){
-                                return d3.format(',.2%')(d);
+                                return d3.format(',.0%')(d);
                             }
                         }
                     }
@@ -3585,7 +3585,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             rowsCauseByAttempt.push({
                                 label: _attempt.keys[i],
                                 count: _attempt.sumValues[i],
-                                value: _attempt.percentages[i]// * 100
+                                value: _attempt.percentages[i]
                             });
                         }
                     }
