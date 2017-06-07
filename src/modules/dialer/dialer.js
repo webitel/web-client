@@ -946,12 +946,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         });
     }]);
 
-    app.controller('MembersDialerCtrl', ['$scope', 'DialerModel', '$modal', '$confirm', 'notifi', 'FileUploader', function ($scope, DialerModel, $modal, $confirm, notifi, FileUploader) {
+    app.controller('MembersDialerCtrl', ['$scope', 'DialerModel', '$modal', '$confirm', 'notifi', 'FileUploader', 'webitel',
+        function ($scope, DialerModel, $modal, $confirm, notifi, FileUploader, webitel) {
         var _tableState = {};
         $scope.reloadData = function () {
             _tableState.pagination.start = 0;
             $scope.callServer(_tableState)
         };
+
+        var showResetLogBtn = !webitel.connection.session.domain;
 
         var nexData = true;
         $scope.isLoading = false;
@@ -1447,7 +1450,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 templateUrl: '/modules/dialer/resetMemberPage.html',
                 controller: function ($scope, $modalInstance, notifi, options) {
                     $scope.dateOpenedControl = false;
-
+                    $scope.showResetLogBtn = options.showResetLogBtn;
 
                     $scope.changeDate = function () {
                         if (!$scope.remFromDate) {
@@ -1500,7 +1503,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     options: function () {
                         return {
                             domain: $scope.domain,
-                            dialerId: $scope.dialer._id
+                            dialerId: $scope.dialer._id,
+                            showResetLogBtn: showResetLogBtn
                         };
                     }
                 }

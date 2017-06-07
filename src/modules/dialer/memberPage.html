@@ -89,9 +89,9 @@
                                                             <th style="width:15%"></th>
                                                         </tr>
                                                     </thead>
-                                                    <tr ng-repeat="communication in member.communications">
-                                                        <td>
-                                                        <span editable-text="communication.number" e-name="number"  e-form="rowform"  e-required onbeforesave="checkCommunicationNumber($data)">
+                                                    <tr  ng-repeat="communication in member.communications">
+                                                        <td ng-class="{'bg-gray': communication.stopCommunication}">
+                                                        <span  editable-text="communication.number" e-name="number"  e-form="rowform"  e-required onbeforesave="checkCommunicationNumber($data)">
                                                             {{ communication.number || 'empty' }}
                                                         </span>
                                                         </td>

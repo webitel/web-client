@@ -22,7 +22,7 @@
 </div>
 
 <div class="modal-footer">
-    <button ng-disabled="!remFromDate" class="btn btn-warning" ng-click="ok(true)">Reset and clear log</button>
+    <button ng-if="showResetLogBtn" ng-disabled="!remFromDate" class="btn btn-warning" ng-click="ok(true)">Reset and clear log</button>
     <button ng-disabled="!remFromDate" class="btn btn-primary" ng-click="ok(false)">Reset</button>
     <button class="btn btn-default" ng-click="cancel()">Cancel</button>
 </div>

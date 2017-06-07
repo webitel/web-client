@@ -44,6 +44,9 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             communications_state: function (v) {
                 return +v;
             },
+            communications__probe: function (v) {
+                return +v
+            },
             name: function (v) {
                 return {
                     $regex: '^' + v
@@ -71,7 +74,13 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             var sortKey = Object.keys(option.sort || {})[0];
             if (sortKey) {
                 var sort = {};
-                sort[sortKey] = option.sort[sortKey];
+                // TODO
+                if (/^communications_/.test(sortKey)) {
+                    sort[sortKey.replace('_', '.')] = option.sort[sortKey];
+                } else {
+                    sort[sortKey] = option.sort[sortKey];
+                }
+
                 _q.push("sort=" + encodeURIComponent(JSON.stringify(sort)))
             }
 
@@ -143,7 +152,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             _q.push("filter=" + encodeURIComponent(JSON.stringify({
                     _endCause: {$ne: null},
                     createdOn: {$gte: from},
-                    callSuccessful: {$ne: true}
+                    callSuccessful: {$ne: true},
+                    communications: {$elemMatch: {stopCommunication: {$ne: true}}}
                 })));
 
             webitel.api('GET', '/api/v2/dialer/' + dialerId + '/members/count?' + _q.join('&'), function(err, res) {

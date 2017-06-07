@@ -56,13 +56,14 @@
             <!--<th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="timezone" >Timezone</th>-->
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="_endCause" >End cause</th>
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="_lock" >Active</th>
-            <th class="text-center" st-skip-natural="true" colspan=3>Communications</th>
+            <th class="text-center" st-skip-natural="true" colspan=4>Communications</th>
             <th class="text-center" style="vertical-align:middle" rowspan=2>Action</th>
         </tr>
         <tr>
             <td class="text-center" st-skip-natural="true" st-sort="communications_number" >Number</td>
             <td class="text-center" st-skip-natural="true" st-sort="communications_type">Type</td>
             <td class="text-center" st-skip-natural="true" st-sort="communications_state">State</td>
+            <td style="width: 20px" class="text-center" st-skip-natural="true" st-sort="communications__probe">Attempts</td>
         </tr>
 
         <tr>
@@ -112,13 +113,17 @@
                     <option ng-repeat="comState in CommunicationStates" value="{{comState.val}}">{{comState.name}}</option>
                 </select>
             </th>
+
+            <th colspan="1">
+                <input st-search="communications__probe" type="number" class="form-control"/>
+            </th>
             <th>
                 <a href="javascript:;" style="padding: 0" ng-click="exportMembers()" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-cloud-download"></i></a>
                 <a href="javascript:;" style="padding: 0" ng-click="removeMembers()" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
             </th>
         </tr>
         <tr ng-show="membersRowCollection.length <= 0">
-            <th colspan="9">
+            <th colspan="10">
                 <div class="row text-center">
                     <div class="center-block col-md-4" style="float: none;">
                         <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
@@ -130,7 +135,7 @@
         </thead>
 
         <tbody ng-show="membersRowCollection.length > 0" ng-repeat="t in membersRowCollection" data-ng-class="{'bg-warning':t._waitingForResultStatusCb === 1 && !t._lock, 'bg-success':t._lock}">
-        <tr>
+        <tr >
             <td rowspan="{{t.communications.length}}">
                 {{timeToString(t.createdOn)}}
             </td>
@@ -141,9 +146,12 @@
             <!--<td rowspan="{{t.communications.length}}">{{t.timezone}}</td>-->
             <td rowspan="{{t.communications.length}}">{{t._endCause}}</td>
             <td rowspan="{{t.communications.length}}">{{t._lock}}</td>
-            <td>{{t.communications[0].number}}</td>
+
+            <td ng-class="{'bg-gray': t.communications[0].stopCommunication}">{{t.communications[0].number}}</td>
             <td>{{getCommunicationDisplayName(t.communications[0].type)}}</td>
             <td>{{t.communications[0].state}}</td>
+            <td>{{t.communications[0]._probe || 0}}</td>
+
             <td rowspan="{{t.communications.length}}">
                 <div style="width: 63px" ng-if="true || !t._lock">
                     <a ng-click="editMember(t, $index)" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
@@ -154,9 +162,10 @@
             </td>
         </tr>
         <tr ng-repeat="item in t.communications" ng-if="$index > 0">
-            <td>{{item.number}}</td>
+            <td ng-class="{'bg-gray': t.communications[0].stopCommunication}">{{item.number}}</td>
             <td>{{getCommunicationDisplayName(item.type)}}</td>
             <td>{{item.state}}</td>
+            <td>{{item._probe || 0}}</td>
         </tr>
 
 
