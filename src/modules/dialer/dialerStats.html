@@ -2,15 +2,15 @@
     <div class="row">
         <div class="col-sm-12">
 
-            <a  href="#/dialer/{{id}}/edit?domain={{domain}}" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+            <a  href="#/dialer/{{id}}/edit?domain={{domain}}" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
                 <i class="fa fa-reply"></i>
             </a>
 
-            <a ng-click="reload()"style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+            <a ng-click="reload()"style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
                 <i class="glyphicon glyphicon-refresh"></i>
             </a>
 
-            <a ng-show="!dialer.active" ng-click="cleanStats()"style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+            <a ng-show="!dialer.active" ng-click="cleanStats()"style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
                 <i class="glyphicon glyphicon-retweet"></i>
             </a>
 
@@ -60,7 +60,7 @@
                                                     <i class="glyphicon glyphicon-warning-sign text-large"></i>
                                                 </div>
                                                 <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h1">{{abandoned.toFixed(1)}}%</p>
+                                                    <p class="size-h1">{{abandoned.toFixed(2)}}%</p>
                                                     <p class="text-muted">Service level</p>
                                                 </div>
                                             </section>
@@ -274,70 +274,104 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-sm-12" style="padding-left: 35px">
-                                            <table class="agent-dialer-table table table-striped cf">
-                                                <thead class="agent-dialer-table-head">
-                                                <tr>
-                                                    <th>
-                                                        Extension
-                                                    </th>
-                                                    <th>State</th>
-                                                    <th>Calls</th>
-                                                    <th>
-                                                        <span tooltip-popup-delay="800" tooltip="Average Talk Time (ATT) is, quite simply, the amount of time an agent spends talking to customers.">ATT</span>
-                                                    </th>
-                                                    <th>
+                                        <div class="col-sm-12" style="padding-left: 15px">
+                                            <section class="table-flip-scroll">
+                                                <table class="agent-dialer-table table table-responsive">
+                                                    <thead class="agent-dialer-table-head">
+                                                    <tr>
+                                                        <th style="width: 100px">
+                                                            Extension
+                                                        </th>
+                                                        <!--<th>State</th>-->
+                                                        <th>Calls</th>
+                                                        <th>Missed calls</th>
+                                                        <th>
+                                                            <span tooltip-popup-delay="800" tooltip="Average Talk Time (ATT) is, quite simply, the amount of time an agent spends talking to customers.">ATT</span>
+                                                        </th>
+                                                        <th>
                                                         <span tooltip-popup-delay="800" tooltip="Average Speed of Answer (ASA) is a metric calculating the amount of time it takes to answer a typical call once it has been routed to the contact centre.">
                                                             ASA
                                                         </span>
-                                                    </th>
-                                                    <th>
+                                                        </th>
+                                                        <th>
                                                         <span tooltip-popup-delay="800" tooltip="Average agent's idle time.">
                                                             AIT
                                                         </span>
-                                                    </th>
-                                                    <th>
-                                                        Utilization
-                                                    </th>
-                                                    <th>At work</th>
-                                                    <th>
-                                                        <span tooltip-popup-delay="800" tooltip="Total agent's idle time.">
-                                                            Available
-                                                        </span>
-                                                    </th>
+                                                        </th>
+                                                        <th>
+                                                            Utilization
+                                                        </th>
 
-                                                    <th>
-                                                        In call
-                                                    </th>
+                                                        <th>Last offered call</th>
+                                                        <th>Last logged in</th>
+                                                        <th style="min-width: 95px;">last logged out</th>
+                                                        <th style="width: 125px"></th> <!--TODO -->
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr class="agent-container {{ag.stateName}}" id="{{ag.id}}" ng-repeat="ag in agentDisplayedCollection" ng-show="showAgentStatus[ag.stateName]">
+                                                        <td class="agent-id">
+                                                            <a href="#/accounts/{{ag.number}}/edit?domain={{domain}}">{{ag.number}}</a>
+                                                            <br>
+                                                            <span class="label btn btn-default" ng-click="canUpdateAgent && changeStatus(ag.id)">
+                                                                {{ag.stateName}}
+                                                            </span>
+                                                        </td>
+                                                        <td>{{ag.dialer.callCount || 0}}</td>
+                                                        <td>{{ag.dialer.missedCall || 0}}</td>
+                                                        <td>{{( secToString(ag.dialer.callTimeSec / ag.dialer.callCount) || 0)}}</td>
+                                                        <td>{{ ( secToString(ag.dialer.connectedTimeSec / ag.dialer.callCount) || 0) }}</td>
+                                                        <td>{{ secToString(ag.avgIdleSec) }}</td>
+                                                        <td>{{ ag.utilization.toFixed(2) }}</td>
+                                                        <td  style="white-space: pre-line;">{{ toLocaleTimeString(ag.dialer.lastBridgeCallTimeStart) }}</td>
+                                                        <td style="white-space: pre-line;">{{ toLocaleTimeString(ag.lastLoggedInTime) }}</td>
+                                                        <td style="white-space: pre-line;">{{ toLocaleTimeString(ag.loggedOutTime) }}</td>
+                                                        <td class="agent-stats" style="position: relative;">
+                                                            <div class="agent-stats-vis">
+                                                                <div ng-style="ag.stats[0].cls">
 
-                                                    <th>Last offered call</th>
-                                                    <th>Logged in</th>
-                                                    <th style="min-width: 95px;">Logged out</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr class="agent-container {{ag.stateName}}" id="{{ag.id}}" data-ng-repeat="ag in agents | orderBy:'+number'" ng-show="showAgentStatus[ag.stateName]">
-                                                    <td><a href="#/accounts/{{ag.number}}/edit?domain={{domain}}">{{ag.number}}</a></td>
-                                                    <td>
-                                                        <span class="label btn btn-default" ng-click="canUpdateAgent && changeStatus(ag.id)">
-                                                            {{ag.stateName}}
-                                                        </span>
-                                                    </td>
-                                                    <td>{{ag.dialer.callCount || 0}}</td>
-                                                    <td>{{( secToString(ag.dialer.callTimeSec / ag.dialer.callCount) || 0)}}</td>
-                                                    <td>{{ ( secToString(ag.dialer.connectedTimeSec / ag.dialer.callCount) || 0) }}</td>
-                                                    <td>{{ secToString(ag.avgIdleSec) }}</td>
-                                                    <td>{{ ag.utilization.toFixed(2) }}</td>
-                                                    <td>{{ secToString(ag.loggedInSec) }}</td>
-                                                    <td>{{ secToString(ag.sumIdleSec) }}</td>
-                                                    <td>{{ secToString(ag.dialer.callTimeSec) }}</td>
-                                                    <td>{{ toLocaleTimeString(ag.dialer.lastBridgeCallTimeStart) }}</td>
-                                                    <td>{{ toLocaleTimeString(ag.loggedInOfDayTime) }}</td>
-                                                    <td>{{ toLocaleTimeString(ag.loggedOutTime) }}</td>
-                                                </tr>
-                                                </tbody>
+                                                                </div>
+                                                                <div ng-style="ag.stats[1].cls">
 
-                                            </table>
+                                                                </div>
+                                                                <div ng-style="ag.stats[2].cls">
+
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="agent-stats-container">
+                                                                <div class="agent-stats-info">
+                                                                    <div style="position: relative;" class="agent-stats-container-el" tooltip-popup-delay="800" tooltip="{{ag.stats[0].desc + ag.stats[0].sec}}" >
+                                                                        <div>
+                                                                        <span>
+                                                                            {{ag.stats[0].text}}
+                                                                        </span>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div style="position: relative;" class="agent-stats-container-el" tooltip-popup-delay="800" tooltip="{{ag.stats[1].desc + ag.stats[1].sec}}" >
+                                                                        <div>
+                                                                        <span>
+                                                                            {{ag.stats[1].text}}
+                                                                        </span>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div style="position: relative;" class="agent-stats-container-el" tooltip-popup-delay="800" tooltip="{{ag.stats[2].desc + ag.stats[2].sec}}" >
+                                                                        <div>
+                                                                        <span>
+                                                                            {{ag.stats[2].text}}
+                                                                        </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+
+                                                </table>
+                                            </section>
                                         </div>
                                     </div>
 

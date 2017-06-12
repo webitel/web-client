@@ -2839,11 +2839,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.id = $routeParams.id;
 
 
-            $scope.secToString = function (sec) {
+            function secToString(sec) {
                 if (!isFinite(sec))
-                    return '';
+                    return '--:--';
                 return utils.secondsToString(sec, true)
             };
+
+            $scope.secToString = secToString;
+
+            $scope.agentDisplayedCollection = [];
 
             var timerId = null;
             var communicationTypes = {};
@@ -2867,8 +2871,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     loadResources($scope.dialer.resources, $scope.dialer.stats);
                     loadAgents($scope.dialer.domain, $scope.dialer.agents, $scope.dialer.skills);
 
-                    if (!timerId)
-                        timerId = $interval(reload, 10000);
+                    // if (!timerId)
+                    //     timerId = $interval(reload, 10000);
                 });
             }
 
@@ -2885,8 +2889,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     });
 
             };
-
-            reload();
 
             $scope.onSelectTabPleaseResize = function () {
                 $timeout(function(){
@@ -2941,6 +2943,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             resetAgentSummaryByDialer();
 
+            function sortAgentStatsBySec(a1, a2) {
+                if (a1.sec > a2.sec) {
+                    return -1;
+                } else if (a1.sec < a2.sec) {
+                    return 1;
+                }
+                return 0;
+            }
+
             function loadAgents(domain, agents, skills) {
                 var $or = [];
 
@@ -2967,7 +2978,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                     resetAgentSummaryByDialer();
 
-                    $scope.agents = res.map(function (item) {
+                    $scope.agentDisplayedCollection = res.map(function (item) {
                         var stateName = getAgentSummaryState(item.state, item.status);
                         $scope.sumAgentsStates[stateName]++;
                         var dialer = getAgentDilerInfo($scope.id, item);
@@ -2979,7 +2990,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             $scope.sumAgentASA += ((dialer.connectedTimeSec / dialer.callCount) || 0);
                         }
 
-                        var loggedOutTime = item.loggedOutTime || 0;
                         var loggedInSec = item.loggedInSec || 0;
                         var avgIdleSec = 0;
 
@@ -3001,11 +3011,47 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                         var utilization =  0;
 
-                        if (loggedInSec > 0 &&  (dialer.callTimeSec +  dialer.idleSec) ) {
+                        if (  (dialer.callTimeSec +  dialer.idleSec) ) {
                             utilization = ( (dialer.callTimeSec / ( dialer.callTimeSec +  dialer.idleSec)) ) * 100;
                             $scope.sumUtilization += utilization;
                             $scope.loggedAgentInDay++;
                         }
+
+                        if (item.status && item.lastStatusChange && dialer.active > 0) {
+                            dialer[item.status] = (dialer[item.status] | 0) + Math.round((Date.now() - item.lastStatusChange) / 1000)
+                        }
+
+                        var stats = [
+                            {
+                                sec: dialer.callTimeSec,
+                                cls: {
+                                    'background-color': '#bf2a22'
+                                },
+                                text: 'Busy: ' + secToString(dialer.callTimeSec)
+                            },
+                            {
+                                // sec: (dialer.Available || 0) + (dialer['Available (On Demand)'] || 0) - dialer.callTimeSec,
+                                sec: dialer.idleSec,
+                                cls: {
+                                    'background-color': '#57c17b'
+                                },
+                                // text: 'Available: ' + secToString(dialer.Available || dialer['Available (On Demand)'])
+                                text: 'Available: ' + secToString(dialer.idleSec)
+                            },
+                            {
+                                sec: (dialer['On Break'] || 0),
+                                cls: {
+                                    'background-color': '#f39c12'
+                                },
+                                text: 'On Break: ' + secToString(dialer['On Break'])
+                            }
+                        ].sort(sortAgentStatsBySec);
+
+                        var sum = stats[0].sec + stats[1].sec + stats[2].sec;
+
+                        stats[0].cls['height'] = ( (stats[0].sec * 100 / sum) || 0) + '%';
+                        stats[1].cls['height'] = ( (stats[1].sec * 100 / sum) || 0) + '%';
+                        stats[2].cls['height'] = ( (stats[2].sec * 100 / sum) || 0) + '%';
 
                         return {
                             id: item.agentId,
@@ -3015,12 +3061,14 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             stateName: stateName,
                             class: getAgentClass(item.state, item.status),
                             dialer: dialer,
-                            loggedInOfDayTime: item.loggedInOfDayTime,
-                            loggedOutTime: loggedOutTime,
+                            loggedOutTime: item.loggedOutTime,
+                            lastLoggedInTime: item.lastLoggedInTime,
                             loggedInSec: loggedInSec,
                             avgIdleSec: avgIdleSec,
                             sumIdleSec: dialer.idleSec || 0,
-                            utilization: utilization
+                            utilization: utilization,
+                            stats: stats,
+                            missedCall: dialer.missedCall
                         }
                     });
                 })
@@ -3043,8 +3091,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.toLocaleTimeString = function (time) {
                 if (!time)
                     return '---';
-
-                return new Date(time).toLocaleTimeString()
+                var date = new Date(time);
+                return date.toLocaleTimeString() + '\n' + date.toLocaleDateString()
             };
 
             function getAgentClass(state, status) {
@@ -3122,7 +3170,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 "BUSY": true,
                 "ON-BREAK": true,
                 "LOGGED-OUT": true
-            }
+            };
 
             clearAgentLiveState();
 
@@ -3138,7 +3186,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             
             function findAgent(id) {
-                var agents = $scope.agents;
+                var agents = $scope.agentDisplayedCollection;
                 if (angular.isArray(agents)) {
                     for (var i = 0; i < agents.length; i++ ) {
                         if (agents[i].id === id) {
@@ -3150,32 +3198,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
             var liveAgentsStates = [];
 
-            var interval = setInterval(function () {
-                clearAgentLiveState();
-                angular.forEach($scope.agents, function (item) {
-                    $scope.liveAgentsStates[item.stateName]++;
-                });
-
-                liveAgentsStates = [];
-                angular.forEach($scope.liveAgentsStates, function (val, key) {
-                    liveAgentsStates.push({
-                        x: key,
-                        y: val
-                    })
-                });
-
-                //console.log(liveAgentsStates);
-                $scope.accountState.data[0].values = liveAgentsStates;
-                $scope.$apply();
-            }, 500);
-
             $scope.$on('$destroy', function () {
                 if (timerId) {
-                    console.log('DESTROY TIMER');
+                    console.log('DESTROY TIMER timerId');
                     $interval.cancel(timerId);
                 }
+                if (_applyAgentLiveSatesTimerId) {
+                    console.log('DESTROY TIMER _applyAgentLiveSatesTimerId');
+                    $interval.cancel(_applyAgentLiveSatesTimerId);
+                }
 
-                clearInterval(interval);
                 unSubscribeGridEvents();
             });
 
@@ -3585,7 +3617,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                     var _attempt = causeByAttempt && causeByAttempt[0];
                     if (_attempt && _attempt.keys) {
-                        for (var i = 0, len = _attempt.keys.length; i < len && i < 15; i++) {
+                        for (var i = 0, len = _attempt.keys.length; i < len && i < 10; i++) {
                             rowsCauseByAttempt.push({
                                 label: _attempt.keys[i],
                                 count: _attempt.sumValues[i],
@@ -3687,6 +3719,26 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                 });
             };
+
+            function _applyAgentLiveSates() {
+                clearAgentLiveState();
+                angular.forEach($scope.agentDisplayedCollection, function (item) {
+                    $scope.liveAgentsStates[item.stateName]++;
+                });
+
+                liveAgentsStates = [];
+                angular.forEach($scope.liveAgentsStates, function (val, key) {
+                    liveAgentsStates.push({
+                        x: key,
+                        y: val
+                    })
+                });
+
+                $scope.accountState.data[0].values = liveAgentsStates;
+                // $scope.$apply();
+            }
+            reload();
+            var _applyAgentLiveSatesTimerId = $interval(_applyAgentLiveSates, 500);
 
     }]);
 

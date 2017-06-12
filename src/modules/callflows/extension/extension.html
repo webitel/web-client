@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="no-border pull-left">
-                        <a ng-click="reloadData()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                        <a ng-click="reloadData()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
                             <i class="glyphicon glyphicon-refresh"></i>
                         </a>
                     </div>
@@ -59,10 +59,10 @@
                             <td >{{row.userRef}}</td>
 
                             <td style="text-align: end">
-                                <a href="#/callflows/extension/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
-                                <a href="#/callflows/extension/{{row._id}}/view?domain={{domain}}" ng-if="!canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-file"></i></a>
+                                <a href="#/callflows/extension/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                                <a href="#/callflows/extension/{{row._id}}/view?domain={{domain}}" ng-if="!canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-file"></i></a>
 
-                                <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                                <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                             </td>
                         </tr>
                     </tbody>

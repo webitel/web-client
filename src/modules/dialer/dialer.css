@@ -1,8 +1,12 @@
+table.table  tbody {
+    word-break: break-all;
+}
+
 .agent-dialer-table.table {
     padding: 15px;
 }
 
-.agent-dialer-table.table .agent-container {
+.agent-dialer-table.table tbody tr:nth-child(1n), .agent-dialer-table.table tbody tr:nth-child(2n) {
     text-align: center;
     border-left-width: 10px;
     border-left-style: solid;
@@ -36,15 +40,78 @@ table.agent-dialer-table.table thead.agent-dialer-table-head tr th {
     line-height: 27px
 }
 
+table.agent-dialer-table.table .agent-container {
+    /*height: 55px;*/
+    position: static;
+}
+
+table.agent-dialer-table.table .agent-container td.agent-id > a {
+    vertical-align: super;
+}
+
+table.agent-dialer-table.table .agent-container td.agent-stats {
+    padding: 5px;
+    vertical-align: baseline;
+    min-width: 140px;
+    position: relative;
+}
+
+table.agent-dialer-table.table .agent-container td.agent-stats .agent-stats-container {
+    /*width: 100%;*/
+    /*display: flex;*/
+    /*direction: rtl;*/
+}
+
+table.agent-dialer-table.table .agent-container td.agent-stats .agent-stats-container .agent-stats-info{
+    text-align: end;
+    width: 100%;
+    padding-right: 7px;
+}
+
+table.agent-dialer-table.table .agent-container td.agent-stats  .agent-stats-vis{
+    width: 10px;
+    position: absolute;
+    right: 0;
+    top:0;
+    bottom: 1px;
+    float: right;
+}
+
+table.agent-dialer-table.table .agent-container td.agent-stats .agent-stats-container .agent-stats-container-el div {
+    border-radius: 1px;
+    height: 14px;
+    margin-top: 3px;
+}
+
+/*table.agent-dialer-table.table .agent-container td.agent-stats .agent-stats-container .agent-stats-top-1 {*/
+    /*width: 100%;*/
+    /*background-color: #bf4048;*/
+/*}*/
+/*table.agent-dialer-table.table .agent-container td.agent-stats .agent-stats-container .agent-stats-top-2 {*/
+    /*width: 40%;*/
+    /*background-color: #6abf44;*/
+/*}*/
+/*table.agent-dialer-table.table .agent-container td.agent-stats .agent-stats-container .agent-stats-top-3 {*/
+    /*width: 40%;*/
+    /*background-color: #bf1635;*/
+/*}*/
+
+
 table.agent-dialer-table.table .agent-container .label {
     display: inline;
     padding: .2em .6em .3em;
-    font-size: 16px;
+    font-size: 13px;
     line-height: 1;
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
     border-radius: .25em;
+}
+
+table.agent-dialer-table.table .agent-container-status > td {
+    line-height: 10px;
+    padding: 0;
+    border-top: 0;
 }
 
 table.agent-dialer-table.table .agent-container.BUSY .label {
@@ -64,17 +131,18 @@ table.agent-dialer-table.table .agent-container.LOGGED-OUT .label {
 }
 
 
-.agent-dialer-table.table .agent-container.BUSY {
+.agent-dialer-table.table tbody tr.agent-container.ON-BREAK {
+    border-left-color: #f39c12;
+}
+
+.agent-dialer-table.table tbody tr.agent-container.BUSY {
     border-left-color: #bf4048;
 }
 
-.agent-dialer-table.table .agent-container.WAITING {
+.agent-dialer-table.table tbody tr.agent-container.WAITING {
     border-left-color: #57c17b;
 }
 
-.agent-dialer-table.table .agent-container.ON-BREAK {
-    border-left-color: #f39c12;
-}
-.agent-dialer-table.table .agent-container.LOGGED-OUT {
+.agent-dialer-table.table tbody tr.agent-container.LOGGED-OUT {
     border-left-color: rgba(171, 171, 171, 0.36);
 }

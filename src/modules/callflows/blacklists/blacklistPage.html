@@ -16,16 +16,16 @@
                         <div class="form-group " ng-class="{ 'has-error' : accountForm.blacklistForm.$invalid }">
                             <label class="control-label">Actions</label>
                             <br>
-                            <span ng-disabled="viewMode" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file"  style="padding: 0">
+                            <span ng-disabled="viewMode" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark  btn-file"  style="padding: 0">
                                 <i class="glyphicon glyphicon-cloud-upload"></i>
                                 <input ng-disabled="viewMode" type="file" file-reader-csv file-on-load="fileCsvOnLoad" name="csvSelectedFileName" accept=".csv"/>
                             </span>
 
-                            <span ng-disabled="viewMode" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file" ng-click="export()" style="padding: 0">
+                            <span ng-disabled="viewMode" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark  btn-file" ng-click="export()" style="padding: 0">
                                 <i class="glyphicon glyphicon-cloud-download"></i>
                             </span>
 
-                            <span ng-disabled="viewMode" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary  btn-file" ng-click="closePage()" style="padding: 0">
+                            <span ng-disabled="viewMode" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark btn-file" ng-click="closePage()" style="padding: 0">
                                 <i class="fa fa-reply"></i>
                             </span>
                         </div>

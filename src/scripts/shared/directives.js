@@ -288,7 +288,14 @@ define(['angular'],
       }
     };
   })
-
+  .directive("refreshTable", function(){
+      return {
+          require:'stTable',
+          restrict: "A",
+          link:function(scope,elem,attr,table){
+              table.pipe(table.tableState());
+          }
+      }})
   .directive('infiniteScroll',  [
     '$rootScope', '$window', '$timeout', function($rootScope, $window, $timeout) {
       return {

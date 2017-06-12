@@ -6,11 +6,11 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="no-border pull-left">
-                        <a  ng-if="canCreate" href="#/gateways/new?domain={{domain}}" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success">
+                        <a  ng-if="canCreate" href="#/gateways/new?domain={{domain}}"  class="btn-icon btn-icon-sm  btn-gap-v btn-success">
                             <i class="fa fa-plus"></i>
                         </a>
 
-                        <a ng-click="reloadData()"  style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                        <a ng-click="reloadData()"  href="" class="btn-icon btn-icon-sm  btn-gap-v btn-dark">
                             <i class="glyphicon glyphicon-refresh"></i>
                         </a>
                     </div>
@@ -51,7 +51,7 @@
 						<th st-skip-natural="true" st-sort="data" >Data</th>
 						<th st-skip-natural="true" ng-if="!domain" st-sort="domain" >Domain</th>
 
-                        <th style="text-align: end;">
+                        <th style="text-align: end; min-width: 84px;">
                             Count: {{displayedCollection.length}}
                         </th>
 					</tr>
@@ -73,7 +73,7 @@
 									<option value="external">External</option>
 									<option value="nonreg">Nonreg</option>
 								</select>
-								<span class="input-group-addon">
+								<span class="input-group-addon no-border">
 									<label class="switch switch-small switch-success"><input ng-disabled="viewMode" type="checkbox" ng-change="toggleGw(row)" ng-model="row.reg"><i></i></label>
 								</span>
 							</div>
@@ -91,10 +91,10 @@
 						<td>{{row.data}}</td>
 						<td ng-if="!domain">{{row.domain}}</td>
 						<td class="center" style="text-align: end">
-							<a href="#/gateways/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
-							<a href="#/gateways/{{row.id}}/view?domain={{domain}}" ng-if="!canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon glyphicon-file"></i></a>
+							<a href="#/gateways/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+							<a href="#/gateways/{{row.id}}/view?domain={{domain}}" ng-if="!canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon glyphicon-file"></i></a>
 
-							<a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+							<a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
 						</td>
 					</tr>
 				</tbody>

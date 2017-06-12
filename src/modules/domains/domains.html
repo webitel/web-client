@@ -3,14 +3,14 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="no-border pull-left" ng-if="canCreate">
-                    <a href="#/domains/new" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-success" ng-disabled="!domain">
+                    <a href="#/domains/new" class="btn-icon btn-icon-sm  btn-gap-v bg-success" ng-disabled="!domain">
                         <i class="fa fa-plus"></i>
                     </a>
-                    <a ng-click="reloadData(true)" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                    <a href="" ng-click="reloadData(true)" ng-disabled="!domain"  class="btn-icon btn-icon-sm  btn-gap-v btn-dark">
                         <i class="glyphicon glyphicon-refresh"></i>
                     </a>
 
-                    <a ng-click="changePanel(!panelStatistic)" style="padding: 0" class="btn btn-icon btn-icon-round btn-icon-sm  btn-gap-v bg-primary">
+                    <a href="" ng-click="changePanel(!panelStatistic)"  class="btn-icon btn-icon-sm  btn-gap-v btn-dark">
                         <i ng-if="panelStatistic" class="glyphicon glyphicon-list-alt"></i>
                         <i ng-if="!panelStatistic" class="glyphicon glyphicon-stats"></i>
                     </a>
@@ -48,7 +48,7 @@
 					<th style="width: 40%" st-skip-natural="true" st-sort="name">Name</th>
 					<th style="width: 40%" st-skip-natural="true" st-sort="customer">Customer</th>
 					<th style="width: 10%" st-skip-natural="true" st-sort="user">Users</th>
-					<th style="width: 10%; min-width: 83px; text-align: end;" >
+					<th style="width: 10%; min-width: 84px; text-align: end;" >
                         Count: {{displayedCollection.length}}
                     </th>
 				</tr>
@@ -66,9 +66,9 @@
 				<td>{{row.customer}}</td>
 				<td >{{row.user}}</td>
 				<td style="text-align: end">
-                    <a href="#/domains/{{row.name}}/edit" ng-if="canUpdate" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <a href="#/domains/{{row.name}}/edit" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
                     <!--<span class="space space-xs"></span>-->
-                    <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-round btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                    <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
 				</td>
 			</tr>
 			</tbody>

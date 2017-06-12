@@ -1,59 +1,61 @@
-<div class="page-signin">
+<div class="window-signin">
+    <div class="page-signin">
 
-    <div class="signin-header">
-        <section class="logo text-center">
-            <a href="#/">{{main.brand}}</a>
-        </section>
-    </div>
+        <div class="signin-header">
+            <section class="logo text-center">
+                <a style="color:#fffaed;" href="#/">{{main.brand}}</a>
+            </section>
+        </div>
 
-    <div class="signin-body">
-        <div class="container">
-            <div class="form-container">
+        <div class="signin-body">
+            <div class="container">
+                <div class="form-container">
 
-                <form class="form-horizontal" ng-controller="SigninCtrl" ng-submit="signin()" name="loginForm">
-                    <fieldset>
-                        <div class="form-group">
-                            <div class="btn-icon-lined btn-icon-round btn-icon-sm btn-default-light">
-                                <span class="glyphicon glyphicon-user"></span>
+                    <form class="form-horizontal" ng-controller="SigninCtrl" ng-submit="signin()" name="loginForm">
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="btn-icon-lined btn-icon-round btn-icon-sm btn-default-light">
+                                    <span class="glyphicon glyphicon-user"></span>
+                                </div>
+                                <input class="form-control input-lg text-center"
+                                       placeholder="Login"
+                                       name="login"
+                                       ng-model="login"
+                                       ng-keyup="$event.keyCode == 13 && signin()"
+                                >
                             </div>
-                            <input class="form-control input-lg input-round text-center"
-                                   placeholder="Login"
-                                   name="login"
-                                   ng-model="login"
-                                   ng-keyup="$event.keyCode == 13 && signin()" 
-                                   >
-                        </div>
-                        <div class="form-group">
-                            <div class="btn-icon-lined btn-icon-round btn-icon-sm btn-default-light">
-                                <span class="glyphicon glyphicon-lock"></span>
+                            <div class="form-group">
+                                <div class="btn-icon-lined btn-icon-round btn-icon-sm btn-default-light">
+                                    <span class="glyphicon glyphicon-lock"></span>
+                                </div>
+                                <input type="password"
+                                       class="form-control input-lg text-center"
+                                       placeholder="Password"
+                                       name="password"
+                                       ng-model="password"
+                                       ng-keyup="$event.keyCode == 13 && signin()"
+                                >
                             </div>
-                            <input type="password"
-                                   class="form-control input-lg input-round text-center"
-                                   placeholder="Password"
-                                   name="password"
-                                   ng-model="password"
-                                   ng-keyup="$event.keyCode == 13 && signin()" 
-                                   >
-                        </div>
-                        <div class="form-group">
-                            <div class="btn-icon-lined btn-icon-round btn-icon-sm btn-default-light">
-                                <span class="glyphicon glyphicon-hdd"></span>
+                            <div class="form-group">
+                                <div class="btn-icon-lined btn-icon-round btn-icon-sm btn-default-light">
+                                    <span class="glyphicon glyphicon-hdd"></span>
+                                </div>
+                                <input
+                                        class="form-control input-lg text-center"
+                                        placeholder="Server"
+                                        ng-model="server"
+                                        ng-keyup="$event.keyCode == 13 && signin()"
+                                >
                             </div>
-                            <input 
-                                   class="form-control input-lg input-round text-center"
-                                   placeholder="Server"
-                                   ng-model="server"
-                                   ng-keyup="$event.keyCode == 13 && signin()"
-                                   >
-                        </div>
-                        <div class="form-group">
-                            <a ng-click="signin()" class="btn btn-primary btn-lg btn-round btn-block text-center" type="submit">Log in</a>
-                        </div>
-                    </fieldset>
-                </form>
-                
+                            <div class="form-group">
+                                <a ng-click="signin()" class="btn btn-success btn-lg btn-block text-center" type="submit">Log in</a>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
             </div>
         </div>
-    </div>
 
+    </div>
 </div>

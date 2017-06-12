@@ -107,7 +107,7 @@
                                     </tab-heading>
 
                                     <div class="row">
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-12" style="padding: 0">
                                             <div class="col-sm-6">
                                                 <div class="form-group" ng-class="{ 'has-error' : accountForm.agentContact.$invalid }">
                                                     <label class="control-label">Call timeout</label>
@@ -153,7 +153,7 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-12" style="padding: 0">
                                             <div class="col-sm-12">
                                                 <label class="control-label">Skills</label>
                                                 <tags-input min-length="1" placeholder="Add a skill" type="text" class="form-group ui-tags-input" required ng-model="account.variable_skills">
@@ -165,7 +165,7 @@
                                 </tab>
                                 <tab ng-if="account['cc-agent'] && canReadQueue && !account._new" ng-click="reloadTabQueue()"  heading="Agent queue">
 
-                                    <div class="panel-body">
+                                    <div class="panel-body" style="padding: 0">
                                         <!--{{queues}}-->
 
                                         <table class="table table-dynamic" style="table-layout: fixed; word-wrap: break-word;">
