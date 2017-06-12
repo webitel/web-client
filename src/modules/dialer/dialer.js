@@ -2871,8 +2871,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     loadResources($scope.dialer.resources, $scope.dialer.stats);
                     loadAgents($scope.dialer.domain, $scope.dialer.agents, $scope.dialer.skills);
 
-                    // if (!timerId)
-                    //     timerId = $interval(reload, 10000);
+                    if (!timerId)
+                        timerId = $interval(reload, 15000);
                 });
             }
 
