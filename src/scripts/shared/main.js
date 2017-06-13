@@ -126,13 +126,16 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
 
 			$scope.login = _.login;
 			$scope.server = _.server;
+			$scope.isLoading = false;
 
 			$scope.signin = function () {
+                $scope.isLoading = true;
 				webitel.signin({
 					"login": $scope.login,
 					"server": $scope.server,
 					"password": $scope.password
 				}, function(err) {
+                    $scope.isLoading = false;
 					$scope.password = '';
 					if (err) {
 						return notifi.error(err, 5000)
