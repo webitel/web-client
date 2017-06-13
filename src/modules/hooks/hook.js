@@ -26,8 +26,9 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/hooks/hookModel'], fu
     });
 
     app.controller('HookCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'HookModel', '$route', '$location', '$routeParams',
-        '$confirm', '$timeout', 'TableSearch',
-        function ($scope, webitel, $rootScope, notifi, HookModel, $route, $location, $routeParams, $confirm, $timeout, TableSearch) {
+        '$confirm', '$timeout', 'TableSearch', 'cfpLoadingBar',
+        function ($scope, webitel, $rootScope, notifi, HookModel, $route, $location, $routeParams, $confirm, $timeout,
+                  TableSearch, cfpLoadingBar) {
         $scope.domain = webitel.domain();
         $scope.hook = {};
         $scope.userVariables = utils.switchVar;
@@ -46,6 +47,13 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/hooks/hookModel'], fu
         $scope.roles = [];
         $scope.queues = {};
         $scope.isLoading = false;
+        $scope.$watch('isLoading', function (val) {
+            if (val) {
+                cfpLoadingBar.start()
+            } else {
+                cfpLoadingBar.complete()
+            }
+        });
 
         $scope.query = TableSearch.get('hooks');
 
@@ -70,6 +78,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/hooks/hookModel'], fu
 
             if (!$scope.domain)
                 return $scope.rowCollection = [];
+
             $scope.isLoading = true;
             HookModel.list({
                 domain: $scope.domain,

@@ -6,10 +6,20 @@
 
 define(['app', 'modules/cdr/libs/fileSaver', 'async', 'scripts/webitel/utils', 'modules/callflows/blacklists/blacklistsModel'], function (app, fileSaver, async, utils) {
     app.controller('BlackListCtrl', ['$scope', 'webitel', 'TableSearch', '$rootScope', '$location', 'BlacklistModel', 'notifi',
-    '$route', '$routeParams', '$confirm',
-    function ($scope, webitel, TableSearch, $rootScope, $location, BlacklistModel, notifi, $route, $routeParams, $confirm) {
+    '$route', '$routeParams', '$confirm', 'cfpLoadingBar',
+    function ($scope, webitel, TableSearch, $rootScope, $location, BlacklistModel, notifi, $route, $routeParams, $confirm,
+              cfpLoadingBar) {
 
         $scope.domain = webitel.domain();
+        $scope.isLoading = false;
+
+        $scope.$watch('isLoading', function (val) {
+            if (val) {
+                cfpLoadingBar.start()
+            } else {
+                cfpLoadingBar.complete()
+            }
+        });
 
         $scope.blacklist = {};
 
@@ -26,7 +36,6 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'scripts/webitel/utils', '
             $scope.isEdit = true;
         };
 
-        $scope.isLoading = false;
         $scope.query = TableSearch.get('blacklists');
 
         $scope.$watch("query", function (newVal) {
@@ -187,9 +196,17 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'scripts/webitel/utils', '
 
     }]);
     
-    app.controller('BlackListNumbersCtrl', ['$scope', 'BlacklistModel', 'notifi', '$timeout', '$confirm', '$location',
-    function ($scope, BlacklistModel, notifi, $timeout, $confirm, $location) {
+    app.controller('BlackListNumbersCtrl', ['$scope', 'BlacklistModel', 'notifi', '$timeout', '$confirm', '$location', 'cfpLoadingBar',
+    function ($scope, BlacklistModel, notifi, $timeout, $confirm, $location, cfpLoadingBar) {
         var _tableState = {};
+        $scope.isLoading = false;
+        $scope.$watch('isLoading', function (val) {
+            if (val) {
+                cfpLoadingBar.start()
+            } else {
+                cfpLoadingBar.complete()
+            }
+        });
 
         $scope.number = "";
         $scope.reloadData = function () {
@@ -198,7 +215,6 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'scripts/webitel/utils', '
         };
 
         var nexData = true;
-        $scope.isLoading = false;
         var _page = 1;
         $scope.CountItemsByPage = 80;
         $scope.numbersRowCollection = [];

@@ -17,6 +17,7 @@
                                            class="form-control"
                                            datetime-picker="dd.MM.yyyy HH:mm"
                                            ng-model="startDate"
+                                           ng-change="onChangeDate(startDate)"
                                            is-open="dateOpenedControl.start"
                                             >
                                     <span class="btn input-group-addon" ng-click="openDate($event, 'start')"><i class="fa fa-calendar"></i></span>
@@ -39,6 +40,7 @@
                                            class="form-control"
                                            datetime-picker="dd.MM.yyyy HH:mm"
                                            ng-model="endDate"
+                                           ng-change="onChangeDate(endDate)"
                                            is-open="dateOpenedControl.end"
                                             >
                                     <span class="btn input-group-addon" ng-click="openDate($event, 'end')"><i class="fa fa-calendar"></i></span>
@@ -110,12 +112,7 @@
 
 
             <div class="table-responsive"  style="position: relative; word-break: break-word;">
-                <div ng-show="isLoading" class="loading text-center">
-                        <span>
-                            <i class="fa fa-spinner fa-5x fa-spin"></i>
-                            <span style="margin-left: -40px; font-size: medium; font-weight: bolder;" ng-if="loadingText">{{loadingText}}</span>
-                        </span>
-                </div>
+
                 <div class="row text-center" ng-if="!rowCollection || rowCollection.length == 0">
                     <div class="center-block col-md-4" style="float: none;">
                         <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>

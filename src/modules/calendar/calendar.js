@@ -1,12 +1,22 @@
 define(['app', 'scripts/webitel/utils', 'moment', 'modules/calendar/calendarModel', 'css!modules/calendar/calendar.css'], function (app, utils, moment) {
 
     app.controller('CalendarCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CalendarModel', 'TableSearch', '$location', '$timeout',
-        '$route', '$routeParams', '$confirm', '$filter',
-        function ($scope, webitel, $rootScope, notifi, CalendarModel, TableSearch, $location, $timeout, $route, $routeParams, $confirm, $filter) {
+        '$route', '$routeParams', '$confirm', '$filter', 'cfpLoadingBar',
+        function ($scope, webitel, $rootScope, notifi, CalendarModel, TableSearch, $location, $timeout, $route, $routeParams,
+                  $confirm, $filter, cfpLoadingBar) {
 
             $scope.canDelete = webitel.connection.session.checkResource('calendar', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('calendar', 'u');
             $scope.canCreate = webitel.connection.session.checkResource('calendar', 'c');
+
+            $scope.isLoading = false;
+            $scope.$watch('isLoading', function (val) {
+                if (val) {
+                    cfpLoadingBar.start()
+                } else {
+                    cfpLoadingBar.complete()
+                }
+            });
 
             $scope.viewMode = !$scope.canUpdate;
             $scope.view = function () {
@@ -60,7 +70,7 @@ define(['app', 'scripts/webitel/utils', 'moment', 'modules/calendar/calendarMode
 
             $scope.query = TableSearch.get('calendar');
 
-            $scope.isLoading = false;
+
 
             $scope.reloadData = reloadData;
             $scope.closePage = closePage;

@@ -1,9 +1,9 @@
 define(['app', 'scripts/webitel/utils', 'modules/gateways/gatewayModel', 'scripts/webitel/domainModel'], function (app, utils) {
 
     app.controller('GatewaysCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', '$route', '$location', 'GatewayModel', '$routeParams', 
-            'DomainModel', '$timeout', '$confirm', 'TableSearch',
+            'DomainModel', '$timeout', '$confirm', 'TableSearch', 'cfpLoadingBar',
         function ($scope, webitel, $rootScope, notifi, $route, $location, GatewayModel, $routeParams, DomainModel, $timeout, $confirm,
-                  TableSearch) {
+                  TableSearch, cfpLoadingBar) {
    		$scope.domain = webitel.domain();
         $scope.gateway = {};
 
@@ -12,6 +12,15 @@ define(['app', 'scripts/webitel/utils', 'modules/gateways/gatewayModel', 'script
         $scope.canDelete = webitel.connection.session.checkResource('gateway', 'd');
         $scope.canUpdate = webitel.connection.session.checkResource('gateway', 'u');
         $scope.canCreate = webitel.connection.session.checkResource('gateway', 'c');
+
+        $scope.isLoading = false;
+        $scope.$watch('isLoading', function (val) {
+            if (val) {
+                cfpLoadingBar.start()
+            } else {
+                cfpLoadingBar.complete()
+            }
+        });
 
         $scope.viewMode = !$scope.canDelete;
             
@@ -166,6 +175,7 @@ define(['app', 'scripts/webitel/utils', 'modules/gateways/gatewayModel', 'script
         function reloadData (timeOut) {
             if ($location.$$path != '/gateways')
                 return 0;
+
             $scope.isLoading = true;
             var _reload = function () {
                 GatewayModel.list($scope.domain, function (err, res) {
@@ -193,7 +203,6 @@ define(['app', 'scripts/webitel/utils', 'modules/gateways/gatewayModel', 'script
 
         $scope.closePage = closePage;
         $scope.save = save;
-        $scope.isLoading = false;
         $scope.reloadData = reloadData;
             
         $scope.getParametersViewError = function (form, key) {

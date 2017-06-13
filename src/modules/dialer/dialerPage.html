@@ -125,7 +125,7 @@
                                                         </div>
 
 
-                                                        <div class="form-group" ng-if="dialer.type==diealerTypes[2]">
+                                                        <div class="form-group" ng-show="dialer.type==diealerTypes[2]">
                                                             <label class="control-label">Playback file</label>
                                                             <ui-select ng-disabled="viewMode" name="playbackFile"  ng-model="dialer.playbackFile" theme="bootstrap"  title="Choose a file">
                                                                 <ui-select-match placeholder="Select or search file...">{{$select.selected.name}}</ui-select-match>
@@ -143,9 +143,9 @@
                                                         </div>
 
 
-                                                        <div class="form-group" ng-if="!isNew" style="padding-top: 6px;">
+                                                        <div class="form-group" ng-show="!isNew" style="padding-top: 6px;">
                                                             <label></label>
-                                                            <button ng-disabled="checkDoNotClickButton || viewMode" style="width: 100%" ng-click="setProcessDialer(dialer)" type="button" ng-class="{'btn-warning': dialer.active, 'btn-success': !dialer.active}" class="btn  btn-round">{{textStateAction}}</button>
+                                                            <button ng-disabled="checkDoNotClickButton || viewMode" style="width: 100%" ng-click="setProcessDialer(dialer)" type="button" ng-class="{'btn-warning': dialer.active, 'btn-success': !dialer.active}" class="btn">{{textStateAction}}</button>
                                                         </div>
 
                                                         <div class="form-group">
@@ -198,9 +198,9 @@
 
                                                                     <div class="col-sm-12" style="padding: 0">
                                                                         <div class="col-sm-6">
-                                                                            <div class="form-group" ng-class="{ 'has-error' : dialerForm.minBillSec.$invalid }">
-                                                                                <label class="control-label">Minimum succeed call duration (in sec)</label>
-                                                                                <input ng-disabled="viewMode" class="form-control" type="number" name="minBillSec" ng-model="dialer.parameters.minBillSec" min="0" required>
+                                                                            <div class="form-group" ng-class="{ 'has-error' : dialerForm.originateTimeout.$invalid && !dialerForm.originateTimeout.$pristine }">
+                                                                                <label class="control-label">Originate timeout</label>
+                                                                                <input ng-disabled="viewMode" class="form-control" type="number" name="originateTimeout" ng-model="dialer.parameters.originateTimeout" min="0" max="999">
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-sm-6">
@@ -212,17 +212,17 @@
                                                                     </div>
 
 
-                                                                    <div class="col-sm-12" style="padding: 0">
-                                                                        <div class="col-sm-12"  ng-if="dialer.type==diealerTypes[0] || dialer.type==diealerTypes[2]" >
-                                                                            <div class="form-group" ng-class="{ 'has-error' : dialerForm.originateTimeout.$invalid && !dialerForm.originateTimeout.$pristine }">
-                                                                                <label class="control-label">Originate timeout</label>
-                                                                                <input ng-disabled="viewMode" class="form-control" type="number" name="originateTimeout" ng-model="dialer.parameters.originateTimeout" min="0" max="999">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                                                    <!--<div ng-show="dialer.type==diealerTypes[0] || !dialer.parameters.waitingForResultStatus" class="col-sm-12" style="padding: 0">-->
+                                                                        <!--<div class="col-sm-12"  >-->
+                                                                            <!--<div class="form-group" ng-class="{ 'has-error' : dialerForm.minBillSec.$invalid }">-->
+                                                                                <!--<label class="control-label">Minimum succeed call duration (in sec)</label>-->
+                                                                                <!--<input ng-disabled="viewMode" class="form-control" type="number" name="minBillSec" ng-model="dialer.parameters.minBillSec" min="0" required>-->
+                                                                            <!--</div>-->
+                                                                        <!--</div>-->
+                                                                    <!--</div>-->
 
                                                                     <div class="col-sm-12" style="padding: 0">
-                                                                        <div class="col-sm-12"  ng-if="dialer.type==diealerTypes[2]" >
+                                                                        <div class="col-sm-12"  ng-show="dialer.type==diealerTypes[2]" >
                                                                             <div class="form-group" ng-class="{ 'has-error' : dialerForm.predictAdjust.$invalid && !dialerForm.predictAdjust.$pristine }">
                                                                                 <label class="control-label">Start predict adjust</label>
                                                                                 <input ng-disabled="viewMode" class="form-control" type="number" name="predictAdjust" ng-model="dialer.parameters.predictAdjust" min="0" max="1000">
@@ -231,14 +231,14 @@
                                                                     </div>
 
                                                                     <div class="col-sm-12" style="padding: 0">
-                                                                        <div class="col-sm-6"  ng-if="dialer.type==diealerTypes[2]" >
+                                                                        <div class="col-sm-6"  ng-show="dialer.type==diealerTypes[2]" >
                                                                             <div class="form-group" ng-class="{ 'has-error' : dialerForm.targetPredictiveSilentCalls.$invalid && !dialerForm.targetPredictiveSilentCalls.$pristine }">
                                                                                 <label class="control-label">Target predictive silent calls (%)</label>
                                                                                 <input ng-disabled="viewMode" class="form-control" type="number" name="targetPredictiveSilentCalls" ng-model="dialer.parameters.targetPredictiveSilentCalls" min="0" max="100">
                                                                             </div>
                                                                         </div>
 
-                                                                        <div class="col-sm-6"  ng-if="dialer.type==diealerTypes[2]" >
+                                                                        <div class="col-sm-6"  ng-show="dialer.type==diealerTypes[2]" >
                                                                             <div class="form-group" ng-class="{ 'has-error' : dialerForm.maxPredictiveSilentCalls.$invalid && !dialerForm.maxPredictiveSilentCalls.$pristine }">
                                                                                 <label class="control-label">Max predictive silent calls (%)</label>
                                                                                 <input ng-disabled="viewMode" class="form-control" type="number" name="maxPredictiveSilentCalls" ng-model="dialer.parameters.maxPredictiveSilentCalls" min="0" max="100">
@@ -248,8 +248,8 @@
 
 
                                                                     <div class="col-sm-12" style="padding: 0">
-                                                                        <div class="col-sm-6" >
-                                                                            <div class="form-group" ng-if="dialer.type!=diealerTypes[0]">
+                                                                        <div class="col-sm-6" ng-show="dialer.type!=diealerTypes[0]">
+                                                                            <div class="form-group" >
                                                                                 <label class="control-label">Waiting for result status</label>
                                                                                 <br>
                                                                                 <label  class="switch switch-success">
@@ -257,13 +257,19 @@
                                                                             </div>
                                                                         </div>
 
-                                                                        <div class="col-sm-6" ng-if="dialer.parameters.waitingForResultStatus && dialer.type!=diealerTypes[0]">
+                                                                        <div class="col-sm-6" ng-show="!dialer.parameters.waitingForResultStatus || dialer.type==diealerTypes[0]">
+                                                                            <div class="form-group" ng-class="{ 'has-error' : dialerForm.minBillSec.$invalid }">
+                                                                                <label class="control-label">Minimum succeed call duration (in sec)</label>
+                                                                                <input ng-disabled="viewMode" class="form-control" type="number" name="minBillSec" ng-model="dialer.parameters.minBillSec" min="0" required>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-sm-6" ng-show="dialer.parameters.waitingForResultStatus && dialer.type!=diealerTypes[0]">
                                                                             <div class="form-group" ng-class="{ 'has-error' : dialerForm.wrapUpTime.$invalid }">
                                                                                 <label class="control-label">Result timeout</label>
                                                                                 <input ng-disabled="viewMode" class="form-control" type="number" name="wrapUpTime" ng-model="dialer.parameters.wrapUpTime" min="0">
                                                                             </div>
                                                                         </div>
-
 
                                                                     </div>
 
@@ -271,7 +277,7 @@
                                                                 </div>
 
 
-                                                                <div ng-if="false" class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.avgProgressSec.$pristine }">
+                                                                <div ng-show="false" class="form-group" ng-class="{ 'has-error' : dialerForm.avgProgressSec.$invalid && !dialerForm.avgProgressSec.$pristine }">
                                                                     <label for>Avg progress sec</label>
                                                                     <input ng-disabled="viewMode" class="form-control" type="number" name="avgProgressSec" ng-model="dialer.parameters.avgProgressSec" min="0" max="999" required>
                                                                 </div>
@@ -295,7 +301,7 @@
                                                                 </div>
                                                             </tab>
 
-                                                            <tab ng-if="dialer.type==diealerTypes[0] || dialer.type==diealerTypes[2]">
+                                                            <tab ng-show="dialer.type==diealerTypes[0] || dialer.type==diealerTypes[2]">
                                                                 <tab-heading>
                                                                     <span>AMD</span>
                                                                 </tab-heading>
@@ -390,7 +396,7 @@
                                     </section>
                                 </tab>
 
-                                <tab ng-if="!isNew">
+                                <tab ng-show="!isNew">
                                     <tab-heading>
                                         <span>Members</span>
                                     </tab-heading>
@@ -400,7 +406,7 @@
                                     </section>
                                 </tab>
 
-                                <tab ng-if="dialer.type==diealerTypes[1] || dialer.type==diealerTypes[2]">
+                                <tab ng-show="dialer.type==diealerTypes[1] || dialer.type==diealerTypes[2]">
                                     <tab-heading>
                                         Agents
                                     </tab-heading>
@@ -486,10 +492,10 @@
                                                                     <i class="fa fa-files-o"></i>
                                                                 </span>
 
-                                                                <span  ng-click="removeTiers()"  ng-if="canUpdate" class="btn input-group-addon">
+                                                                <span  ng-click="removeTiers()"  ng-show="canUpdate" class="btn input-group-addon">
                                                                     <i class="glyphicon glyphicon-chevron-right"></i>
                                                                 </span>
-                                                                <span  ng-click="removeTiers(true)" ng-if="canUpdate" class="btn input-group-addon">
+                                                                <span  ng-click="removeTiers(true)" ng-show="canUpdate" class="btn input-group-addon">
                                                                      <i class="glyphicon glyphicon-forward"></i>
                                                                 </span>
                                                             </div>
@@ -525,10 +531,10 @@
                                                             </div>
 
                                                             <div class="input-group">
-                                                                <span  ng-if="canUpdate"  ng-click="addTiers(true)" class="btn input-group-addon">
+                                                                <span  ng-show="canUpdate"  ng-click="addTiers(true)" class="btn input-group-addon">
                                                                     <i class="glyphicon glyphicon-backward"></i>
                                                                 </span>
-                                                                <span  ng-if="canUpdate"  ng-click="addTiers()" class="btn input-group-addon">
+                                                                <span  ng-show="canUpdate"  ng-click="addTiers()" class="btn input-group-addon">
                                                                     <i class="glyphicon glyphicon-chevron-left"></i>
                                                                 </span>
                                                                 <span  ng-click="copyList(agentsListFiltered, true, 'agents')" class="btn input-group-addon">
@@ -580,7 +586,7 @@
                                                 <section class="categories panel panel-default">
                                                     <div class="panel-heading">
 
-                                                        <a ng-click="editResourceDialString(getDefaultResource())" ng-if="canUpdate" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
+                                                        <a ng-click="editResourceDialString(getDefaultResource())" ng-show="canUpdate" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
                                                             <i class="fa fa-plus"></i>
                                                         </a>
                                                     </div>
@@ -590,20 +596,20 @@
                                                             <a href="javascript:;">
                                                                 {{row.dialedNumber}}
 
-                                                                <span ng-disabled="viewMode" href="javascript:;" ng-click="removeResource(key, row)" ng-if="canUpdate" class="pull-right btn-icon btn-icon-sm  btn-gap-v btn-default">
+                                                                <span ng-disabled="viewMode" href="javascript:;" ng-click="removeResource(key, row)" ng-show="canUpdate" class="pull-right btn-icon btn-icon-sm  btn-gap-v btn-default">
                                                                     <i class="glyphicon glyphicon-remove"></i>
                                                                 </span>
 
-                                                                <span ng-disabled="viewMode"  href="javascript:;" ng-click="editResourceDialString(row)" ng-if="canUpdate" class="pull-right btn-icon btn-icon-sm  btn-gap-v btn-default">
+                                                                <span ng-disabled="viewMode"  href="javascript:;" ng-click="editResourceDialString(row)" ng-show="canUpdate" class="pull-right btn-icon btn-icon-sm  btn-gap-v btn-default">
                                                                     <i class="glyphicon glyphicon-pencil"></i>
                                                                 </span>
 
-                                                                <span ng-disabled="viewMode" ng-click="setDialStringPosition(dialer.resources, row, false, $event)"  ng-if="canUpdate" class="pull-right btn-icon btn-icon-sm  btn-gap-v btn-default">
+                                                                <span ng-disabled="viewMode" ng-click="setDialStringPosition(dialer.resources, row, false, $event)"  ng-show="canUpdate" class="pull-right btn-icon btn-icon-sm  btn-gap-v btn-default">
                                                                     <i style="line-height: 0;" class="glyphicon glyphicon-chevron-down"></i>
                                                                 </span>
 
 
-                                                                <span ng-disabled="viewMode" ng-click="setDialStringPosition(dialer.resources, row, true,  $event)"  ng-if="canUpdate" class="pull-right btn-icon btn-icon-sm  btn-gap-v btn-default">
+                                                                <span ng-disabled="viewMode" ng-click="setDialStringPosition(dialer.resources, row, true,  $event)"  ng-show="canUpdate" class="pull-right btn-icon btn-icon-sm  btn-gap-v btn-default">
                                                                     <i  class="glyphicon glyphicon-chevron-up"></i>
                                                                 </span>
                                                             </a>
@@ -616,7 +622,7 @@
                                                 <section class="panel panel-default">
                                                     <div class="panel-heading ">
 
-                                                        <a ng-click="editResourceDestination(getDefaultResourceDestination())" ng-if="canUpdate" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
+                                                        <a ng-click="editResourceDestination(getDefaultResourceDestination())" ng-show="canUpdate" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
                                                             <i class="fa fa-plus"></i>
                                                         </a>
                                                     </div>
@@ -646,23 +652,23 @@
                                                             <td>{{item.enabled}}</td>
                                                             <td  style="text-align: end; min-width: 150px">
 
-                                                                <a href="javascript:;" ng-click="setDialStringPosition(activeResource.destinations, item, true,  $event)" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default">
+                                                                <a href="javascript:;" ng-click="setDialStringPosition(activeResource.destinations, item, true,  $event)" ng-show="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default">
                                                                     <i  class="glyphicon glyphicon-chevron-up"></i>
                                                                 </a>
 
-                                                                <a href="javascript:;" ng-click="setDialStringPosition(activeResource.destinations, item, false, $event)" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default">
+                                                                <a href="javascript:;" ng-click="setDialStringPosition(activeResource.destinations, item, false, $event)" ng-show="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default">
                                                                     <i style="line-height: 0;" class="glyphicon glyphicon-chevron-down"></i>
                                                                 </a>
 
-                                                                <a href="javascript:;" ng-click="editResourceDestination(item)" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default">
+                                                                <a href="javascript:;" ng-click="editResourceDestination(item)" ng-show="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default">
                                                                     <i class="glyphicon glyphicon-pencil"></i>
                                                                 </a>
 
-                                                                <a href="javascript:;" ng-click="editResourceDestination(item, true)" ng-if="viewMode" class="btn-icon btn-icon-sm  btn-gap-v btn-default">
+                                                                <a href="javascript:;" ng-click="editResourceDestination(item, true)" ng-show="viewMode" class="btn-icon btn-icon-sm  btn-gap-v btn-default">
                                                                     <i class="glyphicon glyphicon-file"></i>
                                                                 </a>
 
-                                                                <a href="javascript:;" ng-click="removeResourceDestination(key, item)" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default">
+                                                                <a href="javascript:;" ng-click="removeResourceDestination(key, item)" ng-show="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default">
                                                                     <i class="glyphicon glyphicon-remove"></i>
                                                                 </a>
                                                             </td>
@@ -710,7 +716,7 @@
                                         <span>Cause</span>
                                     </tab-heading>
                                     <div class="row">
-                                        <div ng-if="canUpdate" class="col-sm-12">
+                                        <div ng-show="canUpdate" class="col-sm-12">
                                             <a ng-click="resetCause()" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
                                                 <i class="glyphicon glyphicon-retweet"></i>
                                             </a>
@@ -741,16 +747,6 @@
                                         </tags-input>
                                     </div>
                                 </tab>
-
-                                <!--<tab ng-if="!isNew" select="selectTabStats()">-->
-                                    <!--<tab-heading>-->
-                                        <!--<span>Stats</span>-->
-                                    <!--</tab-heading>-->
-
-                                    <!--<section  data-ng-controller="StatsDialerCtrl" data-ng-include=" 'modules/dialer/dialerStats.html' ">-->
-
-                                    <!--</section>-->
-                                <!--</tab>-->
                             </tabset>
                         </div>
                     </div>
@@ -771,7 +767,6 @@
             </div>
 
         </div>
-
     </div>
 </div>
 

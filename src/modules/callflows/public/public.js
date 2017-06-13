@@ -5,9 +5,10 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	//app.extend( "ngTagsInput" );
 
 	app.controller('CallflowPublicCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CallflowPublicModel',
-    	'$location', '$route', '$routeParams', '$confirm', 'FileUploader', 'TableSearch', '$timeout',
+    	'$location', '$route', '$routeParams', '$confirm', 'FileUploader', 'TableSearch', '$timeout', 'cfpLoadingBar',
         function ($scope, webitel, $rootScope, notifi, CallflowPublicModel, $location, $route, $routeParams, $confirm
-        	,FileUploader, TableSearch, $timeout) {
+        	,FileUploader, TableSearch, $timeout, cfpLoadingBar) {
+
         	$scope.domain = webitel.domain();
         	$scope.public = {};
 			$scope.cf = aceEditor.getStrFromJson([]);
@@ -16,6 +17,13 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        $scope.rowCollection = [];
 	        $scope.rowColflection = [];
 	        $scope.isLoading = false;
+            $scope.$watch('isLoading', function (val) {
+                if (val) {
+                    cfpLoadingBar.start()
+                } else {
+                    cfpLoadingBar.complete()
+                }
+            });
 
 			$scope.query = TableSearch.get('public');
 

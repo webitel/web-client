@@ -37,16 +37,18 @@ define(['require',
     'widget-mongodb',
     'ui-select',
     'xeditable',
-    'angular-nvd3'
+    'angular-nvd3',
+    'loading-bar'
     // TODO new dash..
     //'gridster'
 ], function (require, angularAMD) {
     //require()
     var app = angular.module("app", ['ngRoute', 'ngStorage', 'angular-clipboard', 'ngSanitize', 'com.2fdevs.videogular', "com.2fdevs.videogular.plugins.controls", 'ui.select', 'xeditable',
         'adf', 'adf.widget.iframe', 'adf.widget.linklist', 'adf.widget.markdown', 'adf.structures.base', /*'adf.widget.mongodb',*/
-        'wt.responsive', 'ngAnimate', 'smart-table', 'ui.bootstrap', 'ui.bootstrap.modal', "ui.bootstrap.datepicker", 'ui.bootstrap.datetimepicker', 'nvd3',
+        'wt.responsive', 'smart-table', 'ui.bootstrap', 'ui.bootstrap.modal', "ui.bootstrap.datepicker", 'ui.bootstrap.datetimepicker', 'nvd3',
         'app.directives',
-        'app.nav', 'app.controllers', 'app.localization', 'app.webitel', 'app.modules', 'ngTagsInput', 'app.notifier', 'angular-confirm', 'app.domain', 'angularFileUpload', 'multi-select']);
+        'app.nav', 'app.controllers', 'app.localization', 'app.webitel', 'app.modules', 'ngTagsInput', 'app.notifier', 'angular-confirm', 'app.domain', 'angularFileUpload', 'multi-select', 'chieffancypants.loadingBar',
+        'ngAnimate']);
 
     var routes = ['dashboard', 'pages/404', 'pages/500', 'pages/lock-screen', 'pages/profile', 'pages/blank',
         'pages/signin', 'pages/init', 'home'
@@ -106,6 +108,11 @@ define(['require',
             function ($localStorageProvider) {
                 $localStorageProvider.setKeyPrefix('webitel_ui_');
             }])
+        .config(function(cfpLoadingBarProvider) {
+            cfpLoadingBarProvider.includeSpinner = true;
+            cfpLoadingBarProvider.includeBar = true;
+            cfpLoadingBarProvider.parentSelector = '#logo';
+        })
         .run(run);
 
     run.$inject = ['$rootScope', '$location', '$http', 'webitel', '$localStorage', 'notifi', 'editableOptions'];
@@ -122,19 +129,27 @@ define(['require',
         if (!!webitelSession.key && !!webitelSession.token) {
             $location.path('pages/init');
             webitel.signin(webitelSession, function (err) {
+                $rootScope.setViewSpinner(false);
                 if (err) {
                     notifi.error(err, 10000);
                     return $location.path('/');
                 }
-
                 return $location.path(_initPath);
             })
         }
 
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
-            if (!webitel.connected() && !~next.indexOf('pages/init'))
+            if ($rootScope.setViewSpinner)
+                $rootScope.setViewSpinner(true);
+
+            if (!webitel.connected() && !~next.indexOf('pages/init')) {
                 $location.path('pages/signin');
+            }
+        });
+
+        $rootScope.$on('$locationChangeSuccess', function (event, next, current) {
+            $rootScope.setViewSpinner(false);
         });
     }
 

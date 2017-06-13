@@ -62,7 +62,8 @@ require.config({
     'jsZIP-utils': 'bower_components/jszip/jszip-utils.min',
     'd3': 'bower_components/d3/d3.min',
     'nvd3': 'bower_components/nvd3/build/nv.d3',
-    'angular-nvd3': 'bower_components/angular-nvd3/dist/angular-nvd3.min'
+    'angular-nvd3': 'bower_components/angular-nvd3/dist/angular-nvd3.min',
+    'loading-bar': 'bower_components/angular-loading-bar/build/loading-bar.min'
     // END TODO
 
     //new dash
@@ -85,6 +86,9 @@ require.config({
     },
     'ui-select': {
       deps: ['angular', 'css!bower_components/ui-select/dist/select.min.css']
+    },
+    'loading-bar': {
+        deps: ['angular']
     },
     //TODO
     //'gridster': ['angular', 'css!modules/dashboard2/angular-gridster/dist/angular-gridster.min.css'],

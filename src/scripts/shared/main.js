@@ -46,7 +46,13 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
 
 				console.debug('init modules: ', modules);
 				$scope.modules = modules;
+
 			});
+
+			$scope.viewSpinner = true;
+            $rootScope.setViewSpinner = function (val) {
+                $scope.viewSpinner = !!val;
+            };
 			
 	      $window = $(window);
 	      $scope.main = {
@@ -80,9 +86,7 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
 	        pageTransition: $scope.pageTransitionOpts[0]
 	      };
 
-			$scope.scrollToTop = function () {
-				debugger
-			}
+
 	      $scope.$watch('admin', function(newVal, oldVal) {
 			  $localStorage.layout = newVal.layout;
 			  $localStorage.menu = newVal.menu;

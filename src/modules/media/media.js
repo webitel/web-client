@@ -1,8 +1,8 @@
 define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 'scripts/webitel/utils','modules/media/mediaModel'
 ], function (app, jsZIPUtils, jsZIP, async, fileSaver, utils) {
     app.controller('MediaCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'MediaModel', 'FileUploader', '$confirm',
-        'TableSearch', '$sce',
-        function ($scope, webitel, $rootScope, notifi, MediaModel, FileUploader, $confirm, TableSearch, $sce) {
+        'TableSearch', '$sce', 'cfpLoadingBar',
+        function ($scope, webitel, $rootScope, notifi, MediaModel, FileUploader, $confirm, TableSearch, $sce, cfpLoadingBar) {
             $scope.domain = webitel.domain();
 
             $scope.canDelete = webitel.connection.session.checkResource('cdr/media', 'd');
@@ -14,6 +14,13 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
             $scope.removeItem = removeItem;
             $scope.progress = 0;
             $scope.isLoading = false;
+            $scope.$watch('isLoading', function (val) {
+                if (val) {
+                    cfpLoadingBar.start()
+                } else {
+                    cfpLoadingBar.complete()
+                }
+            });
 
             $scope.setSource = null;
             $scope.activePlayRowName = null;

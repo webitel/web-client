@@ -76,53 +76,52 @@
     <div class="row">
 
         <div class="col-lg-3 col-xsm-6">
-            <div class="panel mini-box">
-                <span class="btn-icon-lined btn-icon-lg-alt btn-success">
-                    <i class="fa fa-calendar"></i>
-                </span>
-                <div class="box-info">
+
+            <section class="panel panel-box info-box stats-other-min-width">
+                <div class="panel-left panel-item bg-success">
+                    <i class="fa fa-calendar text-large stat-icon"></i>
+                </div>
+                <div class="panel-right panel-item bg-reverse">
                     <p class="size-h4">{{uptime}}</p>
-                    <p class="text-muted"><span data-i18n="Up time">Up time</span></p>
+                    <span class="text-muted" data-i18n="Up time">Up time</span>
                 </div>
-            </div>
+            </section>
         </div>
 
         <div class="col-lg-3 col-xsm-6">
-            <div class="panel mini-box">
-                <span class="btn-icon-lined btn-icon-lg-alt"
-                      ng-class="crashCount > 1 ? 'btn-danger' : 'btn-success'">
-                    <i class="fa fa-bug"></i>
-                </span>
-                <div class="box-info">
-                    <p class="size-h2">{{crashCount}}</p>
-                    <p class="text-muted"><span data-i18n="Worker crash">Worker crash</span></p>
+            <section class="panel panel-box info-box stats-other-min-width">
+                <div class="panel-left panel-item" ng-class="crashCount > 1 ? 'bg-danger' : 'bg-success'">
+                    <i class="fa fa-bug text-large stat-icon"></i>
                 </div>
-            </div>
+                <div class="panel-right panel-item bg-reverse">
+                    <p class="size-h4">{{crashCount}}</p>
+                    <span class="text-muted" data-i18n="Worker crash">Worker crash</span>
+                </div>
+            </section>
         </div>
 
         <div class="col-lg-3 col-xsm-6">
-            <div class="panel mini-box">
-                <span class="btn-icon-lined btn-icon-lg-alt btn-info">
-                    <i class="glyphicon glyphicon-hdd"></i>
-                </span>
-                <div class="box-info">
-                    <p class="size-h3">{{cdrFilesSize}}</p>
-                    <p class="text-muted"><span data-i18n="Record files size">Record files size</span></p>
+            <section class="panel panel-box info-box stats-other-min-width">
+                <div class="panel-left panel-item bg-info">
+                    <i class="glyphicon glyphicon-hdd text-large stat-icon"></i>
                 </div>
-            </div>
+                <div class="panel-right panel-item bg-reverse">
+                    <p class="size-h4">{{cdrFilesSize}}</p>
+                    <span class="text-muted" data-i18n="Worker crash">Storage</span>
+                </div>
+            </section>
         </div>
 
         <div class="col-lg-3 col-xsm-6">
-            <div class="panel mini-box">
-                <span class="btn-icon-lined btn-icon-lg-alt btn-nodejs">
-                    <!--<i class="fa fa-bug"></i>-->
-                    <img style="margin-top: -8px" src="../images/1471960936_nodejs-512.png">
-                </span>
-                <div class="box-info">
-                    <p class="size-h3">{{nodeVer}}</p>
-                    <p class="text-muted"><span data-i18n="Node version">Node version</span></p>
+            <section class="panel panel-box info-box stats-other-min-width">
+                <div class="panel-left panel-item bg-info">
+                    <img  src="../images/fff_nodejs-512.png">
                 </div>
-            </div>
+                <div class="panel-right panel-item bg-reverse">
+                    <p class="size-h4">{{nodeVer}}</p>
+                    <span class="text-muted"><span data-i18n="Node version">Node version</span></span>
+                </div>
+            </section>
         </div>
 
     </div>

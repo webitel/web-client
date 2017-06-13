@@ -1,9 +1,9 @@
 define(['app', 'async', 'scripts/webitel/utils', 'modules/acd/acdModel', 'modules/accounts/accountModel', 'modules/media/mediaModel'], function (app, async, utils) {
 
     app.controller('ACDCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'AcdModel', '$location', '$route', 'AccountModel', '$routeParams',
-        '$confirm', 'TableSearch', '$timeout', 'MediaModel', '$q',
+        '$confirm', 'TableSearch', '$timeout', 'MediaModel', '$q', 'cfpLoadingBar',
         function ($scope, webitel, $rootScope, notifi, AcdModel, $location, $route, AccountModel, $routeParams, $confirm, TableSearch,
-                  $timeout, MediaModel, $q) {
+                  $timeout, MediaModel, $q, cfpLoadingBar) {
 
             $scope.canDelete = webitel.connection.session.checkResource('cc/queue', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('cc/queue', 'u');
@@ -13,6 +13,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/acd/acdModel', 'module
             $scope.canUpdateTiers = webitel.connection.session.checkResource('cc/tiers', 'u');
             $scope.canDeleteTiers = webitel.connection.session.checkResource('cc/tiers', 'd');
             $scope.canReadTiers   = webitel.connection.session.checkResource('cc/tiers', 'r');
+
+            $scope.isLoading = false;
+            $scope.$watch('isLoading', function (val) {
+                if (val) {
+                    cfpLoadingBar.start()
+                } else {
+                    cfpLoadingBar.complete()
+                }
+            });
 
             $scope.viewMode = !$scope.canUpdate;
             $scope.view = function () {
@@ -323,8 +332,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/acd/acdModel', 'module
                 if ($location.$$path != '/acd')
                     return 0;
 
+                $scope.rowCollection = [];
                 if (!$scope.domain)
-                    return $scope.rowCollection = [];
+                    return;
+
                 $scope.isLoading = true;
                 AcdModel.list($scope.domain, function (err, res) {
                     $scope.isLoading = false;

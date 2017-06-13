@@ -37,11 +37,6 @@
 </div>
 
 <div class="table-responsive" style="position: relative;">
-    <div ng-show="isLoading" class="loading text-center">
-        <span>
-            <i class="fa fa-spinner fa-5x fa-spin"></i>
-        </span>
-    </div>
 
     <table st-pipe="callServer" st-table="membersRowCollection"
            infinite-scroll-disabled="isLoading"

@@ -6,10 +6,24 @@
 define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview', 'css!modules/cdr/css/verticalTabs.css', 'css!modules/cdr/cdr.css'],
     function (app, moment, jsZIP, async) {
 
-    app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm', 'notifi', 'TableSearch', '$timeout',
-        function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, notifi, TableSearch, $timeout) {
+    app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm', 'notifi',
+        'TableSearch', '$timeout', 'cfpLoadingBar',
+        function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, notifi, TableSearch, $timeout, cfpLoadingBar) {
 
             $scope.isLoading = false;
+            $scope.$watch('isLoading', function (val) {
+                if (val) {
+                    cfpLoadingBar.start()
+                } else {
+                    cfpLoadingBar.complete()
+                }
+            });
+
+            $scope.onChangeDate = function (val) {
+                if (val)
+                    $scope.applyFilter();
+            };
+
             $scope.isOpenFilter = true;
             $scope.rowCollection = [];
             $scope.isCollapsed = true;

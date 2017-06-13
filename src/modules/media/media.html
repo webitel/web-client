@@ -55,11 +55,6 @@
             </div>
 
             <div class="table-responsive" ng-show="rowCollection.length > 0" style="position: relative;">
-                <div ng-show="isLoading" class="loading text-center">
-                        <span>
-                            <i class="fa fa-spinner fa-5x fa-spin"></i>
-                        </span>
-                </div>
 
                 <table  ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" search-watch-model="query">
                 <thead>

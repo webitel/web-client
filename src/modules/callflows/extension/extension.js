@@ -1,15 +1,22 @@
 define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/callflows/extension/extensionModel'], function (app, aceEditor, callflowUtils) {
 
     app.controller('CallflowExtensionCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CallflowExtensionModel',
-        '$location', '$route', '$routeParams', '$confirm', '$window', 'TableSearch', '$timeout',
+        '$location', '$route', '$routeParams', '$confirm', '$window', 'TableSearch', '$timeout', 'cfpLoadingBar',
         function ($scope, webitel, $rootScope, notifi, CallflowExtensionModel, $location, $route, $routeParams, $confirm
-            ,$window, TableSearch, $timeout) {
+            ,$window, TableSearch, $timeout, cfpLoadingBar) {
             $scope.domain = webitel.domain();
             $scope.cf = aceEditor.getStrFromJson([]);
             $scope.cfOnDisconnect = aceEditor.getStrFromJson([]);
             $scope.rowCollection = [];
             $scope.extension = {};
             $scope.isLoading = false;
+            $scope.$watch('isLoading', function (val) {
+                if (val) {
+                    cfpLoadingBar.start()
+                } else {
+                    cfpLoadingBar.complete()
+                }
+            });
 
             $scope.canDelete = webitel.connection.session.checkResource('rotes/extension', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('rotes/extension', 'u');

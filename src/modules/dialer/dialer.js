@@ -44,9 +44,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     }
 
     app.controller('DialerCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'DialerModel', '$location', '$route', '$routeParams',
-        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel', 'AccountModel', '$q', '$filter', 'MediaModel',
+        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel', 'AccountModel', '$q', '$filter', 'MediaModel', 'cfpLoadingBar',
         function ($scope, webitel, $rootScope, notifi, DialerModel, $location, $route, $routeParams, $confirm, TableSearch,
-                  $timeout, $modal, CalendarModel, AccountModel, $q, $filter, MediaModel) {
+                  $timeout, $modal, CalendarModel, AccountModel, $q, $filter, MediaModel, cfpLoadingBar) {
 
             $scope.canDelete = webitel.connection.session.checkResource('dialer', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('dialer', 'u');
@@ -54,6 +54,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.domain = webitel.domain();
             $scope.dialer = {};
 
+            $scope.isLoading = false;
+
+            $scope.$watch('isLoading', function (val) {
+                if (val) {
+                    cfpLoadingBar.start()
+                } else {
+                    cfpLoadingBar.complete()
+                }
+            });
 
             $scope.viewMode = !$scope.canUpdate;
 
@@ -387,6 +396,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             };
 
             function edit (callback) {
+                $scope.isLoading = true;
                 var id = $routeParams.id;
                 var domain = $routeParams.domain;
 
@@ -395,6 +405,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     index = 0;
 
                 DialerModel.item(id, domain, function(err, item) {
+                    $scope.isLoading = false;
                     if (err) {
                         return notifi.error(err, 5000);
                     };
@@ -947,7 +958,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     }]);
 
     app.controller('MembersDialerCtrl', ['$scope', 'DialerModel', '$modal', '$confirm', 'notifi', 'FileUploader', 'webitel',
-        function ($scope, DialerModel, $modal, $confirm, notifi, FileUploader, webitel) {
+        'cfpLoadingBar',
+        function ($scope, DialerModel, $modal, $confirm, notifi, FileUploader, webitel, cfpLoadingBar) {
         var _tableState = {};
         $scope.reloadData = function () {
             _tableState.pagination.start = 0;
@@ -958,6 +970,14 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
         var nexData = true;
         $scope.isLoading = false;
+        $scope.$watch('isLoading', function (val) {
+            if (val) {
+                cfpLoadingBar.start()
+            } else {
+                cfpLoadingBar.complete()
+            }
+        });
+
         var _page = 1;
         $scope.CountItemsByPage = 40;
         $scope.membersRowCollection = [];

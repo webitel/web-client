@@ -170,6 +170,143 @@ input[type="search"]{
     opacity: .7;
 }
 
+.panel.panel-box.info-box.stats-other-min-width {
+    min-height: 138px;
+}
+
+.bg-spinner {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    right: 0;
+    bottom: 0;
+    z-index: 11;
+    background-color: rgba(0, 0, 0, 0.57);
+}
+
+.spinner-wrap {
+    /*margin: auto;*/
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+}
+
+.spinner {
+    height: 100px;
+    width: 100px;
+    display: inline-block;
+    margin: -50px auto 0;
+    animation: spin 1s steps(12, end) infinite;
+}
+.spinner:first-child {
+    margin-right: 50px;
+}
+.spinner i {
+    height: 30px;
+    width: 6px;
+    margin-left: -3px;
+    display: block;
+    transition: height 1s;
+    position: absolute;
+    left: 50%;
+    transform-origin: center 50px;
+    background: #fff;
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.7);
+    border-radius: 3px;
+}
+.spinner:nth-child(2) i {
+    height: 6px;
+}
+.spinner:hover i {
+    height: 6px;
+}
+.spinner:hover:nth-child(2) i {
+    height: 30px;
+}
+
+.spinner i:nth-child(1) {
+    opacity: 0.08;
+}
+
+.spinner i:nth-child(2) {
+    transform: rotate(30deg);
+    opacity: 0.167;
+}
+
+.spinner i:nth-child(3) {
+    transform: rotate(60deg);
+    opacity: 0.25;
+}
+
+.spinner i:nth-child(4) {
+    transform: rotate(90deg);
+    opacity: 0.33;
+}
+
+.spinner i:nth-child(5) {
+    transform: rotate(120deg);
+    opacity: 0.4167;
+}
+
+.spinner i:nth-child(6) {
+    transform: rotate(150deg);
+    opacity: 0.5;
+}
+
+.spinner i:nth-child(7) {
+    transform: rotate(180deg);
+    opacity: 0.583;
+}
+
+.spinner i:nth-child(8) {
+    transform: rotate(210deg);
+    opacity: 0.67;
+}
+
+.spinner i:nth-child(9) {
+    transform: rotate(240deg);
+    opacity: 0.75;
+}
+
+.spinner i:nth-child(10) {
+    transform: rotate(270deg);
+    opacity: 0.833;
+}
+
+.spinner i:nth-child(11) {
+    transform: rotate(300deg);
+    opacity: 0.9167;
+}
+
+.spinner i:nth-child(12) {
+    transform: rotate(330deg);
+    opacity: 1;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-inner {
+    background-color: #ff0;
+    font-size: 25px;
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    border-radius: 50%;
+    text-align: center;
+    text-transform: uppercase;
+    margin: auto;
+}
+
 .loading{
     display: block;
     z-index: 1000;
@@ -11455,3 +11592,115 @@ body {
 }
 
 /*END MAIL*/
+
+
+/*!
+ * angular-loading-bar v0.9.0
+ * https://chieffancypants.github.io/angular-loading-bar
+ * Copyright (c) 2016 Wes Cruver
+ * License: MIT
+ */
+
+/* Make clicks pass-through */
+#loading-bar,
+#loading-bar-spinner {
+    pointer-events: none;
+    -webkit-pointer-events: none;
+    -webkit-transition: 350ms linear all;
+    -moz-transition: 350ms linear all;
+    -o-transition: 350ms linear all;
+    transition: 350ms linear all;
+}
+
+#loading-bar.ng-enter,
+#loading-bar.ng-leave.ng-leave-active,
+#loading-bar-spinner.ng-enter,
+#loading-bar-spinner.ng-leave.ng-leave-active {
+    opacity: 0;
+}
+
+#loading-bar.ng-enter.ng-enter-active,
+#loading-bar.ng-leave,
+#loading-bar-spinner.ng-enter.ng-enter-active,
+#loading-bar-spinner.ng-leave {
+    opacity: 1;
+}
+
+#loading-bar .bar {
+    -webkit-transition: width 350ms;
+    -moz-transition: width 350ms;
+    -o-transition: width 350ms;
+    transition: width 350ms;
+
+    background: #3cbc8d;
+    position: fixed;
+    z-index: 10002;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    border-bottom-right-radius: 1px;
+    border-top-right-radius: 1px;
+}
+
+/* Fancy blur effect */
+#loading-bar .peg {
+    position: absolute;
+    width: 70px;
+    right: 0;
+    top: 0;
+    height: 2px;
+    opacity: .45;
+    -moz-box-shadow: #3cbc8d 1px 0 6px 1px;
+    -ms-box-shadow: #3cbc8d 1px 0 6px 1px;
+    -webkit-box-shadow: #3cbc8d 1px 0 6px 1px;
+    box-shadow: #3cbc8d 1px 0 6px 1px;
+    -moz-border-radius: 100%;
+    -webkit-border-radius: 100%;
+    border-radius: 100%;
+}
+
+#loading-bar-spinner {
+    display: block;
+    position: absolute;
+    z-index: 10002;
+    top: 27px;
+    left: 15px;
+}
+
+#loading-bar-spinner .spinner-icon {
+    width: 14px;
+    height: 14px;
+
+    border:  solid 2px transparent;
+    border-top-color: #fff9dd;
+    border-left-color: #fff9dd;
+    border-radius: 50%;
+
+    -webkit-animation: loading-bar-spinner 400ms linear infinite;
+    -moz-animation:    loading-bar-spinner 400ms linear infinite;
+    -ms-animation:     loading-bar-spinner 400ms linear infinite;
+    -o-animation:      loading-bar-spinner 400ms linear infinite;
+    animation:         loading-bar-spinner 400ms linear infinite;
+}
+
+@-webkit-keyframes loading-bar-spinner {
+    0%   { -webkit-transform: rotate(0deg);   transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+@-moz-keyframes loading-bar-spinner {
+    0%   { -moz-transform: rotate(0deg);   transform: rotate(0deg); }
+    100% { -moz-transform: rotate(360deg); transform: rotate(360deg); }
+}
+@-o-keyframes loading-bar-spinner {
+    0%   { -o-transform: rotate(0deg);   transform: rotate(0deg); }
+    100% { -o-transform: rotate(360deg); transform: rotate(360deg); }
+}
+@-ms-keyframes loading-bar-spinner {
+    0%   { -ms-transform: rotate(0deg);   transform: rotate(0deg); }
+    100% { -ms-transform: rotate(360deg); transform: rotate(360deg); }
+}
+@keyframes loading-bar-spinner {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

@@ -1,8 +1,9 @@
 define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel', 'css!modules/accounts/account.css'], function (app, utils, async) {
 
     app.controller('AccountsCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'AccountModel', '$route', '$location', '$routeParams',
-        '$confirm', '$timeout', 'TableSearch', '$modal',
-        function ($scope, webitel, $rootScope, notifi, AccountModel, $route, $location, $routeParams, $confirm, $timeout, TableSearch, $modal) {
+        '$confirm', '$timeout', 'TableSearch', '$modal', 'cfpLoadingBar',
+        function ($scope, webitel, $rootScope, notifi, AccountModel, $route, $location, $routeParams, $confirm, $timeout, TableSearch, $modal,
+                  cfpLoadingBar) {
         $scope.domain = webitel.domain();
         $scope.account = {};
         $scope.userVariables = utils.switchVar;
@@ -42,6 +43,15 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.roles = [];
         $scope.queues = {};
         $scope.isLoading = false;
+
+        $scope.$watch('isLoading', function (val) {
+            if (val) {
+                cfpLoadingBar.start()
+            } else {
+                cfpLoadingBar.complete()
+            }
+        });
+
         $scope.options = {
             multiInsert: false
         };
@@ -332,8 +342,9 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
             var id = $routeParams.id;
             var domain = $routeParams.domain;
 
-
+            $scope.isLoading = true;
             AccountModel.item(domain, id, function(err, item) {
+                $scope.isLoading = false;
                 if (err) {
                     return notifi.error(err, 5000);
                 };

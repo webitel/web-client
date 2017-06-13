@@ -4,8 +4,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 
     app.controller('CallflowDefaultCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CallflowDefaultModel',
     	'$location', '$route', '$routeParams', '$confirm', '$window', 'FileUploader', '$filter', 'TableSearch', '$timeout',
+		'cfpLoadingBar',
         function ($scope, webitel, $rootScope, notifi, CallflowDefaultModel, $location, $route, $routeParams, $confirm
-        	,$window, FileUploader, $filter, TableSearch, $timeout) {
+        	,$window, FileUploader, $filter, TableSearch, $timeout, cfpLoadingBar) {
         	$scope.domain = webitel.domain();
 
 			$scope.cf = aceEditor.getStrFromJson([]);
@@ -13,6 +14,14 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 			$scope.default = {},
 	        $scope.rowCollection = [];
 	        $scope.isLoading = false;
+
+            $scope.$watch('isLoading', function (val) {
+                if (val) {
+                    cfpLoadingBar.start()
+                } else {
+                    cfpLoadingBar.complete()
+                }
+            });
 
 			$scope.query = TableSearch.get('defaults');
 

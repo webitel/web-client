@@ -1,14 +1,21 @@
 define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts/webitel/domainModel'], function (app, utils) {
 
 	app.controller("DomainsCtrl", ['$scope', '$modal', 'DomainModel', '$routeParams', '$filter',
-	'$location', '$route', 'notifi', '$confirm', 'webitel', 'TableSearch', '$timeout',
+	'$location', '$route', 'notifi', '$confirm', 'webitel', 'TableSearch', '$timeout', 'cfpLoadingBar',
 	function ($scope, $modal, DomainModel, $routeParams, $filter, $location, $route, notifi, $confirm, webitel, TableSearch,
-		$timeout) {
+		$timeout, cfpLoadingBar) {
 
 		var self = $scope;
 		$scope.displayedCollection = [];
 		$scope.remVar = [];
 		$scope.isLoading = false;
+        $scope.$watch('isLoading', function (val) {
+            if (val) {
+                cfpLoadingBar.start()
+            } else {
+                cfpLoadingBar.complete()
+            }
+        });
 
 		$scope.tokens = [];
 
