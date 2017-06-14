@@ -61,7 +61,7 @@ require.config({
     'jsZIP': 'bower_components/jszip/jszip.min',
     'jsZIP-utils': 'bower_components/jszip/jszip-utils.min',
     'd3': 'bower_components/d3/d3.min',
-    'nvd3': 'bower_components/nvd3/build/nv.d3',
+    'nvd3': 'bower_components/nvd3/build/nv.d3.min',
     'angular-nvd3': 'bower_components/angular-nvd3/dist/angular-nvd3.min',
     'loading-bar': 'bower_components/angular-loading-bar/build/loading-bar.min'
     // END TODO

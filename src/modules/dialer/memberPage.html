@@ -82,14 +82,14 @@
                                                         <tr>
                                                             <th style="width:25%">Number</th>
                                                             <th style="width:20%">Type</th>
-                                                            <th style="width:10%">Priority</th>
+                                                            <th style="width:10%;min-width: 53px;">Priority</th>
                                                             <th style="width:20%">Description</th>
-                                                            <th style="width:5%">State</th>
-                                                            <th style="width:5%">Attempts</th>
+                                                            <th style="width:5%;min-width: 43px;">State</th>
+                                                            <th style="width:5%; min-width: 69px;">Attempts</th>
                                                             <th style="width:15%"></th>
                                                         </tr>
                                                     </thead>
-                                                    <tr  ng-repeat="communication in member.communications">
+                                                    <tr ng-repeat="communication in member.communications">
                                                         <td ng-class="{'bg-gray': communication.stopCommunication}">
                                                         <span  editable-text="communication.number" e-name="number"  e-form="rowform"  e-required onbeforesave="checkCommunicationNumber($data)">
                                                             {{ communication.number || 'empty' }}
@@ -160,11 +160,11 @@
                                             <table class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th style="width:35%">Call Id</th>
+                                                    <th style="width:35%">Call info</th>
                                                     <th style="width:65%">Steps</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody style="word-break: break-word;">
+                                                <tbody style="word-break: break-word; vertical-align: top;">
                                                 <tr ng-repeat="probe in member._log.slice().reverse()">
                                                     <td>
                                                         <p>
