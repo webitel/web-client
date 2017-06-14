@@ -3021,7 +3021,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             dialer.idleSec = 0
                         }
                         if (dialer.idleSec && dialer.callCount) {
-                            avgIdleSec = Math.round(dialer.idleSec / dialer.callCount);
+                            avgIdleSec = Math.round(dialer.idleSec / (dialer.callCount - (dialer.missedCall || 0)));
                             $scope.sumIdleAgents += avgIdleSec;
                         }
                         if (item.lastLoggedInTime) {
