@@ -521,9 +521,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "membersStrategy" : option.membersStrategy || null,
                 "autoResetStats" : typeof option.autoResetStats == 'boolean' ? option.autoResetStats : false,
                 "resources" : angular.isArray(option.resources) ? option.resources : [],
-                "strategy" : option.strategy || "myStrategy",
                 "agents" : angular.isArray(option.agents) ? option.agents : [],
-                "agentSkills" : angular.isArray(option.agentSkills) ? option.agentSkills : [],
                 "owners" : angular.isArray(option.owners) ? option.owners : [],
                 "_cf": option._cf || []
             }

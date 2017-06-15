@@ -3020,6 +3020,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         if (!dialer.idleSec) {
                             dialer.idleSec = 0
                         }
+
+
+                        if (item.status && item.lastStatusChange && dialer.active > 0) {
+                            dialer[item.status] = (dialer[item.status] | 0) + Math.round((Date.now() - item.lastStatusChange) / 1000);
+
+                            if (item.state === 'Waiting' && (item.status === 'Available' || item.status === 'Available (On Demand)')) {
+                                dialer.idleSec += Math.round((Date.now() - Math.max(item.lastStatusChange, item.lastStateChange, dialer.active)) / 1000);
+                            }
+                        }
+
                         if (dialer.idleSec && dialer.callCount) {
                             avgIdleSec = Math.round(dialer.idleSec / (dialer.callCount - (dialer.missedCall || 0)));
                             $scope.sumIdleAgents += avgIdleSec;
@@ -3037,9 +3047,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             $scope.loggedAgentInDay++;
                         }
 
-                        if (item.status && item.lastStatusChange && dialer.active > 0) {
-                            dialer[item.status] = (dialer[item.status] | 0) + Math.round((Date.now() - item.lastStatusChange) / 1000)
-                        }
 
                         var stats = [
                             {
