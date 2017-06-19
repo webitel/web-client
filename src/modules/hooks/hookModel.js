@@ -193,7 +193,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "event" : "",
                 "enable" : true,
                 "description" : "",
-                "customBody" : false,
+                "customBody" : true,
                 "rawBody": "",
                 "action" : {
                     "type": "web",

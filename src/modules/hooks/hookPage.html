@@ -75,7 +75,15 @@
 
                                                         <tab>
                                                             <tab-heading>
-                                                                <span>Data</span>
+                                                                <span>Headers</span>
+                                                            </tab-heading>
+
+                                                            <div w-dictionary fields="['name', 'value']" data="hook._headers"></div>
+                                                        </tab>
+
+                                                        <tab>
+                                                            <tab-heading>
+                                                                <span>Body</span>
                                                             </tab-heading>
                                                             <div ng-show="!hook.customBody" w-dictionary fields="['field', 'name']" data="hook._map"></div>
                                                             <div ng-show="hook.customBody" class="form-group">
@@ -97,14 +105,6 @@
 
                                                                 </div>
                                                             </div>
-                                                        </tab>
-
-                                                        <tab>
-                                                            <tab-heading>
-                                                                <span>Headers</span>
-                                                            </tab-heading>
-
-                                                            <div w-dictionary fields="['name', 'value']" data="hook._headers"></div>
                                                         </tab>
 
                                                     </tabset>
@@ -146,19 +146,18 @@
                                                     <tabset>
                                                         <tab>
                                                             <tab-heading>
-                                                                <span>Data</span>
-                                                            </tab-heading>
-                                                            <div w-dictionary fields="['name', 'value']" data="hook.auth._map"></div>
-                                                        </tab>
-
-                                                        <tab>
-                                                            <tab-heading>
                                                                 <span>Headers</span>
                                                             </tab-heading>
 
                                                             <div w-dictionary fields="['name', 'value']" data="hook.auth._headers"></div>
                                                         </tab>
 
+                                                        <tab>
+                                                            <tab-heading>
+                                                                <span>Body</span>
+                                                            </tab-heading>
+                                                            <div w-dictionary fields="['name', 'value']" data="hook.auth._map"></div>
+                                                        </tab>
                                                     </tabset>
                                                 </div>
                                             </div>
