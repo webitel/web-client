@@ -604,17 +604,27 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 $scope.selTiers = {};
             };
 
+            var agentsIds = [];
+
             $scope.loadAgents = function () {
                 AccountModel.list($scope.domain, function (err, res) {
                     if (err)
                         return notifi.error(err, 5000);
 
                     var data =  $scope.agentList = res.data || res.info;
+                    agentsIds = [];
                     angular.forEach(data, function (i) {
                         $scope.agents.push(i);
-                    })
+                        agentsIds.push(i.id);
+                    });
+
+                    if (angular.isArray($scope.dialer.agents)) {
+                        for (var i = 0; i < $scope.dialer.agents.length; i++)
+                            if (!~agentsIds.indexOf($scope.dialer.agents[i]))
+                                $scope.dialer.agents.splice(i, 1)
+                    }
                 })
-            }
+            };
 
             /*
 
