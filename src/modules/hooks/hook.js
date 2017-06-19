@@ -1,4 +1,5 @@
-define(['app', 'scripts/webitel/utils',  'async', 'modules/hooks/hookModel'], function (app, utils, async) {
+define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/hooks/hookModel', 'ui-ace'],
+    function (app, utils, aceEditor) {
 
     app.directive( 'wDictionary', function() {
         return {
@@ -29,6 +30,18 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/hooks/hookModel'], fu
         '$confirm', '$timeout', 'TableSearch', 'cfpLoadingBar',
         function ($scope, webitel, $rootScope, notifi, HookModel, $route, $location, $routeParams, $confirm, $timeout,
                   TableSearch, cfpLoadingBar) {
+
+        $scope.json = {body : aceEditor.getStrFromJson({})};
+
+        $scope.aceLoaded = function(_editor) {
+            // Options
+            aceEditor.init(_editor, false);
+        };
+
+        // $scope.aceChanged = function (v) {
+        //     debugger;
+        // };
+
         $scope.domain = webitel.domain();
         $scope.hook = {};
         $scope.userVariables = utils.switchVar;
@@ -97,11 +110,11 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/hooks/hookModel'], fu
             });
         };
 
-        $scope.$watch('hook', function(newValue, oldValue) {
+        $scope.$watch('[hook,json]', function(newValue, oldValue) {
             if ($scope.hook._new)
                 return $scope.isEdit = $scope.isNew = true;
 
-            return $scope.isEdit = !!oldValue._id;
+            return $scope.isEdit = !!oldValue[0]._id;
         }, true);
 
         $scope.cancel = function () {
@@ -152,6 +165,16 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/hooks/hookModel'], fu
                     return edit();
                 };
             };
+
+            if ($scope.hook.customBody) {
+                try {
+                    JSON.parse($scope.json.body);
+                    $scope.hook.rawBody = $scope.json.body;
+                } catch (e) {
+                    return notifi.error(e, 5000);
+                }
+            }
+
             if ($scope.hook._new) {
                 HookModel.add($scope.hook, cb);
             } else {
@@ -168,6 +191,10 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/hooks/hookModel'], fu
                 if (err) {
                     return notifi.error(err, 5000);
                 };
+
+                $scope.oldJsonBody = angular.copy(item.rawBody);
+                $scope.json.body = $scope.oldJsonBody;
+
                 $scope.oldHook = angular.copy(item);
                 $scope.hook = item;
                 disableEditMode();

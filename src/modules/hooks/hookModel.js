@@ -135,6 +135,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "enable" : data.enable,
                 "description" : data.description,
                 "action" : data.action,
+                "customBody" : data.customBody,
+                "rawBody": data.rawBody,
                 "auth": {},
                 "map": {},
                 "filter": {},
@@ -191,6 +193,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "event" : "",
                 "enable" : true,
                 "description" : "",
+                "customBody" : false,
+                "rawBody": "",
                 "action" : {
                     "type": "web",
                     "method": "POST",

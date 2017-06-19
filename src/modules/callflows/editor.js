@@ -211,7 +211,7 @@ define(['ui-ace', 'ace', 'ext-language_tools'], function () {
         langTools.addCompleter(appCompleter);
     });
     return {
-        "init": function (editor) {
+        "init": function (editor, useAutoComplete) {
             editor.commands.addCommands([{
                 name: "showSettingsMenu",
                 bindKey: {win: "Ctrl-q", mac: "Command-q"},
@@ -246,13 +246,27 @@ define(['ui-ace', 'ace', 'ext-language_tools'], function () {
             editor.getSession().setUseWorker(true);
             editor.setShowInvisibles(true);
 
+            if (typeof useAutoComplete === 'undefined')
+                useAutoComplete = true;
 
-            // enable autocompletion and snippets
-            editor.setOptions({
-                enableBasicAutocompletion: true,
-                enableSnippets: true,
-                enableLiveAutocompletion: true
-            });
+            if (useAutoComplete) {
+                // enable autocompletion and snippets
+                editor.setOptions({
+                    enableBasicAutocompletion: useAutoComplete,
+                    enableSnippets: true,
+                    enableLiveAutocompletion: useAutoComplete
+                });
+
+                editor.on('autocomplate', function () {
+                    try {
+
+                        var pos = editor.getCursorPosition().row - 2;
+                        editor.setValue(JSON.stringify(editor._getJson(), null, '\t'), pos)
+                    } catch (e) {
+                        return
+                    };
+                });
+            }
             editor.setShowPrintMargin(false);
             editor.setAutoScrollEditorIntoView(true);
             editor.setOption("maxLines", Infinity);
@@ -272,15 +286,7 @@ define(['ui-ace', 'ace', 'ext-language_tools'], function () {
             }
 
             
-            editor.on('autocomplate', function () {
-                try {
 
-                    var pos = editor.getCursorPosition().row - 2;
-                    editor.setValue(JSON.stringify(editor._getJson(), null, '\t'), pos)
-                } catch (e) {
-                    return
-                };
-            });
 
             return editor;
         },
