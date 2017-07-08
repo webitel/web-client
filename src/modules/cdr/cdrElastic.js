@@ -6,9 +6,9 @@
 define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/fileModel', 'modules/cdr/exportPlugin', 'modules/cdr/libs/json-view/jquery.jsonview', 'css!modules/cdr/css/verticalTabs.css', 'css!modules/cdr/cdr.css'],
     function (app, moment, jsZIP, async) {
 
-    app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm', 'notifi',
+    app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm',
         'TableSearch', '$timeout', 'cfpLoadingBar',
-        function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, notifi, TableSearch, $timeout, cfpLoadingBar) {
+        function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, TableSearch, $timeout, cfpLoadingBar) {
 
             $scope.isLoading = false;
             $scope.$watch('isLoading', function (val) {
@@ -496,11 +496,11 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         });
                     }
                     else {
-                        notifi.warning("Please, allow popup window!", 5000);
+                        notifi.warn("Please, allow popup window!", 5000);
                         return;
                     }
                 })
-            }
+            };
 
             $scope.renderCell = function (value, cell) {
                 if (cell.type == 'timestamp') {
