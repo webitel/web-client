@@ -461,6 +461,64 @@ define(['angular', 'config'], function (angular, config) {
                     controllerUrl: 'modules/cdr/settings/cdrSettings.js'
                 }
             ]
+        },
+        {
+            href: "#/queueCallback",
+            caption: "Queue Callback",
+
+            acl: 'widget',
+            templateUrl: 'modules/queueCallback/queueCallback.html',
+            controller: 'QueueCallbackCtrl',
+            controllerUrl: 'modules/queueCallback/queueCallback.js',
+            iconClass: 'fa fa-tasks',
+            routes: [{
+                href: '/queueCallback/new',
+                templateUrl: 'modules/queueCallback/queueCallbackPage.html',
+                controller: 'QueueCallbackCtrl',
+                controllerUrl: 'modules/queueCallback/queueCallback.js',
+                method: "create"
+            },{
+                href: '/queueCallback/:id/edit',
+                templateUrl: 'modules/queueCallback/queueCallbackPage.html',
+                controller: 'QueueCallbackCtrl',
+                controllerUrl: 'modules/queueCallback/queueCallback.js',
+                method: "edit"
+            },{
+                href: '/queueCallback/:id/view',
+                templateUrl: 'modules/queueCallback/queueCallbackPage.html',
+                controller: 'queueCallbackCtrl',
+                controllerUrl: 'modules/queueCallback/queueCallback.js',
+                method: "view"
+            }]
+        },
+        {
+            href: "#/widget",
+            caption: "Widget",
+
+            acl: 'widget',
+            templateUrl: 'modules/widget/widget.html',
+            controller: 'WidgetCtrl',
+            controllerUrl: 'modules/widget/widget.js',
+            iconClass: 'fa fa-phone',
+            routes: [{
+                href: '/widget/new',
+                templateUrl: 'modules/widget/widgetPage.html',
+                controller: 'WidgetCtrl',
+                controllerUrl: 'modules/widget/widget.js',
+                method: "create"
+            },{
+                href: '/widget/:id/edit',
+                templateUrl: 'modules/widget/widgetPage.html',
+                controller: 'WidgetCtrl',
+                controllerUrl: 'modules/widget/widget.js',
+                method: "edit"
+            },{
+                href: '/widget/:id/view',
+                templateUrl: 'modules/widget/widgetPage.html',
+                controller: 'WidgetCtrl',
+                controllerUrl: 'modules/widget/widget.js',
+                method: "view"
+            }]
         }
     ]);
 });

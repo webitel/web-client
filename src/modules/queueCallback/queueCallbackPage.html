@@ -1,0 +1,63 @@
+<div class="page">
+
+    <form name="extensionForm" class="panel">
+        <!-- {{default}} -->
+        <!--<div class="panel-heading"><strong>Domain: {{domain.name}}</strong></div>-->
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ui-tab-container ui-tab-dark">
+                        <div class="ui-tab">
+                            <tabset>
+
+                                <tab>
+                                    <tab-heading>
+                                        <span>General</span>
+                                    </tab-heading>
+
+                                    <div class="row">
+                                        <div class="col-sm-12">
+
+                                            <div  class="form-group">
+                                                <label class="control-label">Name</label>
+                                                <input  ng-model="queueCallback['name']" type="text"  class="form-control" />
+                                            </div>
+
+                                            <div  class="form-group">
+                                                <label class="control-label">Description</label>
+                                                <input ng-model="queueCallback['description']" class="form-control"  type="text" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </tab>
+
+
+                                <tab ng-show="!isNew">
+                                    <tab-heading>
+                                        <span>Members</span>
+                                    </tab-heading>
+                                    <div data-ng-controller="MemberCallbackCtrl" data-ng-include=" 'modules/queueCallback/memberPage.html' ">
+
+                                    </div>
+                                </tab>
+                            </tabset>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="panel-footer">
+            <button ng-show="isEdit && !viewMode" type="button" ng-disabled="extensionForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
+        </div>
+    </form>
+</div>
+
+{{clickToCall}}
