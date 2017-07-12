@@ -129,7 +129,9 @@ define(['require',
         if (!!webitelSession.key && !!webitelSession.token) {
             $location.path('pages/init');
             webitel.signin(webitelSession, function (err) {
-                $rootScope.setViewSpinner(false);
+                if ($rootScope.setViewSpinner)
+                    $rootScope.setViewSpinner(false);
+                
                 if (err) {
                     notifi.error(err, 10000);
                     return $location.path('/');
