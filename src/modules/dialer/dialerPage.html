@@ -27,7 +27,7 @@
                                                             <input ng-disabled="viewMode" type="text"  class="form-control" name="name" required ng-model="dialer.name" >
                                                         </div>
 
-                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.type.$invalid}">
+                                                        <div class="form-group" ng-class="{ 'has-error' : !dialer.type}">
                                                             <label class="control-label">Type</label>
                                                             <select ng-disabled="dialer.active || viewMode" class="form-control" name="type" ng-model="dialer.type" required >
                                                                 <option ng-repeat="type in diealerTypes" ng-selected="{{type==dialer.type}}"  value="{{type}}">{{type}}</option>
@@ -758,7 +758,7 @@
 
             <div class="pull-right" ng-show="!isNew">
                 <button ng-disabled="dialer.active || viewMode" type="button" ng-click="resetProcess(dialer._id, dialer.domain)" class="btn btn-w-md btn-gap-v btn-default">Reset process</button>
-                <button  type="button" ng-click="gotoUrl('/dialer/' + dialer._id + '/stats')" class="btn btn-w-md btn-gap-v btn-dark">Stats</button>
+                <button  type="button" ng-click="gotoUrl('/queue/dialer/' + dialer._id + '/stats')" class="btn btn-w-md btn-gap-v btn-dark">Stats</button>
             </div>
 
         </div>

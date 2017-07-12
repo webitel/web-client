@@ -361,7 +361,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         return notifi.error(err, 5000);
 
                     if ($scope.dialer._new) {
-                        return $location.path('/dialer/' + res + '/edit');
+                        return $location.path('/queue/dialer/' + res + '/edit');
                     } else {
                         $scope.dialer.__time = Date.now();
                         return edit(callback);
@@ -388,7 +388,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             };
 
             function closePage() {
-                $location.path('/dialer');
+                $location.path('/queue/dialer');
             }
             
             $scope.gotoUrl = function (url) {
@@ -452,7 +452,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             }
 
             function reloadData () {
-                if ($location.$$path != '/dialer')
+                if ($location.$$path !== '/queue/dialer')
                     return 0;
 
                 if (!$scope.domain)

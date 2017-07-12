@@ -94,7 +94,7 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
                         return notifi.error(err, 5000);
 
                     if ($scope.queueCallback._new) {
-                        return $location.path('/queueCallback/' + res.data.id + '/edit');
+                        return $location.path('/queue/callback/' + res.data.id + '/edit');
                     } else {
                         $scope.queueCallback.__time = Date.now();
                         return edit();
@@ -126,12 +126,12 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
             }
 
             function closePage() {
-                $location.path('/queueCallback');
+                $location.path('/queue/callback');
             }
 
 
             function reloadData () {
-                if ($location.$$path != '/queueCallback')
+                if ($location.$$path !== '/queue/callback')
                     return 0;
 
                 if (!$scope.domain)

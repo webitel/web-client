@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="no-border pull-left">
-                        <a  ng-if="canCreate" href="#/dialer/new?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
+                        <a  ng-if="canCreate" href="#/queue/dialer/new?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
                             <i class="fa fa-plus"></i>
                         </a>
 
@@ -53,7 +53,7 @@
                     <tbody ng-show="rowCollection.length > 0 ">
                     <tr ng-repeat="row in displayedCollection" >
                         <td>
-                            <a ng-if="canUpdate" href="#/dialer/{{row._id}}/edit?domain={{domain}}">
+                            <a ng-if="canUpdate" href="#/queue/dialer/{{row._id}}/edit?domain={{domain}}">
                                 {{row.name}}
                             </a>
                             <span ng-if="!canUpdate">
@@ -67,10 +67,10 @@
                         <td>{{row._cause}}</td>
                         <td>{{row.priority}}</td>
                         <td style="text-align: end">
-                            <a href="#/dialer/{{row._id}}/stats?domain={{domain}}" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-stats"></i></a>
+                            <a href="#/queue/dialer/{{row._id}}/stats?domain={{domain}}" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-stats"></i></a>
 
-                            <a href="#/dialer/{{row._id}}/view?domain={{domain}}" ng-if="viewMode" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-file"></i></a>
-                            <a href="#/dialer/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                            <a href="#/queue/dialer/{{row._id}}/view?domain={{domain}}" ng-if="viewMode" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-file"></i></a>
+                            <a href="#/queue/dialer/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
 
                             <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                         </td>

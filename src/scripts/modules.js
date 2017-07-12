@@ -167,6 +167,131 @@ define(['angular', 'config'], function (angular, config) {
             }]
         },
         {
+            href: "#/queue",
+            caption: "Queue",
+            list: true,
+            acl: ['callback', 'cc/queue', 'dialer'],
+            templateUrl: 'modules/queue/queue.html',
+            controller: 'QueuesCtrl',
+            controllerUrl: 'modules/queue/queue.js',
+
+            iconClass: 'fa fa-tasks',
+            homeTemplate: {
+                url: "views/templates/queue.html"
+            },
+            routes: [
+                //acd
+                {
+                    list: true,
+
+                    href: "/queue/acd",
+                    caption: "ACD",
+
+                    acl: 'cc/queue',
+                    templateUrl: 'modules/acd/acd.html',
+                    controller: 'ACDCtrl',
+                    controllerUrl: 'modules/acd/acd.js',
+                    iconClass: 'fa fa-download',
+                },
+                {
+                    href: '/queue/acd/:id/edit',
+                    templateUrl: 'modules/acd/acdPage.html',
+                    controller: 'ACDCtrl',
+                    controllerUrl: 'modules/acd/acd.js',
+                    method: "edit"
+                },
+                {
+                    href: '/queue/acd/:id/view',
+                    templateUrl: 'modules/acd/acdPage.html',
+                    controller: 'ACDCtrl',
+                    controllerUrl: 'modules/acd/acd.js',
+                    method: "view"
+                },
+                {
+                    href: '/queue/acd/new',
+                    templateUrl: 'modules/acd/acdPage.html',
+                    controller: 'ACDCtrl',
+                    controllerUrl: 'modules/acd/acd.js',
+                    method: "create"
+                },
+                // end
+
+                //dialer
+                {
+                    list: true,
+                    href: "/queue/dialer",
+                    caption: "Dialer",
+
+                    acl: 'dialer',
+                    templateUrl: 'modules/dialer/dialer.html',
+                    controller: 'DialerCtrl',
+                    controllerUrl: 'modules/dialer/dialer.js',
+                    iconClass: 'fa fa-eject'
+
+                },
+                {
+                    href: '/queue/dialer/new',
+                    templateUrl: 'modules/dialer/dialerPage.html',
+                    controller: 'DialerCtrl',
+                    controllerUrl: 'modules/dialer/dialer.js',
+                    method: "create"
+                },
+                {
+                    href: '/queue/dialer/:id/edit',
+                    templateUrl: 'modules/dialer/dialerPage.html',
+                    controller: 'DialerCtrl',
+                    controllerUrl: 'modules/dialer/dialer.js',
+                    method: "edit"
+                },
+                {
+                    href: '/queue/dialer/:id/view',
+                    templateUrl: 'modules/dialer/dialerPage.html',
+                    controller: 'DialerCtrl',
+                    controllerUrl: 'modules/dialer/dialer.js',
+                    method: "view"
+                },
+
+                //end
+
+                //callback
+
+                {
+                    list: true,
+                    href: "/queue/callback",
+                    caption: "Callback",
+
+                    acl: 'callback',
+                    templateUrl: 'modules/queueCallback/queueCallback.html',
+                    controller: 'QueueCallbackCtrl',
+                    controllerUrl: 'modules/queueCallback/queueCallback.js',
+                    iconClass: 'fa fa-tasks',
+                },
+                {
+                    href: '/queue/callback/new',
+                    templateUrl: 'modules/queueCallback/queueCallbackPage.html',
+                    controller: 'QueueCallbackCtrl',
+                    controllerUrl: 'modules/queueCallback/queueCallback.js',
+                    method: "create"
+                },
+                {
+                    href: '/queue/callback/:id/edit',
+                    templateUrl: 'modules/queueCallback/queueCallbackPage.html',
+                    controller: 'QueueCallbackCtrl',
+                    controllerUrl: 'modules/queueCallback/queueCallback.js',
+                    method: "edit"
+                },
+                {
+                    href: '/queue/callback/:id/view',
+                    templateUrl: 'modules/queueCallback/queueCallbackPage.html',
+                    controller: 'queueCallbackCtrl',
+                    controllerUrl: 'modules/queueCallback/queueCallback.js',
+                    method: "view"
+                },
+
+
+            ]
+        },
+        {
             href: "#/callflows",
             caption: "Callflow",
 
@@ -348,65 +473,7 @@ define(['angular', 'config'], function (angular, config) {
             iconClass: 'fa fa-envelope-o'
         },
         {
-            href: "#/acd",
-            caption: "ACD",
-
-            acl: 'cc/queue',
-            templateUrl: 'modules/acd/acd.html',
-            controller: 'ACDCtrl',
-            controllerUrl: 'modules/acd/acd.js',
-            iconClass: 'fa fa-download',
-            routes: [{
-                href: '/acd/new',
-                templateUrl: 'modules/acd/acdPage.html',
-                controller: 'ACDCtrl',
-                controllerUrl: 'modules/acd/acd.js',
-                method: "create"
-            },{
-                href: '/acd/:id/edit',
-                templateUrl: 'modules/acd/acdPage.html',
-                controller: 'ACDCtrl',
-                controllerUrl: 'modules/acd/acd.js',
-                method: "edit"
-            },{
-                href: '/acd/:id/view',
-                templateUrl: 'modules/acd/acdPage.html',
-                controller: 'ACDCtrl',
-                controllerUrl: 'modules/acd/acd.js',
-                method: "view"
-            }]
-        },
-        {
-            href: "#/dialer",
-            caption: "Dialer",
-
-            acl: 'dialer',
-            templateUrl: 'modules/dialer/dialer.html',
-            controller: 'DialerCtrl',
-            controllerUrl: 'modules/dialer/dialer.js',
-            iconClass: 'fa fa-eject',
-            routes: [{
-                href: '/dialer/new',
-                templateUrl: 'modules/dialer/dialerPage.html',
-                controller: 'DialerCtrl',
-                controllerUrl: 'modules/dialer/dialer.js',
-                method: "create"
-            },{
-                href: '/dialer/:id/edit',
-                templateUrl: 'modules/dialer/dialerPage.html',
-                controller: 'DialerCtrl',
-                controllerUrl: 'modules/dialer/dialer.js',
-                method: "edit"
-            },{
-                href: '/dialer/:id/view',
-                templateUrl: 'modules/dialer/dialerPage.html',
-                controller: 'DialerCtrl',
-                controllerUrl: 'modules/dialer/dialer.js',
-                method: "view"
-            }]
-        },
-        {
-            href: "#/dialer/:id/stats",
+            href: "#/queue/dialer/:id/stats",
             caption: "Dialer stats",
             hide: true,
             acl: 'dialer',
@@ -461,35 +528,6 @@ define(['angular', 'config'], function (angular, config) {
                     controllerUrl: 'modules/cdr/settings/cdrSettings.js'
                 }
             ]
-        },
-        {
-            href: "#/queueCallback",
-            caption: "Queue Callback",
-
-            acl: 'widget',
-            templateUrl: 'modules/queueCallback/queueCallback.html',
-            controller: 'QueueCallbackCtrl',
-            controllerUrl: 'modules/queueCallback/queueCallback.js',
-            iconClass: 'fa fa-tasks',
-            routes: [{
-                href: '/queueCallback/new',
-                templateUrl: 'modules/queueCallback/queueCallbackPage.html',
-                controller: 'QueueCallbackCtrl',
-                controllerUrl: 'modules/queueCallback/queueCallback.js',
-                method: "create"
-            },{
-                href: '/queueCallback/:id/edit',
-                templateUrl: 'modules/queueCallback/queueCallbackPage.html',
-                controller: 'QueueCallbackCtrl',
-                controllerUrl: 'modules/queueCallback/queueCallback.js',
-                method: "edit"
-            },{
-                href: '/queueCallback/:id/view',
-                templateUrl: 'modules/queueCallback/queueCallbackPage.html',
-                controller: 'queueCallbackCtrl',
-                controllerUrl: 'modules/queueCallback/queueCallback.js',
-                method: "view"
-            }]
         },
         {
             href: "#/widget",

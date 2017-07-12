@@ -308,7 +308,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/acd/acdModel', 'module
                         if (err)
                             return notifi.error(err, 10000);
 
-                        return $location.path('/acd/' + $scope.queue.id  + '/edit');
+                        return $location.path('/queue/acd/' + $scope.queue.id  + '/edit');
                     });
                 } else {
                     var updateValues = utils.diff($scope.queue,  $scope.oldQueue);
@@ -325,11 +325,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/acd/acdModel', 'module
                 $scope.queue._new = true;
             };
             function closePage() {
-                $location.path('/acd');
+                $location.path('/queue/acd');
             };
 
             function reloadData () {
-                if ($location.$$path != '/acd')
+                if ($location.$$path !== '/queue/acd')
                     return 0;
 
                 $scope.rowCollection = [];
