@@ -458,7 +458,10 @@ define(['angular'], function (angular) {
 
         'system/reload',
 
-        'license'
+        'license',
+        'widget',
+	'callback',
+	'callback/members'
     ];
 
     var events = [
@@ -478,7 +481,10 @@ define(['angular'], function (angular) {
         'CUSTOM->webitel::user_destroy',
         'CUSTOM->webitel::domain_create',
         'CUSTOM->webitel::domain_destroy',
-        'CUSTOM->engine::dialer_member_end'
+        'CUSTOM->engine::dialer_member_end',
+        'CUSTOM->engine::callback_member_add',
+        'CUSTOM->engine::callback_member_done',
+        'CUSTOM->engine::callback_member_comment'
     ];
 
     var timeZones = [
