@@ -14,9 +14,9 @@ COPY nginx/default-archive.conf /etc/nginx/conf.d/default-archive.template
 COPY nginx/default-archive-ssl.conf /etc/nginx/conf.d/default-archive-ssl.template
 COPY nginx/default-license.conf /etc/nginx/conf.d/default-license.template
 COPY nginx/site.conf /opt/letsencrypt/www/site.conf
-COPY enterpoint.sh /enterpoint.sh
-
-COPY src /webitel/client
 COPY widgets /webitel/widgets
+COPY src /webitel/client
+COPY widgets/widget.client.js /webitel/client/modules/widget/widget.client.js
+COPY enterpoint.sh /enterpoint.sh
 
 ENTRYPOINT ["/enterpoint.sh"]
