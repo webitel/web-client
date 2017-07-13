@@ -183,7 +183,7 @@ define(['app', 'scripts/webitel/utils', 'modules/widget/widgetModel', 'modules/c
                     window.WebitelCallbackDomain   = $scope.widget.domain;
                     $scope.isReviewMode = true;
                     var gcw = document.createElement('script'); gcw.type = 'text/javascript'; gcw.async = true;
-                    gcw.src = './modules/widget/main.4a12df52.js';
+                    gcw.src = './modules/widget/widget.client.js';
                     var sn = document.getElementsByTagName('script')[0]; sn.parentNode.insertBefore(gcw, sn);
                 }
                 else{

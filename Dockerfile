@@ -17,5 +17,6 @@ COPY nginx/site.conf /opt/letsencrypt/www/site.conf
 COPY enterpoint.sh /enterpoint.sh
 
 COPY src /webitel/client
+COPY widgets /webitel/widgets
 
 ENTRYPOINT ["/enterpoint.sh"]

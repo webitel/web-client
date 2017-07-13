@@ -19,7 +19,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 res += key + '=' + val + '&'
             });
             return res.substring(0, res.length - 1);
-        };
+        }
 
         function add(data, domain, cb) {
 
@@ -29,12 +29,10 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             if (!data.name)
                 return cb(new Error("Bad request data"));
 
-            if (!data.description)
-                return cb(new Error('Bad description'));
             data.domain = domain;
             delete data._new;
             webitel.api('POST', '/api/v2/callback?domain=' + domain, data, cb);
-        };
+        }
 
         function update(data, callbackId, domain, cb) {
 
@@ -48,7 +46,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 return cb(new Error('Bad description'));
             data.domain = domain;
             webitel.api('PUT', '/api/v2/callback/'+callbackId+'?domain=' + domain, data, cb);
-        };
+        }
 
         function item (id, domain, cb) {
             if (!id)
@@ -72,7 +70,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             if (!id)
                 return cb(new Error("Id is required."));
             webitel.api('DELETE', '/api/v2/callback/' + id + '?domain=' + domain, cb);
-        };
+        }
 
         return {
             remove: remove,
@@ -82,4 +80,4 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             item: item
         }
     }])
-})
+});

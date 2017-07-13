@@ -31,7 +31,7 @@ define(['app'], function (app) {
                 +'l.type ="text/javascript";'
                 +'l.charset = "utf-8";'
                 +'l.async = true;'
-                +'l.src = "##HOST##/main.a0352006.js";'
+                +'l.src = "##HOST##/widget.client.js";'
                 +'var s = document.getElementsByTagName("script")[0];'
                 +'if (s) s.parentNode.insertBefore(l, s);'
                 +'else document.documentElement.firstChild.appendChild(l);'
