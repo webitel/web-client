@@ -1,5 +1,4 @@
 <div class="page">
-
     <form name="widgetForm" class="panel">
         <div class="panel-body">
 
@@ -19,10 +18,6 @@
                                                 <label class="control-label">Name</label>
                                                 <input  required ng-model="widget.name" name="name" type="text"  class="form-control ng-invalid ng-invalid-required" />
                                             </div>
-                                            <!--<div  class="form-group">-->
-                                                <!--<label class="control-label">Description</label>-->
-                                                <!--<input  ng-model="widget.description" type="text"  class="form-control" />-->
-                                            <!--</div>                                            -->
                                             <div class="form-group" ng-class="{ 'has-error' : !widget.queue_id }">
                                                 <label class="control-label">Queue</label>
                                                 <ui-select name="queue"  ng-model="widget.queue_id" theme="bootstrap"  title="Choose a queue">

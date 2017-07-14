@@ -148,7 +148,7 @@ define(['app'], function (app) {
                     inputFound: "В клиента присутствует микрофон",
                     //home
                     workPageOpen: "Переход на окно рабочего времени",
-                    callButtonClick: "Нажатие на кнопку ожидания звонка",
+                    callButtonClick: "Нажатие на кнопку ожидания звонка. Номер:",
                     invalidNumber: "Введение некорректного номера",
                     serverError: "Ошибка сервера при заказе звонка",
                     //hookWaiting
@@ -158,7 +158,7 @@ define(['app'], function (app) {
                     //deferred
                     openDefWorkTime: "Переход на окно отложеного звонка",
                     openDefNotWorkTime: "Переход на окно нерабочего времени",
-                    orderDefCall: "Заказ отложеного звонка",//invalidnumber, servererror
+                    orderDefCall: "Заказ отложеного звонка. Номер:",//invalidnumber, servererror
                     setMinutes: "Выбор минут",
                     setHours: "Выбор часов",
                     setDay: "Выбор даты",
@@ -185,7 +185,7 @@ define(['app'], function (app) {
                 btnCallDeferred: "Order",
                 //webRtc
                 hangup: "Finish",
-                hold: "Suspend",
+                hold: "Hold",
                 unhold: "Resume",
                 returnFromWebrtc: "Back",
                 cancelWebrtc: "Cancel",
@@ -205,7 +205,7 @@ define(['app'], function (app) {
                     inputFound: "Audio input device was found",
                     //home
                     workPageOpen: "Go to the working time window",
-                    callButtonClick: "Click on the call waiting button",
+                    callButtonClick: "Click on the call waiting button. Number:",
                     invalidNumber: "Entering the wrong number",
                     serverError: "Server error when ordering a callback",
                     //hookWaiting
@@ -215,7 +215,7 @@ define(['app'], function (app) {
                     //deferred
                     openDefWorkTime: "Switch to scheduled call window",
                     openDefNotWorkTime: "Go to the not working time window",
-                    orderDefCall: "Order a scheduled call",//invalidnumber, servererror
+                    orderDefCall: "Order a scheduled call. Number:",//invalidnumber, servererror
                     setMinutes: "Change minute to",
                     setHours: "Change hour to",
                     setDay: "Change date to",
@@ -262,7 +262,7 @@ define(['app'], function (app) {
                     inputFound: "В клієнта наявний мікрофон",
                     //home
                     workPageOpen: "Перехід на вікно робочого часу",
-                    callButtonClick: "Натиснення на кнопку очікування дзвінка",
+                    callButtonClick: "Натиснення на кнопку очікування дзвінка. Номер:",
                     invalidNumber: "Введення некоректного номеру",
                     serverError: "Помилка сервера при замовленні зворотного дзвінка",
                     //hookWaiting
@@ -272,7 +272,7 @@ define(['app'], function (app) {
                     //deferred
                     openDefWorkTime: "Перехід на вікно відкладеного дзвінка",
                     openDefNotWorkTime: "Перехід на вікно неробочого часу",
-                    orderDefCall: "Замовлення відкладеного дзвінка",//invalidnumber, servererror
+                    orderDefCall: "Замовлення відкладеного дзвінка. Номер:",//invalidnumber, servererror
                     setMinutes: "Вибір хвилин",
                     setHours: "Вибір години",
                     setDay: "Вибір дати",

@@ -220,19 +220,27 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
                 $scope.tableState = tableState;
 
                 $scope.isLoading = true;
-                $scope.sort = {};
+                var sort ={};
 
                 if (tableState.sort.predicate)
-                    $scope.sort[tableState.sort.predicate.replace(/'/g, '')] = {
-                        "order": tableState.sort.reverse ? "desc" : "asc",
-                        "missing" : tableState.sort.reverse ? "_last" : "_first"
-                    };
+                    sort[tableState.sort.predicate] = tableState.sort.reverse ? -1 : 1;
 
                 $scope.isLoading = true;
+                sort = encodeURIComponent(JSON.stringify(sort));
+                if(tableState.search.predicateObject){
+                    delete tableState.search.predicateObject.$;
+                    if(tableState.search.predicateObject.done){
+                        var search = angular.copy(tableState.search.predicateObject);
+                        search.done = search.done == "true" ? true : false;
+                    }
+                }
 
+                var filter = encodeURIComponent(JSON.stringify(search||{}))
 
                 MemberCallbackModel.list({
                     columns: col,
+                    filter: filter,
+                    sort: sort,
                     limit: maxNodes,
                     page: _page,
                     domain: $scope.domain
@@ -244,12 +252,6 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
                     _page++;
                     nexData = res.length === maxNodes;
                     $scope.membersRowCollection = $scope.membersRowCollection.concat(res);
-
-                    // var arr = [];
-                    // angular.forEach(res.data || res.info, function(item) {
-                    //     arr.push(item);
-                    // });
-                    // $scope.membersRowCollection = arr;
                 });
 
             }
