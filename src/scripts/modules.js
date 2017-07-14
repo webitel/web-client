@@ -369,6 +369,8 @@ define(['angular', 'config'], function (angular, config) {
                     method: "view"
                 },
                 {
+                    caption: 'ACD',
+                    iconClass: 'fa fa-download',
                     href: '/queue/acd/new',
                     templateUrl: 'modules/acd/acdPage.html',
                     controller: 'ACDCtrl',
@@ -391,6 +393,8 @@ define(['angular', 'config'], function (angular, config) {
 
                 },
                 {
+                    caption: 'Dialer',
+                    iconClass: 'fa fa-eject',
                     href: '/queue/dialer/new',
                     templateUrl: 'modules/dialer/dialerPage.html',
                     controller: 'DialerCtrl',
@@ -428,6 +432,8 @@ define(['angular', 'config'], function (angular, config) {
                     iconClass: 'fa fa-tasks',
                 },
                 {
+                    caption: 'Callback',
+                    iconClass: 'fa fa-tasks',
                     href: '/queue/callback/new',
                     templateUrl: 'modules/queueCallback/queueCallbackPage.html',
                     controller: 'QueueCallbackCtrl',
