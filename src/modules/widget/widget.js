@@ -244,7 +244,7 @@ define(['app', 'scripts/webitel/utils', 'modules/widget/widgetModel', 'modules/c
                         return notifi.error(err, 5000);
                     }
                     $scope.widget.config.calendar.accept = item.accept;
-                    $scope.widget.config.calendar.timezone = item.timeZone.name;
+                    $scope.widget.config.calendar.timezone = item.timeZone.id;
                     var arr = [];
                     item.except.forEach(function(i){
                         var date = new Date(i.date);
