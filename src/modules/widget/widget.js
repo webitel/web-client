@@ -86,6 +86,7 @@ define(['app', 'scripts/webitel/utils', 'modules/widget/widgetModel', 'modules/c
             $scope.initCalendars = initCalendars;
             $scope.initCallflows = initCallflows;
             $scope.initCountries = initCountries;
+            $scope.regenerateButton = regenerateButton;
 
             var changeDomainEvent = $rootScope.$on('webitel:changeDomain', function (e, domainName) {
                 $scope.domain = domainName;
@@ -176,6 +177,10 @@ define(['app', 'scripts/webitel/utils', 'modules/widget/widgetModel', 'modules/c
                 }, 0);
             }
 
+            function regenerateButton(){
+                getCalendar(save);
+            }
+
             function reviewButton() {
                 if(!$scope.isReviewMode){
                     window.WebitelCallbackId  = $scope.widget.id;
@@ -183,7 +188,7 @@ define(['app', 'scripts/webitel/utils', 'modules/widget/widgetModel', 'modules/c
                     window.WebitelCallbackDomain   = $scope.widget.domain;
                     $scope.isReviewMode = true;
                     var gcw = document.createElement('script'); gcw.type = 'text/javascript'; gcw.async = true;
-                    gcw.src = './modules/widget/widget.client.js';
+                    gcw.src = WebitelCallbackHost+'/widget.client.js';//'./modules/widget/widget.client.js';
                     var sn = document.getElementsByTagName('script')[0]; sn.parentNode.insertBefore(gcw, sn);
                 }
                 else{
@@ -238,7 +243,7 @@ define(['app', 'scripts/webitel/utils', 'modules/widget/widgetModel', 'modules/c
                     });
             }
 
-            function getCalendar() {
+            function getCalendar(cb) {
                 CalendarModel.item($scope.domain, $scope.widget.config.calendar.id, function(err, item) {
                     if (err) {
                         return notifi.error(err, 5000);
@@ -262,6 +267,7 @@ define(['app', 'scripts/webitel/utils', 'modules/widget/widgetModel', 'modules/c
                        }
                     });
                     $scope.widget.config.calendar.except = arr;
+                    if(cb)cb();
                 });
             }
 
@@ -365,6 +371,22 @@ define(['app', 'scripts/webitel/utils', 'modules/widget/widgetModel', 'modules/c
                         id: $scope.widget.callflow_id,
                         number: $scope.widget.config.destinationNumber
                     };
+                    if(item.config.css.buttonPosition.bottom){
+                        $scope.vertical.pos= 'bottom' ;
+                        $scope.vertical.y = parseInt(item.config.css.buttonPosition.bottom);
+                    }
+                    else{
+                        $scope.vertical.pos= 'top' ;
+                        $scope.vertical.y = parseInt(item.config.css.buttonPosition.top);
+                    }
+                    if(item.config.css.buttonPosition.left){
+                        $scope.horisontal.pos= 'left' ;
+                        $scope.horisontal.x = parseInt(item.config.css.buttonPosition.left);
+                    }
+                    else{
+                        $scope.horisontal.pos= 'right' ;
+                        $scope.horisontal.x = parseInt(item.config.css.buttonPosition.right);
+                    }
                     $scope.script = $scope.script.replace("##ID##", id).replace(/##HOST##/g,$scope.widget._widgetBaseUri).replace("##DOMAIN##",$scope.domain);
                     disableEditMode();
                 })

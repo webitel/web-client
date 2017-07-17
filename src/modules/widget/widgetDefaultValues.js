@@ -52,6 +52,7 @@ define(['app'], function (app) {
                     publicWebRtc: "",
                     destinationNumber: "00",
                     publicPostApi: "",
+                    webRtcOnly: false,
                     useWebRtc: true,
                     useVideo: false,
                     calendar: {

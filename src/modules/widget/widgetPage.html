@@ -68,7 +68,13 @@
                                             <div class="col-sm-6">
                                                 <div  class="form-group">
                                                     <label class="control-label">Use WebRTC</label>
-                                                    <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="widget.config.useWebRtc" class="ng-pristine ng-valid"><i></i></label>
+                                                    <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-disabled="widget.config.webRtcOnly" ng-model="widget.config.useWebRtc" class="ng-pristine ng-valid"><i></i></label>
+                                                </div>
+                                            </div>
+                                            <div ng-show="widget.config.useWebRtc" class="col-sm-6">
+                                                <div  class="form-group">
+                                                    <label class="control-label">Use WebRTC Only</label>
+                                                    <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="widget.config.webRtcOnly" class="ng-pristine ng-valid"><i></i></label>
                                                 </div>
                                             </div>
                                             <div ng-if="false" class="col-sm-6">
@@ -264,9 +270,9 @@
         <div class="panel-footer">
             <button ng-show="isEdit && !viewMode" type="button" ng-disabled="extensionForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
-            <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
-            <!--<button  type="button" ng-show="isReviewMode" ng-click="refreshButton()" class="btn btn-w-md btn-gap-v btn-primary pull-right">Refresh button</button>-->
+            <button type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
             <button ng-show="widget.id" type="button" ng-click="reviewButton()" class="btn btn-w-md btn-gap-v btn-primary pull-right">{{isReviewMode ? "Hide" : "Review"}}</button>
+            <button type="button" ng-show="widget.id" ng-click="regenerateButton()" class="btn btn-w-md btn-gap-v btn-success pull-right" style="margin-right: 5px">Regenerate</button>
         </div>
     </form>
 </div>
