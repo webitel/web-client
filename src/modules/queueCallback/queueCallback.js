@@ -429,7 +429,7 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
             }
             function convertToDate(timestamp){
                 if(timestamp)
-                return new Date(+timestamp).toLocaleString();
+                    return new Date(+timestamp).toString().split("GMT")[0];
                 else return new Date();
             }
             function ok () {
