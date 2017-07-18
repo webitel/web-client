@@ -116,9 +116,6 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
                         return notifi.error(err, 5000);
                     };
 
-                    //$scope.oldJsonBody = angular.copy(item.rawBody);
-                    //$scope.json.body = $scope.oldJsonBody;
-
                     $scope.oldQueueCallback = angular.copy(item);
                     $scope.queueCallback = item;
                     disableEditMode();
