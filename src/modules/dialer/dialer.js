@@ -2768,8 +2768,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     }]);
     
     app.controller('StatsDialerCtrl', ['$scope', 'DialerModel', 'AgentModel', 'notifi', 'webitel', '$routeParams',
-        '$interval', '$timeout', '$confirm', '$modal', 'AccountModel',
-        function ($scope, DialerModel, AgentModel, notifi, webitel, $routeParams, $interval, $timeout, $confirm, $modal, AccountModel) {
+        '$interval', '$timeout', '$confirm', '$modal',
+        function ($scope, DialerModel, AgentModel, notifi, webitel, $routeParams, $interval, $timeout, $confirm, $modal) {
 
             var aggCause = [
                 {
@@ -2883,7 +2883,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             var communicationTypes = {};
             
             function reload() {
-                if (document.hidden) return;
+                if (document.hidden) {
+                    $timeout(reload, 25000);
+                    return;
+                }
 
                 DialerModel.item($scope.id, $scope.domain, function(err, item) {
                     if (err)
@@ -2903,8 +2906,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     loadResources($scope.dialer.resources, $scope.dialer.stats);
                     loadAgents($scope.dialer.domain, $scope.dialer.agents, $scope.dialer.skills);
 
-                    if (!timerId)
-                        timerId = $interval(reload, 15000);
+                    $timeout(reload, 15000);
+                    // if (!timerId)
+                    //     timerId = $interval(reload, 15000);
                 });
             }
 
@@ -3779,6 +3783,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             };
 
             function _applyAgentLiveSates() {
+                if (document.hidden) {
+                    $timeout(_applyAgentLiveSates, 500);
+                    return;
+                }
                 clearAgentLiveState();
                 angular.forEach($scope.agentDisplayedCollection, function (item) {
                     $scope.liveAgentsStates[item.stateName]++;
@@ -3793,10 +3801,12 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 });
 
                 $scope.accountState.data[0].values = liveAgentsStates;
+                $timeout(_applyAgentLiveSates, 500);
                 // $scope.$apply();
             }
+            _applyAgentLiveSates();
             reload();
-            var _applyAgentLiveSatesTimerId = $interval(_applyAgentLiveSates, 500);
+            // var _applyAgentLiveSatesTimerId = $interval(_applyAgentLiveSates, 500);
 
     }]);
 
