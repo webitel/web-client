@@ -2883,6 +2883,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             var communicationTypes = {};
             
             function reload() {
+                if (document.hidden) return;
+
                 DialerModel.item($scope.id, $scope.domain, function(err, item) {
                     if (err)
                         return notifi.error(err, 5000);
@@ -3283,7 +3285,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         }
                     }
                 }
-                
+
                 $scope.sl = ((stats.predictAbandoned * 100) / ($scope.connectedCall - amdAbandoned) ) || 0;
 
                 $scope.lastProcessOnDate = null;
