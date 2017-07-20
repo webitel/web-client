@@ -2897,7 +2897,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                     $scope.dialerStateStr = dialerStates[item.state];
                     reloadCause();
-                    setStats($scope.dialer.stats);
+                    setStats($scope.dialer.stats, $scope.dialer.amd);
                     loadResources($scope.dialer.resources, $scope.dialer.stats);
                     loadAgents($scope.dialer.domain, $scope.dialer.agents, $scope.dialer.skills);
 
@@ -3260,17 +3260,32 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 webitel.connection.instance.unServerEvent('CC::AGENT-STATUS-CHANGE', {all: true}, fnOnUserStatusChange);
             }
 
-            function setStats(stats) {
+            function setStats(stats, amd) {
 
                 $scope.activeCalls = (stats && stats.active) || 0;
                 $scope.connectRate = ((stats && stats.callCount) / (stats && stats.bridgedCall));
                 if (!isFinite($scope.connectRate)) {
                     $scope.connectRate = 0;
                 }
+
                 $scope.abandoned = ((stats.predictAbandoned * 100) / stats.callCount) || 0;
+
                 $scope.attempts = (stats.callCount || 0);
                 $scope.bridgedCall = (stats.bridgedCall || 0);
                 $scope.connectedCall = (stats.connectedCall || 0);
+
+                var amdAbandoned = 0;
+                if (amd.enabled) {
+                    if (stats.amd && isFinite(stats.amd.MACHINE)) {
+                        amdAbandoned += stats.amd.MACHINE;
+                        if (!amd.allowNotSure && isFinite(stats.amd.NOTSURE)) {
+                            amdAbandoned += stats.amd.NOTSURE;
+                        }
+                    }
+                }
+                
+                $scope.sl = ((stats.predictAbandoned * 100) / ($scope.connectedCall - amdAbandoned) ) || 0;
+
                 $scope.lastProcessOnDate = null;
                 $scope.lastProcessOnTime = null;
                 $scope.processState = null;
