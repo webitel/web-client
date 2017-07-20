@@ -60,7 +60,7 @@
                                                     <i class="glyphicon glyphicon-warning-sign text-large"></i>
                                                 </div>
                                                 <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h1">{{abandoned.toFixed(2)}}%</p>
+                                                    <p class="size-h1">{{sl.toFixed(2)}}%</p>
                                                     <p class="text-muted">Service level</p>
                                                 </div>
                                             </section>
@@ -96,12 +96,13 @@
                                                             <p class="text-muted">Attempts</p>
                                                         </li>
                                                         <li>
-                                                            <p class="size-h3">{{bridgedCall}}</p>
-                                                            <p class="text-muted">Bridged</p>
-                                                        </li>
-                                                        <li>
                                                             <p class="size-h3">{{connectedCall}}</p>
                                                             <p class="text-muted">Connected</p>
+                                                        </li>
+
+                                                        <li>
+                                                            <p class="size-h3">{{bridgedCall}}</p>
+                                                            <p class="text-muted">Bridged</p>
                                                         </li>
                                                         <li>
                                                             <p class="size-h3">{{ amdMachine.toFixed(0) }}%</p>
@@ -158,6 +159,18 @@
                                         <div class="col-sm-2">
                                             <section class="panel panel-box">
                                                 <div class="panel-top bg-success" style="padding: 10px 20px;">
+                                                    <i class="glyphicon glyphicon-remove text-large"></i>
+                                                </div>
+                                                <div class="panel-bottom bg-reverse">
+                                                    <p class="size-h4">{{abandoned.toFixed(2)}}%</p>
+                                                    <p class="text-muted">Silent calls</p>
+                                                </div>
+                                            </section>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <section class="panel panel-box">
+                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
                                                     <i class="glyphicon glyphicon-phone-alt text-large"></i>
                                                 </div>
                                                 <div class="panel-bottom bg-reverse">
@@ -199,19 +212,6 @@
                                                 <div class="panel-bottom bg-reverse">
                                                     <p class="size-h4">{{(secToString(sumAgentASA / gotAgentCount) || 0)}}</p>
                                                     <p class="text-muted">Avg AASA by agent</p>
-                                                </div>
-                                            </section>
-                                        </div>
-
-
-                                        <div class="col-sm-2">
-                                            <section class="panel panel-box">
-                                                <div class="panel-top bg-success" style="padding: 10px 20px;">
-                                                    <i class="glyphicon glyphicon-info-sign text-large"></i>
-                                                </div>
-                                                <div class="panel-bottom bg-reverse">
-                                                    <p class="size-h4">{{dialerStateStr}}</p>
-                                                    <p class="text-muted">{{dialer._cause}}</p>
                                                 </div>
                                             </section>
                                         </div>
