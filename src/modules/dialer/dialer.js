@@ -2770,6 +2770,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     app.controller('StatsDialerCtrl', ['$scope', 'DialerModel', 'AgentModel', 'notifi', 'webitel', '$routeParams',
         '$interval', '$timeout', '$confirm', '$modal',
         function ($scope, DialerModel, AgentModel, notifi, webitel, $routeParams, $interval, $timeout, $confirm, $modal) {
+            var _applyAgentLiveSatesTimerId = null;
 
             var aggCause = [
                 {
@@ -2883,8 +2884,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             var communicationTypes = {};
             
             function reload() {
+                if (timerId) {
+                    $timeout.cancel(timerId);
+                }
                 if (document.hidden) {
-                    $timeout(reload, 25000);
+                    timerId = $timeout(reload, 25000);
                     return;
                 }
 
@@ -2906,9 +2910,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     loadResources($scope.dialer.resources, $scope.dialer.stats);
                     loadAgents($scope.dialer.domain, $scope.dialer.agents, $scope.dialer.skills);
 
-                    $timeout(reload, 15000);
-                    // if (!timerId)
-                    //     timerId = $interval(reload, 15000);
+                    timerId = $timeout(reload, 15000);
                 });
             }
 
@@ -3248,11 +3250,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.$on('$destroy', function () {
                 if (timerId) {
                     console.log('DESTROY TIMER timerId');
-                    $interval.cancel(timerId);
+                    $timeout.cancel(timerId);
                 }
                 if (_applyAgentLiveSatesTimerId) {
                     console.log('DESTROY TIMER _applyAgentLiveSatesTimerId');
-                    $interval.cancel(_applyAgentLiveSatesTimerId);
+                    $timeout.cancel(_applyAgentLiveSatesTimerId);
                 }
 
                 unSubscribeGridEvents();
@@ -3783,8 +3785,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             };
 
             function _applyAgentLiveSates() {
+                if (_applyAgentLiveSatesTimerId) {
+                    $timeout.cancel(_applyAgentLiveSatesTimerId);
+                }
                 if (document.hidden) {
-                    $timeout(_applyAgentLiveSates, 500);
+                    _applyAgentLiveSatesTimerId = $timeout(_applyAgentLiveSates, 500);
                     return;
                 }
                 clearAgentLiveState();
@@ -3801,12 +3806,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 });
 
                 $scope.accountState.data[0].values = liveAgentsStates;
-                $timeout(_applyAgentLiveSates, 500);
+                _applyAgentLiveSatesTimerId = $timeout(_applyAgentLiveSates, 500);
                 // $scope.$apply();
             }
             _applyAgentLiveSates();
             reload();
-            // var _applyAgentLiveSatesTimerId = $interval(_applyAgentLiveSates, 500);
 
     }]);
 
