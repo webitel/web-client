@@ -2829,10 +2829,27 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                         ],
                         "callbackStatus": [
-                            {$unwind: "$_callback"},
+                            {$unwind: "$_log"},
+                            {
+                                $match: {"_log.callback": {$ne: null}}
+                            },
                             {
                                 $group: {
-                                    _id: '$_callback.data.success',
+                                    _id: '$_log.callback.data.success',
+                                    count: {
+                                        $sum: 1
+                                    }
+                                }
+                            }
+                        ],
+                        "callbackDescription": [
+                            {$unwind: "$_log"},
+                            {
+                                $match: {"_log.callback": {$ne: null}}
+                            },
+                            {
+                                $group: {
+                                    _id: '$_log.callback.data.description',
                                     count: {
                                         $sum: 1
                                     }
@@ -3486,7 +3503,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 options: {
                     title: {
                         enable: true,
-                        text: "Callback"
+                        text: "Callback success"
                     },
                     chart: {
                         type: 'pieChart',
@@ -3610,6 +3627,46 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     }
                 }
             };
+            $scope.callbackByDescription = {
+                data: [],
+                options: {
+                    title: {
+                        enable: true,
+                        text: "Callback description"
+                    },
+                    chart: {
+                        type: 'discreteBarChart',
+                        height: 480,
+                        margin : {
+                            top: 20,
+                            right: 20,
+                            bottom: 150,
+                            left: 50
+                        },
+                        // yDomain: [0, 100],
+                        x: function(d){return d.label;},
+                        y: function(d){return d.value;},
+                        showValues: true,
+                        valueFormat: function(d){
+                            return d3.format(',d')(d);
+                        },
+                        duration: 500,
+                        xAxis: {
+                            rotateYLabel: true,
+                            rotateLabels: 45,
+                            fontSize: 10
+                        },
+                        yAxis: {
+                            axisLabel: 'Count',
+                            axisLabelDistance: 0,
+                            tickFormat: function(d){
+                                return d3.format(',d')(d);
+                            }
+                        }
+                    }
+                }
+            };
+
 
             $scope.amdMachine = 0;
 
@@ -3656,6 +3713,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     var rowsNumberTypeStart = [];
                     var rowsCauseByAttempt = [];
                     var rowsCallbackStatus = [];
+                    var rowsCallbackDescription = [];
 
                     var waiting = 0;
                     var end = 0;
@@ -3664,6 +3722,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     var byTypeStateStart = res[0].byTypeStateStart;
                     var causeByAttempt = res[0].causeByAttempt;
                     var callbackStatus = res[0].callbackStatus;
+                    var callbackDescription = res[0].callbackDescription;
 
                     angular.forEach(byCause, function (item) {
 
@@ -3724,6 +3783,21 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         }
                     });
 
+                    angular.forEach(callbackDescription, function (item) {
+
+                        if (!item._id) {
+                            rowsCallbackDescription.push({
+                                label: "EMPTY",
+                                value: item.count
+                            });
+                        } else {
+                            rowsCallbackDescription.push({
+                                label: item._id,
+                                value: item.count
+                            });
+                        }
+                    });
+
                     $scope.causeCartComplete.data = {
                         "ranges": [0, end + waiting],
                         "rangeLabels": ["Start", "Total"],
@@ -3749,6 +3823,12 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         {
                             key: "Cause",
                             values: rowsCauseByAttempt
+                        }
+                    ];
+                    $scope.callbackByDescription.data = [
+                        {
+                            key: "Description",
+                            values: rowsCallbackDescription
                         }
                     ];
 

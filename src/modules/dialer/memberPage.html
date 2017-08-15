@@ -190,6 +190,17 @@
                                                                 <dd>{{probe.amdResult}}</dd>
                                                             </div>
 
+                                                            <div ng-if="probe.callback">
+                                                                <dt>Callback time</dt>
+                                                                <dd>{{timeToString(probe.callback.time)}}</dd>
+                                                                <dt>Callback from</dt>
+                                                                <dd>{{probe.callback.from}}</dd>
+                                                                <dt>Callback data</dt>
+                                                                <dd ng-repeat="(key, val) in probe.callback.data">
+                                                                    {{key}}: {{val}}
+                                                                </dd>
+                                                            </div>
+
                                                             <dt>Hangup cause</dt>
                                                             <dd style="text-decoration: underline;">{{probe.cause}}</dd>
                                                             <br>
