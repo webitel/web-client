@@ -49,6 +49,10 @@ table.agent-dialer-table.table .agent-container td.agent-id > a {
     vertical-align: super;
 }
 
+table.agent-dialer-table.table .agent-container td {
+    padding: 0px;
+}
+
 table.agent-dialer-table.table .agent-container td.agent-stats {
     padding: 5px;
     vertical-align: baseline;
