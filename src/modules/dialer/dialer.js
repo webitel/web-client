@@ -3104,6 +3104,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                         return {
                             id: item.agentId,
+                            // lastChange: (Date.now() - Math.min(item.lastStateChange, item.lastStatusChange) / 1000),
+                            lastChange: Math.round((Date.now() - Math.max(item.lastStatusChange, item.lastStateChange, dialer.active)) / 1000),
+
                             number: item.agentId.split('@')[0],
                             state: item.state,
                             status: item.status,
@@ -3517,6 +3520,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     }
                 }
             };
+            
             $scope.amdState = {
                 data: [],
                 options: {

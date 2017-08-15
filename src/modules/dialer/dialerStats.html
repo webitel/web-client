@@ -316,6 +316,8 @@
                                                             <span class="label btn btn-default" ng-click="canUpdateAgent && changeStatus(ag.id)">
                                                                 {{ag.stateName}}
                                                             </span>
+                                                            <br>
+                                                            <span style="font-size: 12px;">{{secToString(ag.lastChange)}}</span>
                                                         </td>
                                                         <td>{{ag.dialer.callCount || 0}}</td>
                                                         <td>{{ag.dialer.missedCall || 0}}</td>
