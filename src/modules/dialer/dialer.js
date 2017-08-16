@@ -1416,16 +1416,27 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                             val = row.communications[atempt.callPositionIndex]
                                                 && row.communications[atempt.callPositionIndex].description;
                                             break;
+
+                                        case "attempt_callback_success":
+                                            if (atempt.callback && atempt.callback.data) {
+                                                val = atempt.callback.data.success;
+                                            }
+                                            break;
+                                        case "attempt_callback_description":
+                                            if (atempt.callback && atempt.callback.data) {
+                                                val = atempt.callback.data.description;
+                                            }
+                                            break;
                                         default: 
                                             val = row;
                                             i.route.split('.').forEach(function (token) {
                                                 val = val && val[token];
                                             });
                                     }
-                                    if (val == undefined)
+                                    if (val === undefined)
                                         val = '';
 
-                                    data += val + (settings.data.length - 1 == index ? '': settings.separator);
+                                    data += val + (settings.data.length - 1 === index ? '': settings.separator);
                                 });
                                 data += '\n';
                             })
@@ -2568,6 +2579,20 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             "attempt_communication_type_code": {
                 "name": "Communication type code",
                 "field": "attempt_communication_type_code",
+                filter: {
+                    "allProbe": true
+                }
+            },
+            "attempt_callback_success": {
+                name: "Callback success",
+                field: "_log.callback.data.success",
+                filter: {
+                    "allProbe": true
+                }
+            },
+            "attempt_callback_description": {
+                name: "Callback description",
+                field: "_log.callback.data.description",
                 filter: {
                     "allProbe": true
                 }
