@@ -350,6 +350,8 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         return 'pdf';
                     case 'audio/wav':
                         return 'wav';
+                    case 'video/mp4':
+                        return 'mp4';
                     case 'audio/mpeg':
                     default:
                         return 'mp3'
@@ -446,9 +448,22 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             };
 
             var play = function (file) {
+                if (file["content-type"] === "video/mp4") {
+                    var videoWindow = window.open("", file["uuid"], "width=800, height=600");
+                    if (videoWindow) {
+                        videoWindow.document.write(
+                            '<video style="width: 100%; height: 100%" controls src="' + file['uri'] +'"></video>' +
+                            '<style type="text/css">' +
+                            'body { margin: 0; padding: 0; background: #e7ebee; }' +
+                            '</style>'
+                        );
+                        win.focus();
+                    }
+                    return
+                }
                 $scope.setSource({
                     src: file.uri,
-                    type: 'audio/mpeg',
+                    type: file["content-type"],
                     text: file.name + " (" + file.uuid + ")"
                 }, true);
             };
