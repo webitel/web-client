@@ -12,7 +12,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 fs_timezone: null,
                 disabled: false,
                 callflow: [],
-                onDisconnect: []
+                onDisconnect: [],
+                cfDiagram: {}
             };
         };
 
@@ -60,7 +61,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 domain: domainName,
                 fs_timezone: def.fs_timezone && def.fs_timezone.id,
                 callflow: def.callflow,
-                onDisconnect: def.onDisconnect
+                onDisconnect: def.onDisconnect,
+                cfDiagram: def.cfDiagram
             };
         };
 

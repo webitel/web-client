@@ -1,7 +1,6 @@
 define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'scripts/webitel/utils', 'modules/callflows/default/defaultModel',
-		'ui-ace'
+		'ui-ace', 'modules/callflows/diagram/diagram', 'css!modules/callflows/diagram/diagram.css'
 	], function (app, aceEditor, callflowUtils, utils) {
-
     app.controller('CallflowDefaultCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CallflowDefaultModel',
     	'$location', '$route', '$routeParams', '$confirm', '$window', 'FileUploader', '$filter', 'TableSearch', '$timeout',
 		'cfpLoadingBar',
@@ -14,6 +13,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 			$scope.default = {},
 	        $scope.rowCollection = [];
 	        $scope.isLoading = false;
+            $scope.diagramOpened = false;
 
             $scope.$watch('isLoading', function (val) {
                 if (val) {
@@ -78,6 +78,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 					$scope.default = res;
 					var cf = callflowUtils.replaceExpression(res.callflow);
 					var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
+					$scope.cfDiagram = res.cfDiagram;
 					$scope.cf = aceEditor.getStrFromJson(cf);
 					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
 					disableEditMode();
@@ -90,10 +91,21 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        $scope.create = create;
 	        $scope.save = save;
 	        $scope.reloadData = reloadData;
+            $scope.openDiagram = openDiagram;
 
 			$scope.downloadScheme = function (row) {
 				utils.saveJsonToPc(row, row.name + '.json');
 			};
+
+			function openDiagram(value) {
+				$scope.diagramOpened = value;
+                //window.callflow = JSON.parse('{"id":"7e790c62-6422-45bc-bff5-d019ecebc819","offsetX":1,"offsetY":0,"zoom":100,"links":[],"nodes":[{"id":"b6a2a052-1bf9-4cbd-b213-06dc17e12412","_class":"PlaybackNodeModel","selected":false,"type":"playback","x":252,"y":333,"extras":{"playback":{"files":[]}},"ports":[{"id":"fa1f859e-317a-4570-9497-b75d3f3aed72","_class":"DefaultPortModel","selected":false,"name":"output","parentNode":"b6a2a052-1bf9-4cbd-b213-06dc17e12412","links":[],"in":false,"label":"Out"},{"id":"260ba2d7-2780-4fc2-abe4-1a7aed651a02","_class":"DefaultPortModel","selected":false,"name":"input","parentNode":"b6a2a052-1bf9-4cbd-b213-06dc17e12412","links":[],"in":true,"label":"In"}],"name":"Playback","color":"rgb(114, 128, 150)"},{"id":"ac34a310-f9dc-4746-956c-c42e99aace45","_class":"LogNodeModel","selected":false,"type":"log","x":233,"y":488,"extras":{"log":""},"ports":[{"id":"57932603-3dbd-444d-8f4f-8a4c436113b1","_class":"DefaultPortModel","selected":false,"name":"output","parentNode":"ac34a310-f9dc-4746-956c-c42e99aace45","links":[],"in":false,"label":"Out"},{"id":"627bb8e6-6fce-4f1a-8e71-cc4895caa314","_class":"DefaultPortModel","selected":false,"name":"input","parentNode":"ac34a310-f9dc-4746-956c-c42e99aace45","links":[],"in":true,"label":"In"}],"name":"Log","color":"rgb(114, 128, 150)"},{"id":"97c58039-bb3d-4776-b882-6644d4fef1fe","_class":"PlayNDigitsNodeModel","selected":false,"type":"playNdigits","x":509,"y":508,"extras":{"playback":{"files":[],"getDigits":{"setVar":"","min":0,"max":0,"tries":0,"timeout":0,"flushDTMF":true}}},"ports":[{"id":"1248a9e1-8c96-454b-a790-6a2bf49ff043","_class":"DefaultPortModel","selected":false,"name":"output","parentNode":"97c58039-bb3d-4776-b882-6644d4fef1fe","links":[],"in":false,"label":"Out"},{"id":"804b5206-ced6-4ea4-8e6f-8d9ceea41cac","_class":"DefaultPortModel","selected":false,"name":"input","parentNode":"97c58039-bb3d-4776-b882-6644d4fef1fe","links":[],"in":true,"label":"In"}],"name":"Play and get digits","color":"rgb(114, 128, 150)"}]}')
+
+				if(value) {
+                    window.callflow = $scope.cfDiagram;
+					DiagramDesigner.init();
+                }
+            }
 
 			function uploadJson (data, update) {
 				function cb(err, res) {
@@ -212,6 +224,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        		var cf = callflowUtils.replaceExpression(res.callflow);
 	        		var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
 					$scope.cf = aceEditor.getStrFromJson(cf);
+                    $scope.cfDiagram = res.cfDiagram;
 					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
 					$scope.oldCf = angular.copy($scope.cf);
 					$scope.oldCfOnDisconnect = angular.copy($scope.cfOnDisconnect);
@@ -273,6 +286,10 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	            $scope.domain = domainName;
 	            reloadData();
 	        });
+
+            $scope.$watchCollection('cfDiagramChange', function(newValue, oldValue) {
+               $scope.cfDiagram = window.callflow;
+            });
 
 
 	        function reloadData () {
