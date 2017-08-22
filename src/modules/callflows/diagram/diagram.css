@@ -118,7 +118,7 @@
 
 .parent-container .diagram-drop-container .do-buttons-container {
   position: absolute;
-  bottom: 20px;
+  bottom: 15px;
   right: 350px;
   z-index: 1000000;
   display: inherit;
