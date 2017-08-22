@@ -1,4 +1,4 @@
-define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/callflows/extension/extensionModel'], function (app, aceEditor, callflowUtils) {
+define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/callflows/extension/extensionModel', 'modules/callflows/diagram/diagram', 'css!modules/callflows/diagram/diagram.css'], function (app, aceEditor, callflowUtils) {
 
     app.controller('CallflowExtensionCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CallflowExtensionModel',
         '$location', '$route', '$routeParams', '$confirm', '$window', 'TableSearch', '$timeout', 'cfpLoadingBar',
@@ -10,6 +10,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
             $scope.rowCollection = [];
             $scope.extension = {};
             $scope.isLoading = false;
+            $scope.diagramOpened = false;
+            $scope.cfDiagram = {};
+
             $scope.$watch('isLoading', function (val) {
                 if (val) {
                     cfpLoadingBar.start()
@@ -57,6 +60,37 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
             $scope.edit = edit;
             $scope.save = save;
             $scope.reloadData = reloadData;
+            $scope.openDiagram = openDiagram;
+            $scope.saveDiagram = saveDiagram;
+
+            function saveDiagram() {
+                var cfGetter = getCallflowJSON();
+                $scope.diagramOpened = false;
+                $scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
+                $scope.cfDiagram = cfGetter.callflowModel;
+                CallflowDiagram.clearReducer();
+                DiagramDesigner.removeDesigner();
+            }
+
+            function openDiagram(value) {
+                $scope.diagramOpened = value;
+                if(value) {
+                    DiagramDesigner.init();
+                    if(!!$scope.cfDiagram)CallflowDiagram.updateModel($scope.cfDiagram);
+                    else CallflowDiagram.updateModel({
+                    	id: webitel.guid(),
+                    	offsetX: 0,
+                    	offsetY: 0,
+                    	zoom: 100,
+                    	links: [],
+                    	nodes: []
+                    });
+                }
+                else{
+                    CallflowDiagram.clearReducer();
+                    DiagramDesigner.removeDesigner();
+                }
+            }
 
 
             $scope.$watch('[extension,cf,cfOnDisconnect]', function(newValue, oldValue) {
@@ -88,6 +122,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                     var cf = callflowUtils.replaceExpression(res.callflow);
                     var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
                     $scope.cf = aceEditor.getStrFromJson(cf);
+                    $scope.cfDiagram = res.cfDiagram;
                     $scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
                     $scope.oldCf = angular.copy($scope.cf);
                     $scope.oldCfOnDisconnect = angular.copy($scope.cfOnDisconnect);
@@ -104,6 +139,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                         $scope.extension.__time = Date.now();
                         return edit();
                     };
+                    $scope.extension.cfDiagram = $scope.cfDiagram;
                     $scope.extension.callflow = JSON.parse($scope.cf);
                     if ($scope.cfOnDisconnect) {
                         $scope.extension.onDisconnect = JSON.parse($scope.cfOnDisconnect);

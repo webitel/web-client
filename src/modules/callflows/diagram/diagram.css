@@ -1,6 +1,6 @@
-html, body, #root {
+#root, #root body, #root html{
   margin-bottom: -20px;
-  margin-top: -5px;
+  margin-top: -15px;
   width: 100%;
   height: inherit;
   padding: 0;

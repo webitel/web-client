@@ -4,7 +4,7 @@
     	<!-- {{default}} -->
         <!--<div class="panel-heading"><strong>Domain: {{domain.name}}</strong></div>-->
 		<div class="panel-body" ng-show="diagramOpened" style="position: relative; padding: 0;">
-			<div class="row" style="height: -webkit-fill-available; height: -moz-available;">
+			<div class="row" style="height: -webkit-fill-available; height: -moz-available; margin-bottom: -10px;">
 				<div id='root'></div>
 			</div>
 			<div class="row" style="position: absolute; bottom: 15px; left: 40%;">
@@ -52,10 +52,6 @@
             	</div>
 
             </div>
-			<div class="row">
-				<button ng-click="openDiagram(true)" type="button" class="btn btn-w-md btn-gap-v btn-primary">Build</button>
-			</div>
-
 			<div class="row">
 				<div class="col-md-12">
 					<div class="ui-tab-container ui-tab-dark">
@@ -129,6 +125,7 @@
             <button ng-show="isEdit && !viewMode" type="button" ng-disabled="defaultForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
+			<button ng-click="openDiagram(true)" type="button" class="btn btn-w-md btn-gap-v btn-primary">Visual designer</button>
         </div>
     </form>
 </div>

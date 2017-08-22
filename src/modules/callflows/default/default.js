@@ -100,30 +100,30 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 			};
 
 			function saveDiagram() {
-				var a = getCallflowJSON();
+				var cfGetter = getCallflowJSON();
 				$scope.diagramOpened = false;
-                $scope.cf = aceEditor.getStrFromJson(a.callflowJson);
-                $scope.cfDiagram = a.callflowModel;
-				window.callflow = $scope.cfDiagram;
-                clearCallflowReducer();
+                $scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
+                $scope.cfDiagram = cfGetter.callflowModel;
+                CallflowDiagram.clearReducer();
                 DiagramDesigner.removeDesigner();
             }
 
             function openDiagram(value) {
                 $scope.diagramOpened = value;
                 if(value) {
-                    window.callflow = $scope.cfDiagram||{
-                            id: webitel.guid(),
-                            offsetX: 0,
-                            offsetY: 0,
-                            zoom: 100,
-                            links: [],
-                            nodes: []
-                        };
 					DiagramDesigner.init();
+					if(!!$scope.cfDiagram)CallflowDiagram.updateModel($scope.cfDiagram);
+					else CallflowDiagram.updateModel({
+						id: webitel.guid(),
+						offsetX: 0,
+						offsetY: 0,
+						zoom: 100,
+						links: [],
+						nodes: []
+					});
                 }
                 else{
-                    clearCallflowReducer();
+                    CallflowDiagram.clearReducer();
                     DiagramDesigner.removeDesigner();
 				}
             }
