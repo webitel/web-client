@@ -1,8 +1,10 @@
 html, body, #root {
+  margin-bottom: -20px;
+  margin-top: -5px;
   width: 100%;
   height: inherit;
   padding: 0;
-  margin: 0;
+  /*margin: 0;*/
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -296,6 +298,8 @@ html, body, #root {
   font-size: 19px;
   display: block;
   padding-bottom: 4px;
+  margin-bottom: 0;
+  font-weight: normal;
 }
 
 .parent-container .controls .parameters select, .parent-container .controls .parameters input, .parent-container .controls .parameters textarea {
