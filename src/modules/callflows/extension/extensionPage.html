@@ -102,6 +102,7 @@
             <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
             <button ng-click="openDiagram(true)" type="button" class="btn btn-w-md btn-gap-v btn-primary">Visual designer</button>
+            <button ng-click="disableVisual()" ng-show="visualEnabled" type="button" class="btn btn-w-md btn-gap-v btn-primary pull-right">Disable visual</button>
         </div>
     </form>
 </div>

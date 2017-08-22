@@ -79,9 +79,10 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 					$scope.default = res;
 					var cf = callflowUtils.replaceExpression(res.callflow);
 					var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
-					$scope.cfDiagram = res.cfDiagram;
+					//$scope.cfDiagram = res.cfDiagram;
 					$scope.cf = aceEditor.getStrFromJson(cf);
 					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
+					//if(!!$scope.cfDiagram)$scope.visualEnabled = true;
 					disableEditMode();
 				});
 			};
@@ -94,10 +95,16 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        $scope.reloadData = reloadData;
             $scope.openDiagram = openDiagram;
             $scope.saveDiagram = saveDiagram;
+            $scope.disableVisual = disableVisual;
 
 			$scope.downloadScheme = function (row) {
 				utils.saveJsonToPc(row, row.name + '.json');
 			};
+
+            function disableVisual() {
+                $scope.visualEnabled = false;
+                $scope.cfDiagram = null;
+            }
 
 			function saveDiagram() {
 				var cfGetter = getCallflowJSON();
@@ -106,6 +113,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 $scope.cfDiagram = cfGetter.callflowModel;
                 CallflowDiagram.clearReducer();
                 DiagramDesigner.removeDesigner();
+                $scope.visualEnabled = true;
             }
 
             function openDiagram(value) {
@@ -249,6 +257,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
 					$scope.oldCf = angular.copy($scope.cf);
 					$scope.oldCfOnDisconnect = angular.copy($scope.cfOnDisconnect);
+                    if(!!$scope.cfDiagram)$scope.visualEnabled = true;
 					disableEditMode();
 	        	});
 	        };

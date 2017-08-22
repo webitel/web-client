@@ -92,11 +92,17 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        $scope.reloadData = reloadData;
             $scope.openDiagram = openDiagram;
             $scope.saveDiagram = saveDiagram;
+            $scope.disableVisual = disableVisual;
 
 			// region File
 			$scope.downloadScheme = function (row) {
 				utils.saveJsonToPc(row, row.name + '.json');
 			};
+
+            function disableVisual() {
+                $scope.visualEnabled = false;
+                $scope.cfDiagram = null;
+            }
 
             function saveDiagram() {
                 var cfGetter = getCallflowJSON();
@@ -105,6 +111,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 $scope.cfDiagram = cfGetter.callflowModel;
                 CallflowDiagram.clearReducer();
                 DiagramDesigner.removeDesigner();
+                $scope.visualEnabled = true;
             }
 
             function openDiagram(value) {
@@ -197,6 +204,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                     $scope.cfDiagram = res.cfDiagram;
 					$scope.oldCf = angular.copy($scope.cf);
 					$scope.oldCfOnDisconnect = angular.copy($scope.cfOnDisconnect);
+                    if(!!$scope.cfDiagram)$scope.visualEnabled = true;
 					disableEditMode();
 	        	});
 	        };
