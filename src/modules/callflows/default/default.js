@@ -40,6 +40,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 			$scope.cancel = function () {
 				$scope.default = angular.copy($scope.oldDefault);
 				$scope.cf = angular.copy($scope.oldCf);
+                $scope.cfDiagram = angular.copy($scope.oldCfDiagram);
 				$scope.cfOnDisconnect = angular.copy($scope.oldCfOnDisconnect);
 				disableEditMode();
 			};
@@ -258,6 +259,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        		var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
 					$scope.cf = aceEditor.getStrFromJson(cf);
                     $scope.cfDiagram = res.cfDiagram;
+                    $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
 					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
 					$scope.oldCf = angular.copy($scope.cf);
 					$scope.oldCfOnDisconnect = angular.copy($scope.cfOnDisconnect);
