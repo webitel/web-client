@@ -118,17 +118,20 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 $scope.diagramOpened = value;
                 if(value) {
                     DiagramDesigner.init();
-                    if(!!$scope.cfDiagram)CallflowDiagram.updateModel($scope.cfDiagram);
-                    else CallflowDiagram.updateModel({
-                    	id: webitel.guid(),
-                    	offsetX: 0,
-                    	offsetY: 0,
-                    	zoom: 100,
-                    	links: [],
-                    	nodes: []
-                    });
+                    setTimeout(function(){
+                        if(!!$scope.cfDiagram)CallflowDiagram.updateModel($scope.cfDiagram);
+                        else CallflowDiagram.updateModel({
+                            id: webitel.guid(),
+                            offsetX: 0,
+                            offsetY: 0,
+                            zoom: 100,
+                            links: [],
+                            nodes: []
+                        });
+                    }, 1);
                 }
                 else{
+                    CallflowDiagram.updateModel();
                     CallflowDiagram.clearReducer();
                     DiagramDesigner.removeDesigner();
                 }
