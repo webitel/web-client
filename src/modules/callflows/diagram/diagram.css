@@ -133,10 +133,9 @@ pre{
 .parent-container .diagram-drop-container .do-buttons-container {
   position: absolute;
   bottom: 15px;
-  right: 350px;
+  left: 160px;
   z-index: 1000000;
   display: inherit;
-  transition: 0.7s;
 }
 
 .parent-container .diagram-drop-container .do-buttons-container .do-img, .parent-container .diagram-drop-container .do-buttons-container .undo-img, .parent-container .diagram-drop-container .do-buttons-container .redo-img, .parent-container .diagram-drop-container .do-buttons-container .target-img {
