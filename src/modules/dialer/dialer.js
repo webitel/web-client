@@ -3148,8 +3148,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         return {
                             id: item.agentId,
                             // lastChange: (Date.now() - Math.min(item.lastStateChange, item.lastStatusChange) / 1000),
+                            //TODO
                             lastChange: Math.round((Date.now() - Math.max(item.lastStatusChange, item.lastStateChange, dialer.active)) / 1000),
-
+                            lastChangeTime: Math.max(item.lastStatusChange, item.lastStateChange, dialer.active),
                             number: item.agentId.split('@')[0],
                             state: item.state,
                             status: item.status,
@@ -3220,7 +3221,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 if (agent) {
                     agent.status = e['CC-Agent-Status'];
                     agent.stateName = getAgentSummaryState(agent.state, agent.status);
-
+                    agent.lastChangeTime = Date.now();
                     //agent.class = getAgentClass(agent.state, agent.status);
                 }
             }
@@ -3230,7 +3231,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 if (agent) {
                     agent.state = e['CC-Agent-State'];
                     agent.stateName = getAgentSummaryState(agent.state, agent.status);
-
+                    agent.lastChangeTime = Date.now();
                    // $('#agent-' + agent.id).
                    // agent.class = getAgentClass(agent.state, agent.status);
                 }
@@ -3899,6 +3900,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
                 clearAgentLiveState();
                 angular.forEach($scope.agentDisplayedCollection, function (item) {
+                    item.lastChange = Math.floor((Date.now() - item.lastChangeTime) / 1000);
                     $scope.liveAgentsStates[item.stateName]++;
                 });
 
