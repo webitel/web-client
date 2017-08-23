@@ -940,10 +940,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         function ($scope, $modalInstance, resource, domain, viewMode, GatewayModel, notifi) {
         $scope.resource = angular.copy(resource);
         $scope.viewMode = viewMode;
+
         var id = resource.$$hashKey;
 
         $scope.ok = function () {
-            if (!$scope.resource.dialString || (!$scope.resource.gwName && $scope.resource.gwProto == 'sip')) {
+            if (!$scope.resource.dialString || (!$scope.resource.gwName && $scope.resource.gwProto === 'sip')) {
                 return notifi.error(new Error("Bad parameters"))
             }
             $modalInstance.close({value: $scope.resource, id: id}, 5000);
