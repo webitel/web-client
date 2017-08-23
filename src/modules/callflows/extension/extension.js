@@ -104,7 +104,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                 if(value) {
                     DiagramDesigner.init();
                     setTimeout(function(){
-                        if(!!diagram)CallflowDiagram.updateModel(diagram);
+                        if(!!diagram)CallflowDiagram.updateModel(diagram, {selectedNode: null});
                         else CallflowDiagram.updateModel({
                             id: webitel.guid(),
                             offsetX: 0,
@@ -113,7 +113,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                             links: [],
                             nodes: []
                         });
-                    }, 1);
+                    }, 100);
                 }
                 else{
                     CallflowDiagram.updateModel();
@@ -133,6 +133,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                 $scope.cfDiagram = angular.copy($scope.oldCfDiagram);
                 $scope.cfOnDisconnect = angular.copy($scope.oldCfOnDisconnect);
                 $scope.cfOnDisconnectDiagram = angular.copy($scope.oldCfOnDisconnectDiagram);
+                if(!!$scope.cfDiagram)$scope.visualEnabled = true;
+                if(!!$scope.cfOnDisconnectDiagram)$scope.visualOnDiscEnabled = true;
                 disableEditMode();
             };
 

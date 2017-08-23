@@ -59,6 +59,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 $scope.cfDiagram = angular.copy($scope.oldCfDiagram);
 				$scope.cfOnDisconnect = angular.copy($scope.oldCfOnDisconnect);
                 $scope.cfOnDisconnectDiagram = angular.copy($scope.oldCfOnDisconnectDiagram);
+                if(!!$scope.cfDiagram)$scope.visualEnabled = true;
+                if(!!$scope.cfOnDisconnectDiagram)$scope.visualOnDiscEnabled = true;
 				disableEditMode();
 			};
 
@@ -140,8 +142,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 var diagram = $scope.isCf ? $scope.cfDiagram : $scope.cfOnDisconnectDiagram;
                 if(value) {
                     DiagramDesigner.init();
-                    setTimeout(function(){
-                        if(!!diagram)CallflowDiagram.updateModel(diagram);
+                    setTimeout(function() {
+                        if (!!diagram) CallflowDiagram.updateModel(diagram);
                         else CallflowDiagram.updateModel({
                             id: webitel.guid(),
                             offsetX: 0,
@@ -150,7 +152,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                             links: [],
                             nodes: []
                         });
-                    }, 1);
+                    }, 100);
 
                 }
                 else{

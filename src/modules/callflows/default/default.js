@@ -45,6 +45,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 $scope.cfDiagram = angular.copy($scope.oldCfDiagram);
 				$scope.cfOnDisconnect = angular.copy($scope.oldCfOnDisconnect);
                 $scope.cfOnDisconnectDiagram = angular.copy($scope.oldCfOnDisconnectDiagram);
+                if(!!$scope.cfDiagram)$scope.visualEnabled = true;
+                if(!!$scope.cfOnDisconnectDiagram)$scope.visualOnDiscEnabled = true;
 				disableEditMode();
 			};
 
@@ -136,8 +138,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 
             function openDiagram(value) {
                 $scope.diagramOpened = value;
-                var diagram = $scope.isCf ? $scope.cfDiagram : $scope.cfOnDisconnectDiagram;
                 if(value) {
+                    var diagram = $scope.isCf ? $scope.cfDiagram : $scope.cfOnDisconnectDiagram;
 					DiagramDesigner.init();
                     setTimeout(function(){
                         if(!!diagram)CallflowDiagram.updateModel(diagram);
@@ -149,7 +151,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                             links: [],
                             nodes: []
                         });
-                    }, 1);
+                    }, 100);
 
                 }
                 else{
