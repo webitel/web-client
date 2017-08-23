@@ -476,6 +476,7 @@
 }
 
 .basic-node .title {
+  height: 22px;
   background: rgba(0, 0, 0, 0.3);
   display: flex;
   white-space: nowrap;
@@ -782,6 +783,7 @@
 }
 
 .react-js-diagrams-canvas .basic-node .title {
+  height: 22px;
   background: rgba(0, 0, 0, 0.3);
   display: flex;
   white-space: nowrap;
