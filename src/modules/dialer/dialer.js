@@ -3811,12 +3811,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                     angular.forEach(callbackDescription, function (item) {
 
-                        if (!item._id) {
-                            rowsCallbackDescription.push({
-                                label: "EMPTY",
-                                value: item.count
-                            });
-                        } else {
+                        if (item._id) {
                             rowsCallbackDescription.push({
                                 label: item._id,
                                 value: item.count
