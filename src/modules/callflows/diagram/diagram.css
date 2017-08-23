@@ -10,6 +10,20 @@
   overflow: hidden;
 }
 
+pre{
+  display: unset;
+  padding: unset;
+  margin: unset;
+  font-size: unset;
+  line-height: unset;
+  word-break: unset;
+  word-wrap: unset;
+  color: black;
+  background-color: unset;
+  border: unset;
+  border-radius: unset;
+}
+
 .parent-container {
   flex: 1;
   display: flex;
@@ -180,7 +194,7 @@
   top: 45%;
   right: 296px;
   background: #1e1e1e;
-  transition: 0.7s;
+  transition: right 0.7s;
 }
 
 .parent-container .controls .hiding-button .arrows, .parent-container .controls .hiding-button .arrow-left, .parent-container .controls .hiding-button .arrow-right {
@@ -287,6 +301,7 @@
 .parent-container .controls .parameters .help {
   padding: 8px;
   background: rgba(240, 70, 40, 0.5);
+  color: black;
 }
 
 .parent-container .controls .parameters .help:empty {

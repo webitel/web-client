@@ -104,7 +104,10 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                 if(value) {
                     DiagramDesigner.init();
                     setTimeout(function(){
-                        if(!!diagram)CallflowDiagram.updateModel(diagram, {selectedNode: null});
+                        if(!!diagram){
+                            CallflowDiagram.updateModel(diagram);
+                            CallflowDiagram.onNodeSelected(null);
+                        }
                         else CallflowDiagram.updateModel({
                             id: webitel.guid(),
                             offsetX: 0,

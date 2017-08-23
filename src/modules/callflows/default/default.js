@@ -140,9 +140,13 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 $scope.diagramOpened = value;
                 if(value) {
                     var diagram = $scope.isCf ? $scope.cfDiagram : $scope.cfOnDisconnectDiagram;
-					DiagramDesigner.init();
+					 DiagramDesigner.init();
+
                     setTimeout(function(){
-                        if(!!diagram)CallflowDiagram.updateModel(diagram);
+                        if(!!diagram){
+                        	CallflowDiagram.updateModel(diagram);
+                            CallflowDiagram.onNodeSelected(null);
+                        }
                         else CallflowDiagram.updateModel({
                             id: webitel.guid(),
                             offsetX: 0,
@@ -268,6 +272,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 
 	        function edit() {
 				initPage();
+                //DiagramDesigner.init();
 	            var id = $routeParams.id;
 	            var domain = $routeParams.domain;	        	
 	        	CallflowDefaultModel.item(id, domain, function (err, res) {
