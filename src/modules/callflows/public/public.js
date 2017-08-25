@@ -164,6 +164,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 else{
                     CallflowDiagram.updateModel();
                     CallflowDiagram.clearReducer();
+                    if($scope.isCf){
+                        $scope.cfDiagram = angular.copy($scope.oldCfDiagram)
+                    }
+                    else{
+                        $scope.cfOnDisconnectDiagram = angular.copy($scope.oldCfOnDisconnect);
+                    }
                     DiagramDesigner.removeDesigner();
                 }
             }
@@ -235,8 +241,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        		var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
 					$scope.cf = aceEditor.getStrFromJson(cf);
 					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
-                    $scope.cfDiagram = res.cfDiagram;
-                    $scope.cfOnDisconnectDiagram = res.cfOnDisconnectDiagram;
+                    $scope.cfDiagram = angular.copy(res.cfDiagram);
+                    $scope.cfOnDisconnectDiagram = angular.copy(res.cfOnDisconnectDiagram);
                     $scope.oldCfOnDisconnectDiagram = angular.copy($scope.cfOnDisconnectDiagram);
                     $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
 					$scope.oldCf = angular.copy($scope.cf);
@@ -263,8 +269,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 					if(typeof($scope.public.destination_number)=='string'){
 						$scope.public.destination_number = $scope.public.destination_number.split(",");
 					}
-                    $scope.public.cfDiagram = $scope.cfDiagram;
-                    $scope.public.cfOnDisconnectDiagram = $scope.cfOnDisconnectDiagram;
+                    $scope.public.cfDiagram = angular.copy($scope.cfDiagram);
+                    $scope.public.cfOnDisconnectDiagram = angular.copy($scope.cfOnDisconnectDiagram);
 	        		$scope.public.callflow = JSON.parse($scope.cf);
 					if ($scope.cfOnDisconnect) {
 						$scope.public.onDisconnect = JSON.parse($scope.cfOnDisconnect);

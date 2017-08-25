@@ -162,6 +162,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 else{
                     CallflowDiagram.updateModel();
                     CallflowDiagram.clearReducer();
+                    if($scope.isCf){
+                        $scope.cfDiagram = angular.copy($scope.oldCfDiagram)
+					}
+                    else{
+                        $scope.cfOnDisconnectDiagram = angular.copy($scope.oldCfOnDisconnect);
+					}
                     DiagramDesigner.removeDesigner();
 				}
             }
@@ -284,8 +290,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        		var cf = callflowUtils.replaceExpression(res.callflow);
 	        		var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
 					$scope.cf = aceEditor.getStrFromJson(cf);
-                    $scope.cfDiagram = res.cfDiagram;
-                    $scope.cfOnDisconnectDiagram = res.cfOnDisconnectDiagram;
+                    $scope.cfDiagram = angular.copy(res.cfDiagram);
+                    $scope.cfOnDisconnectDiagram = angular.copy(res.cfOnDisconnectDiagram);
                     $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
 					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
 					$scope.oldCf = angular.copy($scope.cf);
@@ -311,8 +317,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 						};
 	        		};
 
-                    $scope.default.cfDiagram = $scope.cfDiagram;
-                    $scope.default.cfOnDisconnectDiagram = $scope.cfOnDisconnectDiagram;
+                    $scope.default.cfDiagram = angular.copy($scope.cfDiagram);
+                    $scope.default.cfOnDisconnectDiagram = angular.copy($scope.cfOnDisconnectDiagram);
 	        		$scope.default.callflow = JSON.parse($scope.cf);
 					if ($scope.cfOnDisconnect) {
 						$scope.default.onDisconnect = JSON.parse($scope.cfOnDisconnect);

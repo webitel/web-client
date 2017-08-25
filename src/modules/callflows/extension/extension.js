@@ -123,6 +123,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                 else{
                     CallflowDiagram.updateModel();
                     CallflowDiagram.clearReducer();
+                    if($scope.isCf){
+                        $scope.cfDiagram = angular.copy($scope.oldCfDiagram)
+                    }
+                    else{
+                        $scope.cfOnDisconnectDiagram = angular.copy($scope.oldCfOnDisconnect);
+                    }
                     DiagramDesigner.removeDesigner();
                 }
             }
@@ -161,8 +167,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                     var cf = callflowUtils.replaceExpression(res.callflow);
                     var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
                     $scope.cf = aceEditor.getStrFromJson(cf);
-                    $scope.cfDiagram = res.cfDiagram;
-                    $scope.cfOnDisconnectDiagram = res.cfOnDisconnectDiagram;
+                    $scope.cfDiagram = angular.copy(res.cfDiagram);
+                    $scope.cfOnDisconnectDiagram = angular.copy(res.cfOnDisconnectDiagram);
                     $scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
                     $scope.oldCf = angular.copy($scope.cf);
                     $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
@@ -183,8 +189,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                         $scope.extension.__time = Date.now();
                         return edit();
                     };
-                    $scope.extension.cfDiagram = $scope.cfDiagram;
-                    $scope.extension.cfOnDisconnectDiagram = $scope.cfOnDisconnectDiagram;
+                    $scope.extension.cfDiagram = angular.copy($scope.cfDiagram);
+                    $scope.extension.cfOnDisconnectDiagram = angular.copy($scope.cfOnDisconnectDiagram);
                     $scope.extension.callflow = JSON.parse($scope.cf);
                     if ($scope.cfOnDisconnect) {
                         $scope.extension.onDisconnect = JSON.parse($scope.cfOnDisconnect);
