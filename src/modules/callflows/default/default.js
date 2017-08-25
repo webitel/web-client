@@ -140,7 +140,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 $scope.diagramOpened = value;
                 if(value) {
                     var diagram = $scope.isCf ? $scope.cfDiagram : $scope.cfOnDisconnectDiagram;
-					 DiagramDesigner.init();
+					window.removeEventListener('keydown', window.keydownDiagramListener);
+					DiagramDesigner.init();
 
                     setTimeout(function(){
                         if(!!diagram){
