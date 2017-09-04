@@ -18,8 +18,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        $scope.rowColflection = [];
 	        $scope.isLoading = false;
             $scope.diagramOpened = false;
-            $scope.cfDiagram = {};
-            $scope.cfOnDisconnectDiagram = {};
+            $scope.cfDiagram = null;
+            $scope.cfOnDisconnectDiagram = null;
             $scope.isCf = true;
 
             $scope.$watch('isLoading', function (val) {
@@ -135,6 +135,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 }
                 CallflowDiagram.clearReducer();
                 DiagramDesigner.removeDesigner();
+                $scope.save();
             }
 
             function openDiagram(value) {
