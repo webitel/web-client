@@ -9,7 +9,9 @@
   flex-direction: column;
   overflow: hidden;
 }
-
+#root button, #root input, #root optgroup, #root select, #root textarea {
+  font: caption;
+}
 pre{
   display: block;
   font-family: monospace;
@@ -334,12 +336,12 @@ pre{
   color: black;
 }
 
-.parent-container .controls .parameters input {
-  width: 97%;
-}
+/*.parent-container .controls .parameters input {*/
+  /*width: 97%;*/
+/*}*/
 
 .parent-container .controls .parameters textarea {
-  width: 97%;
+  /*width: 97%;*/
   resize: vertical;
   min-height: 80px;
 }
