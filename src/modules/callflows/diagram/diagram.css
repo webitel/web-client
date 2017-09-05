@@ -70,7 +70,8 @@ pre{
   padding: 0 0;
   list-style: none;
   position: absolute;
-  height: 98%;
+  height: 102%;
+  min-height: 90vh;
   width: 148px;
 }
 
