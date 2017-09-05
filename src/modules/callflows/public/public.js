@@ -169,7 +169,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                         $scope.cfDiagram = angular.copy($scope.oldCfDiagram)
                     }
                     else{
-                        $scope.cfOnDisconnectDiagram = angular.copy($scope.oldCfOnDisconnect);
+                        $scope.cfOnDisconnectDiagram = angular.copy($scope.oldCfOnDisconnectDiagram);
                     }
                     DiagramDesigner.removeDesigner();
                 }
