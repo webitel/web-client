@@ -401,7 +401,10 @@ define(['angular',
 			"destroyLocalSession": destroyLocalSession,
 			"notify": notifyHeader,
 			"checkLicenseStatus": checkLicenseStatus,
-			"listExpireToken": listExpireToken
+			"listExpireToken": listExpireToken,
+			"guid": function () {
+				return connection.instance.guid()
+            }
 		};
 	}]);
 	

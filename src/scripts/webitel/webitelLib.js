@@ -3008,7 +3008,9 @@
                 showChannel: WebitelConnection.showChannel,
                 getRecordFileFromUUID: WebitelConnection.getRecordFileFromUUID,
                 channelDump: WebitelConnection.channelDump,
-                initWebrtc: WebitelConnection.initWebrtc
+                initWebrtc: WebitelConnection.initWebrtc,
+
+                guid: guid
             };
 
             return resultInterface;

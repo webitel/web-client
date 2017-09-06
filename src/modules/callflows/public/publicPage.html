@@ -3,7 +3,16 @@
     <form name="publicForm" class="panel">
     	<!-- {{default}} -->
         <!--<div class="panel-heading"><strong>Domain: {{domain.name}}</strong></div>-->
-        <div class="panel-body">
+		<div class="panel-body" ng-show="diagramOpened" style="position: relative; padding: 0;">
+			<div class="row" style="height: -webkit-fill-available; height: -moz-available; margin-bottom: -10px;">
+				<div id='root'></div>
+			</div>
+			<div class="row" style="position: fixed; bottom: 20px; left: 40%; z-index: 2001;">
+				<button ng-show="!viewMode" type="button" ng-click="saveDiagram()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+				<button ng-click="openDiagram(false)" type="button" class="btn btn-w-md btn-gap-v btn-primary">Back</button>
+			</div>
+		</div>
+        <div class="panel-body" ng-hide="diagramOpened" style="position: relative;">
 
 			<div class="row">
 
@@ -53,7 +62,15 @@
 										<span>Callflow</span>
 									</tab-heading>
 									<div class="form-group">
-										<div ng-readonly="viewMode"  ng-model="$parent.cf" ui-ace="{
+										<div class="row" style="margin-left: 0;">
+											<a ng-click="openDiagram(true)" type="button" class="btn-icon btn-icon-sm btn-gap-v btn-dark">
+												<i class="fa fa-sitemap"></i>
+											</a>
+											<a ng-click="disableVisual()" ng-show="visualCfEnabled" type="button" class="btn-icon btn-icon-sm btn-gap-v btn-danger">
+												<i class="fa fa-code"></i>
+											</a>
+										</div>
+										<div ng-readonly="viewMode||visualCfEnabled"  ng-model="$parent.cf" ui-ace="{
 									  useWrapMode : true,
 									  showGutter: true,
 									  theme:'github',
@@ -103,10 +120,12 @@
 
         </div>
 
-        <div class="panel-footer">
+        <div class="panel-footer" ng-hide="diagramOpened">
             <button ng-show="isEdit && !viewMode" type="button" ng-disabled="publicForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
-            <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
+			<button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
+			<!--<button ng-click="openDiagram(true)" type="button" class="btn btn-w-md btn-gap-v btn-dark">Visual designer</button>-->
+			<!--<button ng-click="disableVisual()" ng-show="(visualCfEnabled && isCf) || (visualOnDiscEnabled && !isCf)" type="button" class="btn btn-w-md btn-gap-v btn-danger pull-right">Disable visual</button>-->
 		</div>
     </form>
 </div>

@@ -522,7 +522,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "resources" : angular.isArray(option.resources) ? option.resources : [],
                 "agents" : angular.isArray(option.agents) ? option.agents : [],
                 "owners" : angular.isArray(option.owners) ? option.owners : [],
-                "_cf": option._cf || []
+                "_cf": option._cf || [],
+                "_cfDiagram": option._cfDiagram
             }
         }
 
