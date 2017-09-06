@@ -2,7 +2,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     'modules/cdr/libs/fileSaver', 'moment', 'modules/gateways/gatewayModel', 'modules/dialer/dialerModel',
     'modules/calendar/calendarModel',  'modules/cdr/libs/json-view/jquery.jsonview', 'modules/cdr/fileModel',
     'modules/accounts/accountModel', 'modules/media/mediaModel', 'modules/dialer/agentModel', 'css!modules/dialer/dialer.css',
-    'modules/accounts/accounts'
+    'modules/accounts/accounts', 'modules/callflows/diagram/diagram', 'css!modules/callflows/diagram/diagram.css'
 ], function (app, async, utils, aceEditor, callflowUtils, fileSaver, moment) {
 
 
@@ -55,6 +55,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.dialer = {};
 
             $scope.isLoading = false;
+
+            $scope.diagramOpened = false;
+            $scope.cfDiagram = null;
 
             $scope.$watch('isLoading', function (val) {
                 if (val) {
@@ -135,6 +138,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.save = save;
             $scope.closePage = closePage;
             $scope.edit = edit;
+            $scope.openDiagram = openDiagram;
+            $scope.saveDiagram = saveDiagram;
+            $scope.disableVisual = disableVisual;
 
             $scope.rowCollection = [];
             $scope.activeResource = null;
@@ -259,6 +265,52 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
                 setState();
             };
+
+            function disableVisual() {
+                $scope.visualCfEnabled = false;
+                $scope.cfDiagram = null;
+            }
+
+            function saveDiagram() {
+                var cfGetter = getCallflowJSON();
+                $scope.diagramOpened = false;
+                $scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
+                $scope.cfDiagram = cfGetter.callflowModel;
+                $scope.visualCfEnabled = true;
+                CallflowDiagram.clearReducer();
+                DiagramDesigner.removeDesigner();
+                //$scope.save();
+            }
+
+            function openDiagram(value) {
+                $scope.diagramOpened = value;
+                if(value) {
+                    window.removeEventListener('keydown', window.keydownDiagramListener);
+                    DiagramDesigner.init();
+
+                    setTimeout(function(){
+                        if(!!$scope.cfDiagram){
+                            CallflowDiagram.updateModel($scope.cfDiagram);
+                            CallflowDiagram.onNodeSelected(null);
+                        }
+                        else CallflowDiagram.updateModel({
+                            id: webitel.guid(),
+                            offsetX: 0,
+                            offsetY: 0,
+                            zoom: 100,
+                            links: [],
+                            nodes: []
+                        });
+                    }, 100);
+
+                }
+                else{
+                    CallflowDiagram.updateModel();
+                    CallflowDiagram.clearReducer();
+                    $scope.cfDiagram = angular.copy($scope.oldCfDiagram);
+                    DiagramDesigner.removeDesigner();
+                }
+            }
             
             $scope.editResourceDialString = function (resource) {
                 var modalInstance = $modal.open({
@@ -367,9 +419,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         return edit(callback);
                     };
                 };
+                $scope.dialer._cfDiagram = angular.copy($scope.cfDiagram);
                 if ($scope.cf)
-                    $scope.dialer._cf = JSON.parse($scope.cf);;
-
+                    $scope.dialer._cf = JSON.parse($scope.cf);
                 if ($scope.dialer._new) {
                     DialerModel.add($scope.dialer, cb);
                 } else {
@@ -414,8 +466,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     var cf = callflowUtils.replaceExpression(item._cf);
                     $scope.cf = aceEditor.getStrFromJson(cf);
                     $scope.oldCf = angular.copy($scope.cf);
+                    $scope.cfDiagram = angular.copy(item._cfDiagram);
+                    $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
                     $scope._activeProcessDialer = angular.copy(item.active);
                     $scope.activeResource = $scope.dialer.resources && $scope.dialer.resources[index];
+                    if(!!$scope.cfDiagram)$scope.visualCfEnabled = true;
                     disableEditMode();
                     if (typeof callback === 'function') callback(err, item);
                 });

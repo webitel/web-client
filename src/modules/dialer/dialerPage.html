@@ -683,7 +683,23 @@
                                         <span>Callflow</span>
                                     </tab-heading>
 
-                                    <div class="row" style="padding-top: 15px;">
+                                    <div ng-show="diagramOpened" class="row" style="height: -webkit-fill-available; height: -moz-available;">
+                                        <div id='root'></div>
+                                        <div class="col-md-12" style="position: fixed; bottom: 20px; left: 40%; z-index: 2001;">
+                                            <button ng-show="!viewMode" type="button" ng-click="saveDiagram()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+                                            <button ng-click="openDiagram(false)" type="button" class="btn btn-w-md btn-gap-v btn-primary">Back</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <a ng-click="openDiagram(true)" type="button" class="btn-icon btn-icon-sm btn-gap-v btn-dark">
+                                                <i class="fa fa-sitemap"></i>
+                                            </a>
+                                            <a ng-click="disableVisual()" ng-show="visualCfEnabled" type="button" class="btn-icon btn-icon-sm btn-gap-v btn-danger">
+                                                <i class="fa fa-code"></i>
+                                            </a>
+                                        </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <div ng-readonly="viewMode" ng-model="$parent.cf" ui-ace="{
@@ -701,7 +717,6 @@
                                                   }
                                                 }" class="json-control"></div>
                                             </div>
-
                                         </div>
                                     </div>
                                 </tab>

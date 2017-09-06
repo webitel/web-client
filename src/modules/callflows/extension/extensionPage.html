@@ -42,11 +42,19 @@
                     <div class="ui-tab-container ui-tab-dark">
                         <div class="ui-tab">
                             <tabset>
-                                <tab select="changeTab(true)">
+                                <tab>
                                     <tab-heading>
                                         <span>Callflow</span>
                                     </tab-heading>
                                     <div class="form-group">
+                                        <div class="row" style="margin-left: 0;">
+                                            <a ng-click="openDiagram(true)" type="button" class="btn-icon btn-icon-sm btn-gap-v btn-dark">
+                                                <i class="fa fa-sitemap"></i>
+                                            </a>
+                                            <a ng-click="disableVisual()" ng-show="visualCfEnabled" type="button" class="btn-icon btn-icon-sm btn-gap-v btn-danger">
+                                                <i class="fa fa-code"></i>
+                                            </a>
+                                        </div>
                                         <div ng-readonly="viewMode||visualCfEnabled" ng-model="$parent.cf" ui-ace="{
 									  useWrapMode : true,
 									  showGutter: true,
@@ -66,12 +74,12 @@
                                     </div>
                                 </tab>
 
-                                <tab select="changeTab(false)">
+                                <tab>
                                     <tab-heading>
                                         <span>On disconnect</span>
                                     </tab-heading>
                                     <div class="form-group">
-                                        <div ng-readonly="viewMode||visualOnDiscEnabled" data-ng-model="$parent.cfOnDisconnect" ui-ace="{
+                                        <div ng-readonly="viewMode" data-ng-model="$parent.cfOnDisconnect" ui-ace="{
 									  useWrapMode : true,
 									  showGutter: true,
 									  theme:'github',
@@ -101,8 +109,8 @@
             <button ng-show="isEdit && !viewMode" type="button" ng-disabled="extensionForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
-            <button ng-click="openDiagram(true)" type="button" class="btn btn-w-md btn-gap-v btn-dark">Visual designer</button>
-            <button ng-click="disableVisual()" ng-show="(visualCfEnabled && isCf) || (visualOnDiscEnabled && !isCf)" type="button" class="btn btn-w-md btn-gap-v btn-danger pull-right">Disable visual</button>
+            <!--<button ng-click="openDiagram(true)" type="button" class="btn btn-w-md btn-gap-v btn-dark">Visual designer</button>-->
+            <!--<button ng-click="disableVisual()" ng-show="(visualCfEnabled && isCf) || (visualOnDiscEnabled && !isCf)" type="button" class="btn btn-w-md btn-gap-v btn-danger pull-right">Disable visual</button>-->
         </div>
     </form>
 </div>

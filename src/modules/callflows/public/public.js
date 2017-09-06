@@ -19,8 +19,6 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        $scope.isLoading = false;
             $scope.diagramOpened = false;
             $scope.cfDiagram = null;
-            $scope.cfOnDisconnectDiagram = null;
-            $scope.isCf = true;
 
             $scope.$watch('isLoading', function (val) {
                 if (val) {
@@ -58,15 +56,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 				$scope.cf = angular.copy($scope.oldCf);
                 $scope.cfDiagram = angular.copy($scope.oldCfDiagram);
 				$scope.cfOnDisconnect = angular.copy($scope.oldCfOnDisconnect);
-                $scope.cfOnDisconnectDiagram = angular.copy($scope.oldCfOnDisconnectDiagram);
                 if(!!$scope.cfDiagram)$scope.visualEnabled = true;
-                if(!!$scope.cfOnDisconnectDiagram)$scope.visualOnDiscEnabled = true;
 				disableEditMode();
 			};
-
-            $scope.changeTab = function(tab) {
-                $scope.isCf = tab;
-            };
 
 			function disableEditMode () {
 				$timeout(function () {
@@ -110,29 +102,17 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 			};
 
             function disableVisual() {
-                if($scope.isCf){
-                    $scope.visualCfEnabled = false;
-                    $scope.cfDiagram = null;
-                }
-                else{
-                    $scope.cfOnDisconnectDiagram = null;
-                    $scope.visualOnDiscEnabled = false;
-                }
+				$scope.visualCfEnabled = false;
+				$scope.cfDiagram = null;
+                $scope.oldCfDiagram = null;
             }
 
             function saveDiagram() {
                 var cfGetter = getCallflowJSON();
                 $scope.diagramOpened = false;
-                if($scope.isCf){
-                    $scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
-                    $scope.cfDiagram = cfGetter.callflowModel;
-                    $scope.visualCfEnabled = true;
-                }
-                else{
-                    $scope.cfOnDisconnect = aceEditor.getStrFromJson(cfGetter.callflowJson);
-                    $scope.cfOnDisconnectDiagram = cfGetter.callflowModel;
-                    $scope.visualOnDiscEnabled = true;
-                }
+				$scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
+				$scope.cfDiagram = cfGetter.callflowModel;
+				$scope.visualCfEnabled = true;
                 CallflowDiagram.clearReducer();
                 DiagramDesigner.removeDesigner();
                 $scope.save();
@@ -142,13 +122,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 $scope.diagramOpened = value;
 
                 if(value) {
-                    var diagram = $scope.isCf ? $scope.cfDiagram : $scope.cfOnDisconnectDiagram;
                     window.removeEventListener('keydown', window.keydownDiagramListener);
                     DiagramDesigner.init();
                     
                     setTimeout(function() {
-                        if(!!diagram){
-                            CallflowDiagram.updateModel(diagram);
+                        if(!!$scope.cfDiagram){
+                            CallflowDiagram.updateModel($scope.cfDiagram);
                             CallflowDiagram.onNodeSelected(null);
                         }
                         else CallflowDiagram.updateModel({
@@ -165,12 +144,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 else{
                     CallflowDiagram.updateModel();
                     CallflowDiagram.clearReducer();
-                    if($scope.isCf){
-                        $scope.cfDiagram = angular.copy($scope.oldCfDiagram)
-                    }
-                    else{
-                        $scope.cfOnDisconnectDiagram = angular.copy($scope.oldCfOnDisconnectDiagram);
-                    }
+                    $scope.cfDiagram = angular.copy($scope.oldCfDiagram);
                     DiagramDesigner.removeDesigner();
                 }
             }
@@ -243,13 +217,10 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 					$scope.cf = aceEditor.getStrFromJson(cf);
 					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
                     $scope.cfDiagram = angular.copy(res.cfDiagram);
-                    $scope.cfOnDisconnectDiagram = angular.copy(res.cfOnDisconnectDiagram);
-                    $scope.oldCfOnDisconnectDiagram = angular.copy($scope.cfOnDisconnectDiagram);
                     $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
 					$scope.oldCf = angular.copy($scope.cf);
 					$scope.oldCfOnDisconnect = angular.copy($scope.cfOnDisconnect);
-                    if(!!$scope.cfDiagram)$scope.visualEnabled = true;
-                    if(!!$scope.cfOnDisconnectDiagram)$scope.visualOnDiscEnabled = true;
+                    if(!!$scope.cfDiagram)$scope.visualCfEnabled = true;
 					disableEditMode();
 	        	});
 	        };
@@ -271,7 +242,6 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 						$scope.public.destination_number = $scope.public.destination_number.split(",");
 					}
                     $scope.public.cfDiagram = angular.copy($scope.cfDiagram);
-                    $scope.public.cfOnDisconnectDiagram = angular.copy($scope.cfOnDisconnectDiagram);
 	        		$scope.public.callflow = JSON.parse($scope.cf);
 					if ($scope.cfOnDisconnect) {
 						$scope.public.onDisconnect = JSON.parse($scope.cfOnDisconnect);
