@@ -1,9 +1,13 @@
 #root, #root body, #root html{
-  margin-bottom: -20px;
-  margin-top: -15px;
+  /*margin-bottom: -20px;*/
+  /*margin-top: -15px;*/
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
   width: 100%;
   height: inherit;
-  min-height: 90vh;
+    min-height: 100%;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -53,7 +57,7 @@ pre{
   overflow: hidden;
   flex-direction: column;
   max-width: 148px;
-  background: #272c33;
+  background: #34323a;
   border-right: 2px solid black;
   color: white;
 }
@@ -70,7 +74,7 @@ pre{
   padding: 0 0;
   list-style: none;
   position: absolute;
-  height: 102%;
+  height: 100%;
   min-height: 90vh;
   width: 148px;
 }
@@ -176,13 +180,13 @@ pre{
 
 .parent-container .diagram-drop-container .react-js-diagrams-canvas {
   flex: 1;
-  background: darkgray;
+  background: #eaeaea;/*darkgray*/
 }
 
 .parent-container .controls {
   width: 320px;
   overflow: hidden;
-  background: #272c33;
+  background: #34323a;
   border-left: 2px solid black;
   -webkit-transition: width 1s;
   transition: width 0.7s;
@@ -196,7 +200,7 @@ pre{
   z-index: 1;
   position: absolute;
   top: 45%;
-  right: 296px;
+  right: 312px;
   background: #1e1e1e;
   transition: right 0.7s;
 }
