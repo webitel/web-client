@@ -250,7 +250,22 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        	$scope.default = CallflowDefaultModel.create();
 				$scope.default._new = true;
 				//editor._setJson([{"setVar": []}]);
-	        };
+	        }
+
+            var subscribeLogEvent = false;
+            function fnNotificationLog(e) {
+                return notifi.info(e['message'], 5000);
+            }
+
+            function setDebugMode(id) {
+                if (subscribeLogEvent)
+                    return;
+                subscribeLogEvent = true;
+                webitel.connection.instance.onServerEvent("SE::BROADCAST", fnNotificationLog,  {id: id, name: "log"});
+                $scope.$on('$destroy', function () {
+                    webitel.connection.instance.unServerEvent('SE::BROADCAST', {}, fnNotificationLog);
+                });
+            }
 
 	        function edit() {
 				initPage();
@@ -273,6 +288,10 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                     if(!!$scope.cfDiagram)$scope.visualCfEnabled = true;
                     if(!!$scope.cfOnDisconnectDiagram)$scope.visualOnDiscEnabled = true;
 					disableEditMode();
+
+                    if (res.debug && res._id) {
+                        setDebugMode(res._id)
+                    }
 	        	});
 	        };
 
