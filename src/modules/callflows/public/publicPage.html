@@ -32,7 +32,14 @@
 						</div>
 					</div>
 
-					<div class="col-sm-2">
+                    <div class="col-sm-1">
+                        <div class="form-group" >
+                            <label class="control-label">Debug</label>
+                            <label style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="public.debug"><i></i></label>
+                        </div>
+                    </div>
+
+					<div class="col-sm-1">
 						<div class="form-group" >
 							<label class="control-label">Disabled</label>
 							<label style="width: 100%;" class="switch switch-danger"><input ng-disabled="viewMode" type="checkbox" ng-model="public.disabled"><i></i></label>

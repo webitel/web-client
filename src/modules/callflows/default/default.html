@@ -42,11 +42,12 @@
                 <thead>
                 <tr ng-show="rowCollection.length > 0">
                     <th style="width: 30%" st-skip-natural="true" st-sort="destination_number" >Number</th>
-                    <th style="width: 25%" st-skip-natural="true" st-sort="name" >Name</th>
+                    <th style="width: 20%" st-skip-natural="true" st-sort="name" >Name</th>
                     <th style="width: 5%" st-skip-natural="true" st-sort="order" >Order</th>
+                    <th style="width: 10%" st-skip-natural="true" class="text-center" st-sort="debug" >Debug</th>
                     <th style="width: 10%" st-skip-natural="true" class="text-center" st-sort="disabled" >Enabled</th>
                     <th style="width: 15%" >Position</th>
-                    <th style="width: 15%; min-width: 116px; text-align: end;">
+                    <th style="width: 10%; min-width: 116px; text-align: end;">
                         Count: {{displayedCollection.length}}
                     </th>
                 </tr>
@@ -63,6 +64,11 @@
                         </td>
                         <td >{{row.name}}</td>
                         <td >{{row.order}}</td>
+                        <td class="text-center">
+                            <span ng-class="row.debug ? 'color-success' : 'color-default'">
+                                <i class="fa fa-circle"></i>
+                            </span>
+                        </td>
                         <td class="text-center">
                             <span ng-class="row.disabled ? 'color-danger' : 'color-success'">
                                 <i class="fa fa-circle"></i>

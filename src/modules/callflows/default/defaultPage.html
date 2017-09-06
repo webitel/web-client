@@ -25,7 +25,7 @@
 						</div>
 					</div>
 
-					<div class="col-sm-4">
+					<div class="col-sm-3">
 						<div class="form-group" ng-class="{ 'has-error' : defaultForm.number.$invalid }">
 							<label class="control-label">Number</label>
 							<input ng-disabled="viewMode" type="text" required class="form-control" name="number" placeholder="Number" ng-model="default.destination_number">
@@ -38,6 +38,14 @@
 							<input ng-disabled="viewMode" required name="timezone" typeahead-editable="false" typeahead-focus-on-select="true" typeahead-select-on-exact="true" typeahead-on-select="onSelectTimeZone" type="text" class="form-control"  placeholder="Time zone" ng-model="default.fs_timezone"  typeahead="zone as zone.name for zone in timeZones | filter:{name:$viewValue}" >
 						</div>
 					</div>
+
+                    <div class="col-sm-1">
+                        <div class="form-group" >
+                            <label class="control-label">Debug</label>
+                            <label style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="default.debug"><i></i></label>
+                        </div>
+                    </div>
+
 					<div class="col-sm-1">
 						<div class="form-group" >
 							<label class="control-label">Disabled</label>

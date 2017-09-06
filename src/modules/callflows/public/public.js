@@ -202,7 +202,22 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        function create() {
 	        	$scope.public = CallflowPublicModel.create();
 	        	$scope.public._new = true;
-	        };
+	        }
+
+            var subscribeLogEvent = false;
+            function fnNotificationLog(e) {
+                return notifi.info(e['message'], 5000);
+            }
+
+            function setDebugMode(id) {
+                if (subscribeLogEvent)
+                    return;
+                subscribeLogEvent = true;
+                webitel.connection.instance.onServerEvent("SE::BROADCAST", fnNotificationLog,  {id: id, name: "log"});
+                $scope.$on('$destroy', function () {
+                    webitel.connection.instance.unServerEvent('SE::BROADCAST', {}, fnNotificationLog);
+                });
+            }
 
 	        function edit() {
 	            var id = $routeParams.id;
@@ -222,6 +237,10 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 					$scope.oldCfOnDisconnect = angular.copy($scope.cfOnDisconnect);
                     if(!!$scope.cfDiagram)$scope.visualCfEnabled = true;
 					disableEditMode();
+
+                    if (res.debug && res._id) {
+                        setDebugMode(res._id)
+                    }
 	        	});
 	        };
 

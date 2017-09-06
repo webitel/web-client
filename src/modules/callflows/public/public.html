@@ -41,8 +41,9 @@
                 <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" st-search search-watch-model="query">
                 <thead>
                 <tr ng-show="rowCollection.length > 0">
-                    <th style="width: 40%" st-skip-natural="true" st-sort="destination_number" >Number</th>
-                    <th style="width: 35%" st-skip-natural="true" st-sort="name" >Name</th>
+                    <th style="width: 35%" st-skip-natural="true" st-sort="destination_number" >Number</th>
+                    <th style="width: 30%" st-skip-natural="true" st-sort="name" >Name</th>
+                    <th style="width: 10%" st-skip-natural="true" st-sort="debug" class="text-center">Debug</th>
                     <th style="width: 10%" st-skip-natural="true" st-sort="disabled" class="text-center">Enabled</th>
                     <th style="width: 15%; min-width: 116px; text-align: end;">
                         Count: {{displayedCollection.length}}
@@ -61,6 +62,11 @@
                         </td>
 
                         <td >{{row.name}}</td>
+                        <td class="text-center">
+                            <span ng-class="row.debug ? 'color-success' : 'color-default'">
+                                <i class="fa fa-circle"></i>
+                            </span>
+                        </td>
                         <td class="text-center">
                             <span ng-class="row.disabled ? 'color-danger' : 'color-success'">
                                 <i class="fa fa-circle"></i>
