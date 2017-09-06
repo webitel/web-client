@@ -1,10 +1,12 @@
 define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'scripts/webitel/utils', 'modules/callflows/default/defaultModel',
+    'modules/calendar/calendarModel', 'modules/media/mediaModel', 'modules/acd/acdModel', 'modules/accounts/accountModel',
 		'ui-ace', 'modules/callflows/diagram/diagram', 'css!modules/callflows/diagram/diagram.css'
 	], function (app, aceEditor, callflowUtils, utils) {
     app.controller('CallflowDefaultCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CallflowDefaultModel',
+		'CalendarModel', 'MediaModel', 'AcdModel', 'AccountModel',
     	'$location', '$route', '$routeParams', '$confirm', '$window', 'FileUploader', '$filter', 'TableSearch', '$timeout',
 		'cfpLoadingBar',
-        function ($scope, webitel, $rootScope, notifi, CallflowDefaultModel, $location, $route, $routeParams, $confirm
+        function ($scope, webitel, $rootScope, notifi, CallflowDefaultModel, CalendarModel, MediaModel, AcdModel, AccountModel, $location, $route, $routeParams, $confirm
         	,$window, FileUploader, $filter, TableSearch, $timeout, cfpLoadingBar) {
         	$scope.domain = webitel.domain();
 
@@ -95,10 +97,82 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
             $scope.openDiagram = openDiagram;
             $scope.saveDiagram = saveDiagram;
             $scope.disableVisual = disableVisual;
+            $scope.initCalendars = initCalendars;
+            $scope.initMedia = initMedia;
+            $scope.initDirectory = initDirectory;
+            $scope.initAcd = initAcd;
+            $scope.initDiagramParams = initDiagramParams;
 
 			$scope.downloadScheme = function (row) {
 				utils.saveJsonToPc(row, row.name + '.json');
 			};
+
+			function initDiagramParams(){
+                $scope.initCalendars();
+                $scope.initMedia();
+                $scope.initDirectory();
+                $scope.initAcd();
+			}
+
+            function initCalendars(){
+                CalendarModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    var c = [];
+                    var data = res.data;
+                    angular.forEach(data, function (v) {
+                        c.push(v.name);
+                    });
+                    $scope.calendars = c;
+
+                });
+            }
+
+            function initMedia(){
+                MediaModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    var c = [];
+                    var data = res;
+                    angular.forEach(data, function (v) {
+                        c.push(v.name);
+                    });
+                    $scope.media = c;
+
+                });
+            }
+
+            function initDirectory(){
+				AccountModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    var c = [];
+                    var data = res.info;
+                    Object.keys(data).forEach(function (v) {
+                        c.push(v);
+                    });
+                    $scope.accounts = c;
+
+                });
+            }
+
+            function initAcd(){
+                AcdModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    var c = [];
+                    var data = res;
+                    angular.forEach(data, function (v) {
+                        c.push(v.name);
+                    });
+                    $scope.acd = c;
+
+                });
+            }
 
             function disableVisual() {
 				$scope.visualCfEnabled = false;
@@ -122,7 +196,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 if(value) {
 					window.removeEventListener('keydown', window.keydownDiagramListener);
 					DiagramDesigner.init();
-
+                    CallflowDiagram.setWebitelParams({
+                        media: $scope.media || [],
+                        calendar: $scope.calendars || [],
+                        acd: $scope.acd || [],
+                        directory: $scope.accounts || []
+					});
                     setTimeout(function(){
                         if(!!$scope.cfDiagram){
                         	CallflowDiagram.updateModel($scope.cfDiagram);
@@ -269,7 +348,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 
 	        function edit() {
 				initPage();
-                //DiagramDesigner.init();
+                $scope.initDiagramParams();
+
 	            var id = $routeParams.id;
 	            var domain = $routeParams.domain;	        	
 	        	CallflowDefaultModel.item(id, domain, function (err, res) {
