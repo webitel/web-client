@@ -5,9 +5,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
     app.controller('CallflowDefaultCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CallflowDefaultModel',
 		'CalendarModel', 'MediaModel', 'AcdModel', 'AccountModel',
     	'$location', '$route', '$routeParams', '$confirm', '$window', 'FileUploader', '$filter', 'TableSearch', '$timeout',
-		'cfpLoadingBar',
+		'cfpLoadingBar', '$modal',
         function ($scope, webitel, $rootScope, notifi, CallflowDefaultModel, CalendarModel, MediaModel, AcdModel, AccountModel, $location, $route, $routeParams, $confirm
-        	,$window, FileUploader, $filter, TableSearch, $timeout, cfpLoadingBar) {
+        	,$window, FileUploader, $filter, TableSearch, $timeout, cfpLoadingBar, $modal) {
         	$scope.domain = webitel.domain();
 
 			$scope.cf = aceEditor.getStrFromJson([]);
@@ -196,6 +196,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 if(value) {
 					window.removeEventListener('keydown', window.keydownDiagramListener);
 					DiagramDesigner.init();
+
+                    CallflowDiagram.onDebug.subscribe(openDebugWindow);
+
                     CallflowDiagram.setWebitelParams({
                         media: $scope.media || [],
                         calendar: $scope.calendars || [],
@@ -331,22 +334,147 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 				//editor._setJson([{"setVar": []}]);
 	        }
 
+
+	        //TODO
             var subscribeLogEvent = false;
+            var observeCallUuid = "";
+            var observeCallPrevAppId = "";
             function fnNotificationLog(e) {
-                return notifi.info(e['message'], 5000);
+                switch (e.action) {
+                    case "log":
+                        return notifi.info(e['message'], 5000);
+                    case "execute":
+
+                        if (e.uuid === observeCallUuid) {
+                            $('.basic-node.executed').removeClass('executed');
+
+                            if (e["app-id"] === "end") {
+                                observeCallUuid = "";
+                                observeCallPrevAppId = "";
+                            }
+
+                            $('div[data-nodeid=' + e['app-id'] + ']').children().addClass("executed");
+
+                            (function (cid, pid) {
+                                var id = findLinkId(cid, pid);
+                                var elem = $('svg g g path[data-linkid=' + id + ']').prev();
+                                if (!id) return;
+
+                                elem.attr('executed-link', 'true');
+                                setTimeout(function () {
+                                    elem.attr('executed-link', 'false');
+                                }, 1500);
+                            })(e['app-id'], observeCallPrevAppId);
+
+                            observeCallPrevAppId = e['app-id'];
+                        }
+                }
             }
 
-            function setDebugMode(id) {
-                if (subscribeLogEvent)
+
+            function findNodeByType(type) {
+                var nodes = $scope.cfDiagram.nodes;
+                i = nodes.length;
+                while (i--) {
+                    if (nodes[i].type === type) {
+                        return nodes[i].id;
+                    }
+                }
+            }
+
+            function findLinkId(currentApp, prevApp) {
+                var i = 0;
+                if (!prevApp) {
+                    prevApp = findNodeByType("start");
+                }
+
+                var links = $scope.cfDiagram.links;
+                i = links.length;
+                while (i--) {
+                    if (links[i].target === currentApp && links[i].source === prevApp) {
+                        return links[i].id
+                    }
+                }
+            }
+
+            function openDebugWindow() {
+                var number;
+                var id;
+                var domain;
+                observeCallUuid = webitel.guid();
+
+                try {
+                    id = $scope.default._id;
+                    domain = $scope.default.domain;
+                } catch (e) {
+                    console.error(e)
+                }
+
+                if (!domain) {
+                    notifi.error("No route domain!", 5000);
                     return;
+                }
+
+                if (!id) {
+                    notifi.error("No route id!", 5000);
+                    return;
+                }
+
+                function callback (err, res) {
+                    if (err)
+                        return notifi.error(err, 8000);
+                }
+
+                var modalInstance = $modal.open({
+                    animation: true,
+                    templateUrl: '/modules/callflows/debugDialog.html',
+                    controller: function ($scope, $modalInstance, options) {
+                        $scope.visCaller = true;
+                        $scope.visDestination = true;
+                        $scope.data = {
+                            caller: options.caller,
+                            destination: ""
+                        };
+
+                        $scope.ok = function () {
+                            $modalInstance.close($scope.data, 5000);
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                    resolve: {
+                        options: function () {
+                            return {
+                                visCaller: true,
+                                caller: webitel.connection.session.domain ? webitel.connection.session._id : ""
+                            };
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (result) {
+                    setDebugMode(id, function () {
+                        CallflowDefaultModel.debug(id, observeCallUuid, result.caller, domain, result.destination, callback)
+                    });
+                }, function () {
+
+                });
+            }
+
+            function setDebugMode(id, cb) {
+                if (subscribeLogEvent)
+                    return cb && cb();
                 subscribeLogEvent = true;
-                webitel.connection.instance.onServerEvent("SE::BROADCAST", fnNotificationLog,  {id: id, name: "log"});
+                webitel.connection.instance.onServerEvent("SE::BROADCAST", fnNotificationLog,  {id: id, name: "log"}, cb);
                 $scope.$on('$destroy', function () {
                     webitel.connection.instance.unServerEvent('SE::BROADCAST', {}, fnNotificationLog);
                 });
             }
 
-	        function edit() {
+
+            function edit() {
 				initPage();
                 $scope.initDiagramParams();
 

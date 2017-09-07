@@ -1,3 +1,35 @@
+.react-js-diagrams-canvas .node  .basic-node.executed, .react-js-diagrams-canvas .node.selected  .basic-node.executed {
+    border: solid 4px #0bb644;
+}
+.react-js-diagrams-canvas .node  .basic-node, .react-js-diagrams-canvas .node.selected  .basic-node {
+    border: solid 2px #000;
+}
+
+.react-js-diagrams-canvas .node  .basic-node.executed>.title, .react-js-diagrams-canvas .node.selected  .basic-node.executed>.title {
+    animation: acr-executed-play-text 1.2s ease infinite;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+@keyframes acr-executed-play-text {
+    50% {
+        background-color: #0bb644;
+        color: #000;
+    }
+}
+
+
+.react-js-diagrams-canvas svg g g path[executed-link=true] {
+    stroke: #f00 !important;
+}
+.react-js-diagrams-canvas svg g g path[executed-link=false] {
+    stroke: #000;
+    -webkit-transition: 3s linear all;
+    transition: 3s linear all;
+}
+
 .text-play {
     color: #41F11F
 }

@@ -117,6 +117,10 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
         };
 
+        function debug(id, uuid, from, domain, number, cb) {
+            webitel.api("POST", "/api/v2/routes/default/" + id +"/debug?domain=" + domain, {from: from, uuid: uuid, number: number}, cb)
+        }
+
         return {
             list: list,
             item: item,
@@ -127,6 +131,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             findInList: findInList,
             setOrder: setOrder,
             incOrder: incOrder,
+            debug: debug
         }
     }]);
 });

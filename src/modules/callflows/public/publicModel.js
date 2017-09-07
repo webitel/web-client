@@ -100,13 +100,18 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             webitel.api("DELETE", "/api/v2/routes/public/" +  id + "?domain=" + domainName, cb)
         }
 
+        function debug(id, uuid, from, domain, number, cb) {
+            webitel.api("POST", "/api/v2/routes/public/" + id +"/debug?domain=" + domain, {from: from, uuid: uuid, number: number}, cb)
+        }
+        
         return {
             list: list,
             item: item,
             create: create,
             add: add,
             update: update,
-            remove: remove
+            remove: remove,
+            debug: debug
         }
     }]);
 });
