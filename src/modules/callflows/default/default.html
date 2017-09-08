@@ -55,7 +55,7 @@
                 <tbody ng-show="rowCollection.length > 0">
                     <tr ng-repeat="row in displayedCollection">
                         <td >
-                            <a ng-if="canUpdate" href="#/callflows/default/{{row._id}}/edit?domain={{domain}}">
+                            <a ng-if="canUpdate" href="#/callflows/default/{{row.id}}/edit?domain={{domain}}">
                                 {{row.destination_number}}
                             </a>
                             <span ng-if="!canUpdate">
@@ -84,8 +84,8 @@
                         <td style="text-align: end">
                             <a href="javascript:void 0" ng-click="downloadScheme(row)" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-cloud-download"></i></a>
 
-                            <a href="#/callflows/default/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
-                            <a href="#/callflows/default/{{row._id}}/view?domain={{domain}}" ng-if="!canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-file"></i></a>
+                            <a href="#/callflows/default/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                            <a href="#/callflows/default/{{row.id}}/view?domain={{domain}}" ng-if="!canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-file"></i></a>
 
                             <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                         </td>

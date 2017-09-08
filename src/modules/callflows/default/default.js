@@ -36,7 +36,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 				if ($scope.default._new)
 					return $scope.isEdit = $scope.isNew = true;
 
-				return $scope.isEdit = !!oldValue[0]._id;
+				return $scope.isEdit = !!oldValue[0].id;
 			}, true);
 
 			$scope.cancel = function () {
@@ -81,7 +81,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 						return notifi.error(err);
 					$scope.default = res;
 					var cf = callflowUtils.replaceExpression(res.callflow);
-					var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
+					var cfOnDisconnect = callflowUtils.replaceExpression(res.callflow_on_disconnect);
 					$scope.cf = aceEditor.getStrFromJson(cf);
 					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
 					disableEditMode();
@@ -237,9 +237,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 					reloadData();
 					var str;
 					if (update) {
-						str = "Updated: " + res.name;
+						str = "Updated: " + res.data.name;
 					} else {
-						str = "Created: " + res.data.name;
+						str = "Created: new id " + res.data.id;
 					}
 					return notifi.success(str, 2000);
 				};
@@ -265,8 +265,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 						data.fs_timezone = {
 							id: data.fs_timezone
 						};
-						CallflowDefaultModel.item(data._id, $scope.domain, function (err, res) {
-							if (err)
+						CallflowDefaultModel.item(data.id, $scope.domain, function (err, res) {
+							if (err && err.statusCode !== 404)
 								return notifi.error(err, 3000);
 
 							uploadJson(data, !!res);
@@ -279,51 +279,19 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 			};
 
 			$scope.up = function (row) {
-				var newOrder = row.order - 1;
-				var array = $filter('orderBy')($scope.rowCollection, 'order');
-				for (var i in array) {
-					if (array[i]._id == row._id) {
-						newOrder = (array[+i - 1] && array[+i - 1].order) -1;
-						break;
-					};
-				};
-				if (isNaN(newOrder))
-					return;
-				CallflowDefaultModel.incOrder($scope.domain, row.order, 1, function (err, res) {
-					if (err)
-						return notifi.error(err, 10000);
-
-					CallflowDefaultModel.setOrder(row._id, $scope.domain, newOrder, function (err, res) {
-						if (err)
-							return notifi.error(err, 10000);
-
-						reloadData();
-					});
-				});
+                CallflowDefaultModel.move(row.id, $scope.domain, true, function (err) {
+                    if (err)
+                        return notifi.error(err, 1000);
+                    reloadData();
+                })
 			};
 
 			$scope.down = function (row) {
-				var newOrder = row.order - 1;
-				var array = $filter('orderBy')($scope.rowCollection, 'order');
-				for (var i in array) {
-					if (array[i]._id == row._id) {
-						newOrder = (array[+i + 1] && array[+i + 1].order) + 1;
-						break;
-					};
-				};
-				if (isNaN(newOrder))
-					return;
-				CallflowDefaultModel.incOrder($scope.domain, row.order, -1, function (err, res) {
+                CallflowDefaultModel.move(row.id, $scope.domain, false, function (err) {
 					if (err)
-						return notifi.error(err, 10000);
-
-					CallflowDefaultModel.setOrder(row._id, $scope.domain, newOrder, function (err, res) {
-						if (err)
-							return notifi.error(err, 10000);
-
-						reloadData();
-					});
-				});
+						return notifi.error(err, 1000);
+                    reloadData();
+                })
 			};
 
 
@@ -404,7 +372,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 observeCallUuid = webitel.guid();
 
                 try {
-                    id = $scope.default._id;
+                    id = $scope.default.id;
                     domain = $scope.default.domain;
                 } catch (e) {
                     console.error(e)
@@ -448,7 +416,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                         options: function () {
                             return {
                                 visCaller: true,
-                                caller: webitel.connection.session.domain ? webitel.connection.session._id : ""
+                                caller: webitel.connection.session.domain ? webitel.connection.session.id : ""
                             };
                         }
                     }
@@ -486,7 +454,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        		$scope.default = res;
 	        		$scope.oldDefault = angular.copy(res);
 	        		var cf = callflowUtils.replaceExpression(res.callflow);
-	        		var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
+	        		var cfOnDisconnect = callflowUtils.replaceExpression(res.callflow_on_disconnect);
 					$scope.cf = aceEditor.getStrFromJson(cf);
                     $scope.cfDiagram = angular.copy(res.cfDiagram);
                     $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
@@ -497,8 +465,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                     if(!!$scope.cfOnDisconnectDiagram)$scope.visualOnDiscEnabled = true;
 					disableEditMode();
 
-                    if (res.debug && res._id) {
-                        setDebugMode(res._id)
+                    if (res.debug && res.id) {
+                        setDebugMode(res.id)
                     }
 	        	});
 	        };
@@ -510,7 +478,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
         					return notifi.error(err);
 
 						if ($scope.default._new) {
-							return $location.path('/callflows/default/' + res.info + '/edit');
+							return $location.path('/callflows/default/' + res.data.id + '/edit');
 						} else {
 							$scope.default.__time = Date.now();
 							return edit();
@@ -520,11 +488,11 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                     $scope.default.cfDiagram = angular.copy($scope.cfDiagram);
 	        		$scope.default.callflow = JSON.parse($scope.cf);
 					if ($scope.cfOnDisconnect) {
-						$scope.default.onDisconnect = JSON.parse($scope.cfOnDisconnect);
+						$scope.default.callflow_on_disconnect = JSON.parse($scope.cfOnDisconnect);
 					} else {
-						$scope.default.onDisconnect = [];
+						$scope.default.callflow_on_disconnect = [];
 					}
-		        	if (!$scope.default._id) {
+		        	if (!$scope.default.id) {
 	        			CallflowDefaultModel.add($scope.default, $scope.domain, cb)
 		        	} else {
 		        		CallflowDefaultModel.update($scope.default, $scope.domain, cb)
@@ -542,7 +510,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        $scope.removeItem = function (row) {
 	            $confirm({text: 'Are you sure you want to delete ' + row.name + ' ?'},  { templateUrl: 'views/confirm.html' })
                 .then(function() {
-                    CallflowDefaultModel.remove(row._id, $scope.domain, function (err) {
+                    CallflowDefaultModel.remove(row.id, $scope.domain, function (err) {
                         if (err)
                             return notifi.error(err, 5000);
                         reloadData()
@@ -560,7 +528,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        });
 
 	        function reloadData () {
-	            if ($location.$$path != '/callflows/default')
+	            if ($location.$$path !== '/callflows/default')
 	                return $scope.domain;
 
 				if (!$scope.domain)

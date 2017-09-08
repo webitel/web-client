@@ -5,7 +5,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
         function create () {
             return {
-                _id: null,
+                id: null,
                 destination_number: null,
                 name: null,
                 order: 0,
@@ -13,29 +13,37 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 disabled: false,
                 debug: false,
                 callflow: [],
-                onDisconnect: [],
+                callflow_on_disconnect: [],
                 cfDiagram: {}
             };
         };
 
         function list (domainName, cb) {
-            webitel.api("GET", "/api/v2/routes/default?domain=" + domainName, cb)
-        }
-        // TODO add engine api get by id
-        function item (id, domainName, cb) {
-            list(domainName, function (err, res) {
+            webitel.api("GET", "/api/v2/routes/default?sort=%7B%22order%22%3A-1%7D&domain=" + domainName, function (err, res) {
                 if (err)
-                    return (err);
-                var def = findInList(res, id);
-                if (def && def.fs_timezone)
-                    def.fs_timezone = {id: def.fs_timezone, name: def.fs_timezone};
-                return cb(null, def)
+                    return cb(err);
+
+                return cb(null, res.data)
+            })
+        }
+
+        function item (id, domainName, cb) {
+
+            webitel.api("GET", "/api/v2/routes/default/" + id + "?domain=" + domainName, function (err, res) {
+                if (err)
+                    return cb(err);
+
+                if (res.data && res.data.fs_timezone) {
+                    var timezone = res.data.fs_timezone;
+                    res.data.fs_timezone = {id: timezone, name: timezone}
+                }
+                return cb(null, res.data)
             });
-        };
+        }
 
         function findInList (list, id) {
             for (var i = 0, len = list.length; i < len; i++) {
-                if (list[i]._id === id)
+                if (list[i].id === id)
                     return list[i];
             };
         };
@@ -63,7 +71,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 domain: domainName,
                 fs_timezone: def.fs_timezone && def.fs_timezone.id,
                 callflow: def.callflow,
-                onDisconnect: def.onDisconnect,
+                callflow_on_disconnect: def.callflow_on_disconnect,
                 cfDiagram: def.cfDiagram
             };
         };
@@ -78,7 +86,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             if (!request.domain)
                 return cb(new Error('Bad domain.'));      
 
-            webitel.api("PUT", "/api/v2/routes/default/" +  def._id + "?domain=" + domainName, request, cb)            
+            webitel.api("PUT", "/api/v2/routes/default/" +  def.id + "?domain=" + domainName, request, cb)
         }
 
         function remove (id, domainName, cb) {
@@ -117,6 +125,10 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
         };
 
+        function move(id, domain, up, cb) {
+            webitel.api('PUT', '/api/v2/routes/default/' + id + (up ? '/up' : '/down') + '?domain=' + domain, cb)
+        }
+
         function debug(id, uuid, from, domain, number, cb) {
             webitel.api("POST", "/api/v2/routes/default/" + id +"/debug?domain=" + domain, {from: from, uuid: uuid, number: number}, cb)
         }
@@ -131,6 +143,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             findInList: findInList,
             setOrder: setOrder,
             incOrder: incOrder,
+            move: move,
             debug: debug
         }
     }]);
