@@ -11239,7 +11239,7 @@ html {
 @media (min-width: 768px) {
     .header-container>.top-header .logo {
         display:inline-block;
-        width: 186px;
+        width: 185px;
         border-right: 1px solid rgba(255,255,255,.1)
     }
 }
