@@ -10714,7 +10714,7 @@ html {
     z-index: 11;
     position: static;
     float: left;
-    width: 220px;
+    width: 185px;
     border-width: 0 1px 0 0;
     border-style: solid;
     border-color: #1b1a1f
@@ -10762,7 +10762,7 @@ html {
 
 @media (min-width: 768px) {
     .app>.main-container>.content-container {
-        margin-left:220px
+        margin-left:185px
     }
 }
 
@@ -11239,7 +11239,7 @@ html {
 @media (min-width: 768px) {
     .header-container>.top-header .logo {
         display:inline-block;
-        width: 220px;
+        width: 186px;
         border-right: 1px solid rgba(255,255,255,.1)
     }
 }
@@ -11339,7 +11339,7 @@ html {
 
 @media (min-width: 768px) {
     .header-container>.top-header .top-nav {
-        padding:0 0 0 220px
+        padding:0 0 0 185px
     }
 }
 
