@@ -146,7 +146,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
             }
 
             function saveDiagram() {
-                var cfGetter = getCallflowJSON();
+                var cfGetter = CallflowDiagram.getCallflowJSON();
                 $scope.diagramOpened = false;
                 $scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
                 $scope.cfDiagram = cfGetter.callflowModel;
