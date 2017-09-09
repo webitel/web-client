@@ -77,8 +77,8 @@
 
                         <td>
                             <p>
-                                <a ng-disabled="viewMode" ng-click="up(row)" href="javascript:;" class="btn btn-default btn-direction btn-up">Up</a>
-                                <a ng-disabled="viewMode" ng-click="down(row)" href="javascript:;" class="btn btn-default btn-direction btn-down">Down</a></p>
+                                <a ng-disabled="$first || viewMode" ng-click="up(row)" href="javascript:;" class="btn btn-default btn-direction btn-up">Up</a>
+                                <a ng-disabled="$last || viewMode" ng-click="down(row)" href="javascript:;" class="btn btn-default btn-direction btn-down">Down</a></p>
                             </p>
                         </td>
                         <td style="text-align: end">

@@ -19,7 +19,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         };
 
         function list (domainName, cb) {
-            webitel.api("GET", "/api/v2/routes/default?sort=%7B%22order%22%3A-1%7D&domain=" + domainName, function (err, res) {
+            webitel.api("GET", "/api/v2/routes/default?sort=%7B%22order%22%3A-1%7D&limit=1000&domain=" + domainName, function (err, res) {
                 if (err)
                     return cb(err);
 
