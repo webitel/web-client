@@ -71,6 +71,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
             $scope.initDirectory = initDirectory;
             $scope.initAcd = initAcd;
             $scope.initDiagramParams = initDiagramParams;
+            $scope.onDebugDiagram = onDebugDiagram;
 
             function initDiagramParams(){
                 $scope.initCalendars();
@@ -143,6 +144,10 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                 $scope.visualCfEnabled = false;
                 $scope.cfDiagram = null;
                 $scope.oldCfDiagram = null;
+            }
+
+            function onDebugDiagram() {
+                CallflowDiagram.onDebug.trigger({})
             }
 
             function saveDiagram() {

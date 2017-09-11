@@ -102,6 +102,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
             $scope.initDirectory = initDirectory;
             $scope.initAcd = initAcd;
             $scope.initDiagramParams = initDiagramParams;
+            $scope.onDebugDiagram = onDebugDiagram;
 
 			$scope.downloadScheme = function (row) {
 				utils.saveJsonToPc(row, row.name + '.json');
@@ -180,8 +181,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                 $scope.oldCfDiagram = null;
             }
 
+            function onDebugDiagram() {
+                CallflowDiagram.onDebug.trigger({})
+            }
+
 			function saveDiagram() {
-				var cfGetter = getCallflowJSON();
+				var cfGetter = CallflowDiagram.getCallflowJSON();
 				$scope.diagramOpened = false;
 				$scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
 				$scope.cfDiagram = cfGetter.callflowModel;

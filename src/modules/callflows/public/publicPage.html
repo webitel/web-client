@@ -10,6 +10,7 @@
 			<div class="row" style="position: fixed; bottom: 20px; left: 40%; z-index: 2001;">
 				<button ng-show="!viewMode" type="button" ng-click="saveDiagram()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
 				<button ng-click="openDiagram(false)" type="button" class="btn btn-w-md btn-gap-v btn-primary">Back</button>
+				<button ng-click="onDebugDiagram()" type="button" class="btn btn-w-xs btn-gap-v btn-dark" style="min-width: 35px"><i class="fa fa-bug"></i></button>
 			</div>
 		</div>
         <div class="panel-body" ng-hide="diagramOpened" style="position: relative;">

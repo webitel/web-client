@@ -102,6 +102,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
             $scope.initDirectory = initDirectory;
             $scope.initAcd = initAcd;
             $scope.initDiagramParams = initDiagramParams;
+            $scope.onDebugDiagram = onDebugDiagram;
 
 			// region File
 			$scope.downloadScheme = function (row) {
@@ -179,6 +180,10 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 				$scope.visualCfEnabled = false;
 				$scope.cfDiagram = null;
                 $scope.oldCfDiagram = null;
+            }
+
+            function onDebugDiagram() {
+                CallflowDiagram.onDebug.trigger({})
             }
 
             function saveDiagram() {
