@@ -489,7 +489,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 							return edit();
 						};
 	        		};
-
+                    if(!$scope.visualCfEnabled) {
+                        DiagramDesigner.init();
+                        $scope.cfDiagram = CallflowDiagram.createDiagram(JSON.parse($scope.cf));
+                        $scope.cf = JSON.stringify(CallflowDiagram.getCallflowJSON().callflowJson);
+                        DiagramDesigner.removeDesigner();
+                    }
                     $scope.default.cfDiagram = angular.copy($scope.cfDiagram);
 	        		$scope.default.callflow = JSON.parse($scope.cf);
 					if ($scope.cfOnDisconnect) {

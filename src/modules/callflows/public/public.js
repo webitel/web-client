@@ -475,6 +475,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 					if(typeof($scope.public.destination_number)=='string'){
 						$scope.public.destination_number = $scope.public.destination_number.split(",");
 					}
+                    if(!$scope.visualCfEnabled) {
+                        DiagramDesigner.init();
+                        $scope.cfDiagram = CallflowDiagram.createDiagram(JSON.parse($scope.cf));
+                        $scope.cf = JSON.stringify(CallflowDiagram.getCallflowJSON().callflowJson);
+                        DiagramDesigner.removeDesigner();
+                    }
                     $scope.public.cfDiagram = angular.copy($scope.cfDiagram);
 	        		$scope.public.callflow = JSON.parse($scope.cf);
 					if ($scope.cfOnDisconnect) {
