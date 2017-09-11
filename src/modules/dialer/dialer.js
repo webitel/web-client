@@ -272,7 +272,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             }
 
             function saveDiagram() {
-                var cfGetter = getCallflowJSON();
+                var cfGetter = CallflowDiagram.getCallflowJSON();
                 $scope.diagramOpened = false;
                 $scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
                 $scope.cfDiagram = cfGetter.callflowModel;
