@@ -461,7 +461,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        		var cf = callflowUtils.replaceExpression(res.callflow);
 	        		var cfOnDisconnect = callflowUtils.replaceExpression(res.callflow_on_disconnect);
 					$scope.cf = aceEditor.getStrFromJson(cf);
-                    $scope.cfDiagram = angular.copy(res.cfDiagram);
+                    $scope.cfDiagram = angular.copy(res.cf_diagram);
                     $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
 					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
 					$scope.oldCf = angular.copy($scope.cf);
@@ -492,7 +492,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                     if(!$scope.visualCfEnabled) {
                         DiagramDesigner.init();
                         $scope.cfDiagram = CallflowDiagram.createDiagram(JSON.parse($scope.cf));
-                        $scope.cf = JSON.stringify(CallflowDiagram.getCallflowJSON().callflowJson);
+                        var cd = CallflowDiagram.getCallflowJSON();
+                        $scope.cf = cd ? JSON.stringify(cd.callflowJson) : $scope.cf;
                         DiagramDesigner.removeDesigner();
                     }
                     $scope.default.cfDiagram = angular.copy($scope.cfDiagram);
