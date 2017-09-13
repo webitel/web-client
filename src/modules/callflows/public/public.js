@@ -478,7 +478,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                     if(!$scope.visualCfEnabled) {
                         DiagramDesigner.init();
                         $scope.cfDiagram = CallflowDiagram.createDiagram(JSON.parse($scope.cf));
-                        $scope.cf = JSON.stringify(CallflowDiagram.getCallflowJSON().callflowJson);
+                        var cd = CallflowDiagram.getCallflowJSON();
+                        $scope.cf = cd ? JSON.stringify(cd.callflowJson) : $scope.cf;
                         DiagramDesigner.removeDesigner();
                     }
                     $scope.public.cfDiagram = angular.copy($scope.cfDiagram);
