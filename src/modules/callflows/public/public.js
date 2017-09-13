@@ -443,10 +443,10 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        		$scope.public = res;
 	        		$scope.oldPublic = angular.copy(res);
 	        		var cf = callflowUtils.replaceExpression(res.callflow);
-	        		var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
+	        		var cfOnDisconnect = callflowUtils.replaceExpression(res.callflow_on_disconnect);
 					$scope.cf = aceEditor.getStrFromJson(cf);
 					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
-                    $scope.cfDiagram = angular.copy(res.cfDiagram);
+                    $scope.cfDiagram = angular.copy(res.cf_diagram);
                     $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
 					$scope.oldCf = angular.copy($scope.cf);
 					$scope.oldCfOnDisconnect = angular.copy($scope.cfOnDisconnect);
@@ -472,7 +472,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 							return edit();
 						};
 					};
-					if(typeof($scope.public.destination_number)=='string'){
+					if(typeof($scope.public.destination_number)==='string'){
 						$scope.public.destination_number = $scope.public.destination_number.split(",");
 					}
                     if(!$scope.visualCfEnabled) {

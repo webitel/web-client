@@ -71,8 +71,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 domain: domainName,
                 fs_timezone: def.fs_timezone && def.fs_timezone.id,
                 callflow: def.callflow,
-                onDisconnect: def.onDisconnect,
-                cfDiagram: def.cfDiagram
+                callflow_on_disconnect: def.onDisconnect,
+                cf_diagram: def.cfDiagram
             };
         };
 
@@ -89,7 +89,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
                 def.destination_number.map(function (i) {
                     return i.text
-                })
+                });
 
                 webitel.api("PUT", "/api/v2/routes/public/" + def.id + "?domain=" + domainName, request, cb);
             } catch (e) {

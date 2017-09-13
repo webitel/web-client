@@ -197,7 +197,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
 
 
             $scope.$watch('[extension,cf,cfOnDisconnect]', function(newValue, oldValue) {
-                return $scope.isEdit = !!oldValue[0]._id;
+                return $scope.isEdit = !!oldValue[0].id;
             }, true);
 
             $scope.cancel = function () {
@@ -226,9 +226,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                     $scope.extension = res;
                     $scope.oldExtension = angular.copy(res);
                     var cf = callflowUtils.replaceExpression(res.callflow);
-                    var cfOnDisconnect = callflowUtils.replaceExpression(res.onDisconnect);
+                    var cfOnDisconnect = callflowUtils.replaceExpression(res.callflow_on_disconnect);
                     $scope.cf = aceEditor.getStrFromJson(cf);
-                    $scope.cfDiagram = angular.copy(res.cfDiagram);
+                    $scope.cfDiagram = angular.copy(res.cf_diagram);
                     $scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
                     $scope.oldCf = angular.copy($scope.cf);
                     $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
@@ -275,7 +275,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
             $scope.removeItem = function (row) {
                 $confirm({text: 'Are you sure you want to delete ' + row.name + ' ?'},  { templateUrl: 'views/confirm.html' })
                     .then(function() {
-                        CallflowExtensionModel.remove(row._id, $scope.domain, function (err) {
+                        CallflowExtensionModel.remove(row.id, $scope.domain, function (err) {
                             if (err)
                                 return notifi.error(err, 5000);
                             reloadData()
@@ -294,7 +294,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
 
 
             function reloadData () {
-                if ($location.$$path != '/callflows/extension')
+                if ($location.$$path !== '/callflows/extension')
                     return $scope.domain && initPage();
 
                 if (!$scope.domain)

@@ -5,7 +5,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
         function create () {
             return {
-                _id: null,
+                id: null,
                 destination_number: null,
                 name: null,
                 fs_timezone: null,
@@ -16,20 +16,28 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         };
 
         function list (domainName, cb) {
-            webitel.api("GET", "/api/v2/routes/extensions?domain=" + domainName, cb)
+            webitel.api("GET", "/api/v2/routes/extensions?limit=10000&domain=" + domainName, function (err, res) {
+                if (err)
+                    return cb(err);
+
+                return cb(null, res.data)
+            })
         }
         // TODO add engine api get by id
         function item (id, domainName, cb) {
-            list(domainName, function (err, res) {
-                if (err)
-                    return (err);
 
-                for (var i = 0, len = res.length; i < len; i++) {
-                    if (res[i]._id === id)
-                        return cb(null, res[i])
-                };
+            webitel.api("GET", "/api/v2/routes/extensions/" + id + "?domain=" + domainName, function (err, res) {
+                if (err)
+                    return cb(err);
+
+                if (res.data && res.data.fs_timezone) {
+                    var timezone = res.data.fs_timezone;
+                    res.data.fs_timezone = {id: timezone, name: timezone}
+                }
+
+                return cb(null, res.data)
             });
-        };
+        }
 
         function add (def, domainName, cb) {
 
@@ -41,8 +49,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 name: ext.name,
                 fs_timezone: ext.fs_timezone && ext.fs_timezone.id,
                 callflow: ext.callflow,
-                onDisconnect: ext.onDisconnect,
-                cfDiagram: ext.cfDiagram
+                callflow_on_disconnect: ext.onDisconnect,
+                cf_diagram: ext.cfDiagram
             };
         };
 
@@ -56,7 +64,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             if (!request.callflow)
                 return cb(new Error('Bad callflow.'));
 
-            webitel.api("PUT", "/api/v2/routes/extensions/" +  def._id + "?domain=" + domainName, request, cb)
+            webitel.api("PUT", "/api/v2/routes/extensions/" +  def.id + "?domain=" + domainName, request, cb)
         }
 
         function remove (id, domainName, cb) {
