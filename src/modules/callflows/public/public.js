@@ -50,7 +50,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 				if ($scope.public._new)
 					return $scope.isEdit = $scope.isNew = true;
 
-				return $scope.isEdit = !!oldValue[0]._id;
+				return $scope.isEdit = !!oldValue[0].id;
 			}, true);
 
 			$scope.cancel = function () {
@@ -271,7 +271,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 						data.fs_timezone = {
 							id: data.fs_timezone
 						};
-						CallflowPublicModel.item(data._id, $scope.domain, function (err, res) {
+						CallflowPublicModel.item(data.id, $scope.domain, function (err, res) {
 							if (err)
 								return notifi.error(err, 3000);
 
@@ -360,7 +360,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 
                 try {
                     number = $scope.public.destination_number[0].text;
-                    id = $scope.public._id;
+                    id = $scope.public.id;
                     domain = $scope.public.domain;
                 } catch (e) {
                     console.error(e)
@@ -408,7 +408,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                         options: function () {
                             return {
                             	visCaller: true,
-								caller: webitel.connection.session.domain ? webitel.connection.session._id : ""
+								caller: webitel.connection.session.domain ? webitel.connection.session.id : ""
                             };
                         }
                     }
@@ -453,8 +453,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                     if(!!$scope.cfDiagram)$scope.visualCfEnabled = true;
 					disableEditMode();
 
-                    if (res.debug && res._id) {
-                        setDebugMode(res._id)
+                    if (res.debug && res.id) {
+                        setDebugMode(res.id)
                     }
 	        	});
 	        };
@@ -488,7 +488,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 					} else {
 						$scope.public.onDisconnect = [];
 					}
-		        	if (!$scope.public._id) {
+		        	if (!$scope.public.id) {
 	        			CallflowPublicModel.add($scope.public, $scope.domain, cb)
 		        	} else {
 		        		CallflowPublicModel.update($scope.public, $scope.domain, cb)
@@ -506,7 +506,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        $scope.removeItem = function (row) {
 	            $confirm({text: 'Are you sure you want to delete ' + row.name + ' ?'},  { templateUrl: 'views/confirm.html' })
                 .then(function() {
-                    CallflowPublicModel.remove(row._id, $scope.domain, function (err) {
+                    CallflowPublicModel.remove(row.id, $scope.domain, function (err) {
                         if (err)
                             return notifi.error(err, 5000);
                         reloadData()
