@@ -20,7 +20,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 if (err)
                     return cb(err);
 
-                var data = res.variables,
+                var data = res.data.length > 0 ? res.data[0].variables : [],
                     result = [];
                 angular.forEach(data, function (value, key) {
                     result.push({

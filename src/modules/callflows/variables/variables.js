@@ -34,7 +34,7 @@ define(['app', 'modules/callflows/variables/variablesModel'], function (app) {
                         return notifi.error(err);
 
                     reloadData();
-                    return notifi.info(res.status, 5000);
+                    return notifi.info("Save", 5000);
                 });
             };
 
