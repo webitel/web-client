@@ -152,10 +152,10 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
 
             function saveDiagram() {
                 var cfGetter = CallflowDiagram.getCallflowJSON();
-                $scope.diagramOpened = false;
                 $scope.visualCfEnabled = true;
-                CallflowDiagram.clearReducer();
-                DiagramDesigner.removeDesigner();
+                // $scope.diagramOpened = false;
+                // CallflowDiagram.clearReducer();
+                // DiagramDesigner.removeDesigner();
                 if(cfGetter){
                     $scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
                     $scope.cfDiagram = cfGetter.callflowModel;
