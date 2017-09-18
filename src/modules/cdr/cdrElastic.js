@@ -68,7 +68,10 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     queryString: $scope.queryString,
                     startDate: $scope.startDate,
                     endDate: $scope.endDate
-                }, 'cdrElastic')
+                }, 'cdrElastic');
+                if($scope.panelStatistic){
+                    $scope.getInboundStats();
+                }
             }, true);
 
 
@@ -530,18 +533,79 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
 
             $scope.changePanel = function (value) {
                 $scope.panelStatistic = value;
+                if(value){
+                    $scope.getInboundStats();
+                }
             };
+
+            $scope.getInboundStats = function () {
+                $scope.statRequests.inbound.filter[1].range['variables.start_stamp'].gte = $scope.startDate.getTime();
+                $scope.statRequests.inbound.filter[1].range['variables.start_stamp'].lte = $scope.endDate.getTime();
+                CdrModel.getStatistic($scope.domain, $scope.statRequests.inbound, function(err, res){
+                    if (err)
+                        return notifi.error(err);
+                    $scope.inbound_total = res.hits.total;
+                    $scope.inbound_answered = res.aggregations.Answered.value;
+                    $scope.inbound_abandoned = res.aggregations.Abandoned.value;
+                });
+            }
+
+            $scope.statRequests = {
+                inbound: {
+                    "aggs": {
+                        "Abandoned": {
+                            "sum": {
+                                "script": {
+                                    "inline": "doc['Bridged'].value ? 0 : 1",
+                                        "lang": "painless"
+                                }
+                            }
+                        },
+                        "Answered": {
+                            "sum": {
+                                "script": {
+                                    "inline": "doc['Bridged'].value ? 1 : 0",
+                                        "lang": "painless"
+                                }
+                            }
+                        }
+                    },
+                    "limit": 0,
+                    "query": "*",
+                    "filter": [
+                        {
+                            "match_phrase": {
+                                "Call direction": {
+                                    "query": "inbound"
+                                }
+                            }
+                        },
+                        {
+                            "range": {
+                                "variables.start_stamp": {
+                                    "gte": $scope.startDate.getTime(),
+                                    "lte": $scope.endDate.getTime(),
+                                    "format": "epoch_millis"
+                                }
+                            }
+                        }
+                    ],
+                    "sort": {},
+                    "domain": $scope.domain
+                }
+            };
+
 
             $scope.callDirection = {
                 data: [
-                    {
-                        key: "outbound",
-                        y: 5
-                    },
-                    {
-                        key: "inbound",
-                        y: 7
-                    }
+                    // {
+                    //     key: "outbound",
+                    //     y: 5
+                    // },
+                    // {
+                    //     key: "inbound",
+                    //     y: 7
+                    // }
                 ],
                 options: {
                     title: {
@@ -607,174 +671,174 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     }
                 },
                 data: [
-                    {
-                        "key": "Bridged: Avg answer delay, s",
-                        "color": "#d62728",
-                        "values": [
-                            {
-                                "label" : "Group A" ,
-                                "value" : 1.8746444827653
-                            } ,
-                            {
-                                "label" : "Group B" ,
-                                "value" : 5.0961543492239
-                            } ,
-                            {
-                                "label" : "Group C" ,
-                                "value" : 0.57072943117674
-                            } ,
-                            {
-                                "label" : "Group D" ,
-                                "value" : 2.4174010336624
-                            } ,
-                            {
-                                "label" : "Group E" ,
-                                "value" : 0.72009071426284
-                            } ,
-                            {
-                                "label" : "Group F" ,
-                                "value" : 0.77154485523777
-                            } ,
-                            {
-                                "label" : "Group G" ,
-                                "value" : 0.90152097798131
-                            } ,
-                            {
-                                "label" : "Group H" ,
-                                "value" : 0.91445417330854
-                            } ,
-                            {
-                                "label" : "Group I" ,
-                                "value" : 0.055746319141851
-                            }
-                        ]
-                    },
-                    {
-                        "key": "Bridged: Avg talk time, s",
-                        "color": "#1f77b4",
-                        "values": [
-                            {
-                                "label" : "Group A" ,
-                                "value" : 25.307646510375
-                            } ,
-                            {
-                                "label" : "Group B" ,
-                                "value" : 16.756779544553
-                            } ,
-                            {
-                                "label" : "Group C" ,
-                                "value" : 18.451534877007
-                            } ,
-                            {
-                                "label" : "Group D" ,
-                                "value" : 8.6142352811805
-                            } ,
-                            {
-                                "label" : "Group E" ,
-                                "value" : 7.8082472075876
-                            } ,
-                            {
-                                "label" : "Group F" ,
-                                "value" : 5.259101026956
-                            } ,
-                            {
-                                "label" : "Group G" ,
-                                "value" : 0.30947953487127
-                            } ,
-                            {
-                                "label" : "Group H" ,
-                                "value" : 0
-                            } ,
-                            {
-                                "label" : "Group I" ,
-                                "value" : 0
-                            }
-                        ]
-                    },
-                    {
-                        "key": "Bridged: Avg call duration, s",
-                        "color": "#ff7f0e",
-                        "values": [
-                            {
-                                "label" : "Group A" ,
-                                "value" : 25.307646510375
-                            } ,
-                            {
-                                "label" : "Group B" ,
-                                "value" : 16.756779544553
-                            } ,
-                            {
-                                "label" : "Group C" ,
-                                "value" : 18.451534877007
-                            } ,
-                            {
-                                "label" : "Group D" ,
-                                "value" : 8.6142352811805
-                            } ,
-                            {
-                                "label" : "Group E" ,
-                                "value" : 7.8082472075876
-                            } ,
-                            {
-                                "label" : "Group F" ,
-                                "value" : 5.259101026956
-                            } ,
-                            {
-                                "label" : "Group G" ,
-                                "value" : 0.30947953487127
-                            } ,
-                            {
-                                "label" : "Group H" ,
-                                "value" : 0
-                            } ,
-                            {
-                                "label" : "Group I" ,
-                                "value" : 0
-                            }
-                        ]
-                    }
+                    // {
+                    //     "key": "Bridged: Avg answer delay, s",
+                    //     "color": "#d62728",
+                    //     "values": [
+                    //         {
+                    //             "label" : "Group A" ,
+                    //             "value" : 1.8746444827653
+                    //         } ,
+                    //         {
+                    //             "label" : "Group B" ,
+                    //             "value" : 5.0961543492239
+                    //         } ,
+                    //         {
+                    //             "label" : "Group C" ,
+                    //             "value" : 0.57072943117674
+                    //         } ,
+                    //         {
+                    //             "label" : "Group D" ,
+                    //             "value" : 2.4174010336624
+                    //         } ,
+                    //         {
+                    //             "label" : "Group E" ,
+                    //             "value" : 0.72009071426284
+                    //         } ,
+                    //         {
+                    //             "label" : "Group F" ,
+                    //             "value" : 0.77154485523777
+                    //         } ,
+                    //         {
+                    //             "label" : "Group G" ,
+                    //             "value" : 0.90152097798131
+                    //         } ,
+                    //         {
+                    //             "label" : "Group H" ,
+                    //             "value" : 0.91445417330854
+                    //         } ,
+                    //         {
+                    //             "label" : "Group I" ,
+                    //             "value" : 0.055746319141851
+                    //         }
+                    //     ]
+                    // },
+                    // {
+                    //     "key": "Bridged: Avg talk time, s",
+                    //     "color": "#1f77b4",
+                    //     "values": [
+                    //         {
+                    //             "label" : "Group A" ,
+                    //             "value" : 25.307646510375
+                    //         } ,
+                    //         {
+                    //             "label" : "Group B" ,
+                    //             "value" : 16.756779544553
+                    //         } ,
+                    //         {
+                    //             "label" : "Group C" ,
+                    //             "value" : 18.451534877007
+                    //         } ,
+                    //         {
+                    //             "label" : "Group D" ,
+                    //             "value" : 8.6142352811805
+                    //         } ,
+                    //         {
+                    //             "label" : "Group E" ,
+                    //             "value" : 7.8082472075876
+                    //         } ,
+                    //         {
+                    //             "label" : "Group F" ,
+                    //             "value" : 5.259101026956
+                    //         } ,
+                    //         {
+                    //             "label" : "Group G" ,
+                    //             "value" : 0.30947953487127
+                    //         } ,
+                    //         {
+                    //             "label" : "Group H" ,
+                    //             "value" : 0
+                    //         } ,
+                    //         {
+                    //             "label" : "Group I" ,
+                    //             "value" : 0
+                    //         }
+                    //     ]
+                    // },
+                    // {
+                    //     "key": "Bridged: Avg call duration, s",
+                    //     "color": "#ff7f0e",
+                    //     "values": [
+                    //         {
+                    //             "label" : "Group A" ,
+                    //             "value" : 25.307646510375
+                    //         } ,
+                    //         {
+                    //             "label" : "Group B" ,
+                    //             "value" : 16.756779544553
+                    //         } ,
+                    //         {
+                    //             "label" : "Group C" ,
+                    //             "value" : 18.451534877007
+                    //         } ,
+                    //         {
+                    //             "label" : "Group D" ,
+                    //             "value" : 8.6142352811805
+                    //         } ,
+                    //         {
+                    //             "label" : "Group E" ,
+                    //             "value" : 7.8082472075876
+                    //         } ,
+                    //         {
+                    //             "label" : "Group F" ,
+                    //             "value" : 5.259101026956
+                    //         } ,
+                    //         {
+                    //             "label" : "Group G" ,
+                    //             "value" : 0.30947953487127
+                    //         } ,
+                    //         {
+                    //             "label" : "Group H" ,
+                    //             "value" : 0
+                    //         } ,
+                    //         {
+                    //             "label" : "Group I" ,
+                    //             "value" : 0
+                    //         }
+                    //     ]
+                    // }
                 ]
             };
 
             $scope.causeByAttemptChart = {
                 data: [
-                    {
-                        key: "Cumulative Return",
-                        values: [
-                            {
-                                "label" : "A" ,
-                                "value" : 29.765957771107
-                            } ,
-                            {
-                                "label" : "B" ,
-                                "value" : 0
-                            } ,
-                            {
-                                "label" : "C" ,
-                                "value" : 32.807804682612
-                            } ,
-                            {
-                                "label" : "D" ,
-                                "value" : 196.45946739256
-                            } ,
-                            {
-                                "label" : "E" ,
-                                "value" : 0.01
-                            } ,
-                            {
-                                "label" : "F" ,
-                                "value" : 98.079782601442
-                            } ,
-                            {
-                                "label" : "G" ,
-                                "value" : 13.925743130903
-                            } ,
-                            {
-                                "label" : "H" ,
-                                "value" : 5.1387322875705
-                            }
-                        ]
-                    }
+                    // {
+                    //     key: "Cumulative Return",
+                    //     values: [
+                    //         {
+                    //             "label" : "A" ,
+                    //             "value" : 29.765957771107
+                    //         } ,
+                    //         {
+                    //             "label" : "B" ,
+                    //             "value" : 0
+                    //         } ,
+                    //         {
+                    //             "label" : "C" ,
+                    //             "value" : 32.807804682612
+                    //         } ,
+                    //         {
+                    //             "label" : "D" ,
+                    //             "value" : 196.45946739256
+                    //         } ,
+                    //         {
+                    //             "label" : "E" ,
+                    //             "value" : 0.01
+                    //         } ,
+                    //         {
+                    //             "label" : "F" ,
+                    //             "value" : 98.079782601442
+                    //         } ,
+                    //         {
+                    //             "label" : "G" ,
+                    //             "value" : 13.925743130903
+                    //         } ,
+                    //         {
+                    //             "label" : "H" ,
+                    //             "value" : 5.1387322875705
+                    //         }
+                    //     ]
+                    // }
                 ],
                 options: {
                     title: {

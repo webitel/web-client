@@ -386,7 +386,13 @@ define(["app", "config"], function(app, config) {
             webitel.cdr("DELETE", "/api/v2/cdr/" + uuid, cb);
         }
 
+        function getStatistic(domain, body, cb){
+            if (!domain)
+                return cb(new Error('Bad request parameters.'));
+            webitel.cdr("POST", "/api/v2/cdr/text?domain=" + domain, JSON.stringify(body), cb);
+        }
         return {
+            getStatistic: getStatistic,
             getData: getData,
             getElasticData: getElasticData,
             scrollElasticData: scrollElasticData,

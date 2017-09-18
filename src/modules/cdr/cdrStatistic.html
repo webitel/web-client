@@ -5,7 +5,7 @@
                 <i class="glyphicon glyphicon-earphone text-large"></i>
             </div>
             <div class="panel-bottom bg-reverse">
-                <p class="size-h1">0</p>
+                <p class="size-h1">{{count||0}}</p>
                 <p class="text-muted">Total</p>
             </div>
         </section>
@@ -19,16 +19,16 @@
             <div class="list-justified-container" style="padding: 0">
                 <ul class="list-justified text-center" style="-webkit-margin-after: 0;">
                     <li>
-                        <p class="size-h1">0</p>
+                        <p class="size-h1">{{inbound_total||0}}</p>
                         <p class="text-muted">Total</p>
                     </li>
                     <li>
-                        <p class="size-h1">0</p>
+                        <p class="size-h1">{{inbound_answered||0}}</p>
                         <p class="text-muted">Answered</p>
                     </li>
 
                     <li>
-                        <p class="size-h1">0</p>
+                        <p class="size-h1">{{inbound_abandoned||0}}</p>
                         <p class="text-muted">Abandoned</p>
                     </li>
                 </ul>
