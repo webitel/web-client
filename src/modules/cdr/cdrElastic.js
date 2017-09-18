@@ -71,6 +71,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 }, 'cdrElastic');
                 if($scope.panelStatistic){
                     $scope.getInboundStats();
+                    $scope.getDirectionStats();
                 }
             }, true);
 
@@ -535,6 +536,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 $scope.panelStatistic = value;
                 if(value){
                     $scope.getInboundStats();
+                    $scope.getDirectionStats();
                 }
             };
 
@@ -547,6 +549,31 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     $scope.inbound_total = res.hits.total;
                     $scope.inbound_answered = res.aggregations.Answered.value;
                     $scope.inbound_abandoned = res.aggregations.Abandoned.value;
+                });
+            };
+
+            $scope.getDirectionStats = function () {
+                $scope.statRequests.direction.filter[0].range['variables.start_stamp'].gte = $scope.startDate.getTime();
+                $scope.statRequests.direction.filter[0].range['variables.start_stamp'].lte = $scope.endDate.getTime();
+                var data = [];
+                CdrModel.getStatistic($scope.domain, $scope.statRequests.direction, function(err, res){
+                    if (err)
+                        return notifi.error(err);
+                    res.aggregations.directions.buckets.forEach(function (item) {
+                       data.push({
+                           key: item.key,
+                           y: item.doc_count
+                       });
+                    });
+                    $scope.callDirection.data = data;
+                    data = [];
+                    res.aggregations.hangup_causes.buckets.forEach(function (item) {
+                        data.push({
+                            label: item.key,
+                            value: item.doc_count
+                        });
+                    });
+                    $scope.causeByAttemptChart.data[0].values = data;
                 });
             }
 
@@ -592,21 +619,104 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     ],
                     "sort": {},
                     "domain": $scope.domain
+                },
+                avg:{
+                    "aggs": {
+                        "2": {
+                            "filters": {
+                                "filters": {
+                                    "Bridged": {
+                                        "query_string": {
+                                            "query": "Bridged: true",
+                                            "analyze_wildcard": true
+                                        }
+                                    }
+                                }
+                            },
+                            "aggs": {
+                                "3": {
+                                    "terms": {
+                                        "field": "User ID",
+                                        "size": 10,
+                                        "order": {
+                                            "_term": "desc"
+                                        }
+                                    },
+                                    "aggs": {
+                                        "5": {
+                                            "avg": {
+                                                "field": "Call duration"
+                                            }
+                                        },
+                                        "6": {
+                                            "avg": {
+                                                "field": "Before Bridge Delay"
+                                            }
+                                        },
+                                        "7": {
+                                            "avg": {
+                                                "field": "Connected call duration"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "limit": 0,
+                    "query": "*",
+                    "filter": [      {
+                        "range": {
+                            "variables.start_stamp": {
+                                "gte": $scope.startDate.getTime(),
+                                "lte": $scope.endDate.getTime(),
+                                "format": "epoch_millis"
+                            }
+                        }
+                    }],
+                    "sort": {},
+                    "domain": $scope.domain
+                },
+                direction: {
+                    "aggs": {
+                        "hangup_causes": {
+                            "terms": {
+                                "field": "Hangup cause",
+                                "size": 5,
+                                "order": {
+                                    "_count": "desc"
+                                }
+                            }
+                        },
+                        "directions": {
+                            "terms": {
+                                "field": "Call direction",
+                                "size": 5,
+                                "order": {
+                                    "_count": "desc"
+                                }
+                            }
+                        }
+                    },
+                    "limit": 0,
+                    "query": "*",
+                    "filter": [      {
+                        "range": {
+                            "variables.start_stamp": {
+                                "gte": $scope.startDate.getTime(),
+                                "lte": $scope.endDate.getTime(),
+                                "format": "epoch_millis"
+                            }
+                        }
+                    }],
+                    "sort": {},
+                    "domain": $scope.domain
                 }
             };
 
 
             $scope.callDirection = {
-                data: [
-                    // {
-                    //     key: "outbound",
-                    //     y: 5
-                    // },
-                    // {
-                    //     key: "inbound",
-                    //     y: 7
-                    // }
-                ],
+                data: [],
                 options: {
                     title: {
                         enable: true,
@@ -802,48 +912,15 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
 
             $scope.causeByAttemptChart = {
                 data: [
-                    // {
-                    //     key: "Cumulative Return",
-                    //     values: [
-                    //         {
-                    //             "label" : "A" ,
-                    //             "value" : 29.765957771107
-                    //         } ,
-                    //         {
-                    //             "label" : "B" ,
-                    //             "value" : 0
-                    //         } ,
-                    //         {
-                    //             "label" : "C" ,
-                    //             "value" : 32.807804682612
-                    //         } ,
-                    //         {
-                    //             "label" : "D" ,
-                    //             "value" : 196.45946739256
-                    //         } ,
-                    //         {
-                    //             "label" : "E" ,
-                    //             "value" : 0.01
-                    //         } ,
-                    //         {
-                    //             "label" : "F" ,
-                    //             "value" : 98.079782601442
-                    //         } ,
-                    //         {
-                    //             "label" : "G" ,
-                    //             "value" : 13.925743130903
-                    //         } ,
-                    //         {
-                    //             "label" : "H" ,
-                    //             "value" : 5.1387322875705
-                    //         }
-                    //     ]
-                    // }
+                    {
+                        key: "Cumulative Return",
+                        values: []
+                    }
                 ],
                 options: {
                     title: {
                         enable: true,
-                        text: "TOP 10 hangup causes"
+                        text: "TOP 5 hangup causes"
                     },
                     chart: {
                         type: 'discreteBarChart',
@@ -859,7 +936,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         y: function(d){return d.value;},
                         showValues: true,
                         valueFormat: function(d){
-                            return d3.format(',.2%')(d);
+                            return d3.format(',d')(d);
                         },
 
                         duration: 500,
@@ -873,7 +950,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                             // axisLabelDistance: 0,
                             showMaxMin: false,
                             tickFormat: function(d){
-                                return d3.format(',.0%')(d);
+                                return d3.format(',d')(d);
                             }
                         }
                     }
