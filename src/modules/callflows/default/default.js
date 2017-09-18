@@ -491,13 +491,13 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 							return edit();
 						};
 	        		};
-                    if(!$scope.visualCfEnabled) {
-                        DiagramDesigner.init();
-                        $scope.cfDiagram = CallflowDiagram.createDiagram(JSON.parse($scope.cf));
-                        var cd = CallflowDiagram.getCallflowJSON();
-                        $scope.cf = cd ? JSON.stringify(cd.callflowJson) : $scope.cf;
-                        DiagramDesigner.removeDesigner();
-                    }
+                    // if(!$scope.visualCfEnabled) {
+                    //     DiagramDesigner.init();
+                    //     $scope.cfDiagram = CallflowDiagram.createDiagram(JSON.parse($scope.cf));
+                    //     var cd = CallflowDiagram.getCallflowJSON();
+                    //     $scope.cf = cd ? JSON.stringify(cd.callflowJson) : $scope.cf;
+                    //     DiagramDesigner.removeDesigner();
+                    // }
                     $scope.default.cfDiagram = angular.copy($scope.cfDiagram);
 	        		$scope.default.callflow = JSON.parse($scope.cf);
 					if ($scope.cfOnDisconnect) {
