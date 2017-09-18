@@ -528,6 +528,294 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
 
             };
 
+            $scope.changePanel = function (value) {
+                $scope.panelStatistic = value;
+            };
+
+            $scope.callDirection = {
+                data: [
+                    {
+                        key: "outbound",
+                        y: 5
+                    },
+                    {
+                        key: "inbound",
+                        y: 7
+                    }
+                ],
+                options: {
+                    title: {
+                        enable: true,
+                        text: "Call directions"
+                    },
+                    chart: {
+                        type: 'pieChart',
+                        height: 350,
+                        margin : {
+                            top: 5,
+                            right: 0,
+                            bottom: 0,
+                            left: 0
+                        },
+                        donut: true,
+                        x: function(d){return d.key;},
+                        y: function(d){return d.y;},
+                        showValues: true,
+                        showLegend: false,
+                        valueFormat: function(d){
+                            return d3.format(',d')(d);
+                        },
+
+                        duration: 500,
+                        xAxis: {
+                            axisLabel: 'Type'
+                        },
+                        yAxis: {
+                            axisLabel: 'Count',
+                            axisLabelDistance: 0,
+                            tickFormat: function(d){
+                                return d3.format(',d')(d);
+                            }
+                        }
+                    }
+                }
+            };
+
+            $scope.avgConnectedCallMetr = {
+                options: {
+                    title: {
+                        enable: true,
+                        text: "Avg connected calls metrics"
+                    },
+                    chart: {
+                        type: 'multiBarHorizontalChart',
+                        height: 550,
+                        x: function(d){return d.label;},
+                        y: function(d){return d.value;},
+                        showControls: true,
+                        showValues: true,
+                        duration: 500,
+                        xAxis: {
+                            showMaxMin: false
+                        },
+                        yAxis: {
+                            axisLabel: 'Values',
+                            tickFormat: function(d){
+                                return d3.format(',.2f')(d);
+                            }
+                        }
+                    }
+                },
+                data: [
+                    {
+                        "key": "Bridged: Avg answer delay, s",
+                        "color": "#d62728",
+                        "values": [
+                            {
+                                "label" : "Group A" ,
+                                "value" : 1.8746444827653
+                            } ,
+                            {
+                                "label" : "Group B" ,
+                                "value" : 5.0961543492239
+                            } ,
+                            {
+                                "label" : "Group C" ,
+                                "value" : 0.57072943117674
+                            } ,
+                            {
+                                "label" : "Group D" ,
+                                "value" : 2.4174010336624
+                            } ,
+                            {
+                                "label" : "Group E" ,
+                                "value" : 0.72009071426284
+                            } ,
+                            {
+                                "label" : "Group F" ,
+                                "value" : 0.77154485523777
+                            } ,
+                            {
+                                "label" : "Group G" ,
+                                "value" : 0.90152097798131
+                            } ,
+                            {
+                                "label" : "Group H" ,
+                                "value" : 0.91445417330854
+                            } ,
+                            {
+                                "label" : "Group I" ,
+                                "value" : 0.055746319141851
+                            }
+                        ]
+                    },
+                    {
+                        "key": "Bridged: Avg talk time, s",
+                        "color": "#1f77b4",
+                        "values": [
+                            {
+                                "label" : "Group A" ,
+                                "value" : 25.307646510375
+                            } ,
+                            {
+                                "label" : "Group B" ,
+                                "value" : 16.756779544553
+                            } ,
+                            {
+                                "label" : "Group C" ,
+                                "value" : 18.451534877007
+                            } ,
+                            {
+                                "label" : "Group D" ,
+                                "value" : 8.6142352811805
+                            } ,
+                            {
+                                "label" : "Group E" ,
+                                "value" : 7.8082472075876
+                            } ,
+                            {
+                                "label" : "Group F" ,
+                                "value" : 5.259101026956
+                            } ,
+                            {
+                                "label" : "Group G" ,
+                                "value" : 0.30947953487127
+                            } ,
+                            {
+                                "label" : "Group H" ,
+                                "value" : 0
+                            } ,
+                            {
+                                "label" : "Group I" ,
+                                "value" : 0
+                            }
+                        ]
+                    },
+                    {
+                        "key": "Bridged: Avg call duration, s",
+                        "color": "#ff7f0e",
+                        "values": [
+                            {
+                                "label" : "Group A" ,
+                                "value" : 25.307646510375
+                            } ,
+                            {
+                                "label" : "Group B" ,
+                                "value" : 16.756779544553
+                            } ,
+                            {
+                                "label" : "Group C" ,
+                                "value" : 18.451534877007
+                            } ,
+                            {
+                                "label" : "Group D" ,
+                                "value" : 8.6142352811805
+                            } ,
+                            {
+                                "label" : "Group E" ,
+                                "value" : 7.8082472075876
+                            } ,
+                            {
+                                "label" : "Group F" ,
+                                "value" : 5.259101026956
+                            } ,
+                            {
+                                "label" : "Group G" ,
+                                "value" : 0.30947953487127
+                            } ,
+                            {
+                                "label" : "Group H" ,
+                                "value" : 0
+                            } ,
+                            {
+                                "label" : "Group I" ,
+                                "value" : 0
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            $scope.causeByAttemptChart = {
+                data: [
+                    {
+                        key: "Cumulative Return",
+                        values: [
+                            {
+                                "label" : "A" ,
+                                "value" : 29.765957771107
+                            } ,
+                            {
+                                "label" : "B" ,
+                                "value" : 0
+                            } ,
+                            {
+                                "label" : "C" ,
+                                "value" : 32.807804682612
+                            } ,
+                            {
+                                "label" : "D" ,
+                                "value" : 196.45946739256
+                            } ,
+                            {
+                                "label" : "E" ,
+                                "value" : 0.01
+                            } ,
+                            {
+                                "label" : "F" ,
+                                "value" : 98.079782601442
+                            } ,
+                            {
+                                "label" : "G" ,
+                                "value" : 13.925743130903
+                            } ,
+                            {
+                                "label" : "H" ,
+                                "value" : 5.1387322875705
+                            }
+                        ]
+                    }
+                ],
+                options: {
+                    title: {
+                        enable: true,
+                        text: "TOP 10 hangup causes"
+                    },
+                    chart: {
+                        type: 'discreteBarChart',
+                        height: 400,
+                        margin : {
+                            top: 20,
+                            right: 20,
+                            bottom: 150,
+                            left: 50
+                        },
+                        // yDomain: [0, 100],
+                        x: function(d){return d.label;},
+                        y: function(d){return d.value;},
+                        showValues: true,
+                        valueFormat: function(d){
+                            return d3.format(',.2%')(d);
+                        },
+
+                        duration: 500,
+                        xAxis: {
+                            rotateYLabel: true,
+                            rotateLabels: 45,
+                            fontSize: 10
+                        },
+                        yAxis: {
+                            // axisLabel: '%',
+                            // axisLabelDistance: 0,
+                            showMaxMin: false,
+                            tickFormat: function(d){
+                                return d3.format(',.0%')(d);
+                            }
+                        }
+                    }
+                }
+            };
+
             $scope.callServer = getData;
             $scope.getTableState = null;
             var nexData = true;

@@ -1,62 +1,59 @@
 <div class="page" style="position: relative" >
-
     <div class="panel" style="min-height: 470px;">
-
         <div class="panel-body" >
             <div class="row">
                 <div class="col-sm-12">
-
-
                     <div class="form-inline">
-
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for>From</label>
-                                <div class="input-group ui-datepicker">
-                                    <input type="text"
-                                           class="form-control"
-                                           datetime-picker="dd.MM.yyyy HH:mm"
-                                           ng-model="startDate"
-                                           ng-change="onChangeDate(startDate)"
-                                           is-open="dateOpenedControl.start"
-                                            >
-                                    <span class="btn input-group-addon" ng-click="openDate($event, 'start')"><i class="fa fa-calendar"></i></span>
+                        <div class="col-sm-12" style="padding-left: 1px; padding-right: 0px;">
+                            <div class="pull-right">
+                                <div class="form-group">
+                                    <label for>From</label>
+                                    <div class="input-group ui-datepicker">
+                                        <input type="text"
+                                               class="form-control"
+                                               datetime-picker="dd.MM.yyyy HH:mm"
+                                               ng-model="startDate"
+                                               ng-change="onChangeDate(startDate)"
+                                               is-open="dateOpenedControl.start"
+                                        >
+                                        <span class="btn input-group-addon" ng-click="openDate($event, 'start')"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="btn-group" dropdown="">
+                                        <button type="button" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="javascript:;" ng-click="setQuickDateRange(val)" ng-repeat="(key, val) in quickDateRange">{{key}}</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for>To</label>
+                                    <div class="input-group ui-datepicker">
+                                        <input type="text"
+                                               class="form-control"
+                                               datetime-picker="dd.MM.yyyy HH:mm"
+                                               ng-model="endDate"
+                                               ng-change="onChangeDate(endDate)"
+                                               is-open="dateOpenedControl.end"
+                                        >
+                                        <span class="btn input-group-addon" ng-click="openDate($event, 'end')"><i class="fa fa-calendar"></i></span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="btn-group" dropdown="">
-                                    <button type="button" class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li><a href="javascript:;" ng-click="setQuickDateRange(val)" ng-repeat="(key, val) in quickDateRange">{{key}}</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for>To</label>
-                                <div class="input-group ui-datepicker">
-                                    <input type="text"
-                                           class="form-control"
-                                           datetime-picker="dd.MM.yyyy HH:mm"
-                                           ng-model="endDate"
-                                           ng-change="onChangeDate(endDate)"
-                                           is-open="dateOpenedControl.end"
-                                            >
-                                    <span class="btn input-group-addon" ng-click="openDate($event, 'end')"><i class="fa fa-calendar"></i></span>
-                                </div>
+                            <div class="pull-left" style="margin-top: 2px">
+                                <a href="" ng-click="changePanel(!panelStatistic)" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
+                                    <i ng-if="panelStatistic" class="glyphicon glyphicon-list-alt"></i>
+                                    <i ng-if="!panelStatistic" class="glyphicon glyphicon-stats"></i>
+                                </a>
                             </div>
                         </div>
-
-
                     </div>
-
                 </div>
-
             </div>
-
             <div class="divider divider-sm"></div>
-
             <div class="row">
                 <div class="col-sm-12">
                     <div class="input-group" data-ng-class="{'has-error': qsError}" >
@@ -69,11 +66,8 @@
                         </a>
                     </div>
                 </div>
-
             </div>
-
             <div class="divider divider-sm"></div>
-
             <div class="row">
                 <div class="col-md-12">
                     <!--<button class="btn btn-success btn-xs" ng-click="applyFilter()"><i class="fa fa-filter"></i>Apply</button>-->
@@ -103,78 +97,8 @@
                     <span class="pull-right">Count: {{count}}</span>
                 </div>
             </div>
-            <div class="row" ng-show="exportProcessExcel">
-                <div class="col-sm-12">
-                    <span class="space space-xs"></span>
-                    <progressbar class="progressbar-sm progress-rounded progress-striped progress" max="100" value="progressExport" type="success"><span style="white-space:nowrap;">Export: {{progressExport}} / 100</span></progressbar>
-                </div>
-            </div>
-
-
-            <div class="table-responsive"  style="position: relative; word-break: break-word;">
-
-                <div class="row text-center" ng-if="!rowCollection || rowCollection.length == 0">
-                    <div class="center-block col-md-4" style="float: none;">
-                        <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
-                        <h2>No results found</h2>
-                    </div>
-                </div>
-
-                <table ng-show="rowCollection.length > 0" wt-responsive-table infinite-scroll-disabled="isLoading"
-                       style="table-layout: fixed;"
-                       st-table="rowCollection" infinite-scroll="callServer"  st-pipe="callServer" class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th st-skip-natural="true" st-sort="'{{item}}'" ng-if="!mapColumns[item].noRender && !mapColumns[item].options.detail" ng-repeat="(item, key) in columns">
-                            {{mapColumns[item].caption}}
-                        </th>
-                    </tr>
-                    </thead>
-
-                    <tbody style="font-size: 11px;">
-
-                    <tr ng-repeat-start="(k, row) in rowCollection" ng-click="selectRow(row)" ng-class="{'bg-gray': row == activeRow, 'call-parent-queue': activeRow['variables.cc_member_uuid'] && (row['variables.cc_member_uuid'] === activeRow['variables.cc_member_uuid'])}">
-                        <td style="word-break: break-word;" ng-if="!mapColumns[item].noRender && !mapColumns[item].options.detail" ng-repeat="(item, key) in columns">
-                            {{renderCell(row[item], mapColumns[item])}}
-                            <!--{{row[item]}}-->
-                        </td>
-                    </tr>
-
-                    <tr ng-repeat-end="" class="bg-gray" ng-show="row == activeRow">
-                        <td colspan="{{_countColumns}}" class="row">
-                            <div class="col-sm-8">
-                                <dl class="dl-horizontal" ng-repeat="name in detailtColumns">
-                                    <dt>{{mapColumns[name].caption}}</dt>
-                                    <dd>{{renderCell(activeRow[name], mapColumns[name])}}</dd>
-                                </dl>
-                            </div>
-                            <div class="col-sm-4 ">
-                                <div class="col-sm-12" ng-repeat="file in row._files" >
-                                    <div class="row pull-right">
-                                        <button ng-click="fileAction(file)"  class="btn btn-default btn-sm" >
-                                            <i ng-if="file.private" class="color-info fa fa-asterisk" aria-hidden="true"></i>
-                                            {{file.name}}
-                                            <i ng-class="file.class"></i>
-                                        </button>
-
-                                        <button ng-repeat="btn in file.buttons" ng-class="{{btn.ngClass}}" ng-click="fileAction(btn, file, row._files)"  class="btn btn-default btn-sm " >
-                                            <i ng-class="btn.class"></i>
-                                        </button>
-                                    </div>
-
-                                </div>
-                                <span class="pull-right">{{detailLoadingText}}</span>
-
-                                <!--<button ng-click="playRow(row)" ><i class="fa fa-file-pdf-o"></i></button>-->
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                    </tbody>
-                </table>
-            </div>
+            <div ng-if="!panelStatistic" data-ng-include="'modules/cdr/cdrPage.html'"></div>
+            <div ng-if="panelStatistic" data-ng-include="'modules/cdr/cdrStatistic.html'"></div>
         </div>
     </div>
 

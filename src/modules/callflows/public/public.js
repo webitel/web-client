@@ -189,12 +189,14 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
             function saveDiagram() {
                 var cfGetter = CallflowDiagram.getCallflowJSON();
                 $scope.diagramOpened = false;
-				$scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
-				$scope.cfDiagram = cfGetter.callflowModel;
 				$scope.visualCfEnabled = true;
                 CallflowDiagram.clearReducer();
                 DiagramDesigner.removeDesigner();
-                $scope.save();
+                if(cfGetter){
+                    $scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
+                    $scope.cfDiagram = cfGetter.callflowModel;
+                    if($scope.public.name && $scope.public.fs_timezone)$scope.save();
+                }
             }
 
             function openDiagram(value) {
