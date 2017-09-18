@@ -552,6 +552,15 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 });
             };
 
+            $scope.getAvgStats = function () {
+                $scope.statRequests.avg.filter[0].range['variables.start_stamp'].gte = $scope.startDate.getTime();
+                $scope.statRequests.avg.filter[0].range['variables.start_stamp'].lte = $scope.endDate.getTime();
+                CdrModel.getStatistic($scope.domain, $scope.statRequests.avg, function(err, res){
+                    if (err)
+                        return notifi.error(err);
+                });
+            };
+
             $scope.getDirectionStats = function () {
                 $scope.statRequests.direction.filter[0].range['variables.start_stamp'].gte = $scope.startDate.getTime();
                 $scope.statRequests.direction.filter[0].range['variables.start_stamp'].lte = $scope.endDate.getTime();
