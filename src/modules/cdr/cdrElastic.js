@@ -834,19 +834,19 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 },
                 data: [
                     {
-                        "key": "Bridged: Avg answer delay, s",
+                        "key": "Avg answer delay, s",
                         "color": "#44d680",
                         "values": [
                         ]
                     },
                     {
-                        "key": "Bridged: Avg talk time, s",
+                        "key": "Avg talk time, s",
                         "color": "#1f77b4",
                         "values": [
                         ]
                     },
                     {
-                        "key": "Bridged: Avg call duration, s",
+                        "key": "Avg call duration, s",
                         "color": "#ff7f0e",
                         "values": [
                         ]
