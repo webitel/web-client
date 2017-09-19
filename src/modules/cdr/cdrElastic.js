@@ -64,11 +64,14 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             }
 
             $scope.$watch("[queryString,startDate,endDate]", function (newVal) {
-                TableSearch.set({
-                    queryString: $scope.queryString,
-                    startDate: $scope.startDate,
-                    endDate: $scope.endDate
-                }, 'cdrElastic');
+                    TableSearch.set({
+                        queryString: $scope.queryString,
+                        startDate: $scope.startDate,
+                        endDate: $scope.endDate
+                    }, 'cdrElastic');
+            }, true);
+
+            $scope.$watch("[startDate,endDate]", function (newVal) {
                 if($scope.panelStatistic){
                     $scope.getInboundStats();
                     $scope.getDirectionStats();
@@ -77,12 +80,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             }, true);
 
             $scope.$watch("domain", function (newVal) {
-                $scope.panelStatistic=false;
-                // if(){
-                //     $scope.getInboundStats();
-                //     $scope.getDirectionStats();
-                //     $scope.getAvgStats();
-                // }
+                $scope.panelStatistic = false;
             }, true);
 
             $scope.mapColumns = CdrModel.mapColumn();
@@ -277,7 +275,11 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             //$scope.testSource = null;
             $scope.applyFilter = function () {
                 $scope.tableState.pagination.start = 0;
-
+                if($scope.panelStatistic){
+                    $scope.getInboundStats();
+                    $scope.getDirectionStats();
+                    $scope.getAvgStats();
+                }
                 getData($scope.tableState);
             };
             $scope.resetFilter = function () {
@@ -553,6 +555,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 $scope.statRequests.inbound.filter[1].range['variables.start_stamp'].gte = $scope.startDate.getTime();
                 $scope.statRequests.inbound.filter[1].range['variables.start_stamp'].lte = $scope.endDate.getTime();
                 $scope.statRequests.inbound.domain = $scope.domain;
+                $scope.statRequests.inbound.query = $scope.queryString;
                 CdrModel.getStatistic($scope.domain, $scope.statRequests.inbound, function(err, res){
                     if (err)
                         return notifi.error(err);
@@ -566,6 +569,10 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 $scope.statRequests.avg.filter[0].range['variables.start_stamp'].gte = $scope.startDate.getTime();
                 $scope.statRequests.avg.filter[0].range['variables.start_stamp'].lte = $scope.endDate.getTime();
                 $scope.statRequests.avg.domain = $scope.domain;
+                $scope.statRequests.avg.query = $scope.queryString;
+                $scope.avgConnectedCallMetr.data.forEach(function(item){
+                    item.values = [];
+                });
                 CdrModel.getStatistic($scope.domain, $scope.statRequests.avg, function(err, res){
                     if (err)
                         return notifi.error(err);
@@ -591,6 +598,10 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 $scope.statRequests.direction.filter[0].range['variables.start_stamp'].gte = $scope.startDate.getTime();
                 $scope.statRequests.direction.filter[0].range['variables.start_stamp'].lte = $scope.endDate.getTime();
                 $scope.statRequests.direction.domain = $scope.domain;
+                $scope.statRequests.direction.query = $scope.queryString;
+                $scope.callDirection.data = [];
+                $scope.causeByAttemptChart.data[0].values = [];
+                $scope.outbound = 0;
                 var data = [];
                 CdrModel.getStatistic($scope.domain, $scope.statRequests.direction, function(err, res){
                     if (err)
@@ -601,6 +612,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                                 key: item.key,
                                 y: item.doc_count
                             });
+                            if(item.key === 'outbound') $scope.outbound = item.doc_count;
                         });
                         $scope.callDirection.data = data;
                     }
@@ -638,7 +650,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         }
                     },
                     "limit": 0,
-                    "query": "*",
+                    "query": $scope.queryString,
                     "filter": [
                         {
                             "match_phrase": {
@@ -704,7 +716,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         }
                     },
                     "limit": 0,
-                    "query": "*",
+                    "query": $scope.queryString,
                     "filter": [      {
                         "range": {
                             "variables.start_stamp": {
@@ -739,7 +751,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         }
                     },
                     "limit": 0,
-                    "query": "*",
+                    "query": $scope.queryString,
                     "filter": [      {
                         "range": {
                             "variables.start_stamp": {
@@ -825,42 +837,18 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         "key": "Bridged: Avg answer delay, s",
                         "color": "#44d680",
                         "values": [
-                            // {
-                            //     "label" : "Group A" ,
-                            //     "value" : 1.8746444827653
-                            // },
-                            // {
-                            //     "label" : "Group B" ,
-                            //     "value" : 5.0961543492239
-                            // }
                         ]
                     },
                     {
                         "key": "Bridged: Avg talk time, s",
                         "color": "#1f77b4",
                         "values": [
-                            // {
-                            //     "label" : "Group A" ,
-                            //     "value" : 25.307646510375
-                            // },
-                            // {
-                            //     "label" : "Group B" ,
-                            //     "value" : 16.756779544553
-                            // }
                         ]
                     },
                     {
                         "key": "Bridged: Avg call duration, s",
                         "color": "#ff7f0e",
                         "values": [
-                            // {
-                            //     "label" : "Group A" ,
-                            //     "value" : 25.307646510375
-                            // },
-                            // {
-                            //     "label" : "Group B" ,
-                            //     "value" : 16.756779544553
-                            // }
                         ]
                     }
                 ]
