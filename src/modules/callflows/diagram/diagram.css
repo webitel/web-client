@@ -52,14 +52,30 @@ pre{
 }
 
 .parent-container .nodes-panel {
-  flex: 0 0 148px;
+  flex: 0 0 185px;
   display: flex;
   overflow: hidden;
   flex-direction: column;
-  max-width: 148px;
+  max-width: 185px;
   background: #34323a;
   border-right: 2px solid black;
   color: white;
+}
+
+.parent-container .nodes-panel .logo {
+  //position: absolute;
+  width: 100%;
+  height: 60px;
+  background-color: #242633;
+  line-height: 60px;
+  text-align: center;
+}
+
+.parent-container .nodes-panel .logo span {
+  vertical-align: middle;
+  color: #fffaed;
+  font-size: 30px;
+  font-weight: 700;
 }
 
 .parent-container .nodes-panel .header {
@@ -70,13 +86,14 @@ pre{
 }
 
 .parent-container .nodes-panel .group-list {
+  top: 65px;
   overflow: auto !important;
   padding: 0 0;
   list-style: none;
   position: absolute;
-  height: 100%;
+  height: 93%;
   min-height: 90vh;
-  width: 148px;
+  width: 185px;
 }
 
 .parent-container .nodes-panel .group-list ul {
@@ -89,7 +106,7 @@ pre{
   margin-right: 2px;
   border: 1px white solid;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 15px;
   padding: 8px;
 }
 
@@ -142,7 +159,7 @@ pre{
 .parent-container .diagram-drop-container .do-buttons-container {
   position: absolute;
   bottom: 15px;
-  left: 160px;
+  left: 200px;
   z-index: 1000000;
   display: inherit;
 }
@@ -318,7 +335,7 @@ pre{
 
 .parent-container .controls .parameters label {
   color: white;
-  font-size: 19px;
+  font-size: 18px;
   display: block;
   padding-bottom: 4px;
   margin-bottom: 0;
