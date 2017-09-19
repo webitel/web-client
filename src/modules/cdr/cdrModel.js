@@ -387,7 +387,7 @@ define(["app", "config"], function(app, config) {
         }
 
         function getStatistic(domain, body, cb){
-            if (!domain)
+            if (!body)
                 return cb(new Error('Bad request parameters.'));
             webitel.cdr("POST", "/api/v2/cdr/text?domain=" + domain, JSON.stringify(body), cb);
         }
