@@ -2,17 +2,17 @@
     <h3 class="modal-title">Token info</h3>
 </div>
 
-<div class="modal-body">
+<div class="modal-body" style="margin-top: -10px;">
     <div class="row">
         <div class="col-sm-12">
-            <p>
-                Your token key has been created successfully!
-                <a ng-click="saveToken()" style="cursor: pointer;">Download</a> your key file now or copy it. If you do not download the key file now, you will not be able to retrieve your token key again.
-                To help protect your security, store your token key securely and do not share it.
-            </p>
+            <!--<a ng-click="saveToken()" style="cursor: pointer;">Download</a>-->
+            <h4 style="color: limegreen;"><i class="fa fa-check-square"></i> Your token key has been created successfully!</h4>
+                <span style="font-size: 15px;">Download your key file now or copy it. If you do not download the key file now, you will not be able to retrieve your token key again.
+                    To help protect your security, store your token key securely and do not share it.</span>
+
         </div>
 
-        <div class="col-sm-12">
+        <div class="col-sm-12" style="margin-top: 10px; margin-bottom: -10px;">
             <div class="form-group">
                 <div class="input-group">
                     <input disabled type="text" class="form-control ng-animate"  data-ng-model="token" style="">
@@ -30,5 +30,6 @@
 </div>
 
 <div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="saveToken()">Download <i class="fa fa-download"></i></button>
     <button class="btn btn-default" type="button" ng-click="close()">Close</button>
 </div>
