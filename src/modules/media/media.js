@@ -1,8 +1,8 @@
-define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 'scripts/webitel/utils','modules/media/mediaModel'
+define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 'scripts/webitel/utils','modules/media/mediaModel', 'modules/media/ttsProviders'
 ], function (app, jsZIPUtils, jsZIP, async, fileSaver, utils) {
-    app.controller('MediaCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'MediaModel', 'FileUploader', '$confirm',
-        'TableSearch', '$sce', 'cfpLoadingBar',
-        function ($scope, webitel, $rootScope, notifi, MediaModel, FileUploader, $confirm, TableSearch, $sce, cfpLoadingBar) {
+    app.controller('MediaCtrl', ['$scope', '$modal', 'webitel', '$rootScope', 'notifi', 'MediaModel', 'FileUploader', '$confirm',
+        'TableSearch', '$sce', 'cfpLoadingBar', 'TtsProviders',
+        function ($scope, $modal, webitel, $rootScope, notifi, MediaModel, FileUploader, $confirm, TableSearch, $sce, cfpLoadingBar, TtsProviders) {
             $scope.domain = webitel.domain();
 
             $scope.canDelete = webitel.connection.session.checkResource('cdr/media', 'd');
@@ -185,6 +185,38 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                             reloadData();
                         });
                     });
+            }
+
+            $scope.openTts = function(){
+                var modalInstance = $modal.open({
+                    animation: true,
+                    templateUrl: '/modules/media/ttsModal.html',
+                    controller: function ($modalInstance, $scope) {
+                        var self = $scope;
+                        self.expire = null;
+                        self.role = null;
+                        self.dateOpenedControl = false;
+                        self.roles = [];
+
+                        self.ok = function () {
+                            $modalInstance.close({
+
+                            });
+                        };
+
+                        self.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    }
+                });
+
+                modalInstance.result.then(function (option) {
+                    // DomainModel.genToken(option.domain, {expire: option.expire.getTime(), role: option.role}, function (err, res) {
+                    //     if (err)
+                    //         return notifi.error(err, 5000);
+                    //
+                    // });
+                });
             }
 
             function reloadData () {
