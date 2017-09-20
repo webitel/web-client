@@ -29,6 +29,7 @@ fi
 if [ "$WEBITEL_HOST" ]; then
     sed -i "s/webitel.lo/${WEBITEL_HOST}/" /etc/nginx/conf.d/default.conf
     sed -i "s/webitel.lo/${WEBITEL_HOST}/" /opt/letsencrypt/www/site.conf
+    sed -i "s/webitel.lo/${WEBITEL_HOST}/" /webitel/client/phone-update/manifest.json
 fi
 
 nginx -g "daemon off;"
