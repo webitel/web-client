@@ -57,7 +57,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="input-group" data-ng-class="{'has-error': qsError}" >
-                        <input type="text" class="form-control" ng-model="queryString" ng-keyup="$event.keyCode == 13 && applyFilter()" >
+                        <input type="text" class="form-control" ng-model="queryString" typeahead="item for item in queries | filter:$viewValue | limitTo:8" ng-keyup="$event.keyCode == 13 && applyFilter()" >
                         <span class=" btn input-group-addon" ng-click="applyFilter()">
                             <span class="glyphicon glyphicon-search" ></span>
                         </span>

@@ -9,7 +9,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
     app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm',
         'TableSearch', '$timeout', 'cfpLoadingBar',
         function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, TableSearch, $timeout, cfpLoadingBar) {
-
+            $scope.queries = (localStorage.getItem('cdrQueries') && JSON.parse(localStorage.getItem('cdrQueries'))) || [];
             $scope.isLoading = false;
             $scope.$watch('isLoading', function (val) {
                 if (val) {
@@ -275,6 +275,8 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             //$scope.testSource = null;
             $scope.applyFilter = function () {
                 $scope.tableState.pagination.start = 0;
+                $scope.queries.push($scope.queryString);
+                localStorage.setItem('cdrQueries', JSON.stringify($scope.queries));
                 if($scope.panelStatistic){
                     $scope.getInboundStats();
                     $scope.getDirectionStats();
