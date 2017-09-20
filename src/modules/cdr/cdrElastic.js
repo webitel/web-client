@@ -275,7 +275,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             //$scope.testSource = null;
             $scope.applyFilter = function () {
                 $scope.tableState.pagination.start = 0;
-                $scope.queries.push($scope.queryString);
+                if($scope.queries.indexOf($scope.queryString) === -1) $scope.queries.push($scope.queryString);
                 localStorage.setItem('cdrQueries', JSON.stringify($scope.queries));
                 if($scope.panelStatistic){
                     $scope.getInboundStats();
