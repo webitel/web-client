@@ -1,4 +1,4 @@
-<div class="page">
+<div class="page" style="padding-bottom: 35px;">
     <div class="panel">
 
         <form name="dialerForm" class="panel-body">
@@ -767,7 +767,23 @@
         </form>
 
         <div class="panel-footer">
-            <button ng-show="isEdit && !viewMode" type="button" ng-disabled="dialerForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <div ng-show="isEdit && !viewMode" class="btn-group dropdown">
+                <button type="button" ng-disabled="dialerForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success dropdown-toggle">
+                    Save
+                </button>
+                <button type="button" class="btn btn-success dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                    <!--<span class="sr-only">Toggle Dropdown</span>-->
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li>
+                        <a data-ng-click="save()">Save</a>
+                    </li>
+                    <li>
+                        <a data-ng-click="clone()">Save as new</a>
+                    </li>
+                </ul>
+            </div>
             <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
 

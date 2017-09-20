@@ -430,6 +430,19 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 }
             }
 
+            $scope.clone = function () {
+                var cb = function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+                    return $location.path('/queue/dialer/' + res + '/edit');
+                };
+                $scope.dialer._cfDiagram = angular.copy($scope.cfDiagram);
+                if ($scope.cf)
+                    $scope.dialer._cf = JSON.parse($scope.cf);
+                delete $scope.dialer._id;
+                DialerModel.add($scope.dialer, cb);
+            }
+
             function create() {
                 $scope.dialer = DialerModel.create();
                 var domain = $routeParams.domain;
