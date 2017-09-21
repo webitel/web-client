@@ -682,6 +682,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     var data =  $scope.agentList = res.data || res.info;
                     agentsIds = [];
                     angular.forEach(data, function (i) {
+                        if (!i.agent || i.agent === "false") {
+                            return;
+                        }
                         $scope.agents.push(i);
                         agentsIds.push(i.id);
                     });
