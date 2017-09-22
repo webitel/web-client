@@ -9,7 +9,38 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
     app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm',
         'TableSearch', '$timeout', 'cfpLoadingBar',
         function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, TableSearch, $timeout, cfpLoadingBar) {
+
             $scope.queries = (localStorage.getItem('cdrQueries') && JSON.parse(localStorage.getItem('cdrQueries'))) || [];
+            $scope.pinCollection = [];
+
+            $scope.getAllPinned = function(){
+                var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+                var request = indexedDB.open('CdrWebitel', 2);
+                request.onerror = function(event) {
+                    return notifi.error(event);
+                };
+                request.onupgradeneeded = function(event) {
+                    console.log('upgrading indexedDB')
+                    var db = event.target.result;
+                    if(!db.objectStoreNames.contains("pinned")) db.createObjectStore("pinned", { keyPath: "uuid" });
+                };
+                request.onsuccess = function(){
+                    var db = request.result;
+                    var tx = db.transaction("pinned", "readwrite");
+                    var store = tx.objectStore("pinned");
+                    var collection = store.getAll();
+                    collection.onsuccess = function(){
+                        if(collection.result)
+                            $scope.pinCollection = collection.result;
+                    };
+                    tx.oncomplete = function() {
+                        db.close();
+                    };
+                };
+            };
+
+            $scope.getAllPinned();
+
             $scope.isLoading = false;
             $scope.$watch('isLoading', function (val) {
                 if (val) {
@@ -291,6 +322,9 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             $scope.selectRow = function (row) {
                 if ($scope.activeRow == row) return $scope.activeRow = null;
                 $scope.activeRow = row;
+                var pinned = $scope.pinCollection.filter(function(item){
+                    return item.uuid === row["variables.uuid"];
+                })[0];
                 if (row._files && row._files.length > 1) return;
                 row._files = [
                     {
@@ -299,6 +333,12 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         "action": "open",
                         "class": "fa fa-file-code-o",
                         "buttons": []
+                    },
+                    {
+                        "row": row,
+                        "action": "pin",
+                        "class": pinned ? "fa fa-thumb-tack pinned" : "fa fa-thumb-tack unpinned",
+                        "btnClass": pinned ? 'btn btn-warning btn-sm' : null
                     }
                 ];
 
@@ -381,6 +421,10 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
 
             $scope.fileAction = function (file, parent, files) {
                 switch (file.action) {
+                    case "pin":
+                        pinItem(file.row);
+                        break;
+
                     case "open":
                         showJsonPreview(file.uuid);
                         break;
@@ -425,6 +469,53 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         notifi.error("No action :(", 3000)
                 }
             };
+
+            var pinItem = function(row){
+                var ifExist = $scope.pinCollection.filter(function(item){
+                    return item.uuid === row["variables.uuid"];
+                })[0];
+                if(!ifExist){
+                    row._files[1].class = "fa fa-thumb-tack pinned";
+                    row._files[1].btnClass = "btn btn-warning btn-sm";
+                }
+                else{
+                    row._files[1].class = "fa fa-thumb-tack unpinned";
+                    delete row._files[1].btnClass;
+                }
+                pinIndexedDB(row, ifExist);
+            };
+
+            var pinIndexedDB = function(row, ifExist){
+                var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+                var request = indexedDB.open('CdrWebitel', 2);
+                request.onerror = function(event) {
+                    return notifi.error(event);
+                };
+                request.onupgradeneeded = function(event) {
+                    console.log('upgrading indexedDB');
+                    var db = event.target.result;
+                    if(!db.objectStoreNames.contains("pinned")) db.createObjectStore("pinned", { keyPath: "uuid" });
+                };
+                request.onsuccess = function(){
+                    var db = request.result;
+                    var tx = db.transaction("pinned", "readwrite");
+                    var store = tx.objectStore("pinned");
+
+                    if(!ifExist){
+                        $scope.pinCollection.push({uuid: row["variables.uuid"]});
+                        store.add({uuid: row["variables.uuid"]});
+                    }
+                    else{
+                        var index = $scope.pinCollection.indexOf(ifExist);
+                        $scope.pinCollection.splice(index, 1);
+                        store.delete(row["variables.uuid"]);
+                    }
+
+                    tx.oncomplete = function() {
+                        db.close();
+                    };
+                };
+            }
             
             var deleteCdr = function (uuid) {
                 $confirm({text: 'Are you sure you want to delete ' + uuid + ' ?'},  { templateUrl: 'views/confirm.html' })
