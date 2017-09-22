@@ -1,8 +1,8 @@
 define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 'scripts/webitel/utils','modules/media/mediaModel', 'modules/media/ttsProviders'
 ], function (app, jsZIPUtils, jsZIP, async, fileSaver, utils) {
     app.controller('MediaCtrl', ['$scope', '$modal', 'webitel', '$rootScope', 'notifi', 'MediaModel', 'FileUploader', '$confirm',
-        'TableSearch', '$sce', 'cfpLoadingBar', 'TtsProviders',
-        function ($scope, $modal, webitel, $rootScope, notifi, MediaModel, FileUploader, $confirm, TableSearch, $sce, cfpLoadingBar, TtsProviders) {
+        'TableSearch', '$sce', 'cfpLoadingBar', 'TtsProviders', '$http',
+        function ($scope, $modal, webitel, $rootScope, notifi, MediaModel, FileUploader, $confirm, TableSearch, $sce, cfpLoadingBar, TtsProviders, $http) {
             $scope.domain = webitel.domain();
 
             $scope.canDelete = webitel.connection.session.checkResource('cdr/media', 'd');
@@ -30,7 +30,7 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                     return utils.prettysize(size);
             };
 
-            $scope.playRow = function (row) {
+            function playRow(row) {
 
                 $scope.setSource({
                     src: row._href,
@@ -38,7 +38,10 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                     text: row.name
                 }, true);
                 $scope.activePlayRowName = row.name;
-            };
+            }
+
+            $scope.playRow = playRow;
+
             $scope.onClosePlayer = function () {
                 $scope.activePlayRowName = null;
             };
@@ -190,15 +193,23 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
             $scope.openTts = function(){
                 var modalInstance = $modal.open({
                     animation: true,
+                    backdrop: false,
                     templateUrl: '/modules/media/ttsModal.html',
-                    controller: function ($modalInstance, $scope) {
+                    resolve: {
+                        domainName: function () {
+                            return $scope.domain;
+                        }
+                    },
+                    controller: function ($modalInstance, $scope, domainName) {
                         var self = $scope;
+                        self.blob = null;
+
                         self.props = {
                             name: null,
                             provider: null,
                             voice: null,
-                            token: null,
-                            key: null,
+                            token: "",
+                            key: "",
                             language: null,
                             text: null
                         };
@@ -270,6 +281,58 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                         self.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+
+                        //region tts
+                        self.genTTS = genTTS;
+                        self.saveBlob = saveBlob;
+
+                        function makeUir(options) {
+                            var uri = '/api/v2/media/tts/';
+                            if (options.provider === 'default') {
+                                uri+= "default?"
+                            } else {
+                                uri += options.provider + "?";
+                                if (options.key && options.token) {
+                                    uri += '&accessKey=' + options.key + '&accessToken=' + options.token;
+                                }
+                            }
+                            if (options.voice) {
+                                uri += '&voice=' + options.voice;
+                            }
+                            uri += '&domain=' + domainName + '&format=.wav&text=' + encodeURIComponent(options.text);
+                            return uri
+                        }
+
+                        function saveBlob(blob, name) {
+                            var file = new File([blob], name + '.wav', {type:'audio/wav'});
+                            var dummy = new FileUploader.FileItem(uploader, {});
+                            dummy._file = file;
+                            dummy.url = getPostUrl('wav', domainName);
+                            uploader.queue.push(dummy);
+                            uploader.uploadAll();
+                            self.blob = null;
+                            self.props.name = "";
+                            self.props.text = "";
+                        }
+
+                        function genTTS() {
+                            $http({
+                                    url: webitel.connection._cdr + makeUir($scope.props),
+                                    method: "GET",
+                                    responseType: "blob"
+                                })
+                                .success(function (blob) {
+                                    self.blob = blob;
+                                    playRow({
+                                        _href: window.URL.createObjectURL(blob),
+                                        name: self.props.name
+                                    })
+                                })
+                                .error(function (err) {
+                                    notifi.error(err, 10000);
+                                })
+                        }
+                        //endregion
                     }
                 });
 
