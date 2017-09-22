@@ -194,6 +194,7 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                     controller: function ($modalInstance, $scope) {
                         var self = $scope;
                         self.props = {
+                            name: null,
                             provider: null,
                             voice: null,
                             token: null,
@@ -248,13 +249,13 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                             voices.male.forEach(function(item){
                                self.voices.push({
                                    value: item,
-                                   name: item + ' (male)'
+                                   gender: 'male'
                                })
                             });
                             voices.female.forEach(function(item){
                                 self.voices.push({
                                     value: item,
-                                    name: item + ' (female)'
+                                    gender: 'female'
                                 })
                             });
                             self.props.voice = self.voices[0].value;
@@ -273,11 +274,7 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                 });
 
                 modalInstance.result.then(function (option) {
-                    // DomainModel.genToken(option.domain, {expire: option.expire.getTime(), role: option.role}, function (err, res) {
-                    //     if (err)
-                    //         return notifi.error(err, 5000);
-                    //
-                    // });
+                    
                 });
             }
 
