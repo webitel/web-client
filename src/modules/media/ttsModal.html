@@ -3,41 +3,68 @@
 </div>
 <div class="modal-body">
     <form name="ttsForm">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group" ng-class="{ 'has-error' : ttsForm.provider.$invalid }">
-                    <label class="control-label" for>Provider</label>
-                    <select class="form-control" name="provider" required ng-model="provider"
-                            ng-init="getProviders()">
-                        <option ng-repeat="p in providers" ng-selected="{{p==provider}}" value="{{p}}">{{p}}</option>
-                    </select>
-                </div>
-                <div class="form-group" ng-class="{ 'has-error' : ttsForm.language.$invalid  }">
-                    <label class="control-label" for>Language</label>
-                    <select class="form-control" name="language" required ng-model="language"
-                            ng-init="getLanguages()">
-                        <option ng-repeat="l in languages" ng-selected="{{l==language}}" value="{{l}}">{{l}}</option>
-                    </select>
-                </div>
-                <div class="form-group" ng-class="{ 'has-error' : ttsForm.voice.$invalid }">
-                    <label class="control-label">Voice</label>
-                    <select class="form-control" name="voice" required ng-model="voice"
-                            ng-init="getVoices()">
-                        <option ng-repeat="v in voices" ng-selected="{{v==voice}}" value="{{v}}">{{v}}</option>
-                    </select>
-                </div>
-                <div class="form-group" ng-class="{ 'has-error' : ttsForm.text.$invalid }">
-                    <label class="control-label">Text</label>
-                    <input type="text" class="form-control" name="text" required ng-model="text"> </input>
-                </div>
-                <div class="form-group" ng-class="{ 'has-error' : ttsForm.token.$invalid }">
-                    <label class="control-label">Token</label>
-                    <input type="text" class="form-control" name="token" ng-model="token"> </input>
-                </div>
-                <div class="form-group" ng-class="{ 'has-error' : ttsForm.key.$invalid }">
-                    <label class="control-label">Key</label>
-                    <input type="text" class="form-control" name="key" ng-model="key"> </input>
-                </div>
+        <div class="ui-tab-container ui-tab-dark">
+            <div class="ui-tab">
+                <tabset>
+                    <tab>
+                        <tab-heading>
+                            <span>Text</span>
+                        </tab-heading>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group" ng-class="{ 'has-error' : ttsForm.text.$invalid }">
+                                    <label class="control-label">Text</label>
+                                    <textarea type="text" class="form-control" name="text" required ng-model="props.text" style="max-width: 536px;"> </textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab>
+                        <tab-heading>
+                            <span>Settings</span>
+                        </tab-heading>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group" ng-class="{ 'has-error' : ttsForm.provider.$invalid }">
+                                    <label class="control-label" for>Provider</label>
+                                    <select class="form-control" name="provider" required ng-model="props.provider"
+                                            ng-init="getProviders()"
+                                            ng-change="getLanguages()">
+                                        <option ng-repeat="p in providers" ng-selected="{{p==props.provider}}" value="{{p}}">{{p}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group" ng-class="{ 'has-error' : ttsForm.language.$invalid  }">
+                                    <label class="control-label" for>Language</label>
+                                    <select class="form-control" name="language" required ng-model="props.language"
+                                            ng-init="getLanguages()"
+                                            ng-change="getVoices()">
+                                        <option ng-repeat="l in languages" ng-selected="{{l==props.language}}" value="{{l}}">{{l}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group" ng-class="{ 'has-error' : ttsForm.voice.$invalid }">
+                                    <label class="control-label">Voice</label>
+                                    <select class="form-control" name="voice" required ng-model="props.voice">
+                                        <option ng-repeat="v in voices" ng-selected="{{v==props.voice}}" value="{{v.value}}">{{v.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group" ng-class="{ 'has-error' : ttsForm.token.$invalid }">
+                                    <label class="control-label">Token</label>
+                                    <input type="text" class="form-control" name="token" ng-model="props.token"> </input>
+                                </div>
+                                <div class="form-group" ng-class="{ 'has-error' : ttsForm.key.$invalid }">
+                                    <label class="control-label">Key</label>
+                                    <input type="text" class="form-control" name="key" ng-model="props.key"> </input>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                </tabset>
             </div>
         </div>
     </form>

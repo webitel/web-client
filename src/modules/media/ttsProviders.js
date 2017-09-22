@@ -10,6 +10,11 @@ define(['app'], function (app) {
                     name: 'polly',
                     voice:[
                         {
+                            language: 'English (US) (en-US)',
+                            male:['Joey', 'Justin'],
+                            female:['Kendra', 'Kimberly', 'Salli', 'Ivy', 'Joanna']
+                        },
+                        {
                             language: 'Danish (da-DK)',
                             male:['Mads'],
                             female:['Naja']
@@ -33,11 +38,6 @@ define(['app'], function (app) {
                             language: 'English (Indian) (en-IN)',
                             male:[],
                             female:['Raveena']
-                        },
-                        {
-                            language: 'English (US) (en-US)',
-                            male:['Joey', 'Justin'],
-                            female:['Kendra', 'Kimberly', 'Salli', 'Ivy', 'Joanna']
                         },
                         {
                             language: 'English (Welsh) (en-GB-WLS)',
