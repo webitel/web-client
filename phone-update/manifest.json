@@ -2,14 +2,14 @@
   "name": "WebitelPhone",
   "version": "1.0.2",
   "packages": {
-    "mac64": {
-      "url": "http://webitel.lo/phone-update/osx64.zip"
+    "mac": {
+      "url": "http://webitel.lo/phone-update/osx64/WebitelPhone.zip"
     },
-    "win64": {
-      "url": "http://webitel.lo/phone-update/win64.zip"
+    "win": {
+      "url": "http://webitel.lo/phone-update/win64/WebitelPhone.zip"
     },
-    "linux64": {
-      "url": "http://webitel.lo/phone-update/linux64.tar.gz"
+    "linux32": {
+      "url": "http://webitel.lo/phone-update/linux64/WebitelPhone.tar.gz"
     }
   }
 }
