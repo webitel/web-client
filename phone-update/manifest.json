@@ -1,6 +1,6 @@
 {
   "name": "WebitelPhone",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "packages": {
     "mac": {
       "url": "http://webitel.lo/phone-update/osx64/WebitelPhone.zip"
