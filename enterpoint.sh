@@ -27,7 +27,7 @@ if [ "$licenseManager" == "true" ]; then
 fi
 
 if [ "$WEBITEL_PHONE" == "true" ]; then
-    /phone-update/get_phone.sh &
+    /webitel/client/phone-update/get_phone.sh &
 fi
 
 if [ "$WEBITEL_HOST" ]; then
