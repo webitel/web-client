@@ -13,6 +13,15 @@
     </form>
 </div>
 <div class="modal-footer">
+    <div class="form-horizontal pull-left" style="margin-left: 15px;">
+        <div class="form-group" >
+            <label class="control-label" style="position: absolute; margin-left: 70px;">Disabled</label>
+            <label class="switch switch-danger">
+                <input ng-disabled="viewMode" type="checkbox" ng-model="disabled"><i></i>
+            </label>
+        </div>
+    </div>
+
     <button class="btn btn-primary" type="button" ng-disabled="dialStringForm.$invalid" ng-click="ok()">OK</button>
     <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 </div>

@@ -588,7 +588,7 @@
                                                     <ul class="list-group" style="max-height: 250px; overflow-y: auto;">
                                                         <li ng-click="setActiveResource(row)" class="list-group-item" ng-class="{'active': activeResource == row}"
                                                             ng-repeat="(key, row) in dialer.resources">
-                                                            <a href="javascript:;">
+                                                            <a href="javascript:;" ng-class="{'resource-disabled': row.disabled}">
                                                                 {{row.dialedNumber}}
 
                                                                 <span ng-disabled="viewMode" href="javascript:;" ng-click="removeResource(key, row)" ng-show="canUpdate" class="pull-right btn-icon btn-icon-sm  btn-gap-v btn-default">

@@ -338,7 +338,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     var resources = $scope.dialer.resources;
                     for (var i = 0; i < resources.length; i++) {
                         if (resources[i].$$hashKey == result.id) {
-                            return resources[i].dialedNumber = result.value
+                            resources[i].dialedNumber = result.value;
+                            return resources[i].disabled = result.disabled;
                         }
                     }
                 }, function () {
@@ -3996,6 +3997,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         function ($scope, $modalInstance, resource) {
 
         $scope.dialedNumber = angular.copy(resource.dialedNumber);
+        $scope.disabled = angular.copy(resource.disabled);
 
         var id = resource.$$hashKey;
 
@@ -4003,7 +4005,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             if (!$scope.dialedNumber) {
                 return notifi.error(new Error("Bad parameters"))
             }
-            $modalInstance.close({value: $scope.dialedNumber, id: id}, 5000);
+            $modalInstance.close({value: $scope.dialedNumber, id: id, disabled: $scope.disabled}, 5000);
         };
 
         $scope.cancel = function () {
