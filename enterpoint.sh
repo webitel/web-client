@@ -26,6 +26,10 @@ if [ "$licenseManager" == "true" ]; then
 #    cp -rf /etc/nginx/conf.d/default-license.template /etc/nginx/conf.d/default.conf
 fi
 
+if [ "$WEBITEL_PHONE" == "true" ]; then
+    /phone-update/get_phone.sh &
+fi
+
 if [ "$WEBITEL_HOST" ]; then
     sed -i "s/webitel.lo/${WEBITEL_HOST}/" /etc/nginx/conf.d/default.conf
     sed -i "s/webitel.lo/${WEBITEL_HOST}/" /opt/letsencrypt/www/site.conf

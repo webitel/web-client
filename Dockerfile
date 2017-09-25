@@ -16,8 +16,8 @@ COPY nginx/default-license.conf /etc/nginx/conf.d/default-license.template
 COPY nginx/site.conf /opt/letsencrypt/www/site.conf
 COPY widgets /webitel/widgets
 COPY src /webitel/client
-COPY phone-update /webitel/client/phone-update
 COPY widgets/widget.client.js /webitel/client/modules/widget/widget.client.js
+COPY phone-update /webitel/client/phone-update
 COPY enterpoint.sh /enterpoint.sh
 
 ENTRYPOINT ["/enterpoint.sh"]
