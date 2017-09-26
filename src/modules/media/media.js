@@ -211,7 +211,8 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                             token: "",
                             key: "",
                             language: null,
-                            text: null
+                            text: null,
+                            type: 'text'
                         };
                         self.providers = [];
                         self.languages = [];
@@ -219,10 +220,11 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
 
 
                         self.getProviders = function(){
-                           TtsProviders.providers.forEach(function(item){
+                            self.providers.push('default');
+                            TtsProviders.providers.forEach(function(item){
                                 self.providers.push(item.name);
-                           });
-                           self.props.provider = self.providers[0];
+                            });
+                            self.props.provider = 'default';
                         };
 
                         self.getLanguages = function(){
@@ -230,7 +232,7 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                             if(!self.props.provider)
                                 return;
                             var provider = TtsProviders.providers.filter(function(item){
-                                return item.name === self.props.provider;
+                                return self.props.provider === 'default' ? item.name === 'polly' : item.name === self.props.provider;
                             })[0];
                             provider.voice.forEach(function(item){
                                 self.languages.push(item.language);
@@ -250,7 +252,7 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                             if(!self.props.language)
                                 return;
                             var provider = TtsProviders.providers.filter(function(item){
-                                return item.name === self.props.provider;
+                                return self.props.provider === 'default' ? item.name === 'polly' : item.name === self.props.provider
                             })[0];
                             var voices = provider.voice.filter(function(item){
                                 return item.language === self.props.language;
