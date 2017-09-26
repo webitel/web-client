@@ -414,16 +414,16 @@ pre{
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
-  content: "true";
-  color: white;
-  background-color: #217c35;
   display: block;
-}
-
-.parent-container .controls .parameters input[type=checkbox]:checked:after {
   content: "false";
   color: white;
   background-color: #c43c3c;
+}
+
+.parent-container .controls .parameters input[type=checkbox]:checked:after {
+  content: "true";
+  color: white;
+  background-color: #217c35;
 }
 
 .parent-container .controls .parameters .bridge-header {
