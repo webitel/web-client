@@ -60,6 +60,10 @@ table.agent-dialer-table.table .agent-container td.agent-stats {
     position: relative;
 }
 
+.resource-disabled, .resource-disabled:hover, .categories .list-group .list-group-item.active>a.resource-disabled {
+    border-left: 3px solid #af2424;
+}
+
 table.agent-dialer-table.table .agent-container td.agent-stats .agent-stats-container {
     /*width: 100%;*/
     /*display: flex;*/

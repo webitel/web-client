@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "packages": {
     "mac": {
-      "url": "http://webitel.lo/phone-update/osx64/WebitelPhone.zip"
+      "url": "http://webitel.lo/phone-update/osx64/WebitelPhone.dmg"
     },
     "win": {
       "url": "http://webitel.lo/phone-update/win64/WebitelPhone.zip"
