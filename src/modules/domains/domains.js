@@ -237,6 +237,7 @@ define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts
 					domain.storage.providers = {};
 
 				domain.storage.providers[type] = result;
+                $scope.domain = domain;
 			})
 		};
 
@@ -293,6 +294,7 @@ define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts
 					domain.storage.providers = {};
 
 				domain.storage.providers[type] = result;
+                $scope.domain = domain;
 			})
 		};
 
@@ -382,6 +384,13 @@ define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts
 		function closePage() {
 			$location.path('/domains');
 		}
+
+		$scope.objectLength = function (obj) {
+			if (!obj)
+				return 0;
+
+			return Object.keys(obj).length
+        };
 
 
 		function reloadData (hardReset) {
