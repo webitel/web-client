@@ -611,6 +611,10 @@ define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts
 			{
 				value: 'dropBox',
 				name: 'Drop Box'
+			},
+			{
+				value: 'doSpaces',
+				name: 'DigitalOcean Space'
 			}
 		];
 
@@ -665,6 +669,10 @@ define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts
 			{name: "EU (Frankfurt)", value: "eu-central-1"},
 			{name: "EU (Ireland)", value: "eu-west-1"},
 			{name: "South America (São Paulo)", value: "sa-east-1"}
+		]
+
+		$scope.DORegions = [
+			{name: "US (New York)", value: "nyc3"}
 		]
 	}]);
 
