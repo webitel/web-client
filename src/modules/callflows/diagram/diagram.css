@@ -78,20 +78,36 @@ pre{
   font-weight: 700;
 }
 
-.parent-container .nodes-panel .header {
-  margin-top: 0.8rem;
-  font-size: 1.3rem;
-  font-weight: bold;
-  text-align: center;
+.parent-container .nodes-panel input {
+  display: block;
+  font-size: 16px; //1.0em;
+  padding: 4px; //0.25em;
+  background-color: transparent; //white;
+  color: white;
+  width: 100%;
+  margin-bottom: 16px; //1em;
+  border-radius: 3px;
+  border: 1px solid #BABABA;
+}
+
+.parent-container .nodes-panel .search{
+  margin-top: 4px;
+  margin-left: 2px;
+}
+
+.parent-container .nodes-panel .search-icon{
+  position: absolute;
+  left: 163px;
+  margin-top: 6px;
 }
 
 .parent-container .nodes-panel .group-list {
-  top: 65px;
+  top: 97px;
   overflow: auto !important;
   padding: 0 0;
   list-style: none;
   position: absolute;
-  height: 93%;
+  height: 81%;
   min-height: 90vh;
   width: 185px;
 }
