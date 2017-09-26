@@ -129,14 +129,14 @@
 
                                     <div class="row">
                                         <div class="col-sm-1">
-                                            <a ng-disabled="(domain.storage.providers.s3 && domain.storage.providers.b2) || viewMode" ng-click="addStorage(domain)" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v bg-success">
+                                            <a ng-disabled="viewMode" ng-click="addStorage(domain)" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v bg-success">
                                                 <i class="fa fa-plus"></i>
                                             </a>
                                         </div>
 
                                         <div class="col-sm-11">
                                             <div class="form-group">
-                                                <select ng-disabled="(!domain.storage.providers.s3 && !domain.storage.providers.b2) || viewMode" class="form-control"  data-ng-model="domain.storage.defaultProvider">
+                                                <select ng-disabled="viewMode" class="form-control"  data-ng-model="domain.storage.defaultProvider">
                                                     <option ng-selected="{{!domain.storage.defaultProvider}}" value="">Webitel storage</option>
                                                     <option ng-selected="{{key==domain.storage.defaultProvider}}" data-ng-repeat="(key, params) in domain.storage.providers" value="{{key}}">{{key}}</option>
                                                 </select>
@@ -153,7 +153,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row" ng-if="domain.storage.providers.s3 || domain.storage.providers.b2">
+                                    <div class="row" ng-show="objectLength(domain.storage.providers) > 0">
                                         <div class="col-sm-12" ng-if="domain.storage.defaultProvider">
                                             <div class="form-group" ng-class="{ 'has-error' : !domain.storage.maskPath}">
                                                 <label class="control-label">Mask path</label>

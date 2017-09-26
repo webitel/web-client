@@ -16,15 +16,15 @@
 
                 <!--S3-->
 
-                <div ng-if="option.type=='s3'" class="form-group" ng-class="{ 'has-error' : storagePageForm.accessKeyId.$invalid }">
+                <div ng-if="option.type=='s3' || option.type=='doSpaces'" class="form-group" ng-class="{ 'has-error' : storagePageForm.accessKeyId.$invalid }">
                     <label class="control-label">Key Id</label>
                     <input type="text" class="form-control" name="accessKeyId" required data-ng-model="storage.accessKeyId">
                 </div>
-                <div ng-if="option.type=='s3'" class="form-group" ng-class="{ 'has-error' : storagePageForm.secretAccessKey.$invalid }">
+                <div ng-if="option.type=='s3' || option.type=='doSpaces'" class="form-group" ng-class="{ 'has-error' : storagePageForm.secretAccessKey.$invalid }">
                     <label class="control-label">Access Key</label>
                     <input type="text" class="form-control" name="secretAccessKey" required data-ng-model="storage.secretAccessKey">
                 </div>
-                <div ng-if="option.type=='s3'" class="form-group" ng-class="{ 'has-error' : storagePageForm.bucketName.$invalid }">
+                <div ng-if="option.type=='s3' || option.type=='doSpaces'" class="form-group" ng-class="{ 'has-error' : storagePageForm.bucketName.$invalid }">
                     <label class="control-label">Bucket Name</label>
                     <input type="text" class="form-control" name="bucketName" required data-ng-model="storage.bucketName">
                 </div>
@@ -32,6 +32,12 @@
                     <label class="control-label">Region</label>
                     <select class="form-control" name="region" ng-model="storage.region" required >
                         <option ng-repeat="r in s3Regions" ng-selected="{{region==r.value}}"  value="{{r.value}}">{{r.name}}</option>
+                    </select>
+                </div>
+                <div ng-if="option.type=='doSpaces'" class="form-group" ng-class="{ 'has-error' : storagePageForm.region.$invalid }">
+                    <label class="control-label">Region</label>
+                    <select class="form-control" name="region" ng-model="storage.region" required >
+                        <option ng-repeat="r in DORegions" ng-selected="{{region==r.value}}"  value="{{r.value}}">{{r.name}}</option>
                     </select>
                 </div>
 
