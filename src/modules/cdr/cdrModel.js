@@ -253,6 +253,7 @@ define(["app", "config"], function(app, config) {
 
         function getData(pageNumber, limit, columns, filter, sort, cb) {
             var body = {};
+
             body.columns = columns; //availableColumns();
             body.pageNumber = pageNumber;
             body.limit = limit;
@@ -271,6 +272,9 @@ define(["app", "config"], function(app, config) {
         function getElasticData(pageNumber, limit, columns, filter, qs, sort, scroll, cb) {
             var body = {};
             body.columns = columns.other; //availableColumns();
+            if (!~body.columns.indexOf('pinnedItems')) {
+                body.columns.push('pinnedItems')
+            }
             body.columnsDate = columns.date;
             body.pageNumber = pageNumber;
             body.limit = limit;
@@ -316,7 +320,15 @@ define(["app", "config"], function(app, config) {
             var _st = Date.now();
             var t = {};
             angular.forEach(res, function (item) {
-                t = {};
+                t = {
+                    _index: item._index
+                };
+
+                if (item.fields.pinnedItems) {
+                    t.pinnedItems = item.fields.pinnedItems;
+                    delete item.fields.pinnedItems
+                }
+
                 angular.forEach(item.fields, function (val, key) {
                     t[key] = val[0];
                 });
@@ -359,6 +371,14 @@ define(["app", "config"], function(app, config) {
 
             console.debug('Parse response time: ', Date.now() - _st);
             return data;
+        }
+
+        function pinItem(uuid, index, domain, cb){
+            webitel.cdr('PUT', '/api/v2/cdr/'+uuid+'/pinned?domain='+domain+'&index='+index, '{}', cb);
+        }
+
+        function unpinItem(uuid, index, domain, cb){
+            webitel.cdr('DELETE', '/api/v2/cdr/'+uuid+'/pinned?domain='+domain+'&index='+index, cb);
         }
 
         function getCount(filter, cb) {
@@ -404,7 +424,9 @@ define(["app", "config"], function(app, config) {
             setMapColumn: setMapColumn,
             removeMapColumn: removeMapColumn,
             getMapColumn: getMapColumn,
-            removeCdr: removeCdr
+            removeCdr: removeCdr,
+            pinItem: pinItem,
+            unpinItem: unpinItem
         }
     }]);
 });
