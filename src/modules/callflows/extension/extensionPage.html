@@ -55,6 +55,9 @@
                                             <a ng-click="disableVisual()" ng-show="visualCfEnabled" type="button" class="btn-icon btn-icon-sm btn-gap-v btn-danger">
                                                 <i class="fa fa-code"></i>
                                             </a>
+                                            <a ng-click="createVisual()" ng-show="!visualCfEnabled" type="button" class="btn-icon btn-icon-sm btn-gap-v btn-success">
+                                                <i class="fa fa-cogs"></i>
+                                            </a>
                                         </div>
                                         <div ng-readonly="viewMode||visualCfEnabled" ng-model="$parent.cf" ui-ace="{
 									  useWrapMode : true,

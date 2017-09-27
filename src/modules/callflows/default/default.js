@@ -96,6 +96,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 	        $scope.reloadData = reloadData;
             $scope.openDiagram = openDiagram;
             $scope.saveDiagram = saveDiagram;
+            $scope.createVisual = createVisual;
             $scope.disableVisual = disableVisual;
             $scope.initCalendars = initCalendars;
             $scope.initMedia = initMedia;
@@ -196,6 +197,15 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                     $scope.cfDiagram = cfGetter.callflowModel;
                     if($scope.default.name && $scope.default.destination_number && $scope.default.fs_timezone)$scope.save();
                 }
+            }
+
+            function createVisual(){
+                DiagramDesigner.init();
+                $scope.cfDiagram = CallflowDiagram.createDiagram(JSON.parse($scope.cf));
+                $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
+                var cd = CallflowDiagram.getCallflowJSON();
+                $scope.cf = cd ? aceEditor.getStrFromJson(cd.callflowJson) : aceEditor.getStrFromJson($scope.cf);
+                DiagramDesigner.removeDesigner();
             }
 
             function openDiagram(value) {
