@@ -10,8 +10,8 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
         'TableSearch', '$timeout', 'cfpLoadingBar',
         function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, TableSearch, $timeout, cfpLoadingBar) {
 
-            $scope.queries = (localStorage.getItem('cdrQueries') && JSON.parse(localStorage.getItem('cdrQueries'))) || [];   
-
+            $scope.queries = (localStorage.getItem('cdrQueries') && JSON.parse(localStorage.getItem('cdrQueries'))) || [];
+            $scope.pinSearch = false;
             $scope.isLoading = false;
             $scope.$watch('isLoading', function (val) {
                 if (val) {
@@ -293,7 +293,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             $scope.selectRow = function (row) {
                 if ($scope.activeRow == row) return $scope.activeRow = null;
                 $scope.activeRow = row;
-                var pinned = row.pinnedItems && ~row.pinnedItems.indexOf(webitel.connection.session.username);
+                row.pinned = row.pinnedItems && ~row.pinnedItems.indexOf(webitel.connection.session.username);
                 if (row._files && row._files.length > 1) return;
                 row._files = [
                     {
@@ -301,13 +301,14 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         "uuid": row["variables.uuid"],
                         "action": "open",
                         "class": "fa fa-file-code-o",
-                        "buttons": []
-                    },
-                    {
-                        "row": row,
-                        "action": "pin",
-                        "class": pinned ? "fa fa-thumb-tack pinned" : "fa fa-thumb-tack unpinned",
-                        "btnClass": pinned ? 'btn btn-warning btn-sm' : null
+                        "buttons": [
+                            {
+                                "row": row,
+                                "action": "pin",
+                                "class": "fa fa-thumb-tack",
+                                "ngClass": "{'btn-warning':row.pinned, 'pinned': row.pinned, 'unpinned': !row.pinned}"
+                            }
+                        ]
                     }
                 ];
 
@@ -445,18 +446,20 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     CdrModel.unpinItem(row["variables.uuid"], row._index, $scope.domain, function(err, res){
                         if(err)
                             notifi.error(err);
-                        row._files[1].class = "fa fa-thumb-tack unpinned";
-                        delete row._files[1].btnClass;
+                        row.pinned = false;
                         var userIndex = row.pinnedItems.indexOf(user);
-                        row.pinnedItems.splice(userIndex, 1);
+                        row.pinnedItems.splice(userIndex, 1)
+                        if($scope.pinSearch){
+                            var i = $scope.rowCollection.indexOf(row);
+                            $scope.rowCollection.splice(i, 1);
+                        }
                     });
                 }
                 else{
                     CdrModel.pinItem(row["variables.uuid"], row._index, $scope.domain, function(err, res){
                         if(err)
                             notifi.error(err);
-                        row._files[1].class = "fa fa-thumb-tack pinned";
-                        row._files[1].btnClass = "btn btn-warning btn-sm";
+                        row.pinned = true;
                         if(row.pinnedItems){
                             row.pinnedItems.push(user);
                         }
@@ -952,15 +955,29 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             var _page = 1;
             
             function getFilter() {
-                return {
-                    "range": {
+                var filter = [
+                    {"range": {
                         "variables.start_stamp": {
                             "gte": $scope.startDate.getTime(),
                             "lte": $scope.endDate.getTime(),
                             "format": "epoch_millis"
                         }
-                    }
+                    }}
+
+                ];
+                if($scope.pinSearch) {
+                    filter.push({
+                        "terms":{
+                            "pinnedItems": [webitel.connection.session.username]
+                        }
+                    });
                 }
+                return filter;
+            }
+
+            $scope.pinnedItems = function(){
+                $scope.pinSearch = !$scope.pinSearch;
+                $scope.applyFilter();
             }
 
             function getData(tableState) {

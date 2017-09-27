@@ -48,7 +48,7 @@
                                     <i ng-if="panelStatistic" class="glyphicon glyphicon-list-alt"></i>
                                     <i ng-if="!panelStatistic" class="glyphicon glyphicon-stats"></i>
                                 </a>
-                                <a ng-if="!panelStatistic" href="" ng-click="" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
+                                <a ng-if="!panelStatistic" ng-click="pinnedItems()" href="" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v" ng-class="{'btn-warning': pinSearch,  'btn-dark': !pinSearch}">
                                     <i class="glyphicon glyphicon-pushpin"></i>
                                 </a>
                             </div>
