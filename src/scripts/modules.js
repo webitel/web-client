@@ -108,6 +108,17 @@ define(['angular', 'config'], function (angular, config) {
         },
 
         {
+            href: "#/sipDump",
+            caption: "Utils",
+            hide: true,
+            acl: 'license',
+            templateUrl: 'modules/server/sipDump/sipDump.html',
+            controller: 'ServerSipDumpCtrl',
+            controllerUrl: 'modules/server/sipDump/sipDump.js',
+            iconClass: 'fa fa-usd'
+        },
+
+        {
             href: "#/accounts",
             caption: "Directory",
 
