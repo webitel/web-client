@@ -53,20 +53,6 @@
                 </div>
             </div>
             <div class="divider divider-sm"></div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="input-group" data-ng-class="{'has-error': qsError}" >
-                        <input type="text" class="form-control" ng-model="queryString" typeahead="item for item in queries | filter:$viewValue | limitTo:8" ng-keyup="$event.keyCode == 13 && applyFilter()" >
-                        <span class=" btn input-group-addon" ng-click="applyFilter()">
-                            <span class="glyphicon glyphicon-search" ></span>
-                        </span>
-                        <a href="https://www.elastic.co/guide/en/elasticsearch/reference/5.4/query-dsl-query-string-query.html#query-string-syntax" target="_blank" class="input-group-addon">
-                            <span class="fa fa-question"></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="divider divider-sm"></div>
 
             <div class="table-responsive"  style="position: relative; word-break: break-word;">
 
