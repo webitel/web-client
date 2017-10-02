@@ -1,0 +1,24 @@
+<div class="modal-header">
+    <h3 class="modal-title">Text-To-Speech</h3>
+</div>
+<div class="modal-body">
+    <form name="sipDumpForm">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group" ng-class="{ 'has-error' : sipDumpForm.duration.$invalid }">
+                    <label class="control-label">Duration</label>
+                    <input type="number" class="form-control" name="duration" required ng-model="duration" min="0" max="3600"> </input>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : sipDumpForm.filtr.$invalid }">
+                    <label class="control-label" for>Filter</label>
+                    <input type="text" class="form-control" name="filtr" ng-model="filtr"> </input>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-success" ng-disabled="sipDumpForm.$invalid" type="button" ng-click="ok()">Save</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+</div>
