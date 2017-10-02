@@ -6,8 +6,8 @@
 
 define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel'], function (app, utils) {
 
-    app.controller('ServerSettingsCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', '$timeout', 'ServerSettingsModel', '$confirm',
-        function ($scope, webitel, $rootScope, notifi, $timeout, ServerSettingsModel, $confirm) {
+    app.controller('ServerSettingsCtrl', ['$scope', '$modal', 'webitel', '$rootScope', 'notifi', '$timeout', 'ServerSettingsModel', '$confirm',
+        function ($scope, $modal, webitel, $rootScope, notifi, $timeout, ServerSettingsModel, $confirm) {
             $scope.openDate = function($event, attr) {
                 angular.forEach($scope.dateOpenedControl, function (v, key) {
                     if (key !== attr)
@@ -97,7 +97,40 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                     return notifi.info(result.info, 10000);
                 })
 
+            }
 
+            $scope.addSipDump = function(){
+                var modalInstance = $modal.open({
+                    animation: true,
+                    backdrop: false,
+                    templateUrl: '/modules/server/sipDump/sipDumpModal.html',
+                    resolve: {
+                        domainName: function () {
+                            return $scope.domain;
+                        }
+                    },
+                    controller: function ($modalInstance, $scope, domainName) {
+                        var self = $scope;
+
+                        self.duration = 0;
+                        self.filtr = '';
+
+                        self.ok = function () {
+                            $modalInstance.close({
+                                duration: self.duration,
+                                filter: self.filtr
+                            });
+                        };
+
+                        self.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    }
+                });
+
+                modalInstance.result.then(function (option) {
+                    debugger;
+                });
             }
         }
     ]);
