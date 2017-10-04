@@ -44,8 +44,11 @@
                                 </div>
                             </div>
                             <div class="pull-left" style="margin-top: 2px">
-                                <a href="" ng-click="addSipDump()" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
+                                <a href="" ng-click="tcpDumpModal(false)" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
                                     <i class="glyphicon glyphicon-plus"></i>
+                                </a>
+                                <a ng-click="reloadDumpData()" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v bg-dark">
+                                    <i class="glyphicon glyphicon-refresh"></i>
                                 </a>
                             </div>
                         </div>
@@ -54,8 +57,7 @@
             </div>
             <div class="divider divider-sm"></div>
 
-            <div class="table-responsive"  style="position: relative; word-break: break-word;">
-
+            <div class="table-responsive"  style="position: relative;">
                 <div class="row text-center" ng-if="!rowCollection || rowCollection.length == 0">
                     <div class="center-block col-md-4" style="float: none;">
                         <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
@@ -63,58 +65,33 @@
                     </div>
                 </div>
 
-                <table ng-show="rowCollection.length > 0" wt-responsive-table infinite-scroll-disabled="isLoading"
-                       style="table-layout: fixed;"
-                       st-table="rowCollection" infinite-scroll="callServer"  st-pipe="callServer" class="table table-bordered">
+                <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="rowCollection" infinite-scroll-disabled="isLoading"
+                       infinite-scroll="callServer" st-pipe="callServer" class="table table-hover">
                     <thead>
-                    <tr>
-                        <th st-skip-natural="true" st-sort="'{{item}}'" ng-if="!mapColumns[item].noRender && !mapColumns[item].options.detail" ng-repeat="(item, key) in columns">
-                            {{mapColumns[item].caption}}
-                        </th>
-                    </tr>
+                        <tr ng-show="rowCollection.length > 0">
+                            <th style="width: 20%" st-skip-natural="true" st-sort="created_on" >Created On</th>
+                            <th style="width: 20%" st-skip-natural="true" st-sort="filter" >Filter</th>
+                            <th style="width: 20%" st-skip-natural="true" st-sort="duration" >Duration</th>
+                            <!--<th style="width: 10%" st-skip-natural="true" >Timer</th>-->
+                            <th style="width: 10%; min-width: 116px; text-align: end;">
+                                Count: {{rowCollection.length}}
+                            </th>
+                        </tr>
                     </thead>
-
-                    <tbody style="font-size: 11px;">
-
-                    <tr ng-repeat-start="(k, row) in rowCollection" ng-click="selectRow(row)" ng-class="{'bg-gray': row == activeRow, 'call-parent-queue': activeRow['variables.cc_member_uuid'] && (row['variables.cc_member_uuid'] === activeRow['variables.cc_member_uuid'])}">
-                        <td style="word-break: break-word;" ng-if="!mapColumns[item].noRender && !mapColumns[item].options.detail" ng-repeat="(item, key) in columns">
-                            {{renderCell(row[item], mapColumns[item])}}
-                            <!--{{row[item]}}-->
-                        </td>
-                    </tr>
-
-                    <tr ng-repeat-end="" class="bg-gray" ng-show="row == activeRow">
-                        <td colspan="{{_countColumns}}" class="row">
-                            <div class="col-sm-8">
-                                <dl class="dl-horizontal" ng-repeat="name in detailtColumns">
-                                    <dt>{{mapColumns[name].caption}}</dt>
-                                    <dd>{{renderCell(activeRow[name], mapColumns[name])}}</dd>
-                                </dl>
-                            </div>
-                            <div class="col-sm-4 ">
-                                <div class="col-sm-12" ng-repeat="file in row._files" >
-                                    <div class="row pull-right">
-                                        <button ng-click="fileAction(file)"  class="btn btn-default btn-sm" >
-                                            <i ng-if="file.private" class="color-info fa fa-asterisk" aria-hidden="true"></i>
-                                            {{file.name}}
-                                            <i ng-class="file.class"></i>
-                                        </button>
-
-                                        <button ng-repeat="btn in file.buttons" ng-class="{{btn.ngClass}}" ng-click="fileAction(btn, file, row._files)"  class="btn btn-default btn-sm " >
-                                            <i ng-class="btn.class"></i>
-                                        </button>
-                                    </div>
-
-                                </div>
-                                <span class="pull-right">{{detailLoadingText}}</span>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
+                    <tbody ng-show="rowCollection.length > 0">
+                        <tr ng-repeat="row in rowCollection">
+                            <td >{{row.created_on}}</td>
+                            <td >{{row.filter}}</td>
+                            <td >{{row.duration}}</td>
+                            <!--<td >100</td>-->
+                            <td style="text-align: end">
+                                <a href="javascript:;" ng-click="tcpDumpModal(true, row)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                                <a href="javascript:;" ng-click="removeDump(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
+
             </div>
         </div>
     </div>

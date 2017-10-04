@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title">SIP Dump</h3>
+    <h3 class="modal-title">tcpdump</h3>
 </div>
 <div class="modal-body">
     <form name="sipDumpForm">
@@ -7,11 +7,15 @@
             <div class="col-sm-12">
                 <div class="form-group" ng-class="{ 'has-error' : sipDumpForm.duration.$invalid }">
                     <label class="control-label">Duration</label>
-                    <input type="number" class="form-control" name="duration" required ng-model="duration" min="0" max="3600"> </input>
+                    <input ng-disabled="isEdit" type="number" class="form-control" name="duration" required ng-model="duration" min="0" max="3600"> </input>
                 </div>
                 <div class="form-group" ng-class="{ 'has-error' : sipDumpForm.filtr.$invalid }">
                     <label class="control-label" for>Filter</label>
-                    <input type="text" class="form-control" name="filtr" ng-model="filtr"> </input>
+                    <input ng-disabled="isEdit" type="text" class="form-control" name="filtr" ng-model="filtr"> </input>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for>Description</label>
+                    <textarea class="form-control" name="description" ng-model="description"> </textarea>
                 </div>
             </div>
         </div>
