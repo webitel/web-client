@@ -244,6 +244,18 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                     _page++;
                     nexData = res.data.length === maxNodes;
                     $scope.rowCollection = $scope.rowCollection.concat(res.data);
+                    $scope.rowCollection.forEach(function(row){
+                        var date = new Date();
+                        var timestamp = Math.round(date.getTime()/1000);
+                        var substract = (parseInt(row.created_on) + row.duration) - timestamp;
+                        if(substract > 0){
+                            row.timer = substract;
+                        }
+                        else{
+                            row.timer = 0;
+                        }
+                    })
+
                 });
 
             }
