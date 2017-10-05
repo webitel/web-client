@@ -142,7 +142,7 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                             self.error = row.meta_file && row.meta_file.error;
                         }
                         else{
-                            self.duration = 0;
+                            self.duration = 1;
                             self.filtr = '';
                             self.description = '';
                         }
