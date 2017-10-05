@@ -75,8 +75,6 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         function updateDump(id, description, cb) {
             if(!id)
                 return cb(new Error('Bad request id'));
-            if(!description)
-                return cb(new Error('Bad description'));
 
             webitel.api('PUT', '/api/v2/system/tcp_dump/' + id, {description: description}, cb);
         }

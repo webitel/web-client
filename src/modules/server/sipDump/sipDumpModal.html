@@ -17,6 +17,10 @@
                     <label class="control-label" for>Description</label>
                     <textarea class="form-control" name="description" ng-model="description"> </textarea>
                 </div>
+                <div ng-if="error" class="form-group" ng-class="{ 'has-error' : true }">
+                    <label class="control-label" for>Error message</label>
+                    <input ng-disabled="true" type="text" class="form-control" name="error" ng-model="error"> </input>
+                </div>
             </div>
         </div>
     </form>

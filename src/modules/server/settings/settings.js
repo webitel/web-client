@@ -139,6 +139,7 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                             self.filtr = row.filter;
                             self.description = row.description;
                             self.id = row.id;
+                            self.error = row.meta_file && row.meta_file.error;
                         }
                         else{
                             self.duration = 0;
@@ -246,7 +247,6 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                     nexData = res.data.length === maxNodes;
                     $scope.rowCollection = $scope.rowCollection.concat(res.data);
                     $scope.rowCollection.forEach(function(row){
-                        if(row.meta_file)row.download = true;
                         var date = new Date();
                         var timestamp = Math.round(date.getTime()/1000);
                         var substract = (parseInt(row.created_on) + row.duration) - timestamp;
