@@ -11,11 +11,16 @@
                 </div>
                 <div class="form-group" ng-class="{ 'has-error' : sipDumpForm.filtr.$invalid }">
                     <label class="control-label" for>Filter</label>
-                    <input ng-disabled="isEdit" type="text" class="form-control" name="filtr" ng-model="filtr"> </input>
+                    <div class="input-group">
+                        <input ng-disabled="isEdit" type="text" class="form-control" name="filtr" ng-model="filtr"> </input>
+                        <a href="https://danielmiessler.com/study/tcpdump/" target="_blank" class="input-group-addon">
+                            <span class="fa fa-question"></span>
+                        </a>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label" for>Description</label>
-                    <textarea class="form-control" name="description" ng-model="description"> </textarea>
+                    <textarea class="form-control" name="description" ng-model="description" style="max-width: 568px;"> </textarea>
                 </div>
                 <div ng-if="error" class="form-group" ng-class="{ 'has-error' : true }">
                     <label class="control-label" for>Error message</label>
