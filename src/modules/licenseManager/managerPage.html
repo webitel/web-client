@@ -10,7 +10,7 @@
 
                         <div class="form-group" ng-class="{'has-error' : licenseForm.customer.$invalid }">
                             <label class="control-label">Customer</label>
-                            <input type="text" ng-disabled="!license._new" name="customer"  class="form-control" required data-ng-model="license.cid" style="">
+                            <input type="text" ng-disabled="!license._new"  data-ng-maxlength="32" name="customer"  class="form-control" required data-ng-model="license.cid" style="">
                         </div>
 
                         <div class="form-group" ng-class="{'has-error' : licenseForm.name.$invalid }">
