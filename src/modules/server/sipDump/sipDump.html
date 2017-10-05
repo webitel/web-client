@@ -85,6 +85,7 @@
                             <td >{{row.duration}}</td>
                             <td >{{row.timer}}</td>
                             <td style="text-align: end">
+                                <a href="javascript:;" ng-if="row.download" ng-click="downloadDump(row.id)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-download-alt"></i></a>
                                 <a href="javascript:;" ng-click="tcpDumpModal(true, row)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
                                 <a href="javascript:;" ng-click="removeDump(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                             </td>

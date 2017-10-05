@@ -52,8 +52,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         }
 
         function addDump(body, cb) {
-            if(!body.filter)
-                return cb(new Error('Bad filter'));
+            if(!body)
+                return cb(new Error('Bad request data'));
 
             webitel.api('POST', '/api/v2/system/tcp_dump/', body, cb);
         }
@@ -96,6 +96,13 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             return res.substring(0, res.length - 1);
         }
 
+        function getFile (id) {
+            var uri = webitel.connection._cdr + "/api/v2/tcp_dump/" +
+                id + "/data?access_token=" + webitel.connection.session.token +
+                "&x_key=" + webitel.connection.session.key;
+            return uri;
+        }
+
         return {
             removeNonExistentFiles: removeNonExistentFiles,
             removeFiles: removeFiles,
@@ -105,7 +112,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             deleteDump: deleteDump,
             itemDump: itemDump,
             updateDump: updateDump,
-            list: list
+            list: list,
+            getFile: getFile
         }
     }]);
 

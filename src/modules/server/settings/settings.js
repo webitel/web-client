@@ -201,7 +201,8 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                 duration: 1,
                 description: 1,
                 created_on: 1,
-                id: 1
+                id: 1,
+                meta_file: 1
             }));
             var maxNodes = 40;
 
@@ -245,15 +246,13 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                     nexData = res.data.length === maxNodes;
                     $scope.rowCollection = $scope.rowCollection.concat(res.data);
                     $scope.rowCollection.forEach(function(row){
+                        if(row.meta_file)row.download = true;
                         var date = new Date();
                         var timestamp = Math.round(date.getTime()/1000);
                         var substract = (parseInt(row.created_on) + row.duration) - timestamp;
-                        if(substract > 0){
-                            row.timer = substract;
-                        }
-                        else{
-                            row.timer = 0;
-                        }
+                        row.timer = substract > 0 ? substract : 0;
+                        var tmp = new Date(row.created_on*1000);
+                        row.created_on = tmp.toLocaleString();
                     })
 
                 });
@@ -281,7 +280,14 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                     });
             };
 
-
+            $scope.downloadDump = function (id){
+                var $a = document.createElement('a');
+                $a.href = ServerSettingsModel.getFile(id);
+                $a.download = 'error';
+                document.body.appendChild($a);
+                $a.click();
+                document.body.removeChild($a);
+            }
         }
     ]);
 });
