@@ -101,7 +101,7 @@ define(['angular', 'config'], function (angular, config) {
             caption: "Utils",
             hide: true,
             acl: 'license',
-            templateUrl: 'modules/server/settings/settings.html',
+            templateUrl: 'modules/server/utils.html',
             controller: 'ServerSettingsCtrl',
             controllerUrl: 'modules/server/settings/settings.js',
             iconClass: 'fa fa-usd'

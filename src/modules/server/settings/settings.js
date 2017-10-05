@@ -6,8 +6,8 @@
 
 define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel'], function (app, utils) {
 
-    app.controller('ServerSettingsCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', '$timeout', 'ServerSettingsModel', '$confirm',
-        function ($scope, webitel, $rootScope, notifi, $timeout, ServerSettingsModel, $confirm) {
+    app.controller('ServerSettingsCtrl', ['$scope', '$modal', 'webitel', '$rootScope', 'notifi', '$timeout', 'ServerSettingsModel', '$confirm', 'cfpLoadingBar',
+        function ($scope, $modal, webitel, $rootScope, notifi, $timeout, ServerSettingsModel, $confirm, cfpLoadingBar) {
             $scope.openDate = function($event, attr) {
                 angular.forEach($scope.dateOpenedControl, function (v, key) {
                     if (key !== attr)
@@ -24,6 +24,27 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                 "year-format": "'yy'",
                 "starting-day": 1
             };
+            $scope.isLoading = false;
+
+            $scope.quickDateRange = {
+                'Today': [moment().startOf('day'), moment().endOf('day')],
+                'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
+                'Last 7 Days': [moment().subtract(6, 'days').startOf('day'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            };
+
+            $scope.startDate = $scope.quickDateRange['Today'][0].toDate();
+            $scope.endDate = $scope.quickDateRange['Today'][1].toDate();
+
+            $scope.setQuickDateRange = function (v) {
+                $scope.startDate = v[0].toDate();
+                $scope.endDate = v[1].toDate();
+                $scope.reloadDumpData();
+            };
+
+            //$scope.setQuickDateRange($scope.quickDateRange.Today);
 
             $scope.fsModules = ["amqp", "callcenter"];
 
@@ -97,7 +118,175 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                     return notifi.info(result.info, 10000);
                 })
 
+            }
 
+            $scope.tcpDumpModal = function(isEdit, row){
+                var modalInstance = $modal.open({
+                    animation: true,
+                    backdrop: false,
+                    templateUrl: '/modules/server/sipDump/sipDumpModal.html',
+                    resolve: {
+                        domainName: function () {
+                            return $scope.domain;
+                        }
+                    },
+                    controller: function ($modalInstance, $scope) {
+                        var self = $scope;
+
+                        self.isEdit = isEdit;
+                        if(self.isEdit){
+                            self.duration = row.duration;
+                            self.filtr = row.filter;
+                            self.description = row.description;
+                            self.id = row.id;
+                            self.error = row.meta_file && row.meta_file.error;
+                        }
+                        else{
+                            self.duration = 1;
+                            self.filtr = '';
+                            self.description = '';
+                        }
+
+                        self.ok = function () {
+                            if(isEdit){
+                                $modalInstance.close({
+                                    id: self.id,
+                                    description: self.description
+                                });
+                            }
+                            else{
+                                $modalInstance.close({
+                                    duration: self.duration,
+                                    filter: self.filtr,
+                                    description: self.description
+                                });
+                            }
+                        };
+
+                        self.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    }
+                });
+
+                modalInstance.result.then(function (option) {
+                    if(isEdit){
+                        ServerSettingsModel.updateDump(option.id, option.description, function (err, res) {
+                            if(err)
+                                return notifi.error(err);
+                            $scope.reloadDumpData();
+                        });
+                    }
+                    else{
+                        ServerSettingsModel.addDump(option, function (err, res) {
+                            if(err)
+                                return notifi.error(err);
+                            $scope.reloadDumpData();
+                        });
+                    }
+                });
+            };
+
+            $scope.$watch('isLoading', function (val) {
+                if (val) {
+                    cfpLoadingBar.start()
+                } else {
+                    cfpLoadingBar.complete()
+                }
+            });
+
+            var _page = 1;
+            var nexData = true;
+            var col = encodeURIComponent(JSON.stringify({
+                filter: 1,
+                duration: 1,
+                description: 1,
+                created_on: 1,
+                id: 1,
+                meta_file: 1
+            }));
+            var maxNodes = 40;
+
+            $scope.callServer = getData;
+
+            function getData(tableState) {
+                if ($scope.isLoading) return void 0;
+
+                if (((tableState.pagination.start / tableState.pagination.number) || 0) === 0) {
+                    _page = 1;
+                    nexData = true;
+                    $scope.rowCollection = [];
+                    $scope.count = 0;
+                }
+                console.debug("Page:", _page);
+
+                $scope.tableState = tableState;
+
+                $scope.isLoading = true;
+                var sort ={ created_on: 1 };
+
+                if (tableState.sort.predicate)
+                    sort[tableState.sort.predicate] = tableState.sort.reverse ? -1 : 1;
+
+                $scope.isLoading = true;
+                sort = encodeURIComponent(JSON.stringify(sort));
+
+                ServerSettingsModel.list({
+                    from: Math.round($scope.startDate.getTime()/1000),
+                    to: Math.round($scope.endDate.getTime()/1000),
+                    columns: col,
+                    sort: sort,
+                    limit: maxNodes,
+                    page: _page
+                }, function (err, res) {
+                    $scope.isLoading = false;
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    _page++;
+                    nexData = res.data.length === maxNodes;
+                    $scope.rowCollection = $scope.rowCollection.concat(res.data);
+                    $scope.rowCollection.forEach(function(row){
+                        var date = new Date();
+                        var timestamp = Math.round(date.getTime()/1000);
+                        var substract = (parseInt(row.created_on) + row.duration) - timestamp;
+                        row.timer = substract > 0 ? substract : 0;
+                        var tmp = new Date(row.created_on*1000);
+                        row.created_on = tmp.toLocaleString();
+                    })
+
+                });
+
+            }
+
+            $scope.reloadDumpData  = function() {
+                $scope.tableState.pagination.start = 0;
+                getData($scope.tableState);
+            };
+
+            $scope.onChangeDate = function (val) {
+                if (val)
+                    $scope.reloadDumpData();
+            };
+
+            $scope.removeDump = function (row) {
+                $confirm({text: 'Are you sure you want to delete ' + row.filter + ' ?'},  { templateUrl: 'views/confirm.html' })
+                    .then(function() {
+                        ServerSettingsModel.deleteDump(row.id, function (err) {
+                            if (err)
+                                return notifi.error(err, 5000);
+                            $scope.reloadDumpData();
+                        });
+                    });
+            };
+
+            $scope.downloadDump = function (id){
+                var $a = document.createElement('a');
+                $a.href = ServerSettingsModel.getFile(id);
+                $a.download = 'error';
+                document.body.appendChild($a);
+                $a.click();
+                document.body.removeChild($a);
             }
         }
     ]);
