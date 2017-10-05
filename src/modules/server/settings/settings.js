@@ -142,7 +142,7 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                             self.error = row.meta_file && row.meta_file.error;
                         }
                         else{
-                            self.duration = 1;
+                            self.duration = 60;
                             self.filtr = '';
                             self.description = '';
                         }
@@ -247,10 +247,15 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                     nexData = res.data.length === maxNodes;
                     $scope.rowCollection = $scope.rowCollection.concat(res.data);
                     $scope.rowCollection.forEach(function(row){
-                        var date = new Date();
-                        var timestamp = Math.round(date.getTime()/1000);
-                        var substract = (parseInt(row.created_on) + row.duration) - timestamp;
-                        row.timer = substract > 0 ? substract : 0;
+                        if(row.meta_file && row.meta_file.error){
+                            row.timer = 0;
+                        }
+                        else{
+                            var date = new Date();
+                            var timestamp = Math.round(date.getTime()/1000);
+                            var substract = (parseInt(row.created_on) + row.duration) - timestamp;
+                            row.timer = substract > 0 ? substract : 0;
+                        }
                         var tmp = new Date(row.created_on*1000);
                         row.created_on = tmp.toLocaleString();
                     })

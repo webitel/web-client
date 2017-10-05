@@ -79,7 +79,7 @@
                         </tr>
                     </thead>
                     <tbody ng-show="rowCollection.length > 0">
-                        <tr ng-repeat="row in rowCollection" ng-class="{'bg-danger': row.meta_file.error}">
+                        <tr ng-repeat="row in rowCollection" ng-class="{'bg-danger': row.meta_file.error, 'bg-gray': row.timer !== 0}">
                             <td >{{row.created_on}}</td>
                             <td ng-class="">{{row.filter}}</td>
                             <td >{{row.duration}}</td>
