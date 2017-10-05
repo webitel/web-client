@@ -66,7 +66,7 @@
                 </div>
 
                 <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="rowCollection" infinite-scroll-disabled="isLoading"
-                       infinite-scroll="callServer" st-pipe="callServer" class="table table-hover">
+                       infinite-scroll="callServer" st-pipe="callServer" class="table">
                     <thead>
                         <tr ng-show="rowCollection.length > 0">
                             <th style="width: 20%" st-skip-natural="true" st-sort="created_on" >Created On</th>
@@ -79,9 +79,9 @@
                         </tr>
                     </thead>
                     <tbody ng-show="rowCollection.length > 0">
-                        <tr ng-repeat="row in rowCollection">
+                        <tr ng-repeat="row in rowCollection" ng-class="{'bg-danger': row.meta_file.error}">
                             <td >{{row.created_on}}</td>
-                            <td >{{row.filter}}</td>
+                            <td ng-class="">{{row.filter}}</td>
                             <td >{{row.duration}}</td>
                             <td >{{row.timer}}</td>
                             <td style="text-align: end">

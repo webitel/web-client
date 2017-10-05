@@ -223,7 +223,7 @@ define(['app', 'scripts/webitel/utils', 'modules/server/settings/settingsModel']
                 $scope.tableState = tableState;
 
                 $scope.isLoading = true;
-                var sort ={};
+                var sort ={ created_on: 1 };
 
                 if (tableState.sort.predicate)
                     sort[tableState.sort.predicate] = tableState.sort.reverse ? -1 : 1;
