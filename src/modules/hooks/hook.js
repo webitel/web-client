@@ -160,13 +160,16 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/hoo
             reader.onload = function(event) {
                 try {
                     var data = JSON.parse(event.target.result);
-
-                    HookModel.item(data._id, $scope.domain, function (err, item) {
-                        if (err && err.statusCode !== 404)
-                            return notifi.error(err, 3000);
-
-                        uploadJson(data, !!item);
-                    });
+                    if(data._id){
+                        HookModel.item(data._id, $scope.domain, function (err, item) {
+                            if (err && err.statusCode !== 404)
+                                return notifi.error(err, 3000);
+                            uploadJson(data, !!item);
+                        });
+                    }
+                    else{
+                        uploadJson(data, false);
+                    }
                 } catch (e) {
                     notifi.error(e, 10000);
                 }
