@@ -250,7 +250,7 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                             }
                             else if(provider.name === 'microsoft'){
                                 provider.voice.forEach(function(item){
-                                    self.languages.push(item.language + " " + item.gender);
+                                    self.languages.push({ language: item.language, gender: item.gender});
                                 });
                                 self.props.language = self.languages[0];
                             }
@@ -307,7 +307,16 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                                     uri += '&accessKey=' + options.key + '&accessToken=' + options.token;
                                 }
                             }
-                            if (options.voice) {
+                            try{
+                                var tmp = JSON.parse(options.language);
+                            }
+                            catch (e){
+                                tmp = false;
+                            }
+                            if (tmp) {
+                                uri += '&language=' + tmp.language + '&gender=' + tmp.gender;
+                            }
+                            else{
                                 uri += '&voice=' + options.voice;
                             }
                             uri += '&domain=' + domainName + '&format=.wav&text=' + encodeURIComponent(options.text);

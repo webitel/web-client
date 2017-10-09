@@ -72,7 +72,7 @@
                                         <label class="control-label" for>Language</label>
                                         <select class="form-control" name="language" required ng-model="props.language"
                                                 ng-init="getLanguages()">
-                                            <option ng-repeat="l in languages" ng-selected="{{l==props.language}}" value="{{l}}">{{l}}</option>
+                                            <option ng-repeat="l in languages" ng-selected="{{l==props.language}}" value="{{l}}">{{l.language + " " + l.gender}}</option>
                                         </select>
                                     </div>
                                 </div>
