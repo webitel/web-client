@@ -1,7 +1,7 @@
 define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/callflows/callflowUtils',
-    'modules/cdr/libs/fileSaver', 'moment', 'modules/gateways/gatewayModel', 'modules/dialer/dialerModel',
+    'modules/cdr/libs/fileSaver', 'moment', 'modules/gateways/gatewayModel', 'modules/dialer/dialerModel', 'modules/acd/acdModel',
     'modules/calendar/calendarModel',  'modules/cdr/libs/json-view/jquery.jsonview', 'modules/cdr/fileModel',
-    'modules/accounts/accountModel', 'modules/media/mediaModel', 'modules/dialer/agentModel', 'css!modules/dialer/dialer.css',
+    'modules/accounts/accountModel', 'modules/media/mediaModel', 'modules/gateways/gatewayModel', 'modules/dialer/agentModel', 'css!modules/dialer/dialer.css',
     'modules/accounts/accounts', 'modules/callflows/diagram/diagram', 'css!modules/callflows/diagram/diagram.css'
 ], function (app, async, utils, aceEditor, callflowUtils, fileSaver, moment) {
 
@@ -44,9 +44,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
     }
 
     app.controller('DialerCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'DialerModel', '$location', '$route', '$routeParams',
-        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel', 'AccountModel', '$q', '$filter', 'MediaModel', 'cfpLoadingBar',
+        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel', 'AccountModel', '$q', '$filter', 'MediaModel', 'GatewayModel', 'AcdModel', 'cfpLoadingBar',
         function ($scope, webitel, $rootScope, notifi, DialerModel, $location, $route, $routeParams, $confirm, TableSearch,
-                  $timeout, $modal, CalendarModel, AccountModel, $q, $filter, MediaModel, cfpLoadingBar) {
+                  $timeout, $modal, CalendarModel, AccountModel, $q, $filter, MediaModel, GatewayModel, AcdModel, cfpLoadingBar) {
 
             $scope.canDelete = webitel.connection.session.checkResource('dialer', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('dialer', 'u');
@@ -140,7 +140,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.edit = edit;
             $scope.openDiagram = openDiagram;
             $scope.saveDiagram = saveDiagram;
+            $scope.createVisual = createVisual;
             $scope.disableVisual = disableVisual;
+            $scope.initCalendars = initCalendars;
+            $scope.initMedia = initMedia;
+            $scope.initDirectory = initDirectory;
+            $scope.initAcd = initAcd;
+            $scope.initGateway = initGateway;
 
             $scope.rowCollection = [];
             $scope.activeResource = null;
@@ -266,20 +272,106 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 setState();
             };
 
+            function initCalendars(cb){
+                CalendarModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    var c = [];
+                    var data = res.data;
+                    angular.forEach(data, function (v) {
+                        c.push(v.name);
+                    });
+                    cb(c);
+                });
+            }
+
+
+            function initMedia(cb){
+                MediaModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    var c = [];
+                    var data = res;
+                    angular.forEach(data, function (v) {
+                        c.push(v.name);
+                    });
+                    cb(c);
+                });
+            }
+
+            function initDirectory(cb){
+                AccountModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    var c = [];
+                    var data = res.info;
+                    Object.keys(data).forEach(function (v) {
+                        c.push(v);
+                    });
+                    cb(c);
+                });
+            }
+
+            function initGateway(cb){
+                GatewayModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err);
+                    var g = [];
+                    res.forEach(function(item){
+                        g.push(item.name);
+                    });
+                    cb(g);
+                });
+            }
+
+            function initAcd(cb){
+                AcdModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    var c = [];
+                    var data = res;
+                    angular.forEach(data, function (v) {
+                        c.push(v.name);
+                    });
+                    cb(c);
+
+                });
+            }
+
             function disableVisual() {
                 $scope.visualCfEnabled = false;
                 $scope.cfDiagram = null;
+                $scope.oldCfDiagram = null;
+            }
+
+            function onDebugDiagram() {
+                CallflowDiagram.onDebug.trigger({})
             }
 
             function saveDiagram() {
                 var cfGetter = CallflowDiagram.getCallflowJSON();
-                $scope.diagramOpened = false;
-                $scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
-                $scope.cfDiagram = cfGetter.callflowModel;
                 $scope.visualCfEnabled = true;
-                CallflowDiagram.clearReducer();
+                // $scope.diagramOpened = false;
+                // CallflowDiagram.clearReducer();
+                // DiagramDesigner.removeDesigner();
+                if(cfGetter){
+                    $scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
+                    $scope.cfDiagram = cfGetter.callflowModel;
+                }
+            }
+
+            function createVisual(){
+                DiagramDesigner.init();
+                $scope.cfDiagram = CallflowDiagram.createDiagram(JSON.parse($scope.cf));
+                $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
+                var cd = CallflowDiagram.getCallflowJSON();
+                $scope.cf = cd ? aceEditor.getStrFromJson(cd.callflowJson) : aceEditor.getStrFromJson($scope.cf);
                 DiagramDesigner.removeDesigner();
-                //$scope.save();
+                $scope.visualCfEnabled = true;
             }
 
             function openDiagram(value) {
@@ -287,7 +379,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 if(value) {
                     window.removeEventListener('keydown', window.keydownDiagramListener);
                     DiagramDesigner.init();
-
+                    CallflowDiagram.setWebitelParams({
+                        media: $scope.initMedia,
+                        calendar: $scope.initCalendars,
+                        acd: $scope.initAcd,
+                        directory: $scope.initDirectory,
+                        gateway: $scope.initGateway
+                    });
                     setTimeout(function(){
                         if(!!$scope.cfDiagram){
                             CallflowDiagram.updateModel($scope.cfDiagram);
