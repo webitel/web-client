@@ -488,6 +488,16 @@ define(['angular', 'config'], function (angular, config) {
             controllerUrl: 'modules/dialer/dialer.js',
             iconClass: 'fa fa-eject'
         },
+        // {
+        //     href: "#/contacts",
+        //     caption: "Contacts",
+        //
+        //     acl: 'cdr/media',
+        //     templateUrl: 'modules/contacts/contacts.html',
+        //     controller: 'ContactsCtrl',
+        //     controllerUrl: 'modules/contacts/contacts.js',
+        //     iconClass: 'fa fa-user'
+        // },
         {
             href: "#/widget",
             caption: "Widget",

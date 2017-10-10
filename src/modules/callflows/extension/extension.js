@@ -1,5 +1,5 @@
 define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'modules/callflows/extension/extensionModel',
-    'modules/calendar/calendarModel', 'modules/media/mediaModel', 'modules/acd/acdModel', 'modules/accounts/accountModel',
+    'modules/calendar/calendarModel', 'modules/media/mediaModel', 'modules/acd/acdModel', 'modules/accounts/accountModel', 'modules/gateways/gatewayModel',
     'modules/callflows/diagram/diagram', 'css!modules/callflows/diagram/diagram.css'], function (app, aceEditor, callflowUtils) {
 
     app.controller('CallflowExtensionCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CallflowExtensionModel',

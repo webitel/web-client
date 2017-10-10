@@ -1,5 +1,5 @@
 define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'scripts/webitel/utils', 'modules/callflows/public/publicModel',
-    'modules/calendar/calendarModel', 'modules/media/mediaModel', 'modules/acd/acdModel', 'modules/accounts/accountModel',
+    'modules/calendar/calendarModel', 'modules/media/mediaModel', 'modules/acd/acdModel', 'modules/accounts/accountModel', 'modules/gateways/gatewayModel',
 	'tags-input', 'modules/callflows/diagram/diagram', 'css!modules/callflows/diagram/diagram.css'
 	], function (app, aceEditor, callflowUtils, utils) {
 
