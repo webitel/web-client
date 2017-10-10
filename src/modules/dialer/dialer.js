@@ -142,11 +142,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             $scope.saveDiagram = saveDiagram;
             $scope.createVisual = createVisual;
             $scope.disableVisual = disableVisual;
-            $scope.initCalendars = initCalendars;
-            $scope.initMedia = initMedia;
-            $scope.initDirectory = initDirectory;
-            $scope.initAcd = initAcd;
-            $scope.initGateway = initGateway;
 
             $scope.rowCollection = [];
             $scope.activeResource = null;
@@ -380,11 +375,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     window.removeEventListener('keydown', window.keydownDiagramListener);
                     DiagramDesigner.init();
                     CallflowDiagram.setWebitelParams({
-                        media: $scope.initMedia,
-                        calendar: $scope.initCalendars,
-                        acd: $scope.initAcd,
-                        directory: $scope.initDirectory,
-                        gateway: $scope.initGateway
+                        media: initMedia,
+                        calendar: initCalendars,
+                        acd: initAcd,
+                        directory: initDirectory,
+                        gateway: initGateway
                     });
                     setTimeout(function(){
                         if(!!$scope.cfDiagram){

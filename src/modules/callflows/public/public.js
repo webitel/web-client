@@ -98,11 +98,6 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
             $scope.saveDiagram = saveDiagram;
             $scope.createVisual = createVisual;
             $scope.disableVisual = disableVisual;
-            $scope.initGateway = initGateway;
-            $scope.initCalendars = initCalendars;
-            $scope.initMedia = initMedia;
-            $scope.initDirectory = initDirectory;
-            $scope.initAcd = initAcd;
             $scope.onDebugDiagram = onDebugDiagram;
 
 			// region File
@@ -221,11 +216,11 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                     CallflowDiagram.onDebug.subscribe(openDebugWindow);
 
                     CallflowDiagram.setWebitelParams({
-                        media: $scope.initMedia,
-                        calendar: $scope.initCalendars,
-                        acd: $scope.initAcd,
-                        directory: $scope.initDirectory,
-                        gateway: $scope.initGateway
+                        media: initMedia,
+                        calendar: initCalendars,
+                        acd: initAcd,
+                        directory: initDirectory,
+                        gateway: initGateway
                     });
                     setTimeout(function() {
                         if(!!$scope.cfDiagram){
