@@ -318,7 +318,7 @@ define(['app', 'scripts/webitel/utils', 'modules/widget/widgetModel', 'modules/c
                     var arr = [];
                     angular.forEach(res, function(item) {
                         item.destination_number.map(function(i){
-                            arr=arr.concat({ id: item._id, number:i})
+                            arr=arr.concat({ id: item.id, number:i})
                         })
                     });
                     $scope.publics = arr;

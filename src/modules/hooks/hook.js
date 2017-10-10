@@ -27,9 +27,9 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/hoo
     });
 
     app.controller('HookCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'HookModel', '$route', '$location', '$routeParams',
-        '$confirm', '$timeout', 'TableSearch', 'cfpLoadingBar',
+        '$confirm', '$timeout', 'TableSearch', 'cfpLoadingBar', 'FileUploader',
         function ($scope, webitel, $rootScope, notifi, HookModel, $route, $location, $routeParams, $confirm, $timeout,
-                  TableSearch, cfpLoadingBar) {
+                  TableSearch, cfpLoadingBar, FileUploader) {
 
         $scope.json = {body : aceEditor.getStrFromJson({})};
 
@@ -116,6 +116,66 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/hoo
 
             return $scope.isEdit = !!oldValue[0]._id;
         }, true);
+
+        $scope.downloadScheme = function (row) {
+            HookModel.item(row._id, $scope.domain, function(err, item) {
+                if (err) {
+                    return notifi.error(err, 5000);
+                }
+                utils.saveJsonToPc(item, item._id + '.json');
+            });
+
+        };
+
+        function uploadJson (data, update) {
+            function cb(err, res) {
+                if (err)
+                    return notifi.error(err, 5000);
+
+                reloadData();
+                var str;
+                if (update) {
+                    str = "Updated";
+                } else {
+                    str = "Created";
+                }
+                return notifi.success(str, 2000);
+            };
+
+            if (update) {
+                HookModel.update(data, cb)
+            } else {
+                HookModel.add(data, cb);
+            }
+        };
+
+        var uploader = $scope.uploader = new FileUploader();
+        uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+            console.info('onWhenAddingFileFailed', item, filter, options);
+        };
+        uploader.onAfterAddingFile = function(item) {
+            console.info('onAfterAddingFile', item);
+
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    var data = JSON.parse(event.target.result);
+                    if(data._id){
+                        HookModel.item(data._id, $scope.domain, function (err, item) {
+                            if (err && err.statusCode !== 404)
+                                return notifi.error(err, 3000);
+                            uploadJson(data, !!item);
+                        });
+                    }
+                    else{
+                        uploadJson(data, false);
+                    }
+                } catch (e) {
+                    notifi.error(e, 10000);
+                }
+            };
+            reader.readAsText(item._file);
+        };
 
         $scope.cancel = function () {
             $scope.hook = angular.copy($scope.oldHook);

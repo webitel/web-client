@@ -12,6 +12,11 @@
                         <a ng-click="reloadData()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
                             <i class="glyphicon glyphicon-refresh"></i>
                         </a>
+
+                        <span class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark btn-file"  ng-disabled="!domain" style="padding: 0">
+                            <i class="glyphicon glyphicon-cloud-upload"></i>
+                            <input type="file" nv-file-select="" uploader="uploader" accept=".json">
+                        </span>
                     </div>
 
                     <div class="form-group pull-right ">
@@ -39,7 +44,7 @@
                         <th style="width: 35%"  st-skip-natural="true" st-sort="description">Description</th>
                         <th style="width: 10%" st-skip-natural="true" st-sort="action['type']" >Type</th>
                         <th style="width: 10%" st-skip-natural="true" class="text-center" st-sort="enable" >Enable</th>
-                        <th style="width: 10%; min-width: 83px; text-align: end;">
+                        <th style="width: 10%; min-width: 110px; text-align: end;">
                             Count: {{displayedCollection.length}}
                         </th>
                     </tr>
@@ -59,6 +64,7 @@
                         </td>
 
                         <td style="text-align: end">
+                            <a href="javascript:void 0" ng-click="downloadScheme(row)" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-cloud-download"></i></a>
                             <a href="#/hooks/{{row._id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
                             <a href="#/hooks/{{row._id}}/view?domain={{domain}}" ng-if="viewMode" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-file"></i></a>
 

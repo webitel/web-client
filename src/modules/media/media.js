@@ -234,16 +234,25 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                             var provider = TtsProviders.providers.filter(function(item){
                                 return self.props.provider === 'default' ? item.name === 'polly' : item.name === self.props.provider;
                             })[0];
-                            provider.voice.forEach(function(item){
-                                self.languages.push(item.language);
-                            });
-                            self.props.language = self.languages[0];
-                            if(self.props.language){
-                                self.getVoices();
+                            if(provider.name === 'polly' || provider.name === 'default')
+                            {
+                                provider.voice.forEach(function(item){
+                                    self.languages.push(item.language);
+                                });
+                                self.props.language = self.languages[0];
+                                if(self.props.language){
+                                    self.getVoices();
+                                }
+                                else{
+                                    self.voices = [];
+                                    self.props.voice = null;
+                                }
                             }
-                            else{
-                                self.voices = [];
-                                self.props.voice = null;
+                            else if(provider.name === 'microsoft'){
+                                provider.voice.forEach(function(item){
+                                    self.languages.push({ language: item.language, gender: item.gender});
+                                });
+                                self.props.language = self.languages[0];
                             }
                         };
 
@@ -298,7 +307,16 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                                     uri += '&accessKey=' + options.key + '&accessToken=' + options.token;
                                 }
                             }
-                            if (options.voice) {
+                            try{
+                                var tmp = JSON.parse(options.language);
+                            }
+                            catch (e){
+                                tmp = false;
+                            }
+                            if (tmp) {
+                                uri += '&language=' + tmp.language + '&gender=' + tmp.gender;
+                            }
+                            else{
                                 uri += '&voice=' + options.voice;
                             }
                             uri += '&domain=' + domainName + '&format=.wav&text=' + encodeURIComponent(options.text);

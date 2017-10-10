@@ -488,6 +488,35 @@ define(['angular', 'config'], function (angular, config) {
             controllerUrl: 'modules/dialer/dialer.js',
             iconClass: 'fa fa-eject'
         },
+        // {
+        //     href: "#/contacts",
+        //     caption: "Contacts",
+        //
+        //     acl: 'cdr/media',
+        //     templateUrl: 'modules/contacts/contacts.html',
+        //     controller: 'ContactsCtrl',
+        //     controllerUrl: 'modules/contacts/contacts.js',
+        //     iconClass: 'fa fa-user',
+        //     routes: [{
+        //         href: '/contacts/new',
+        //         templateUrl: 'modules/contacts/contactPage.html',
+        //         controller: 'ContactsCtrl',
+        //         controllerUrl: 'modules/contacts/contacts.js',
+        //         method: "create"
+        //     },{
+        //         href: '/contacts/:id/edit',
+        //         templateUrl: 'modules/contacts/contactPage.html',
+        //         controller: 'ContactsCtrl',
+        //         controllerUrl: 'modules/contacts/contacts.js',
+        //         method: "edit"
+        //     },{
+        //         href: '/contacts/:id/view',
+        //         templateUrl: 'modules/contacts/contactPage.html',
+        //         controller: 'ContactsCtrl',
+        //         controllerUrl: 'modules/contacts/contacts.js',
+        //         method: "view"
+        //     }]
+        // },
         {
             href: "#/widget",
             caption: "Widget",

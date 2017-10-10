@@ -46,22 +46,35 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group" ng-class="{ 'has-error' : ttsForm.language.$invalid  }">
-                                    <label class="control-label" for>Language</label>
-                                    <select class="form-control" name="language" required ng-model="props.language"
-                                            ng-init="getLanguages()"
-                                            ng-change="getVoices()">
-                                        <option ng-repeat="l in languages" ng-selected="{{l==props.language}}" value="{{l}}">{{l}}</option>
-                                    </select>
+                            <div ng-if="props.provider === 'polly' || props.provider === 'default'">
+                                <div class="col-sm-6">
+                                    <div class="form-group" ng-class="{ 'has-error' : ttsForm.language.$invalid  }">
+                                        <label class="control-label" for>Language</label>
+                                        <select class="form-control" name="language" required ng-model="props.language"
+                                                ng-init="getLanguages()"
+                                                ng-change="getVoices()">
+                                            <option ng-repeat="l in languages" ng-selected="{{l==props.language}}" value="{{l}}">{{l}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group" ng-class="{ 'has-error' : ttsForm.voice.$invalid }">
+                                        <label class="control-label">Voice</label>
+                                        <select class="form-control" name="voice" required ng-model="props.voice">
+                                            <option ng-repeat="v in voices" ng-selected="{{v==props.voice}}" value="{{v.value}}">{{v.value}} ({{v.gender}})</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group" ng-class="{ 'has-error' : ttsForm.voice.$invalid }">
-                                    <label class="control-label">Voice</label>
-                                    <select class="form-control" name="voice" required ng-model="props.voice">
-                                        <option ng-repeat="v in voices" ng-selected="{{v==props.voice}}" value="{{v.value}}">{{v.value}} ({{v.gender}})</option>
-                                    </select>
+                            <div ng-if="props.provider === 'microsoft'">
+                                <div class="col-sm-12">
+                                    <div class="form-group" ng-class="{ 'has-error' : ttsForm.language.$invalid  }">
+                                        <label class="control-label" for>Language</label>
+                                        <select class="form-control" name="language" required ng-model="props.language"
+                                                ng-init="getLanguages()">
+                                            <option ng-repeat="l in languages" ng-selected="{{l==props.language}}" value="{{l}}">{{l.language + " " + l.gender}}</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div ng-hide="props.provider === 'default'" class="col-sm-12">

@@ -25,6 +25,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 if (err)
                     return cb(err);
                 var hook = res && res.data;
+                if (!hook)
+                    return cb(null, null);
                 hook._filters = [];
                 hook._map = [];
                 hook._headers = [];
