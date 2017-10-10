@@ -258,7 +258,7 @@
                                         <span>Agents</span>
                                     </tab-heading>
 
-                                    <div class="row">.
+                                    <div class="row">
                                         <div class="col-sm-2 text-center">
                                             <p class="dlr-agents-control">
                                                 <button ng-class="{'btn-success dlr-bg.success': showAgentStatus['WAITING'], 'btn-default': !showAgentStatus['WAITING']}" ng-click="showAgentStatus['WAITING'] = !showAgentStatus['WAITING']" class="btn btn-block">WAITING</button>
@@ -315,25 +315,30 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <tr class="agent-container {{ag.stateName}}" id="{{ag.id}}" ng-repeat="ag in agentDisplayedCollection" ng-show="showAgentStatus[ag.stateName]">
+                                                    <tr class="agent-container {{ag.stateName}}" id="{{ag.name}}" ng-repeat="ag in agentDisplayedCollection" ng-show="showAgentStatus[ag.stateName]">
                                                         <td class="agent-id">
                                                             <a href="#/accounts/{{ag.number}}/edit?domain={{domain}}">{{ag.number}}</a>
                                                             <br>
-                                                            <span class="label btn btn-default" ng-click="canUpdateAgent && changeStatus(ag.id)">
+                                                            <span class="label btn btn-default" ng-click="canUpdateAgent && changeStatus(ag.number)">
                                                                 {{ag.stateName}}
                                                             </span>
                                                             <br>
-                                                            <span style="font-size: 12px;">{{secToString(ag.lastChange)}}</span>
+                                                            <span style="font-size: 12px;">
+                                                                {{secToString(ag.lastChange)}}
+                                                            </span>
+                                                            <span ng-show="ag.wt" class="text-warning" style="position: absolute; padding-top: 3px; padding-left: 5px; font-size: 11px;">
+                                                                <i class="glyphicon glyphicon-time"></i>
+                                                            </span>
                                                         </td>
-                                                        <td>{{ag.dialer.callCount || 0}}</td>
-                                                        <td>{{ag.dialer.missedCall || 0}}</td>
-                                                        <td>{{( secToString(ag.dialer.callTimeSec / ag.dialer.callCount) || 0)}}</td>
-                                                        <td>{{ ( secToString(ag.dialer.connectedTimeSec / ag.dialer.callCount) || 0) }}</td>
+                                                        <td>{{ag.call_count || 0}}</td>
+                                                        <td>{{ag.missed_call || 0}}</td>
+                                                        <td>{{( secToString(ag.call_time_sec / ag.call_count) || 0)}}</td>
+                                                        <td>{{ ( secToString(ag.connected_time_sec / ag.call_count) || 0) }}</td>
                                                         <td>{{ secToString(ag.avgIdleSec) }}</td>
                                                         <td>{{ ag.utilization.toFixed(2) }}</td>
-                                                        <td  style="white-space: pre-line;">{{ toLocaleTimeString(ag.dialer.lastBridgeCallTimeStart) }}</td>
-                                                        <td style="white-space: pre-line;">{{ toLocaleTimeString(ag.lastLoggedInTime) }}</td>
-                                                        <td style="white-space: pre-line;">{{ toLocaleTimeString(ag.loggedOutTime) }}</td>
+                                                        <td  style="white-space: pre-line;">{{ toLocaleTimeString(ag.last_offered_call * 1000) }}</td>
+                                                        <td style="white-space: pre-line;">{{ toLocaleTimeString(ag.logged_in * 1000) }}</td>
+                                                        <td style="white-space: pre-line;">{{ toLocaleTimeString(ag.logged_out * 1000) }}</td>
                                                         <td class="agent-stats" style="position: relative;">
                                                             <div class="agent-stats-vis">
                                                                 <div ng-style="ag.stats[0].cls">

@@ -619,6 +619,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             };
 
             function isAgentInTier(a) {
+                if (!$scope.dialer)
+                    return false;
                 return !~$scope.dialer.agents.indexOf(a.id);
             }
 
@@ -3106,19 +3108,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
             }
 
             function loadAgents(domain, agents, skills) {
-                var $or = [];
-
                 function joinDomain (agent) {
                     return agent + '@' + domain
                 }
 
-                if (angular.isArray(agents))
-                    $or.push({'agentId': {$in: agents.map(joinDomain)}});
-
-                if (angular.isArray(skills))
-                    $or.push({skills: {$in: skills}});
-
-                AgentModel.list(domain, {$or: $or}, {}, function (err, res) {
+                AgentModel.stats($scope.id, agents.map(joinDomain), skills, domain, function (err, res) {
                     if (err)
                         return notifi.error(err, 5000);
 
@@ -3132,54 +3126,52 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     resetAgentSummaryByDialer();
 
                     $scope.agentDisplayedCollection = res.map(function (item) {
-                        var stateName = getAgentSummaryState(item.state, item.status);
-                        $scope.sumAgentsStates[stateName]++;
-                        var dialer = getAgentDilerInfo($scope.id, item);
+                        var date = Date.now();
+                        item.stateName = getAgentSummaryState(item.state, item.status);
+                        item.last_set_stats = item.last_set_stats * 1000;
+                        item.active = +item.active * 1000;
+                        $scope.sumAgentsStates[item.stateName]++;
+                        item.ready_time = Math.max( (item.last_bridge_end  + item.wrap_up_time) * 1000 , item.ready_time * 1000);
+                        item.wt = item.ready_time - date > 0;
 
-                        if (dialer.lastBridgeCallTimeStart > 0) {
-                            $scope.gotAgentCount++;
-                            $scope.sumAgentCallCount += dialer.callCount || 0;
-                            $scope.sumAgentATT += ((dialer.callTimeSec / dialer.callCount) || 0);
-                            $scope.sumAgentASA += ((dialer.connectedTimeSec / dialer.callCount) || 0);
-                        }
+                        $scope.gotAgentCount++;
+                        $scope.sumAgentCallCount += item.call_count || 0;
+                        $scope.sumAgentATT += ((item.call_time_sec / item.call_count) || 0);
+                        $scope.sumAgentASA += ((item.connected_time_sec / item.call_count) || 0);
 
-                        var loggedInSec = item.loggedInSec || 0;
                         var avgIdleSec = 0;
 
-                        if (!dialer.callTimeSec) {
-                            dialer.callTimeSec = 0
-                        }
-
-                        if (!dialer.idleSec) {
-                            dialer.idleSec = 0
-                        }
-
-
-                        if (item.status && item.lastStatusChange && dialer.active > 0) {
-                            dialer[item.status] = (dialer[item.status] | 0) + Math.round((Date.now() - item.lastStatusChange) / 1000);
+                        if (item.status && item.last_set_stats && item.active > 0) {
+                            //TODO
+                            //dialer[item.status] = (dialer[item.status] | 0) + Math.round((Date.now() - item.last_set_stats) / 1000);
 
                             if (item.state === 'Waiting' && (item.status === 'Available' || item.status === 'Available (On Demand)')) {
-                                dialer.idleSec += Math.round((Date.now() - Math.max(item.lastStatusChange, item.lastStateChange, dialer.active)) / 1000);
+
+                                if (item.ready_time < date)
+                                    item.idle_sec += Math.round((date - Math.max(item.ready_time, item.active || 0, item.last_set_stats)  ) / 1000);
+
+                            } else if (item.status === "On Break") {
+                                item.on_break_sec += Math.round((date - Math.max(item.last_set_stats, item.active || 0)) / 1000);
+                            } else if (item.state === "Reserved") {
+                                item.call_time_sec += Math.round((date - Math.max(item.last_set_stats, item.active || 0)) / 1000);
                             }
                         }
 
-                        if (dialer.idleSec) {
-                            if (dialer.callCount) {
-                                avgIdleSec = Math.round(dialer.idleSec / (dialer.callCount - (dialer.missedCall || 0)));
+                        if (item.idle_sec) {
+                            if (item.call_count) {
+                                avgIdleSec = Math.round(item.idle_sec / (item.call_count - (item.missed_call || 0)));
                             } else {
-                                avgIdleSec = dialer.idleSec;
+                                avgIdleSec = item.idle_sec;
                             }
                             $scope.sumIdleAgents += avgIdleSec;
                         }
-                        if (item.lastLoggedInTime) {
-                            loggedOutTime = 0;
-                            loggedInSec += Math.round( (Date.now() - item.lastLoggedInTime) / 1000 );
-                        }
 
+                        var busy = item.call_time_sec + item.connected_time_sec + item.wrap_time_sec;
                         var utilization =  0;
 
-                        if (  (dialer.callTimeSec +  dialer.idleSec) ) {
-                            utilization = ( (dialer.callTimeSec / ( dialer.callTimeSec +  dialer.idleSec)) ) * 100;
+                        if (  (busy +  item.idle_sec) ) {
+                            //TODO
+                            utilization = ( ( busy / ( busy +  item.idle_sec)) ) * 100;
                             $scope.sumUtilization += utilization;
                             $scope.loggedAgentInDay++;
                         }
@@ -3187,27 +3179,27 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
 
                         var stats = [
                             {
-                                sec: dialer.callTimeSec,
+                                sec: busy,
                                 cls: {
                                     'background-color': '#bf2a22'
                                 },
-                                text: 'Busy: ' + secToString(dialer.callTimeSec)
+                                text: 'Busy: ' + secToString(busy)
                             },
                             {
                                 // sec: (dialer.Available || 0) + (dialer['Available (On Demand)'] || 0) - dialer.callTimeSec,
-                                sec: dialer.idleSec,
+                                sec: item.idle_sec,
                                 cls: {
                                     'background-color': '#57c17b'
                                 },
                                 // text: 'Available: ' + secToString(dialer.Available || dialer['Available (On Demand)'])
-                                text: 'Available: ' + secToString(dialer.idleSec)
+                                text: 'Available: ' + secToString(item.idle_sec)
                             },
                             {
-                                sec: (dialer['On Break'] || 0),
+                                sec: item.on_break_sec,
                                 cls: {
                                     'background-color': '#f39c12'
                                 },
-                                text: 'On Break: ' + secToString(dialer['On Break'])
+                                text: 'On Break: ' + secToString(item.on_break_sec)
                             }
                         ].sort(sortAgentStatsBySec);
 
@@ -3217,45 +3209,19 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         stats[1].cls['height'] = ( (stats[1].sec * 100 / sum) || 0) + '%';
                         stats[2].cls['height'] = ( (stats[2].sec * 100 / sum) || 0) + '%';
 
-                        return {
-                            id: item.agentId,
-                            // lastChange: (Date.now() - Math.min(item.lastStateChange, item.lastStatusChange) / 1000),
-                            //TODO
-                            lastChange: Math.round((Date.now() - Math.max(item.lastStatusChange, item.lastStateChange, dialer.active)) / 1000),
-                            lastChangeTime: Math.max(item.lastStatusChange, item.lastStateChange, dialer.active),
-                            number: item.agentId.split('@')[0],
-                            state: item.state,
-                            status: item.status,
-                            stateName: stateName,
-                            class: getAgentClass(item.state, item.status),
-                            dialer: dialer,
-                            loggedOutTime: item.loggedOutTime,
-                            lastLoggedInTime: item.lastLoggedInTime,
-                            loggedInSec: loggedInSec,
-                            avgIdleSec: avgIdleSec,
-                            sumIdleSec: dialer.idleSec || 0,
-                            utilization: utilization,
-                            stats: stats,
-                            missedCall: dialer.missedCall
-                        }
+                        item.class = getAgentClass(item.state, item.status);
+                        item.lastChange = Math.round((date - Math.max(item.last_set_stats, item.active)) / 1000);
+                        item.lastChangeTime = Math.max(item.last_set_stats, item.active);
+                        item.number = item.name.split('@')[0];
+                        item.avgIdleSec = avgIdleSec;
+                        item.stats = stats;
+                        item.utilization = utilization;
+
+
+                        return item
                     });
                 })
             }
-
-            function getAgentDilerInfo(dialerId, agent) {
-                if (angular.isArray(agent.dialer)) {
-                    for (var i = 0; i < agent.dialer.length; i++) {
-                        if (agent.dialer[i]._id === dialerId) {
-                            if (agent.dialer[i].lastBridgeCallTimeStart)
-                                agent.dialer[i]._lastBridgeCallTimeStart = new Date(agent.dialer[i].lastBridgeCallTimeStart).toLocaleTimeString();
-
-                            return agent.dialer[i];
-                        }
-                    }
-                }
-                return {}
-            }
-            
             $scope.toLocaleTimeString = function (time) {
                 if (!time)
                     return '---';
@@ -3281,10 +3247,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     return 'WAITING'
                 } else if (status === 'Logged Out') {
                     return 'LOGGED-OUT'
-                } else if (state === 'Idle' || state === 'Reserved') {
-                    return 'BUSY'
-                } else {
+                } else if (status === 'On Break') {
                     return 'ON-BREAK'
+                } else {
+                    return 'BUSY'
                 }
             }
 
@@ -3357,7 +3323,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 var agents = $scope.agentDisplayedCollection;
                 if (angular.isArray(agents)) {
                     for (var i = 0; i < agents.length; i++ ) {
-                        if (agents[i].id === id) {
+                        if (agents[i].name === id) {
                             return agents[i];
                         }
                     }
@@ -3940,7 +3906,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     resolve: {
                         options: function () {
                             return {
-                                id: accountId.split('@')[0],
+                                id: accountId,
                                 domain: $scope.domain,
                                 state: '',
                                 status: '',
@@ -3971,8 +3937,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     return;
                 }
                 clearAgentLiveState();
+                var date = Date.now();
                 angular.forEach($scope.agentDisplayedCollection, function (item) {
-                    item.lastChange = Math.floor((Date.now() - item.lastChangeTime) / 1000);
+                    item.lastChange = Math.floor((date - item.lastChangeTime) / 1000);
+                    item.wt = item.ready_time - date > 0;
                     $scope.liveAgentsStates[item.stateName]++;
                 });
 

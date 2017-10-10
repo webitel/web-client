@@ -23,8 +23,21 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
         }
 
+        function stats(dialerId, agents, skills, domainName, cb) {
+            var body = {
+                agents: agents,
+                skills: skills,
+                domain: domainName
+            };
+
+            webitel.api('POST', '/api/v2/dialer/' + dialerId + '/agents/stats?domain=' + domainName, body, function(err, res) {
+                return cb && cb(err, res.data || res.info);
+            });
+        }
+
         return {
-            list: list
+            list: list,
+            stats: stats
         }
     }]);
 });
