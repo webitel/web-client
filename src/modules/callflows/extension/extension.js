@@ -67,6 +67,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
             $scope.saveDiagram = saveDiagram;
             $scope.createVisual = createVisual;
             $scope.disableVisual = disableVisual;
+            $scope.initGateway = initGateway;
             $scope.initCalendars = initCalendars;
             $scope.initMedia = initMedia;
             $scope.initDirectory = initDirectory;
