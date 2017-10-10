@@ -101,7 +101,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
             $scope.onDebugDiagram = onDebugDiagram;
 
 			$scope.downloadScheme = function (row) {
-				utils.saveJsonToPc(row, row.name + '.json');
+                CallflowDefaultModel.item(row.id, $scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    utils.saveJsonToPc(res, res.name + '.json');
+                });
 			};
 
             function initCalendars(cb){

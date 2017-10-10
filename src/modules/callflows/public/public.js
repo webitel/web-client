@@ -102,7 +102,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 
 			// region File
 			$scope.downloadScheme = function (row) {
-				utils.saveJsonToPc(row, row.name + '.json');
+                CallflowPublicModel.item(row.id, $scope.domain, function (err, res) {
+                	if (err)
+                		return notifi.error(err, 5000);
+
+                    utils.saveJsonToPc(res, res.name + '.json');
+                });
 			};
 
             function initCalendars(cb){
