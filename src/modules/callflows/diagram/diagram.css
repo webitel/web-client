@@ -107,8 +107,8 @@ pre{
   padding: 0 0;
   list-style: none;
   position: absolute;
-  height: 81%;
-  min-height: 90vh;
+  height: 88%;
+  max-height: 90vh;
   width: 185px;
 }
 

@@ -735,7 +735,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                             "aggs": {
                                 "avggg": {
                                     "terms": {
-                                        "field": "User ID",
+                                        "field": "Call duration",
                                         "size": 10,
                                         "order": {
                                             "_term": "desc"
