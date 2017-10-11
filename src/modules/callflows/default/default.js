@@ -101,7 +101,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
             $scope.onDebugDiagram = onDebugDiagram;
 
 			$scope.downloadScheme = function (row) {
-				utils.saveJsonToPc(row, row.name + '.json');
+                CallflowDefaultModel.item(row.id, $scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    utils.saveJsonToPc(res, res.name + '.json');
+                });
 			};
 
             function initCalendars(cb){
@@ -279,14 +284,14 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 				reader.onload = function(event) {
 					try {
 						var data = JSON.parse(event.target.result);
-						data.fs_timezone = {
-							id: data.fs_timezone
-						};
+						if (!data.id) {
+                            return uploadJson(data, false);
+                        }
 						CallflowDefaultModel.item(data.id, $scope.domain, function (err, res) {
 							if (err && err.statusCode !== 404)
 								return notifi.error(err, 3000);
 
-							uploadJson(data, !!res);
+                            uploadJson(data, !!res);
 						});
 					} catch (e) {
 						notifi.error(e, 10000);

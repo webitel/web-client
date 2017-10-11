@@ -17,9 +17,10 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 cf_diagram: {}
             };
         };
+        var LIST_COLUMNS = encodeURIComponent(JSON.stringify({id:1, name:1, order: 1,  destination_number:1, debug: 1,disabled:1}));
 
         function list (domainName, cb) {
-            webitel.api("GET", "/api/v2/routes/default?sort=%7B%22order%22%3A-1%7D&limit=1000&domain=" + domainName, function (err, res) {
+            webitel.api("GET", "/api/v2/routes/default?columns=" + LIST_COLUMNS + "&sort=%7B%22order%22%3A-1%7D&limit=1000&domain=" + domainName, function (err, res) {
                 if (err)
                     return cb(err);
 
