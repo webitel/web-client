@@ -348,8 +348,8 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                                         name: self.props.name
                                     })
                                 })
-                                .error(function (err) {
-                                    notifi.error(err, 10000);
+                                .error(function (err, code) {
+                                    notifi.error(new Error("Bad response server, status code: " + code), 5000);
                                 })
                         }
                         //endregion
