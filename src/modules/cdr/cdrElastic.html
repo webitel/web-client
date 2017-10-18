@@ -5,7 +5,16 @@
                 <div class="col-sm-12">
                     <div class="form-inline">
                         <div class="col-sm-12" style="padding-left: 1px; padding-right: 0px;">
-                            <div class="pull-right">
+                            <div class="pull-left" style="margin-top: 2px">
+                                <a href="" ng-click="changePanel(!panelStatistic)" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
+                                    <i ng-if="panelStatistic" class="glyphicon glyphicon-list-alt"></i>
+                                    <i ng-if="!panelStatistic" class="glyphicon glyphicon-stats"></i>
+                                </a>
+                                <a ng-if="!panelStatistic" ng-click="pinnedItems()" href="" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v" ng-class="{'btn-warning': pinSearch,  'btn-dark': !pinSearch}">
+                                    <i class="glyphicon glyphicon-pushpin"></i>
+                                </a>
+                            </div>
+                            <div style="text-align: center">
                                 <div class="form-group">
                                     <label for>From</label>
                                     <div class="input-group ui-datepicker">
@@ -42,15 +51,6 @@
                                         <span class="btn input-group-addon" ng-click="openDate($event, 'end')"><i class="fa fa-calendar"></i></span>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="pull-left" style="margin-top: 2px">
-                                <a href="" ng-click="changePanel(!panelStatistic)" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
-                                    <i ng-if="panelStatistic" class="glyphicon glyphicon-list-alt"></i>
-                                    <i ng-if="!panelStatistic" class="glyphicon glyphicon-stats"></i>
-                                </a>
-                                <a ng-if="!panelStatistic" ng-click="pinnedItems()" href="" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v" ng-class="{'btn-warning': pinSearch,  'btn-dark': !pinSearch}">
-                                    <i class="glyphicon glyphicon-pushpin"></i>
-                                </a>
                             </div>
                         </div>
                     </div>
