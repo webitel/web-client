@@ -1,0 +1,39 @@
+<div class="page">
+    <section class="panel">
+        <form class="panel-body" name="contactPageForm">
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <div class="form-group" ng-class="{ 'has-error' : contactPageForm.name.$invalid }">
+                        <label class="control-label">Name</label>
+                        <input type="text" class="form-control" name="name" required data-ng-model="contact.name"  ng-disabled="viewMode">
+                    </div>
+
+                    <div class="form-group" ng-class="{ 'has-error' : contactPageForm.company_name.$invalid }">
+                        <label class="control-label">Company name</label>
+                        <input type="text" class="form-control" name="company_name" data-ng-model="contact.company_name"  ng-disabled="viewMode">
+                    </div>
+
+                    <div class="form-group" ng-class="{ 'has-error' : contactPageForm.job_name.$invalid }">
+                        <label class="control-label">Job name</label>
+                        <input type="text" class="form-control" name="job_name" data-ng-model="contact.job_name"  ng-disabled="viewMode">
+                    </div>
+
+                    <div class="form-group" ng-class="{ 'has-error' : contactPageForm.description.$invalid }">
+                        <label class="control-label">Description</label>
+                        <input type="text" class="form-control" name="description" data-ng-model="contact.description"  ng-disabled="viewMode">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+        <div class="panel-footer">
+            <button ng-show="isEdit && !viewMode" type="button" ng-disabled="gatewayForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
+        </div>
+    </section>
+</div>

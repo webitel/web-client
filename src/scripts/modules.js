@@ -488,35 +488,40 @@ define(['angular', 'config'], function (angular, config) {
             controllerUrl: 'modules/dialer/dialer.js',
             iconClass: 'fa fa-eject'
         },
-        // {
-        //     href: "#/contacts",
-        //     caption: "Contacts",
-        //
-        //     acl: 'cdr/media',
-        //     templateUrl: 'modules/contacts/contacts.html',
-        //     controller: 'ContactsCtrl',
-        //     controllerUrl: 'modules/contacts/contacts.js',
-        //     iconClass: 'fa fa-user',
-        //     routes: [{
-        //         href: '/contacts/new',
-        //         templateUrl: 'modules/contacts/contactPage.html',
-        //         controller: 'ContactsCtrl',
-        //         controllerUrl: 'modules/contacts/contacts.js',
-        //         method: "create"
-        //     },{
-        //         href: '/contacts/:id/edit',
-        //         templateUrl: 'modules/contacts/contactPage.html',
-        //         controller: 'ContactsCtrl',
-        //         controllerUrl: 'modules/contacts/contacts.js',
-        //         method: "edit"
-        //     },{
-        //         href: '/contacts/:id/view',
-        //         templateUrl: 'modules/contacts/contactPage.html',
-        //         controller: 'ContactsCtrl',
-        //         controllerUrl: 'modules/contacts/contacts.js',
-        //         method: "view"
-        //     }]
-        // },
+        {
+            href: "#/contacts",
+            caption: "Contacts",
+
+            acl: 'cdr/media',
+            templateUrl: 'modules/contacts/contacts.html',
+            controller: 'ContactsCtrl',
+            controllerUrl: 'modules/contacts/contacts.js',
+            iconClass: 'fa fa-user',
+            routes: [
+            {
+                href: '/contacts/:id/edit',
+                templateUrl: 'modules/contacts/contactPage.html',
+                controller: 'ContactsCtrl',
+                controllerUrl: 'modules/contacts/contacts.js',
+                method: "edit"
+            },{
+                href: '/contacts/:id/view',
+                templateUrl: 'modules/contacts/contactPage.html',
+                controller: 'ContactsCtrl',
+                controllerUrl: 'modules/contacts/contacts.js',
+                method: "view"
+            }]
+        },
+        {
+            href: "#/contactEditor",
+            caption: "Contact edit",
+            hide: true,
+            acl: 'cdr/media',
+            templateUrl: 'modules/contacts/contactEditor.html',
+            controller: 'ContactsCtrl',
+            controllerUrl: 'modules/contacts/contactProperties.js',
+            iconClass: 'fa fa-bug'
+        },
         {
             href: "#/widget",
             caption: "Widget",
