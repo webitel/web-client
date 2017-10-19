@@ -371,7 +371,7 @@ pre{
 }
 
 .parent-container .controls .parameters select option, .parent-container .controls .parameters input option, .parent-container .controls .parameters textarea option {
-  color: black;
+  background-color: #242633;
 }
 
 /*.parent-container .controls .parameters input {*/
