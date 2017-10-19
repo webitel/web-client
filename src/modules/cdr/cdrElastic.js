@@ -714,6 +714,17 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                                     "format": "epoch_millis"
                                 }
                             }
+                        },
+                        {
+                            "bool": {
+                                "must_not": [
+                                    {
+                                        "term": {
+                                            "Hangup cause": "LOSE_RACE"
+                                        }
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "sort": {},
@@ -764,15 +775,28 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     },
                     "limit": 0,
                     "query": $scope.queryString,
-                    "filter": [      {
-                        "range": {
-                            "variables.start_stamp": {
-                                "gte": $scope.startDate.getTime(),
-                                "lte": $scope.endDate.getTime(),
-                                "format": "epoch_millis"
+                    "filter": [
+                        {
+                            "range": {
+                                "variables.start_stamp": {
+                                    "gte": $scope.startDate.getTime(),
+                                    "lte": $scope.endDate.getTime(),
+                                    "format": "epoch_millis"
+                                }
+                            }
+                        },
+                        {
+                            "bool": {
+                                "must_not": [
+                                    {
+                                        "term": {
+                                            "Hangup cause": "LOSE_RACE"
+                                        }
+                                    }
+                                ]
                             }
                         }
-                    }],
+                        ],
                     "sort": {},
                     "domain": $scope.domain
                 },
@@ -799,15 +823,28 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     },
                     "limit": 0,
                     "query": $scope.queryString,
-                    "filter": [      {
-                        "range": {
-                            "variables.start_stamp": {
-                                "gte": $scope.startDate.getTime(),
-                                "lte": $scope.endDate.getTime(),
-                                "format": "epoch_millis"
+                    "filter": [
+                        {
+                            "range": {
+                                "variables.start_stamp": {
+                                    "gte": $scope.startDate.getTime(),
+                                    "lte": $scope.endDate.getTime(),
+                                    "format": "epoch_millis"
+                                }
+                            }
+                        },
+                        {
+                            "bool": {
+                                "must_not": [
+                                    {
+                                        "term": {
+                                            "Hangup cause": "LOSE_RACE"
+                                        }
+                                    }
+                                ]
                             }
                         }
-                    }],
+                    ],
                     "sort": {},
                     "domain": $scope.domain
                 }
