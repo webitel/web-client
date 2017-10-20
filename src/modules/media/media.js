@@ -319,6 +319,9 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                             else{
                                 uri += '&voice=' + options.voice;
                             }
+                            if (options.type === "SSML") {
+                                uri += "&textType=ssml";
+                            }
                             uri += '&domain=' + domainName + '&format=.wav&text=' + encodeURIComponent(options.text);
                             return uri
                         }
