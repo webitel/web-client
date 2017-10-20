@@ -5,13 +5,13 @@
             <div class="col-sm-12">
                 <div class="no-border pull-left" >
                     <a href="#/contacts?domain={{domain}}" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-info">
-                        <i class="glyphicon glyphicon-arrow-left"></i>
+                        <i class="fa fa-reply"></i>
                     </a>
-                    <a  href="#/contactEditor/new?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v bg-success">
+                    <a  ng-click="openModal(null)" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v bg-success">
                         <i class="fa fa-plus"></i>
                     </a>
 
-                    <a ng-click="reloadData(true)" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v bg-dark">
+                    <a ng-click="reloadData()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v bg-dark">
                         <i class="glyphicon glyphicon-refresh"></i>
                     </a>
 
@@ -33,17 +33,18 @@
                         </span>
             </div>
 
-            <div class="row text-center" ng-if="!rowCollection || rowCollection.length == 0">
+            <div class="row text-center" ng-if="!properties || properties.length == 0">
                 <div class="center-block col-md-4" style="float: none;">
                     <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
                     <h2>No results found</h2>
                 </div>
             </div>
 
-            <table ng-show="rowCollection.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-hover" st-search search-watch-model="query">
+            <table ng-show="properties.length > 0" wt-responsive-table st-table="displayedCollection" st-safe-src="properties" class="table table-hover" st-search search-watch-model="query">
                 <thead>
                 <tr>
                     <th style="width: 20%" st-skip-natural="true" st-sort="name">Name</th>
+                    <th style="width: 20%" st-skip-natural="true" st-sort="type">Caption</th>
                     <th style="width: 20%" st-skip-natural="true" st-sort="type">Type</th>
                     <th style="width: 10%; min-width: 83px; text-align: end;">
                         Count: {{displayedCollection.length}}
@@ -53,14 +54,15 @@
                 <tbody>
                 <tr ng-repeat="row in displayedCollection">
                     <td >
-                        <a href="#/contactEditor/{{row.id}}/edit">
+                        <a ng-click="openModal(row)">
                             {{row.name}}
                         </a>
                     </td>
-                    <td >{{row.description}}</td>
+                    <td >{{row.caption}}</td>
+                    <td >{{row.type}}</td>
                     <td style="text-align: end">
-                        <a href="#/contactEditor/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
-                        <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                        <a ng-click="openModal(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                        <a href="javascript:;" ng-click="delete(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                     </td>
                 </tr>
                 </tbody>

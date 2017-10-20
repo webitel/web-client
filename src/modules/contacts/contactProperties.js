@@ -8,24 +8,7 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
         function ($scope, $modal, webitel, $rootScope, notifi, $route, $location, ContactModel, $routeParams, $timeout, $confirm,
                   TableSearch, cfpLoadingBar) {
             $scope.domain = webitel.domain();
-            $scope.property = {};
-            $scope.properties = {};
-            $scope.choices = [];
-            $scope.choice = {value:''};
-
-            $scope.isRoot = !webitel.connection.session.domain;
-
-            $scope.canDelete = webitel.connection.session.checkResource('gateway', 'd');
-            $scope.canUpdate = webitel.connection.session.checkResource('gateway', 'u');
-            $scope.canCreate = webitel.connection.session.checkResource('gateway', 'c');
-
-            $scope.viewMode = !$scope.canDelete;
-            $scope.types = [
-                'text',
-                'number',
-                'select',
-                'check'
-            ];
+            $scope.properties = [];
 
             var changeDomainEvent = $rootScope.$on('webitel:changeDomain', function (e, domainName) {
                 $scope.domain = domainName;
@@ -36,134 +19,110 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                 changeDomainEvent();
             });
 
-
-
-            $scope.$watch('property', function(newValue, oldValue) {
-                if ($scope.property._new)
-                    return $scope.isEdit = $scope.isNew = true;
-
-                return $scope.isEdit = !!oldValue.id;
-            }, true);
-
-            function reloadData () {
-                if ($location.$$path != '/widget')
-                    return 0;
-
-                if (!$scope.domain)
-                    return $scope.rowCollection = [];
-
-                $scope.isLoading = true;
-                var col = encodeURIComponent(JSON.stringify({
-                    name: 1,
-                    type: 1,
-                    id: 1
-                }));
-
-                ContactModel.propertyList({
-                    columns: col,
-                    limit: 5000,
-                    page: 1,
-                    domain: $scope.domain
-                }, function (err, res) {
-                    $scope.isLoading = false;
-                    if (err)
-                        return notifi.error(err, 5000);
-                    var arr = [];
-                    angular.forEach(res.data, function(item) {
-                        arr.push(item);
-                    });
-                    $scope.rowCollection = arr;
-                });
+            $scope.reloadData = function () {
+                $scope.properties = [
+                    {
+                        "name": "aaaaa",
+                        "caption": "Aaa",
+                        "required": true,
+                        "index": 1,
+                        "width": 6,
+                        "type": "text",
+                        "options": []
+                    },
+                    {
+                        "name": "bbb",
+                        "caption": "Bbbb",
+                        "required": true,
+                        "index": 2,
+                        "width": 6,
+                        "type": "number",
+                        "options": []
+                    },
+                    {
+                        "name": "rrrr",
+                        "caption": "RRR",
+                        "required": true,
+                        "index": 2,
+                        "width": 6,
+                        "type": "select",
+                        "options": ["lox", "pidr"]
+                    }
+                ]
             }
 
-            $scope.cancel = function () {
-                $scope.property = angular.copy($scope.oldProperty);
-                disableEditMode();
-            };
-
-            function disableEditMode () {
-                $timeout(function () {
-                    $scope.isEdit = false;
-                }, 0);
-            };
 
             $scope.$watch('domain', function(domainName) {
                 $scope.domain = domainName;
+                $scope.reloadData();
             });
-            $scope.edit = edit;
-            $scope.closePage = closePage;
-            $scope.save = save;
-            $scope.create = create;
-            $scope.addChoice = addChoice;
-            $scope.removeChoice = removeChoice;
-
-            function addChoice() {
-                if($scope.choice && $scope.choice.value !== '') {
-                    $scope.choices.push($scope.choice.value);
-                    $scope.choice.value = '';
-                }
-            };
-
-            function removeChoice(row) {
-                var index = $scope.choices.indexOf(row);
-                $scope.choices.splice(index, 1);
-            };
-
-            function closePage() {
-                $location.path('/contactEditor');
-            };
 
             $scope.delete = function (row) {
                 $confirm({text: 'Are you sure you want to delete ' + row.name + ' ?'},  { templateUrl: 'views/confirm.html' })
                     .then(function() {
-                        ContactModel.removeProperty(row.id, $scope.domain, function (err) {
-                            if (err)
-                                return notifi.error(err, 5000);
-                        });
+                        var index = $scope.properties.indexOf(row);
+                        $scope.properties.splice(index, 1);
+                        // PUT
                     });
             };
 
-            function save() {
-                var cb = function (err, res) {
-                    if (err)
-                        return notifi.error(err, 5000);
+            $scope.openModal = function(prop) {
+                var modalInstance = $modal.open({
+                    animation: true,
+                    backdrop: false,
+                    templateUrl: '/modules/contacts/contactPropModal.html',
+                    resolve: {
+                        domainName: function () {
+                            return $scope.domain;
+                        },
+                        properties: function () {
+                            return $scope.properties;
+                        },
+                    },
+                    controller: ['$modalInstance', '$scope', 'domainName', 'properties', function ($modalInstance, $scope, domainName, properties) {
+                        var self = $scope;
+                        self.property = prop || {};
+                        self.choices = self.property.options || [];
+                        self.choice = {value: ''};
+                        self.types = [
+                            'text',
+                            'number',
+                            'select',
+                            'boolean'
+                        ];
 
-                    if ($scope.property._new) {
-                        return $location.path('/contactEditor/' + res.data[0] + '/edit');
-                    } else {
-                        $scope.property.__time = Date.now();
-                        return edit();
-                    };
-                };
-                if (!$scope.property.id) {
-                    ContactModel.addProperty(angular.copy($scope.property), $scope.domain, cb);
-                } else {
-                    ContactModel.updateProperty($scope.property.id, $scope.property, $scope.domain, cb);
-                };
-            };
+                        self.ok = function () {
+                            if(self.choices.length>0)self.property.options = self.choices;
+                            $modalInstance.close({
+                                property: self.property
+                            });
+                        };
 
-            function create() {
-                $scope.property._new = true;
-            };
+                        self.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
 
-            function edit () {
-                var id = $routeParams.id;
-                var domain = $routeParams.domain;
+                        self.addChoice = function () {
+                            if ($scope.choice && $scope.choice.value !== '') {
+                                $scope.choices.push($scope.choice.value);
+                                $scope.choice.value = '';
+                            }
+                        };
 
-                ContactModel.propertyItem(domain, function(err, item) {
-                    if (err) {
-                        return notifi.error(err, 5000);
-                    }
-                    $scope.oldProperty = angular.copy(item.data);
-                    $scope.property = item.data;
+                        self.removeChoice = function (row) {
+                            var index = $scope.choices.indexOf(row);
+                            $scope.choices.splice(index, 1);
+                        };
+
+                    }]
+                });
+                modalInstance.result.then(function (option) {
+                    debugger;
+                    if(!prop)
+                        $scope.properties.push(option.property);
+                    // PUT
                 });
             }
-
-            $scope.init = function init () {
-                if (!!$route.current.method) {
-                    return $scope[$route.current.method]();
-                };
-            }();
 
         }]);
 });

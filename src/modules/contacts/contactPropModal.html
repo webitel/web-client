@@ -1,0 +1,96 @@
+<div class="modal-header">
+    <h3 class="modal-title">Contact property</h3>
+</div>
+<div class="modal-body">
+        <form class="panel-body" name="contactEditForm">
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="form-group" ng-class="{ 'has-error' : contactEditForm.name.$invalid }">
+                        <label class="control-label">Name</label>
+                        <input type="text" class="form-control" name="name" required data-ng-model="property.name" >
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div  class="form-group">
+                        <label class="control-label">Is required</label>
+                        <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="property.required" class="ng-pristine ng-valid"><i></i></label>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group" ng-class="{ 'has-error' : contactEditForm.name.$invalid }">
+                        <label class="control-label">Caption</label>
+                        <input type="text" class="form-control" name="caption" required data-ng-model="property.caption" >
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : contactEditForm.index.$invalid }">
+                        <label class="control-label">Index</label>
+                        <input type="number" class="form-control" name="index" required data-ng-model="property.index" >
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : contactEditForm.width.$invalid }">
+                        <label class="control-label">Width</label>
+                        <input type="number" class="form-control" name="width" required data-ng-model="property.width" min="1" max="12">
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group" ng-class="{ 'has-error' : contactEditForm.company_name.$invalid }">
+                        <label class="control-label">Type</label>
+                        <select class="form-control" required data-ng-model="property.type" name="type">
+                            <option value="{{i}}" ng-repeat="i in types">{{i}}</option>
+                        </select>
+                    </div>
+
+                    <div class="row" style="margin-left: -10px" ng-if="property.type === 'select'">
+                        <label style="padding-left: 12px;">Options</label>
+                        <table class="table">
+                            <thead >
+                            <tr>
+                                <th class="text-center" style="border-bottom: unset">
+                                    <input ng-keyup="$event.keyCode == 13 && addChoice()" type="text" class="form-control" name="choice" ng-model="choice.value"> </input>
+                                </th>
+
+                                <th class="text-center" style="border-bottom: unset; width: 20%">
+                                    <button class="btn btn-w-md btn-primary" ng-click="addChoice()">Add</button>
+                                </th>
+                            </tr>
+                            </thead>
+
+                            <tbody class="text-center">
+
+                            <tr ng-repeat="row in choices">
+                                <td style="text-align: left;">
+                                    <span style="margin-left: 12px;">{{row}}</span>
+                                </td>
+                                <td>
+                                    <a href="javascript:;" ng-click="removeChoice(row);" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                                </td>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div ng-show="property.type" class="form-group" ng-class="{ 'has-error' : contactEditForm.default_value.$invalid }">
+                        <label class="control-label">Default value</label>
+                        <input ng-if="property.type === 'text'" type="text" class="form-control" name="default_value" data-ng-model="property.default_value">
+                        <input ng-if="property.type === 'boolean'" type="checkbox" class="form-control" name="default_value" data-ng-model="property.default_value">
+                        <input ng-if="property.type === 'number'" type="number" class="form-control" name="default_value" data-ng-model="property.default_value">
+                        <select ng-if="property.type === 'select'" type="number" class="form-control" name="default_value" data-ng-model="property.default_value">
+                            <option value="{{i}}" ng-repeat="i in choices">{{i}}</option>
+                        </select>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-success" ng-disabled="contactEditForm.$invalid" type="button" ng-click="ok()">Save</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+</div>
