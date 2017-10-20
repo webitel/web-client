@@ -3,13 +3,15 @@
  */
 define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], function (app, utils) {
 
-    app.controller('ContactsCtrl', ['$scope', '$modal', 'webitel', '$rootScope', 'notifi', '$route', '$location', 'ContactModel', '$routeParams',
+    app.controller('ContactPropsCtrl', ['$scope', '$modal', 'webitel', '$rootScope', 'notifi', '$route', '$location', 'ContactModel', '$routeParams',
         '$timeout', '$confirm', 'TableSearch', 'cfpLoadingBar',
         function ($scope, $modal, webitel, $rootScope, notifi, $route, $location, ContactModel, $routeParams, $timeout, $confirm,
                   TableSearch, cfpLoadingBar) {
             $scope.domain = webitel.domain();
             $scope.property = {};
             $scope.properties = {};
+            $scope.choices = [];
+            $scope.choice = {value:''};
 
             $scope.isRoot = !webitel.connection.session.domain;
 
@@ -21,18 +23,9 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
             $scope.types = [
                 'text',
                 'number',
-                'select'
+                'select',
+                'check'
             ];
-
-            $scope.view = function () {
-                var id = $routeParams.id;
-                // GatewayModel.item(id, $scope.domain, function (err, gw) {
-                //     if (err)
-                //         return notifi.error(err, 5000);
-                //     $scope.contact = gw;
-                //     disableEditMode();
-                // })
-            };
 
             var changeDomainEvent = $rootScope.$on('webitel:changeDomain', function (e, domainName) {
                 $scope.domain = domainName;
@@ -45,15 +38,46 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
 
 
 
-            $scope.$watch('properties', function(newValue, oldValue) {
-                if ($scope.properties._new)
+            $scope.$watch('property', function(newValue, oldValue) {
+                if ($scope.property._new)
                     return $scope.isEdit = $scope.isNew = true;
 
                 return $scope.isEdit = !!oldValue.id;
             }, true);
 
+            function reloadData () {
+                if ($location.$$path != '/widget')
+                    return 0;
+
+                if (!$scope.domain)
+                    return $scope.rowCollection = [];
+
+                $scope.isLoading = true;
+                var col = encodeURIComponent(JSON.stringify({
+                    name: 1,
+                    type: 1,
+                    id: 1
+                }));
+
+                ContactModel.propertyList({
+                    columns: col,
+                    limit: 5000,
+                    page: 1,
+                    domain: $scope.domain
+                }, function (err, res) {
+                    $scope.isLoading = false;
+                    if (err)
+                        return notifi.error(err, 5000);
+                    var arr = [];
+                    angular.forEach(res.data, function(item) {
+                        arr.push(item);
+                    });
+                    $scope.rowCollection = arr;
+                });
+            }
+
             $scope.cancel = function () {
-                $scope.contact = angular.copy($scope.oldContact);
+                $scope.property = angular.copy($scope.oldProperty);
                 disableEditMode();
             };
 
@@ -65,23 +89,36 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
 
             $scope.$watch('domain', function(domainName) {
                 $scope.domain = domainName;
-                $scope.reloadData();
             });
             $scope.edit = edit;
             $scope.closePage = closePage;
             $scope.save = save;
+            $scope.create = create;
+            $scope.addChoice = addChoice;
+            $scope.removeChoice = removeChoice;
+
+            function addChoice() {
+                if($scope.choice && $scope.choice.value !== '') {
+                    $scope.choices.push($scope.choice.value);
+                    $scope.choice.value = '';
+                }
+            };
+
+            function removeChoice(row) {
+                var index = $scope.choices.indexOf(row);
+                $scope.choices.splice(index, 1);
+            };
 
             function closePage() {
-                $location.path('/contacts');
+                $location.path('/contactEditor');
             };
 
             $scope.delete = function (row) {
                 $confirm({text: 'Are you sure you want to delete ' + row.name + ' ?'},  { templateUrl: 'views/confirm.html' })
                     .then(function() {
-                        ContactModel.remove(row.id, $scope.domain, function (err) {
+                        ContactModel.removeProperty(row.id, $scope.domain, function (err) {
                             if (err)
                                 return notifi.error(err, 5000);
-                            $scope.reloadData();
                         });
                     });
             };
@@ -91,30 +128,34 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                     if (err)
                         return notifi.error(err, 5000);
 
-                    if ($scope.contact._new) {
-
+                    if ($scope.property._new) {
+                        return $location.path('/contactEditor/' + res.data[0] + '/edit');
                     } else {
-                        $scope.contact.__time = Date.now();
+                        $scope.property.__time = Date.now();
                         return edit();
                     };
                 };
-                if (!$scope.contact.id) {
-
+                if (!$scope.property.id) {
+                    ContactModel.addProperty(angular.copy($scope.property), $scope.domain, cb);
                 } else {
-
+                    ContactModel.updateProperty($scope.property.id, $scope.property, $scope.domain, cb);
                 };
+            };
+
+            function create() {
+                $scope.property._new = true;
             };
 
             function edit () {
                 var id = $routeParams.id;
                 var domain = $routeParams.domain;
 
-                ContactModel.item(id, domain, function(err, item) {
+                ContactModel.propertyItem(domain, function(err, item) {
                     if (err) {
                         return notifi.error(err, 5000);
                     }
-                    $scope.oldContact = angular.copy(item.data);
-                    $scope.contact = item.data;
+                    $scope.oldProperty = angular.copy(item.data);
+                    $scope.property = item.data;
                 });
             }
 

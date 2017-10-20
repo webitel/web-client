@@ -26,12 +26,14 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
 
         $scope.view = function () {
             var id = $routeParams.id;
-            // GatewayModel.item(id, $scope.domain, function (err, gw) {
-            //     if (err)
-            //         return notifi.error(err, 5000);
-            //     $scope.contact = gw;
-            //     disableEditMode();
-            // })
+
+            ContactModel.item(id, $scope.domain, function(err, item) {
+                if (err) {
+                    return notifi.error(err, 5000);
+                }
+                $scope.contact = item.data;
+                disableEditMode();
+            });
         };
 
 
@@ -135,6 +137,7 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
             $scope.domain = domainName;
             $scope.reloadData();
         });
+
         $scope.edit = edit;
         $scope.closePage = closePage;
         $scope.save = save;
@@ -223,19 +226,10 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
             var cb = function (err, res) {
                 if (err)
                     return notifi.error(err, 5000);
-
-                if ($scope.contact._new) {
-
-                } else {
-                    $scope.contact.__time = Date.now();
-                    return edit();
-                };
+                $scope.contact.__time = Date.now();
+                return edit();
             };
-            if (!$scope.contact.id) {
-
-            } else {
-
-            };
+            ContactModel.update($scope.contact.id, angular.copy($scope.contact), $scope.domain, cb);
         };
 
         function edit () {

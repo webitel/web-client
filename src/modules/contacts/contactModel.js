@@ -27,8 +27,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     return cb(err);
                return cb(null, res)
             });
-
-        };
+        }
 
         function add(data, domain, cb){
             if (!data)
@@ -36,11 +35,17 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             webitel.api('POST', '/api/v2/contacts?domain=' + domain, data, cb);
         }
 
+        function update(id, data, domain, cb){
+            if (!id || !data)
+                return cb(new Error("Bad request"));
+            webitel.api('PUT', '/api/v2/contacts'+id+'?domain=' + domain, data, cb);
+        }
+
         function remove (id, domain, cb) {
             if (!id)
                 return cb(new Error("Id is required."));
             webitel.api('DELETE', '/api/v2/contacts/' + id + '?domain=' + domain, cb);
-        };
+        }
 
         function communicationList (domain, cb){
             if (!domain)
@@ -48,12 +53,51 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             webitel.api('GET', '/api/v2/contacts/communications?domain=' + domain, cb);
         }
 
+        function propertyList(option, cb) {
+            if (!option.domain)
+                return cb(new Error("Bad request: domain is required"));
+
+            webitel.api('GET', '/api/v2/contacts' + buildQuery(option), cb);
+        }
+
+        function removeProperty(id, domain, cb) {
+            if (!id)
+                return cb(new Error("Id is required."));
+            webitel.api('DELETE', '/api/v2/contacts/' + id + '?domain=' + domain, cb);
+        }
+
+        function addProperty(data, domain, cb) {
+            if (!data)
+                return cb(new Error("Bad request"));
+            webitel.api('POST', '/api/v2/contacts?domain=' + domain, data, cb);
+        }
+
+        function updateProperty(id, data, domain, cb) {
+            if (!id || !data)
+                return cb(new Error("Bad request"));
+            webitel.api('PUT', '/api/v2/contacts'+id+'?domain=' + domain, data, cb);
+        }
+
+        function propertyItem (id, domainName, cb) {
+            webitel.api('GET', '/api/v2/contacts/' + id + '?domain=' + domainName, function (err, res) {
+                if (err)
+                    return cb(err);
+                return cb(null, res)
+            });
+        }
+
         return {
             list: list,
             item: item,
             add: add,
+            update: update,
             remove: remove,
-            communicationList: communicationList
+            communicationList: communicationList,
+            propertyList: propertyList,
+            removeProperty: removeProperty,
+            addProperty: addProperty,
+            updateProperty: updateProperty,
+            propertyItem: propertyItem
         }
     }]);
 });

@@ -5,55 +5,46 @@
                 <div class="col-sm-12">
                     <div class="form-group" ng-class="{ 'has-error' : contactEditForm.name.$invalid }">
                         <label class="control-label">Name</label>
-                        <input type="text" class="form-control" name="name" required data-ng-model="property.name"  ng-disabled="viewMode">
+                        <input type="text" class="form-control" name="name" required data-ng-model="property.name" >
+                    </div>
+
+                    <div class="form-group" ng-class="{ 'has-error' : contactEditForm.name.$invalid }">
+                        <label class="control-label">Index</label>
+                        <input type="text" class="form-control" name="index" required data-ng-model="property.index" >
                     </div>
 
                     <div class="form-group" ng-class="{ 'has-error' : contactEditForm.company_name.$invalid }">
                         <label class="control-label">Type</label>
-                        <select ng-disabled="viewMode" class="form-control" data-ng-model="property.type" name="type">
+                        <select class="form-control" data-ng-model="property.type" name="type">
                             <option value="{{i}}" ng-repeat="i in types">{{i}}</option>
                         </select>
                     </div>
 
-                    <div class="form-group" ng-class="{ 'has-error' : contactEditForm.name.$invalid }">
-                        <label class="control-label">Name</label>
-                        <input type="text" class="form-control" name="index" required data-ng-model="property.index"  ng-disabled="viewMode">
-                    </div>
-
-                    <button type="button" ng-disabled="name.$invalid" ng-click="addProperty()" class="btn btn-w-md btn-gap-v btn-success">Add</button>
-
-
-                    <div class="table-responsive" >
-
-                        <div class="row text-center" ng-if="!properties || properties.length == 0">
-                            <div class="center-block col-md-4" style="float: none;">
-                                <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
-                                <h2>No results found</h2>
-                            </div>
-                        </div>
-                        <table style="width: 100%; display:block;" ng-show="properties.length > 0" st-safe-src="properties" class="table table-hover">
-                            <thead>
+                    <div class="row" style="margin-left: -10px" ng-if="property.type === 'select'">
+                        <label style="padding-left: 12px;">Options</label>
+                        <table class="table">
+                            <thead >
                             <tr>
-                                <th style="width: 30%" st-skip-natural="true">Name</th>
-                                <th style="width: 30%" st-skip-natural="true">Type</th>
-                                <th style="width: 30%" st-skip-natural="true">Index</th>
-                                <th></th>
+                                <th class="text-center" style="border-bottom: unset">
+                                    <input ng-keyup="$event.keyCode == 13 && addChoice()" type="text" class="form-control" name="choice" ng-model="choice.value"> </input>
+                                </th>
+
+                                <th class="text-center" style="border-bottom: unset; width: 20%">
+                                    <button class="btn btn-w-md btn-primary" ng-click="addChoice()">Add</button>
+                                </th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr ng-repeat="row in properties track by $index">
-                                <td style="width: 55%">
-                                    <span>{{row.name}}</span>
+
+                            <tbody class="text-center">
+
+                            <tr ng-repeat="row in choices">
+                                <td style="text-align: left;">
+                                    <span style="margin-left: 12px;">{{row}}</span>
                                 </td>
-                                <td style="width: 45%">
-                                    <span>{{row.type}}</span>
+                                <td>
+                                    <a href="javascript:;" ng-click="removeChoice(row);" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                                 </td>
-                                <td style="width: 45%">
-                                    <span>{{row.index}}</span>
-                                </td>
-                                <td style="width: 10%; min-width: 83px; text-align: end;">
-                                    <a href="javascript:;" ng-click="deleteProperty($index)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
-                                </td>
+
                             </tr>
                             </tbody>
                         </table>
@@ -66,8 +57,8 @@
         </form>
 
         <div class="panel-footer">
-            <button ng-show="isEdit && !viewMode" type="button" ng-disabled="contactEditForm.$invalid" ng-click="saveProperties()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
-            <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancelProperties()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button ng-show="isEdit" type="button" ng-disabled="contactEditForm.$invalid" ng-click="saveProperties()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
         </div>
     </section>
