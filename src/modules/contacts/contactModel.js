@@ -38,7 +38,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         function update(id, data, domain, cb){
             if (!id || !data)
                 return cb(new Error("Bad request"));
-            webitel.api('PUT', '/api/v2/contacts'+id+'?domain=' + domain, data, cb);
+            webitel.api('PUT', '/api/v2/contacts/'+id+'?domain=' + domain, data, cb);
         }
 
         function remove (id, domain, cb) {

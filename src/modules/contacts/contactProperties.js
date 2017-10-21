@@ -24,6 +24,7 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                     {
                         "name": "aaaaa",
                         "caption": "Aaa",
+                        "default_value": "dddd",
                         "required": true,
                         "index": 1,
                         "width": 6,
@@ -33,6 +34,7 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                     {
                         "name": "bbb",
                         "caption": "Bbbb",
+                        "default_value": 3,
                         "required": true,
                         "index": 2,
                         "width": 6,
@@ -42,6 +44,7 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                     {
                         "name": "rrrr",
                         "caption": "RRR",
+                        "default_value": "lox",
                         "required": true,
                         "index": 2,
                         "width": 6,

@@ -6,7 +6,42 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                   TableSearch, cfpLoadingBar) {
    		$scope.domain = webitel.domain();
         $scope.contact = {};
-
+        $scope.communication = {
+            number:'',
+            type:''
+        };
+        $scope.properties = [
+            {
+                "name": "aaaaa",
+                "caption": "Aaa",
+                // "default_value": "dddd",
+                "required": true,
+                "index": 1,
+                "width": 6,
+                "type": "text",
+                "options": []
+            },
+            {
+                "name": "bbb",
+                "caption": "Bbbb",
+                // "default_value": 3,
+                "required": true,
+                "index": 2,
+                "width": 6,
+                "type": "number",
+                "options": []
+            },
+            {
+                "name": "rrrr",
+                "caption": "RRR",
+                // "default_value": "lox",
+                "required": true,
+                "index": 2,
+                "width": 6,
+                "type": "select",
+                "options": ["lox", "pidr"]
+            }
+        ];
         $scope.isRoot = !webitel.connection.session.domain;
 
         $scope.canDelete = webitel.connection.session.checkResource('gateway', 'd');
@@ -126,11 +161,36 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
 
         }
 
+        $scope.getCommunications = function(){
+            ContactModel.communicationList($scope.domain, function (err, res) {
+                if(err)
+                    return notifi.error(err, 5000);
+                $scope.communication_types = res && res.data;
+            })
+        }
+
         $scope.reloadData  = function() {
             if($scope.tableState){
                 $scope.tableState.pagination.start = 0;
                 getData($scope.tableState);
             }
+        };
+
+        $scope.addComm  = function() {
+            $scope.contact.communications.push({
+                number: $scope.communication.number,
+                type_id: $scope.communication.type.id,
+                type_name: $scope.communication.type.name
+            });
+            $scope.communication = {
+                number:'',
+                type:''
+            };
+        };
+
+        $scope.deleteComm  = function(row) {
+            var index = $scope.contact.communications.indexOf(row);
+            $scope.contact.communications.splice(index, 1);
         };
 
         $scope.$watch('domain', function(domainName) {
@@ -156,7 +216,10 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                 resolve: {
                     domainName: function () {
                         return $scope.domain;
-                    }
+                    },
+                    // getCommunications: function () {
+                    //     return $scope.getCommunications
+                    // }
                 },
                 controller: ['$modalInstance', '$scope', 'domainName', function ($modalInstance, $scope, domainName) {
                     var self = $scope;
@@ -164,6 +227,7 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                     self.contact = {};
                     self.communication_type = {};
                     self.communications = [];
+                   // self.getCommunications = getCommunications;
 
                     self.ok = function () {
                         self.contact.communications = self.communications;
@@ -189,7 +253,7 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                             self.communications.push({
                                 number: self.number,
                                 type_id: self.communication_type.value.id,
-                                type_display: self.communication_type.value.name
+                                type_name: self.communication_type.value.name
                             });
                             self.number = '';
                             self.communication_type.value = null;
@@ -242,6 +306,8 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                 }
                 $scope.oldContact = angular.copy(item.data);
                 $scope.contact = item.data;
+
+                disableEditMode();
             });
         }
 

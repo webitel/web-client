@@ -76,7 +76,7 @@
                     <div ng-show="property.type" class="form-group" ng-class="{ 'has-error' : contactEditForm.default_value.$invalid }">
                         <label class="control-label">Default value</label>
                         <input ng-if="property.type === 'text'" type="text" class="form-control" name="default_value" data-ng-model="property.default_value">
-                        <input ng-if="property.type === 'boolean'" type="checkbox" class="form-control" name="default_value" data-ng-model="property.default_value">
+                        <label ng-if="property.type === 'boolean'" style="width: 100%;" class="switch switch-success"><input type="checkbox" name="default_value" ng-model="property.default_value" class="ng-pristine ng-valid"><i></i></label>
                         <input ng-if="property.type === 'number'" type="number" class="form-control" name="default_value" data-ng-model="property.default_value">
                         <select ng-if="property.type === 'select'" type="number" class="form-control" name="default_value" data-ng-model="property.default_value">
                             <option value="{{i}}" ng-repeat="i in choices">{{i}}</option>
