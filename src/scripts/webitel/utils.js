@@ -460,8 +460,10 @@ define(['angular'], function (angular) {
 
         'license',
         'widget',
-	'callback',
-	'callback/members'
+        'callback',
+        'callback/members',
+
+        'metadata'
     ];
 
     var events = [
