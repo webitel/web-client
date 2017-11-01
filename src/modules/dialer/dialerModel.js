@@ -29,6 +29,9 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 }
             },
             communications_number: function (v) {
+                if (v[0] === '+') {
+                    v = '\\' + v;
+                }
                 return {
                     $regex: '^' + v
                 };
@@ -110,7 +113,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             var _f = {};
             angular.forEach(filter, function (i, key) {
                 if (mapColumns.hasOwnProperty(key)) {
-                    var name = (key != '_endCause' && key != '_lock') ? key.replace('_', '.') : key;
+                    var name = (key !== '_endCause' && key !== '_lock') ? key.replace('_', '.') : key;
                     _f[name] = mapColumns[key](i)
                 }
             });
