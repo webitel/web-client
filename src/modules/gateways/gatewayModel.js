@@ -22,7 +22,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     },
                     params: {
                         "register": "false",
-                        "extension-in-contact": "true"
+                        "extension-in-contact": "true",
+                        "caller-id-in-from": "true"
                     }
             },
 
