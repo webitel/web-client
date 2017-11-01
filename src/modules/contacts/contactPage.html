@@ -19,21 +19,29 @@
                         <input type="text" class="form-control" name="job_name" data-ng-model="contact.job_name"  ng-disabled="viewMode">
                     </div>
 
-                    <!--<div class="col-sm-12">-->
+                    <div style="margin-left: -15px; margin-right: -15px;">
                         <div  ng-repeat="item in properties">
-                            <div class={{"col-sm-"+item.width}} style="padding-left: inherit;">
-                                <div class="form-group">
+                            <div class={{"col-sm-"+item.width}}>
+                                <div class="form-group" ng-class="{ 'has-error' : contactPageForm[item.name].$invalid }">
+
                                     <label class="control-label">{{item.caption}}</label>
-                                    <input ng-if="item.type === 'text'" type="text" class="form-control" data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">
-                                    <input ng-if="item.type === 'number'" type="number" class="form-control" data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">
-                                    <label ng-if="item.type === 'boolean'" style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="contact.custom_data[item.name]" class="ng-pristine ng-valid"><i></i></label>
-                                    <select ng-if="item.type === 'select'" class="form-control" ng-model="contact.custom_data[item.name]">
+                                    <input ng-if="item.type === 'text' && !item.required" name="item.name" type="text" class="form-control" data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">
+                                    <input ng-if="item.type === 'number' && !item.required" name="item.name" type="number" class="form-control" data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">
+                                    <label ng-if="item.type === 'boolean' && !item.required" name="item.name" style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="contact.custom_data[item.name]" class="ng-pristine ng-valid"><i></i></label>
+                                    <select ng-if="item.type === 'select' && !item.required" name="item.name" class="form-control" ng-model="contact.custom_data[item.name]">
                                         <option ng-repeat="o in item.options" ng-selected="{{o==contact.custom_data[item.name]}}" value="{{o}}">{{o}}</option>
                                     </select>
+
+                                    <!--<input ng-if="item.type === 'text' && item.required" name="item.name" type="text" class="form-control" required data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">-->
+                                    <!--<input ng-if="item.type === 'number' && item.required" name="item.name" type="number" class="form-control" required data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">-->
+                                    <!--<select ng-if="item.type === 'select' && item.required" name="item.name" class="form-control" required ng-model="contact.custom_data[item.name]">-->
+                                        <!--<option ng-repeat="o in item.options" ng-selected="{{o==contact.custom_data[item.name]}}" value="{{o}}">{{o}}</option>-->
+                                    <!--</select>-->
+
                                 </div>
                             </div>
                         </div>
-                    <!--</div>-->
+                    </div>
 
                 </div>
                 <div class="col-sm-6">
@@ -70,7 +78,7 @@
                                         <table ng-show="contact.communications.length > 0" st-safe-src="contact.communications" class="table table-hover">
                                             <thead>
                                             <tr>
-                                                <th st-skip-natural="true">Number</th>
+                                                <th st-skip-natural="true">Value</th>
                                                 <th st-skip-natural="true">Type</th>
                                                 <th></th>
                                             </tr>
@@ -89,6 +97,14 @@
                                             </tr>
                                             </tbody>
                                         </table>
+                                    </div>
+                                </tab>
+                                <tab>
+                                    <tab-heading>
+                                        <span>QR Code</span>
+                                    </tab-heading>
+                                    <button ng-disabled="!isEdit" type="button" ng-click="generateQR()" class="btn btn-w-lg btn-dark">REGENERATE</button>
+                                    <div id="qrcode" style="margin-top: 15px;">
                                     </div>
                                 </tab>
                                 <tab>
@@ -112,6 +128,7 @@
             <button ng-show="isEdit && !viewMode" type="button" ng-disabled="gatewayForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
             <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
             <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
+            <button  type="button" ng-click="createVCard()" class="pull-right btn btn-w-sm btn-gap-v btn-primary">vCard <i class="fa fa-download"></i></button>
         </div>
     </section>
 </div>

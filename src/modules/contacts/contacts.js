@@ -1,4 +1,4 @@
-define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], function (app, utils) {
+define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel'], function (app, qrcode, utils) {
 
     app.controller('ContactsCtrl', ['$scope', '$modal', 'webitel', '$rootScope', 'notifi', '$route', '$location', 'ContactModel', '$routeParams',
             '$timeout', '$confirm', 'TableSearch', 'cfpLoadingBar',
@@ -10,38 +10,21 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
             number:'',
             type:''
         };
-        $scope.properties = [
-            {
-                "name": "aaaaa",
-                "caption": "Aaa",
-                // "default_value": "dddd",
-                "required": true,
-                "index": 1,
-                "width": 6,
-                "type": "text",
-                "options": []
-            },
-            {
-                "name": "bbb",
-                "caption": "Bbbb",
-                // "default_value": 3,
-                "required": true,
-                "index": 2,
-                "width": 6,
-                "type": "number",
-                "options": []
-            },
-            {
-                "name": "rrrr",
-                "caption": "RRR",
-                // "default_value": "lox",
-                "required": true,
-                "index": 2,
-                "width": 6,
-                "type": "select",
-                "options": ["lox", "pidr"]
-            }
-        ];
+
+        $scope.vCard = "BEGIN:VCARD\n" +
+            "VERSION:3.0\n" +
+            "FN:#NAME#\n" +
+            "N:;#NAME#;;;\n" +
+            "#COMMUNICATIONS#" +
+            "ORG:#COMPANY#\n" +
+            "TITLE:#JOB#\n" +
+            "NOTE:#DESCRIPTION#\n" +
+            "END:VCARD";
+
+        $scope.vEmailTemplate = "EMAIL;TYPE=INTERNET:#EMAIL#\n";
+        $scope.vTelTemplate = "TEL:#PHONE_NUMBER#\n";
+
+        $scope.properties = [];
         $scope.isRoot = !webitel.connection.session.domain;
 
         $scope.canDelete = webitel.connection.session.checkResource('gateway', 'd');
@@ -123,6 +106,9 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
 
         function getData(tableState) {
             if ($scope.isLoading) return void 0;
+
+            if (!$scope.domain)
+                return $scope.rowCollection = [];
 
             if (((tableState.pagination.start / tableState.pagination.number) || 0) === 0) {
                 _page = 1;
@@ -299,23 +285,71 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
         function edit () {
             var id = $routeParams.id;
             var domain = $routeParams.domain;
-
+            initProperties();
             ContactModel.item(id, domain, function(err, item) {
                 if (err) {
                     return notifi.error(err, 5000);
                 }
+                if(!item.data.communications)item.data.communications=[];
                 $scope.oldContact = angular.copy(item.data);
                 $scope.contact = item.data;
-
+                $scope.generateQR();
                 disableEditMode();
             });
         }
 
-        $scope.init = function init () {
+        function initProperties(){
+            ContactModel.propertyList($scope.domain, function (err, res) {
+                if(err)
+                    notifi.error(err, 5000);
+                $scope.properties = res && Array.isArray(res.data.data) ? res.data.data : [];
+                $scope.properties.sort(function (a, b) {
+                    return parseInt(a.index) - parseInt(b.index);
+                });
+            });
+        }
+
+        $scope.init = function () {
             if (!!$route.current.method) {
                 return $scope[$route.current.method]();
             };
         }();
+
+        function generateVCard () {
+            var tmpCard = angular.copy($scope.vCard);
+            var communications = "";
+            $scope.contact.communications.forEach(function (item) {
+                if(item.type_name.toLowerCase() === "phone"){
+                    communications = communications + angular.copy($scope.vTelTemplate.replace("#PHONE_NUMBER#", item.number));
+                }
+                else if(item.type_name.toLowerCase() === "email"){
+                    communications = communications + angular.copy($scope.vEmailTemplate.replace("#EMAIL#", item.number));
+                }
+            });
+            tmpCard = tmpCard.replace(/#NAME#/g, $scope.contact.name)
+                .replace(/#COMPANY#/g, $scope.contact.company_name)
+                .replace(/#JOB#/g, $scope.contact.job_name)
+                .replace(/#DESCRIPTION#/g, $scope.contact.description)
+                .replace(/#COMMUNICATIONS#/g, communications);
+            return tmpCard;
+        }
+
+        $scope.createVCard = function(){
+            var card = generateVCard();
+            utils.saveDataToDisk(card, "vcard.vcf", null);
+        }
+
+        $scope.generateQR = function(){
+            var card = generateVCard();
+            if($scope.qr){
+                $scope.qr.clear();
+                $scope.qr.makeCode(card);
+            }
+            else{
+                $scope.qr = new qrcode(document.getElementById("qrcode"), card);
+            }
+            document.getElementById('qrcode').title = "";
+        }
 
     }]);
 });

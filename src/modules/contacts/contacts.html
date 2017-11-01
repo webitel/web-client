@@ -6,15 +6,15 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="no-border pull-left">
-                        <a  ng-if="canCreate" href="javascript:;" ng-click="create()"  class="btn-icon btn-icon-sm  btn-gap-v btn-success">
+                        <a  ng-if="canCreate" ng-disabled="!domain" href="javascript:;" ng-click="create()" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
                             <i class="fa fa-plus"></i>
                         </a>
 
-                        <a ng-click="reloadData()"  href="" class="btn-icon btn-icon-sm  btn-gap-v btn-dark">
+                        <a ng-click="reloadData()" ng-disabled="!domain" href="" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
                             <i class="glyphicon glyphicon-refresh"></i>
                         </a>
 
-                        <a href="#/contactEditor?domain={{domain}}" class="btn-icon btn-icon-sm  btn-gap-v btn-info">
+                        <a href="#/contactEditor?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-info">
                             <i class="glyphicon glyphicon-cog"></i>
                         </a>
                     </div>

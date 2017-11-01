@@ -20,38 +20,11 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
             });
 
             $scope.reloadData = function () {
-                $scope.properties = [
-                    {
-                        "name": "aaaaa",
-                        "caption": "Aaa",
-                        "default_value": "dddd",
-                        "required": true,
-                        "index": 1,
-                        "width": 6,
-                        "type": "text",
-                        "options": []
-                    },
-                    {
-                        "name": "bbb",
-                        "caption": "Bbbb",
-                        "default_value": 3,
-                        "required": true,
-                        "index": 2,
-                        "width": 6,
-                        "type": "number",
-                        "options": []
-                    },
-                    {
-                        "name": "rrrr",
-                        "caption": "RRR",
-                        "default_value": "lox",
-                        "required": true,
-                        "index": 2,
-                        "width": 6,
-                        "type": "select",
-                        "options": ["lox", "pidr"]
-                    }
-                ]
+                ContactModel.propertyList($scope.domain, function (err, res) {
+                    if(err)
+                        notifi.error(err, 5000);
+                    $scope.properties = res && res.data && Array.isArray(res.data.data) ? res.data.data : [];
+                });
             }
 
 
@@ -66,6 +39,10 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                         var index = $scope.properties.indexOf(row);
                         $scope.properties.splice(index, 1);
                         // PUT
+                        ContactModel.updateProperty($scope.properties, $scope.domain, function (err, res) {
+                            if(err)
+                                notifi.error(err, 5000);
+                        });
                     });
             };
 
@@ -74,17 +51,10 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                     animation: true,
                     backdrop: false,
                     templateUrl: '/modules/contacts/contactPropModal.html',
-                    resolve: {
-                        domainName: function () {
-                            return $scope.domain;
-                        },
-                        properties: function () {
-                            return $scope.properties;
-                        },
-                    },
-                    controller: ['$modalInstance', '$scope', 'domainName', 'properties', function ($modalInstance, $scope, domainName, properties) {
+                    // resolve: {},
+                    controller: ['$modalInstance', '$scope', function ($modalInstance, $scope) {
                         var self = $scope;
-                        self.property = prop || {};
+                        self.property = prop || {type: 'text', width: 12, index: 0};
                         self.choices = self.property.options || [];
                         self.choice = {value: ''};
                         self.types = [
@@ -120,11 +90,69 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                     }]
                 });
                 modalInstance.result.then(function (option) {
-                    debugger;
                     if(!prop)
                         $scope.properties.push(option.property);
                     // PUT
+                    ContactModel.updateProperty($scope.properties, $scope.domain, function (err, res) {
+                        if(err)
+                            notifi.error(err, 5000);
+                    })
                 });
+            }
+
+            $scope.openCommunicationModal = function() {
+                var modalInstance = $modal.open({
+                    animation: true,
+                    backdrop: false,
+                    templateUrl: '/modules/contacts/contactCommModal.html',
+                    resolve: {
+                        domainName: function(){
+                            return $scope.domain
+                        }
+                    },
+                    controller: ['$modalInstance', '$scope', 'domainName', function ($modalInstance, $scope, domainName) {
+                        var self = $scope;
+                        self.comm_name = {value: ''};
+                        self.communication_types = [];
+
+                        self.ok = function () {
+                            $modalInstance.close({});
+                        };
+
+                        self.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+
+                        self.addCommunication = function () {
+                            if ($scope.comm_name && $scope.comm_name.value !== '' && $scope.comm_name.value.toLowerCase() !== 'phone' && $scope.comm_name.value.toLowerCase() !== 'email') {
+                                ContactModel.addCommunicaiton({name:$scope.comm_name.value}, domainName, function (err, res) {
+                                    if(err)
+                                        notifi.error(err, 5000);
+                                    $scope.comm_name.value = '';
+                                    self.getList();
+                                })
+                            }
+                        };
+
+                        self.removeCommunication = function (row) {
+                            ContactModel.removeCommunicaiton(row.id, domainName, function (err, res) {
+                                if(err)
+                                    notifi.error(err, 5000);
+                                self.getList();
+                            })
+                        };
+
+                        self.getList = function(){
+                            ContactModel.communicationList(domainName, function (err, res) {
+                                if(err)
+                                    return notifi.error(err, 5000);
+                                $scope.communication_types = res && res.data;
+                            })
+                        }
+
+                    }]
+                });
+                modalInstance.result.then(function (option) { });
             }
 
         }]);

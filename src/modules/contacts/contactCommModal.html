@@ -1,0 +1,49 @@
+<div class="modal-header">
+    <h3 class="modal-title">Communication types</h3>
+</div>
+<div class="modal-body">
+    <form class="panel-body">
+        <div class="row" style="margin-top: -10px;">
+            <div class="col-sm-12">
+                <div class="input-group">
+                    <input ng-keyup="$event.keyCode == 13 && addValidate()" ng-model="comm_name.value" type="text"  class="form-control pull-left"/>
+                    <span class=" btn input-group-addon" ng-click="addCommunication()">
+                        <i class="fa fa-plus"></i>
+                    </span>
+                </div>
+
+            </div>
+            <div class="table-responsive">
+                <div class="row text-center" ng-if="!communication_types || communication_types.length == 0">
+                    <div class="center-block col-md-4" style="float: none;">
+                        <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                        <h2>No results found</h2>
+                    </div>
+                </div>
+                <table ng-show="communication_types.length > 0" st-safe-src="communication_types" class="table table-hover" ng-init="getList()">
+                    <thead>
+                    <tr>
+                        <!--<th st-skip-natural="true">Communication types</th>-->
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="row in communication_types track by $index"  ng-class="{'bg-gray': row.name.toLowerCase() === 'phone' || row.name.toLowerCase() === 'email'}">
+                        <td>
+                            <span>{{row.name}}</span>
+                        </td>
+                        <td style="width: 10%; min-width: 83px; text-align: end;">
+                            <a href="javascript:;" ng-click="removeCommunication(row)" ng-hide="row.name.toLowerCase() === 'phone' || row.name.toLowerCase() === 'email'" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" type="button" ng-click="ok()">Ok</button>
+</div>

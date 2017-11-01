@@ -4,18 +4,18 @@
 <div class="modal-body">
         <form class="panel-body" name="contactEditForm">
             <div class="row">
-                <div class="col-sm-9">
+                <div class="col-sm-12">
                     <div class="form-group" ng-class="{ 'has-error' : contactEditForm.name.$invalid }">
                         <label class="control-label">Name</label>
                         <input type="text" class="form-control" name="name" required data-ng-model="property.name" >
                     </div>
                 </div>
-                <div class="col-sm-3">
-                    <div  class="form-group">
-                        <label class="control-label">Is required</label>
-                        <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="property.required" class="ng-pristine ng-valid"><i></i></label>
-                    </div>
-                </div>
+                <!--<div class="col-sm-3">-->
+                    <!--<div  class="form-group">-->
+                        <!--<label class="control-label">Is required</label>-->
+                        <!--<label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="property.required" class="ng-pristine ng-valid"><i></i></label>-->
+                    <!--</div>-->
+                <!--</div>-->
                 <div class="col-sm-12">
                     <div class="form-group" ng-class="{ 'has-error' : contactEditForm.name.$invalid }">
                         <label class="control-label">Caption</label>
@@ -67,21 +67,20 @@
                                 <td>
                                     <a href="javascript:;" ng-click="removeChoice(row);" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                                 </td>
-
                             </tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <div ng-show="property.type" class="form-group" ng-class="{ 'has-error' : contactEditForm.default_value.$invalid }">
-                        <label class="control-label">Default value</label>
-                        <input ng-if="property.type === 'text'" type="text" class="form-control" name="default_value" data-ng-model="property.default_value">
-                        <label ng-if="property.type === 'boolean'" style="width: 100%;" class="switch switch-success"><input type="checkbox" name="default_value" ng-model="property.default_value" class="ng-pristine ng-valid"><i></i></label>
-                        <input ng-if="property.type === 'number'" type="number" class="form-control" name="default_value" data-ng-model="property.default_value">
-                        <select ng-if="property.type === 'select'" type="number" class="form-control" name="default_value" data-ng-model="property.default_value">
-                            <option value="{{i}}" ng-repeat="i in choices">{{i}}</option>
-                        </select>
-                    </div>
+                    <!--<div ng-show="property.type" class="form-group" ng-class="{ 'has-error' : contactEditForm.default_value.$invalid }">-->
+                        <!--<label class="control-label">Default value</label>-->
+                        <!--<input ng-if="property.type === 'text'" type="text" class="form-control" name="default_value" data-ng-model="property.default_value">-->
+                        <!--<label ng-if="property.type === 'boolean'" style="width: 100%;" class="switch switch-success"><input type="checkbox" name="default_value" ng-model="property.default_value" class="ng-pristine ng-valid"><i></i></label>-->
+                        <!--<input ng-if="property.type === 'number'" type="number" class="form-control" name="default_value" data-ng-model="property.default_value">-->
+                        <!--<select ng-if="property.type === 'select'" type="number" class="form-control" name="default_value" data-ng-model="property.default_value">-->
+                            <!--<option value="{{i}}" ng-repeat="i in choices">{{i}}</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
 
                 </div>
 
