@@ -21,8 +21,17 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
 
             $scope.reloadData = function () {
                 ContactModel.propertyList($scope.domain, function (err, res) {
-                    if(err)
-                        notifi.error(err, 5000);
+                    if(err){
+                        if(err.statusCode === 404 && err.message === 'Not found contacts'){
+                            ContactModel.updateProperty([], $scope.domain, function (err_create, res_create) {
+                                if(err_create)
+                                    return notifi.error(err_create, 5000);
+                            });
+                        }
+                        else{
+                            return notifi.error(err, 5000);
+                        }
+                    }
                     $scope.properties = res && res.data && Array.isArray(res.data.data) ? res.data.data : [];
                 });
             }
@@ -41,7 +50,7 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                         // PUT
                         ContactModel.updateProperty($scope.properties, $scope.domain, function (err, res) {
                             if(err)
-                                notifi.error(err, 5000);
+                                return notifi.error(err, 5000);
                         });
                     });
             };
@@ -95,8 +104,8 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                     // PUT
                     ContactModel.updateProperty($scope.properties, $scope.domain, function (err, res) {
                         if(err)
-                            notifi.error(err, 5000);
-                    })
+                            return notifi.error(err, 5000);
+                    });
                 });
             }
 
@@ -127,7 +136,7 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                             if ($scope.comm_name && $scope.comm_name.value !== '' && $scope.comm_name.value.toLowerCase() !== 'phone' && $scope.comm_name.value.toLowerCase() !== 'email') {
                                 ContactModel.addCommunicaiton({name:$scope.comm_name.value}, domainName, function (err, res) {
                                     if(err)
-                                        notifi.error(err, 5000);
+                                       return notifi.error(err, 5000);
                                     $scope.comm_name.value = '';
                                     self.getList();
                                 })
@@ -137,7 +146,7 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                         self.removeCommunication = function (row) {
                             ContactModel.removeCommunicaiton(row.id, domainName, function (err, res) {
                                 if(err)
-                                    notifi.error(err, 5000);
+                                    return notifi.error(err, 5000);
                                 self.getList();
                             })
                         };

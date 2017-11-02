@@ -300,9 +300,18 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
 
         function initProperties(){
             ContactModel.propertyList($scope.domain, function (err, res) {
-                if(err)
-                    notifi.error(err, 5000);
-                $scope.properties = res && Array.isArray(res.data.data) ? res.data.data : [];
+                if(err){
+                    if(err.statusCode === 404 && err.message === 'Not found contacts'){
+                        ContactModel.updateProperty([], $scope.domain, function (err_create, res_create) {
+                            if(err_create)
+                                return notifi.error(err_create, 5000);
+                        });
+                    }
+                    else{
+                        return notifi.error(err, 5000);
+                    }
+                }
+                $scope.properties = res && res.data && Array.isArray(res.data.data) ? res.data.data : [];
                 $scope.properties.sort(function (a, b) {
                     return parseInt(a.index) - parseInt(b.index);
                 });
