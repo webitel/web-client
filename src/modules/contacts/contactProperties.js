@@ -10,6 +10,10 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
             $scope.domain = webitel.domain();
             $scope.properties = [];
 
+            $scope.canDelete = webitel.connection.session.checkResource('book', 'd');
+            $scope.canUpdate = webitel.connection.session.checkResource('book', 'u');
+            $scope.canCreate = webitel.connection.session.checkResource('book', 'c');
+
             var changeDomainEvent = $rootScope.$on('webitel:changeDomain', function (e, domainName) {
                 $scope.domain = domainName;
                 closePage();

@@ -1,11 +1,12 @@
-define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel'], function (app, qrcode, utils) {
+define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel', 'css!modules/contacts/photo.css'], function (app, qrcode, utils) {
 
     app.controller('ContactsCtrl', ['$scope', '$modal', 'webitel', '$rootScope', 'notifi', '$route', '$location', 'ContactModel', '$routeParams',
-            '$timeout', '$confirm', 'TableSearch', 'cfpLoadingBar',
+            '$timeout', '$confirm', 'TableSearch', 'cfpLoadingBar', 'FileUploader',
         function ($scope, $modal, webitel, $rootScope, notifi, $route, $location, ContactModel, $routeParams, $timeout, $confirm,
-                  TableSearch, cfpLoadingBar) {
+                  TableSearch, cfpLoadingBar, FileUploader) {
    		$scope.domain = webitel.domain();
         $scope.contact = {};
+        $scope.hasImage = false;
         $scope.communication = {
             number:'',
             type:''
@@ -27,9 +28,9 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
         $scope.properties = [];
         $scope.isRoot = !webitel.connection.session.domain;
 
-        $scope.canDelete = webitel.connection.session.checkResource('gateway', 'd');
-        $scope.canUpdate = webitel.connection.session.checkResource('gateway', 'u');
-        $scope.canCreate = webitel.connection.session.checkResource('gateway', 'c');
+        $scope.canDelete = webitel.connection.session.checkResource('book', 'd');
+        $scope.canUpdate = webitel.connection.session.checkResource('book', 'u');
+        $scope.canCreate = webitel.connection.session.checkResource('book', 'c');
 
         $scope.isLoading = false;
         $scope.$watch('isLoading', function (val) {
@@ -80,8 +81,52 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
             return $scope.isEdit = !!oldValue.id;
         }, true);
 
+        var uploader = $scope.uploader = new FileUploader();
+        uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+            console.info('onWhenAddingFileFailed', item, filter, options);
+        };
+        uploader.onAfterAddingFile = function(item) {
+            console.info('onAfterAddingFile', item);
+
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    var ava = document.getElementById('avatar');
+                    // var view = new Uint8Array(event.target.result);
+                    // var blob = new Blob([view], {type: "image/png"});
+                    // var url = URL.createObjectURL(blob);
+                    var url = event.target.result;
+                    ava.src = url;
+                    $scope.contact.photo = url;
+
+                } catch (e) {
+                    notifi.error(e, 10000);
+                }
+            };
+            //reader.readAsArrayBuffer(item._file);
+            reader.readAsDataURL(item._file);
+            $scope.hasImage = true;
+            $scope.isEdit = true;
+        };
+
+        $scope.deleteImg = function (){
+            var ava = document.getElementById('avatar');
+            ava.src = '/modules/contacts/profile-user.svg';
+            $scope.contact.photo = null;
+            $scope.hasImage = false;
+            $scope.isEdit = true;
+        }
+
         $scope.cancel = function () {
             $scope.contact = angular.copy($scope.oldContact);
+            var ava = document.getElementById('avatar');
+            if($scope.contact.photo){
+                ava.src = $scope.contact.photo;
+                $scope.hasImage = true;
+            }
+            else {
+                ava.src = '/modules/contacts/profile-user.svg';
+            }
             disableEditMode();
         };
 
@@ -189,7 +234,7 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
         $scope.save = save;
 
 
-        
+
         function closePage() {
             $location.path('/contacts');
         };
@@ -203,13 +248,17 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
                     domainName: function () {
                         return $scope.domain;
                     },
-                    // getCommunications: function () {
-                    //     return $scope.getCommunications
-                    // }
+                    uploader: function () {
+                        return $scope.uploader;
+                    },
+                    deleteImg: function () {
+                        return $scope.deleteImg;
+                    }
                 },
-                controller: ['$modalInstance', '$scope', 'domainName', function ($modalInstance, $scope, domainName) {
+                controller: ['$modalInstance', '$scope', 'domainName', 'uploader', 'deleteImg', function ($modalInstance, $scope, domainName, uploader, deleteImg) {
                     var self = $scope;
-
+                    self.uploader = uploader;
+                    self.deleteImg = deleteImg;
                     self.contact = {};
                     self.communication_type = {};
                     self.communications = [];
@@ -293,9 +342,29 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
                 if(!item.data.communications)item.data.communications=[];
                 $scope.oldContact = angular.copy(item.data);
                 $scope.contact = item.data;
+                if($scope.contact.photo){
+                    var ava = document.getElementById('avatar');
+                    ava.src =  $scope.contact.photo;
+                    $scope.hasImage = true;
+                }
                 $scope.generateQR();
                 disableEditMode();
             });
+        }
+
+        function hexToBase64(str) {
+            return btoa(String.fromCharCode.apply(null, str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" ")));
+        }
+
+        function toPngBlob(str){
+            var hexStr = str.slice(2);
+            var buf = new ArrayBuffer(hexStr.length/2);
+            var byteBuf = new Uint8Array(buf);
+            for (var i=0; i<hexStr.length; i+=2) {
+                byteBuf[i/2] = parseInt(hexStr.slice(i,i+2),16);
+            }
+            var blob = new Blob([byteBuf], {type: "image/png"});
+            return blob;
         }
 
         function initProperties(){
