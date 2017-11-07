@@ -88,6 +88,9 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
         uploader.onAfterAddingFile = function(item) {
             console.info('onAfterAddingFile', item);
 
+            if(item._file.type.substr(0,5) !== 'image' || item._file.size > 250000)
+                return notifi.error("Bad image" ,10000);
+
             var reader = new FileReader();
             reader.onload = function(event) {
                 try {
@@ -350,21 +353,6 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
                 $scope.generateQR();
                 disableEditMode();
             });
-        }
-
-        function hexToBase64(str) {
-            return btoa(String.fromCharCode.apply(null, str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" ")));
-        }
-
-        function toPngBlob(str){
-            var hexStr = str.slice(2);
-            var buf = new ArrayBuffer(hexStr.length/2);
-            var byteBuf = new Uint8Array(buf);
-            for (var i=0; i<hexStr.length; i+=2) {
-                byteBuf[i/2] = parseInt(hexStr.slice(i,i+2),16);
-            }
-            var blob = new Blob([byteBuf], {type: "image/png"});
-            return blob;
         }
 
         function initProperties(){
