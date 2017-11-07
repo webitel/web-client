@@ -55,9 +55,7 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
             });
         };
 
-
         $scope.rowCollection = [];
-
 
         $scope.query = TableSearch.get('contacts');
 
@@ -95,9 +93,6 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
             reader.onload = function(event) {
                 try {
                     var ava = document.getElementById('avatar');
-                    // var view = new Uint8Array(event.target.result);
-                    // var blob = new Blob([view], {type: "image/png"});
-                    // var url = URL.createObjectURL(blob);
                     var url = event.target.result;
                     ava.src = url;
                     $scope.contact.photo = url;
@@ -106,7 +101,6 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
                     notifi.error(e, 10000);
                 }
             };
-            //reader.readAsArrayBuffer(item._file);
             reader.readAsDataURL(item._file);
             $scope.hasImage = true;
             $scope.isEdit = true;
@@ -236,8 +230,6 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
         $scope.closePage = closePage;
         $scope.save = save;
 
-
-
         function closePage() {
             $location.path('/contacts');
         };
@@ -265,7 +257,6 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
                     self.contact = {};
                     self.communication_type = {};
                     self.communications = [];
-                   // self.getCommunications = getCommunications;
 
                     self.ok = function () {
                         self.contact.communications = self.communications;
@@ -381,32 +372,37 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
             };
         }();
 
-        function generateVCard () {
+        function generateVCard (contact) {
+            if(!contact)
+                return;
             var tmpCard = angular.copy($scope.vCard);
             var communications = "";
-            $scope.contact.communications.forEach(function (item) {
-                if(item.type_name.toLowerCase() === "phone"){
-                    communications = communications + angular.copy($scope.vTelTemplate.replace("#PHONE_NUMBER#", item.number));
-                }
-                else if(item.type_name.toLowerCase() === "email"){
-                    communications = communications + angular.copy($scope.vEmailTemplate.replace("#EMAIL#", item.number));
-                }
-            });
-            tmpCard = tmpCard.replace(/#NAME#/g, $scope.contact.name)
-                .replace(/#COMPANY#/g, $scope.contact.company_name)
-                .replace(/#JOB#/g, $scope.contact.job_name)
-                .replace(/#DESCRIPTION#/g, $scope.contact.description)
+            if(contact.communications)
+                contact.communications.forEach(function (item) {
+                    if(item.type_name.toLowerCase() === "phone"){
+                        communications = communications + angular.copy($scope.vTelTemplate.replace("#PHONE_NUMBER#", item.number));
+                    }
+                    else if(item.type_name.toLowerCase() === "email"){
+                        communications = communications + angular.copy($scope.vEmailTemplate.replace("#EMAIL#", item.number));
+                    }
+                });
+            tmpCard = tmpCard.replace(/#NAME#/g, contact.name)
+                .replace(/#COMPANY#/g, contact.company_name || '')
+                .replace(/#JOB#/g, contact.job_name || '')
+                .replace(/#DESCRIPTION#/g, contact.description || '')
                 .replace(/#COMMUNICATIONS#/g, communications);
             return tmpCard;
         }
 
-        $scope.createVCard = function(){
-            var card = generateVCard();
+        $scope.createVCard = function(item){
+            if(!item)
+                return;
+            var card = generateVCard(item);
             utils.saveDataToDisk(card, "vcard.vcf", null);
         }
 
         $scope.generateQR = function(){
-            var card = generateVCard();
+            var card = generateVCard($scope.contact);
             if($scope.qr){
                 $scope.qr.clear();
                 $scope.qr.makeCode(card);
