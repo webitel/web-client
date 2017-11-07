@@ -7,7 +7,7 @@
                     <a href="#/contacts?domain={{domain}}" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-info">
                         <i class="fa fa-reply"></i>
                     </a>
-                    <a  ng-click="openModal(null)" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v bg-success">
+                    <a  ng-click="openModal(null)" ng-if="canCreate" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v bg-success">
                         <i class="fa fa-plus"></i>
                     </a>
 
@@ -19,7 +19,7 @@
 
                 <div class="form-group pull-right">
                     <div class="col-sm-6">
-                        <button class="btn btn-default" ng-click="openCommunicationModal()">Communication types</button>
+                        <button class="btn btn-default" ng-if="canCreate" ng-click="openCommunicationModal()">Communication types</button>
                     </div>
                     <!--<div class="col-sm-10">-->
                         <!--<input data-ng-model="query"  type="search" class="form-control no-border text-right" placeholder="Search term">-->
@@ -57,17 +57,18 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="row in displayedCollection">
-                    <td >
-                        <a ng-click="openModal(row)">
+                    <td>
+                        <a ng-click="openModal(row)" ng-if="canUpdate">
                             {{row.name}}
                         </a>
+                        <span ng-if="viewMode">{{row.name}}</span>
                     </td>
                     <td >{{row.caption}}</td>
                     <td >{{row.type}}</td>
                     <td >{{row.index}}</td>
                     <td style="text-align: end">
-                        <a ng-click="openModal(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
-                        <a href="javascript:;" ng-click="delete(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                        <a ng-click="openModal(row)" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                        <a href="javascript:;" ng-if="canDelete" ng-click="delete(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                     </td>
                 </tr>
                 </tbody>
