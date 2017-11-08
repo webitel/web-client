@@ -5,6 +5,16 @@
     <form name="contactForm">
         <div class="row">
             <div class="col-sm-12">
+                <div style="text-align: center;">
+                    <img id="avatar" class="img-circle avatar" src="/modules/contacts/profile-user.svg">
+                    <a href="javascript:;" ng-click="deleteImg()" class="btn-icon btn-icon-sm  btn-gap-v btn-default clear-button">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </a>
+                    <span class="btn btn-icon btn-icon-sm  btn-gap-v btn-info btn-file upload-button">
+                            <i class="fa fa-upload upload-icon"></i>
+                            <input type="file" nv-file-select="" uploader="uploader" accept="image/*">
+                        </span>
+                </div>
                 <div class="form-group" ng-class="{ 'has-error' : contactForm.name.$invalid }">
                     <label class="control-label">Name</label>
                     <input type="text" class="form-control" name="name" required ng-model="contact.name"> </input>
@@ -18,7 +28,7 @@
             </div>
             <div class="col-sm-6">
                 <div class="form-group" ng-class="{ 'has-error' : contactForm.job_name.$invalid }">
-                    <label class="control-label" for>Job name</label>
+                    <label class="control-label" for>Job title</label>
                     <input  type="text" class="form-control" name="job_name" ng-model="contact.job_name"> </input>
                 </div>
             </div>
@@ -52,7 +62,7 @@
                                 <span style="margin-left: 12px;">{{row.number}}</span>
                             </td>
                             <td style="text-align: left;">
-                                <span style="margin-left: 12px;">{{row.type_display}}</span>
+                                <span style="margin-left: 12px;">{{row.type_name}}</span>
                             </td>
                             <td>
                                 <a href="javascript:;" ng-disabled="viewMode" ng-click="removeComm(row);" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>

@@ -1,0 +1,25 @@
+.clear-button {
+    border-radius: 50%;
+    vertical-align: top;
+    position: absolute;
+}
+
+.upload-button {
+    border-radius: 50%;
+    vertical-align: bottom;
+    position: absolute;
+    padding: 0;
+    top: 165px;
+    height: 35px;
+    width: 35px;
+    text-align: center;
+}
+
+.upload-icon {
+    font-weight: 900;
+    vertical-align: middle;
+}
+.avatar{
+    height: 200px;
+    width: 200px;
+}
