@@ -63,9 +63,9 @@ require.config({
     'd3': 'bower_components/d3/d3.min',
     'nvd3': 'bower_components/nvd3/build/nv.d3.min',
     'angular-nvd3': 'bower_components/angular-nvd3/dist/angular-nvd3.min',
-    'loading-bar': 'bower_components/angular-loading-bar/build/loading-bar.min'
+    'loading-bar': 'bower_components/angular-loading-bar/build/loading-bar.min',
     // END TODO
-
+    'qrcode': 'bower_components/qrcodejs/qrcode.min'
     //new dash
     //'gridster': 'modules/dashboard2/angular-gridster/dist/angular-gridster.min'
   },
@@ -88,6 +88,9 @@ require.config({
       deps: ['angular', 'css!bower_components/ui-select/dist/select.min.css']
     },
     'loading-bar': {
+        deps: ['angular']
+    },
+    'qrcode': {
         deps: ['angular']
     },
     //TODO
