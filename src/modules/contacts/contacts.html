@@ -14,6 +14,11 @@
                             <i class="glyphicon glyphicon-refresh"></i>
                         </a>
 
+                        <span class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark btn-file"  ng-disabled="!domain" ng-if="canCreate" style="padding: 0">
+                            <i class="glyphicon glyphicon-cloud-upload"></i>
+                            <input type="file" nv-file-select="" uploader="uploaderImport" accept=".vcf">
+                        </span>
+
                         <a href="#/contactEditor?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-info">
                             <i class="glyphicon glyphicon-cog"></i>
                         </a>

@@ -140,7 +140,8 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
             company_name: 1,
             job_name: 1,
             description: 1,
-            id: 1
+            id: 1,
+            communications: 1
         }));
         var maxNodes = 40;
 
@@ -278,7 +279,7 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
                     };
 
                     self.addCommunication = function(){
-                        if(self.communication_type && self.number){
+                        if(Object.keys(self.communication_type).length !== 0 && self.number){
                             self.communications.push({
                                 number: self.number,
                                 type_id: self.communication_type.value.id,
@@ -299,7 +300,9 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
                 ContactModel.add(option.contact, $scope.domain, function (err, res) {
                     if(err)
                         return notifi.error(err);
-                    $scope.reloadData();
+                    option.contact.id = res && res.data && res.data.id;
+                    $scope.rowCollection.unshift(option.contact);
+                    //$scope.reloadData();
                 });
             });
         };
@@ -412,6 +415,75 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
             }
             document.getElementById('qrcode').title = "";
         }
+
+        var uploaderImport = $scope.uploaderImport = new FileUploader();
+        uploaderImport.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+            console.info('onWhenAddingFileFailed', item, filter, options);
+        };
+        uploaderImport.onAfterAddingFile = function(item) {
+            console.info('onAfterAddingFile', item);
+
+            if(item._file.type !== 'text/vcard')
+                return notifi.error("File is not VCF format", 10000);
+
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    ContactModel.communicationList($scope.domain, function (err, res) {
+                        if(err)
+                            return notifi.error(err, 5000);
+
+                        var communication_types = res && res.data;
+                        var phone = communication_types.filter(function(item){
+                            return item.name.toLowerCase() === 'phone';
+                        })[0];
+                        var email = communication_types.filter(function(item){
+                            return item.name.toLowerCase() === 'email';
+                        })[0];
+
+                        var lines = event.target.result.split('\n');
+                        var contact = {communications:[]};
+                        lines.forEach(function (item){
+                            if(item.substr(0, 2) === 'FN'){
+                                contact.name = item.split(':')[1];
+                            }
+                            else if(item.substr(0, 3) === 'ORG'){
+                                contact.company_name = item.split(':')[1];
+                            }
+                            else if(item.substr(0, 5) === 'TITLE'){
+                                contact.job_name = item.split(':')[1];
+                            }
+                            else if(item.substr(0, 4) === 'NOTE'){
+                                contact.description = item.split(':')[1];
+                            }
+                            else if(item.substr(0, 5) === 'EMAIL'){
+                                contact.communications.push({
+                                    number: item.split(':')[1],
+                                    type_id: email.id
+                                });
+                            }
+                            else if(item.substr(0, 3) === 'TEL'){
+                                contact.communications.push({
+                                    number: item.split(':')[1],
+                                    type_id: phone.id
+                                });
+                            }
+                        });
+                        ContactModel.add(contact, $scope.domain, function (err, res) {
+                            if(err)
+                                return notifi.error(err);
+                            contact.id = res && res.data && res.data.id;
+                            $scope.rowCollection.unshift(contact);
+                            //$scope.reloadData();
+                        });
+                    });
+
+                } catch (e) {
+                    notifi.error(e, 10000);
+                }
+            };
+            reader.readAsText(item._file);
+        };
 
     }]);
 });
