@@ -134,6 +134,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         function parseHookToRequest (data) {
             var request = {
                 "event" : data.event,
+                "delay" : data.delay,
+                "retries" : data.retries,
                 "enable" : data.enable,
                 "description" : data.description,
                 "action" : data.action,

@@ -37,9 +37,19 @@
                                                 </select>
                                             </div>
 
-                                            <div class="form-group" >
-                                                <label for>Description</label>
-                                                <input ng-disabled="viewMode" type="text" class="form-control" data-ng-model="hook.description" style="">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Delay</label>
+                                                        <input ng-disabled="viewMode" type="number" min="1" name="delay" class="form-control"  data-ng-model="hook.delay">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Retries</label>
+                                                        <input ng-disabled="viewMode" type="number" min="-1" name="retries" class="form-control" data-ng-model="hook.retries">
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div class="form-inline">
@@ -104,6 +114,17 @@
                                                                 }" class="json-control">
 
                                                                 </div>
+                                                            </div>
+                                                        </tab>
+
+                                                        <tab>
+                                                            <tab-heading>
+                                                                <span>Description</span>
+                                                            </tab-heading>
+
+                                                            <div class="form-group" >
+                                                                <label for>Description</label>
+                                                                <textarea  ng-disabled="viewMode" class="form-control" ng-model="hook.description" rows="4"></textarea>
                                                             </div>
                                                         </tab>
 
