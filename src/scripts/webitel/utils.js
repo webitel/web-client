@@ -486,7 +486,8 @@ define(['angular'], function (angular) {
         'CUSTOM->engine::dialer_member_end',
         'CUSTOM->engine::callback_member_add',
         'CUSTOM->engine::callback_member_done',
-        'CUSTOM->engine::callback_member_comment'
+        'CUSTOM->engine::callback_member_comment',
+        'CUSTOM->ACR::HOOK'
     ];
 
     var timeZones = [
