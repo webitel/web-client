@@ -87,26 +87,44 @@
                                 {{$index + 1}}
                             </td>
                             <td>
-                                <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.field }">
-                                    <select required ng-model="item.field" class="form-control">
+                                <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.field && !item.value}">
+                                    <select ng-if="template.action === 'export'" required ng-model="item.field" class="form-control" ng-change="clearExportItem(item)">
                                         <option value="">--</option>
                                         <option ng-selected="{{k==item.field}}" ng-repeat="(k, col) in tColumns" value="{{k}}">{{col.name}}</option>
+                                    </select>
+                                    <select ng-if="template.action === 'import'" ng-model="item.value" class="form-control" ng-change="clearImportItem(item)">
+                                        <option value="">--</option>
+                                        <option ng-selected="{{k==item.value}}" ng-repeat="(k, clol) in tColumns" value="{{k}}">{{clol.name}}</option>
                                     </select>
                                 </div>
                             </td>
                             <td>
-                                <div ng-if="item.field=='variable'">
-                                    <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.value }">
-                                        <input ng-required="item.value=='variable'" class="form-control" type="text"  ng-model="item.value" >
+                                <div ng-if="template.action === 'export'">
+                                    <div ng-if="item.field=='variable'">
+                                        <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.value }">
+                                            <input ng-required="item.value=='variable'" class="form-control" type="text"  ng-model="item.value" >
+                                        </div>
+                                    </div>
+
+                                    <div ng-if="item.field=='callTime' || item.field=='expire'">
+                                        <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.type }">
+                                            <select class="form-control" required name="strategy" ng-model="item.type">
+                                                <option value="timestamp">timestamp</option>
+                                                <option value="string">string</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div ng-if="item.field=='callTime' || item.field=='expire'">
-                                    <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.type }">
-                                        <select class="form-control" required name="strategy" ng-model="item.type">
-                                            <option value="timestamp">timestamp</option>
-                                            <option value="string">string</option>
-                                        </select>
+                                <div ng-if="template.action === 'import'">
+                                    <div ng-if="item.value=='variable'">
+                                        <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.varName }">
+                                            <input ng-required="item.value=='variable'" class="form-control" type="text"  ng-model="item.varName" >
+                                        </div>
+                                    </div>
+                                    <div ng-if="item.value=='expire'">
+                                        <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.format }">
+                                            <input style="min-width: 135px;" ng-required="item.value=='expire'" class="form-control" type="text" ng-init="item.format = item.format ? item.format : 'DD-MM-YYYY HH:mm'" ng-model="item.format" >
+                                        </div>
                                     </div>
                                 </div>
                                 <!--<div ng-if="item.field=='expire'">-->

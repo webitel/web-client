@@ -2843,7 +2843,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 if(newValue!=='') $scope.reloadTemplates();
             }, true);
 
-
             $scope.removeTemplate = function (row) {
                 $confirm({text: 'Are you sure you want to delete ' + row.name + ' ?'},  { templateUrl: 'views/confirm.html' })
                     .then(function() {
@@ -3867,7 +3866,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             });
                         };
 
+                        $scope.clearExportItem = function(item){
+                            if(item.field !== 'callTime' || item.field !== 'expire')delete item.type;
+                            if(item.field !== 'variable')delete item.value;
+                        }
 
+                        $scope.clearImportItem = function(item){
+                            if(item.value !== 'expire')delete item.format;
+                            if(item.value !== 'variable')delete item.varName;
+                        }
                     }],
 
                 });
