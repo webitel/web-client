@@ -556,7 +556,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         
         function resetMembers(dialerId, domainName, log, from, cb) {
             if (!domainName)
-                return dialerId(new Error("Domain is required."));
+                return cb(new Error("Domain is required."));
 
             if (!dialerId)
                 return cb(new Error("Dialer is required."));
@@ -572,7 +572,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
         function resetProcess(dialerId, domainName, cb) {
             if (!domainName)
-                return dialerId(new Error("Domain is required."));
+                return cb(new Error("Domain is required."));
             if (!dialerId)
                 return cb(new Error("Dialer is required."));
 
@@ -582,11 +582,84 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
         function cleanStatistic(dialerId, domainName, cb) {
             if (!domainName)
-                return dialerId(new Error("Domain is required."));
+                return cb(new Error("Domain is required."));
             if (!dialerId)
                 return cb(new Error("Dialer is required."));
 
             webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/reset?domain=' + domainName, {resetStats: true}, cb)
+        }
+
+        function templateList(dialerId, option, cb) {
+            if(!option.domain)
+                return cb(new Error("Domain is required."));
+            if(!dialerId)
+                return cb(new Error("Dialer is required."));
+
+            webitel.api('GET', '/api/v2/dialer/' + dialerId + '/templates' + buildQuery(option), function(err, res) {
+                return cb && cb(err, res);
+            });
+        }
+
+        function templateItem(dialerId, templateId, domainName, cb) {
+            if(!domainName)
+                return cb(new Error("Domain is required."));
+            if(!dialerId)
+                return cb(new Error("Dialer is required."));
+            if(!templateId)
+                return cb(new Error("Template is required."));
+
+            webitel.api('GET', '/api/v2/dialer/' + dialerId + '/templates/' + templateId + '?domain=' + domainName, function(err, res) {
+                return cb && cb(err, res);
+            });
+        }
+
+        function addTemplate(dialerId, data, domainName, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!dialerId)
+                return cb(new Error("Dialer is required."));
+
+            if (!data)
+                return cb(new Error("Data is required."));
+
+            webitel.api('POST', '/api/v2/dialer/' + dialerId + '/templates?domain=' + domainName, data, function(err, res) {
+                return cb && cb(err, res);
+            });
+        }
+
+        function updateTemplate(dialerId, data, domainName, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!dialerId)
+                return cb(new Error("Dialer is required."));
+
+            if (!data.id)
+                return cb(new Error("Template Id is required."));
+
+            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/templates/' + data.id + '?domain=' + domainName, data, function(err, res) {
+                return cb && cb(err, res);
+            });
+        }
+
+        function deleteTemplate(dialerId, templateId, domainName, cb) {
+            if(!domainName)
+                return cb(new Error("Domain is required."));
+            if(!dialerId)
+                return cb(new Error("Dialer is required."));
+            if(!templateId)
+                return cb(new Error("Template is required."));
+
+            webitel.api('DELETE', '/api/v2/dialer/' + dialerId + '/templates/' + templateId + '?domain=' + domainName, cb);
+        }
+
+        function buildQuery (option) {
+            var res = "?";
+            angular.forEach(option, function (val, key) {
+                res += key + '=' + val + '&'
+            });
+            return res.substring(0, res.length - 1);
         }
 
         return {
@@ -617,7 +690,12 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 remove: removeMember,
                 aggregate: aggregateMember,
                 removeMulti: removeMulti,
-                reset: resetMembers
+                reset: resetMembers,
+                templateList: templateList,
+                addTemplate: addTemplate,
+                updateTemplate: updateTemplate,
+                deleteTemplate: deleteTemplate,
+                templateItem: templateItem
             }
         }
     }]);

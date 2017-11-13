@@ -2805,6 +2805,1083 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
         }
 
     }]);
+
+    app.controller('MembersTemplateCtrl', ['$scope', 'DialerModel', '$modal', '$confirm', 'notifi',
+        function ($scope, DialerModel, $modal, $confirm, notifi) {
+            $scope.templateCollection = [];
+            $scope.displayedTemplateCollection = [];
+
+            $scope.reloadTemplates = function(){
+
+                if(!$scope.dialer._id || !$scope.domain)
+                    return $scope.templateCollection = [];
+
+                $scope.isLoading = true;
+                var col = encodeURIComponent(JSON.stringify({
+                    name: 1,
+                    type: 1,
+                    action: 1,
+                    description: 1,
+                    id: 1
+                }));
+
+                DialerModel.members.templateList($scope.dialer._id,
+                    {
+                        columns: col,
+                        limit: 5000,
+                        page: 1,
+                        domain: $scope.domain
+                    }, function (err, res) {
+                    $scope.isLoading = false;
+                    if (err)
+                        return notifi.error(err, 5000);
+                    $scope.templateCollection = res && res.data;
+                });
+            };
+
+            $scope.$watch('dialer._id', function (oldValue, newValue) {
+                if(newValue!=='') $scope.reloadTemplates();
+            }, true);
+
+
+            $scope.removeTemplate = function (row) {
+                $confirm({text: 'Are you sure you want to delete ' + row.name + ' ?'},  { templateUrl: 'views/confirm.html' })
+                    .then(function() {
+                        DialerModel.members.deleteTemplate($scope.dialer._id, row.id, $scope.domain, function (err) {
+                            if (err)
+                                return notifi.error(err, 5000);
+                            $scope.reloadTemplates();
+                        });
+                    });
+            };
+
+            $scope.openTemplate = function(method, item, isEdit){
+                var modalInstance = $modal.open({
+                    animation: true,
+                    templateUrl: '/modules/dialer/templateCsvModal.html',
+                    size: 'lg',
+                    resolve: {
+                        dialerId: function () {
+                            return $scope.dialer._id
+                        },
+                        domainName: function () {
+                            return $scope.domain
+                        }
+                    },
+                    controller: ['$scope','$modalInstance', 'notifi', 'dialerId', 'domainName', function ($scope, $modalInstance, notifi, dialerId, domainName) {
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+
+                        $scope.template= {
+                            action: method,
+                            type: 'CSV',
+                            template: {
+                                separator: ';',
+                                allProbe: false,
+                                headers: true,
+                                skipFilter: false,
+                                charSet: 'utf-8',
+                                data: [],
+                                template: {},
+                                fields: {}
+                            }
+                        }
+                        $scope.CharSet = utils.CharSet;
+                        $scope.tColumns = [];
+                        if(method === 'export'){
+                            $scope.tColumns = {
+                                "name": {
+                                    selected: false,
+                                    name: "Name",
+                                    field: 'name'
+                                },
+                                "callSuccessful": {
+                                    selected: false,
+                                    name: "Call success",
+                                    field: 'callSuccessful'
+                                },
+                                "_id": {
+                                    selected: false,
+                                    name: "Id",
+                                    field: '_id'
+                                },
+                                "priority": {
+                                    selected: false,
+                                    name: "Priority",
+                                    field: 'priority'
+                                },
+                                "variable": {
+                                    "name": "Variable",
+                                    "field": "variable",
+                                    "type": "variable",
+                                    "value": "",
+                                    "varName": ""
+                                },
+                                //"timezone": {
+                                //    selected: false,
+                                //    name: "Timezone",
+                                //    field: 'timezone'
+                                //},
+                                "number": {
+                                    name: "Number",
+                                    field: 'number',
+                                    position: 0,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": true
+                                    }
+                                },
+                                "description": {
+                                    name: "Description",
+                                    field: 'description',
+                                    position: 0,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": true
+                                    }
+                                },
+                                "priority_number": {
+                                    selected: false,
+                                    name: "Priority number",
+                                    field: "priority_number",
+                                    position: 0,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": true
+                                    }
+                                },
+                                "state": {
+                                    selected: false,
+                                    name: "State",
+                                    field: "state",
+                                    position: 0,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": true
+                                    }
+                                },
+                                "number_1": {
+                                    selected: false,
+                                    name: "number_1",
+                                    field: 'number',
+                                    position: 0,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "priority_1": {
+                                    selected: false,
+                                    name: "priority_1",
+                                    field: "priority",
+                                    position: 0,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "state_1": {
+                                    selected: false,
+                                    name: "state_1",
+                                    field: "state",
+                                    position: 0,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "description_1": {
+                                    selected: false,
+                                    name: "description_1",
+                                    field: "description",
+                                    position: 0,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "type_1": {
+                                    selected: false,
+                                    name: "type_1",
+                                    field: "type",
+                                    position: 0,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "number_2": {
+                                    selected: false,
+                                    name: "number_2",
+                                    field: 'number',
+                                    position: 1,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "priority_2": {
+                                    selected: false,
+                                    name: "priority_2",
+                                    field: "priority",
+                                    position: 1,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "state_2": {
+                                    selected: false,
+                                    name: "state_2",
+                                    field: "state",
+                                    position: 1,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "description_2": {
+                                    selected: false,
+                                    name: "description_2",
+                                    field: "description",
+                                    position: 1,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "type_2": {
+                                    selected: false,
+                                    name: "type_2",
+                                    field: "type",
+                                    position: 1,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "number_3": {
+                                    selected: false,
+                                    name: "number_3",
+                                    field: 'number',
+                                    position: 2,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "priority_3": {
+                                    selected: false,
+                                    name: "priority_3",
+                                    field: "priority",
+                                    position: 2,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "state_3": {
+                                    selected: false,
+                                    name: "state_3",
+                                    field: "state",
+                                    position: 2,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "description_3": {
+                                    selected: false,
+                                    name: "description_3",
+                                    field: "description",
+                                    position: 2,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "type_3": {
+                                    selected: false,
+                                    name: "type_3",
+                                    field: "type",
+                                    position: 2,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "number_4": {
+                                    selected: false,
+                                    name: "number_4",
+                                    field: 'number',
+                                    position: 3,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "priority_4": {
+                                    selected: false,
+                                    name: "priority_4",
+                                    field: "priority",
+                                    position: 3,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "state_4": {
+                                    selected: false,
+                                    name: "state_4",
+                                    field: "state",
+                                    position: 3,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "description_4": {
+                                    selected: false,
+                                    name: "description_4",
+                                    field: "description",
+                                    position: 3,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "type_4": {
+                                    selected: false,
+                                    name: "type_4",
+                                    field: "type",
+                                    position: 3,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "number_5": {
+                                    selected: false,
+                                    name: "number_5",
+                                    field: 'number',
+                                    position: 4,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "priority_5": {
+                                    selected: false,
+                                    name: "priority_5",
+                                    field: "priority",
+                                    position: 4,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "state_5": {
+                                    selected: false,
+                                    name: "state_5",
+                                    field: "state",
+                                    position: 4,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "description_5": {
+                                    selected: false,
+                                    name: "description_5",
+                                    field: "description",
+                                    position: 4,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "type_5": {
+                                    selected: false,
+                                    name: "type_5",
+                                    field: "type",
+                                    position: 4,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "number_6": {
+                                    selected: false,
+                                    name: "number_6",
+                                    field: 'number',
+                                    position: 5,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "priority_6": {
+                                    selected: false,
+                                    name: "priority_6",
+                                    field: "priority",
+                                    position: 5,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "state_6": {
+                                    selected: false,
+                                    name: "state_6",
+                                    field: "state",
+                                    position: 5,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "description_6": {
+                                    selected: false,
+                                    name: "description_6",
+                                    field: "description",
+                                    position: 5,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "type_6": {
+                                    selected: false,
+                                    name: "type_6",
+                                    field: "type",
+                                    position: 5,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "number_7": {
+                                    selected: false,
+                                    name: "number_7",
+                                    field: 'number',
+                                    position: 6,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "priority_7": {
+                                    selected: false,
+                                    name: "priority_7",
+                                    field: "priority",
+                                    position: 6,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "state_7": {
+                                    selected: false,
+                                    name: "state_7",
+                                    field: "state",
+                                    position: 6,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "description_7": {
+                                    selected: false,
+                                    name: "description_7",
+                                    field: "description",
+                                    position: 6,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "type_7": {
+                                    selected: false,
+                                    name: "type_7",
+                                    field: "type",
+                                    position: 6,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "number_8": {
+                                    selected: false,
+                                    name: "number_8",
+                                    field: 'number',
+                                    position: 7,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "priority_8": {
+                                    selected: false,
+                                    name: "priority_8",
+                                    field: "priority",
+                                    position: 7,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "state_8": {
+                                    selected: false,
+                                    name: "state_8",
+                                    field: "state",
+                                    position: 7,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "description_8": {
+                                    selected: false,
+                                    name: "description_8",
+                                    field: "description",
+                                    position: 7,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "type_8": {
+                                    selected: false,
+                                    name: "type_8",
+                                    field: "type",
+                                    position: 7,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "number_9": {
+                                    selected: false,
+                                    name: "number_9",
+                                    field: 'number',
+                                    position: 8,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "priority_9": {
+                                    selected: false,
+                                    name: "priority_9",
+                                    field: "priority",
+                                    position: 8,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "state_9": {
+                                    selected: false,
+                                    name: "state_9",
+                                    field: "state",
+                                    position: 8,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "description_9": {
+                                    selected: false,
+                                    name: "description_9",
+                                    field: "description",
+                                    position: 8,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "type_9": {
+                                    selected: false,
+                                    name: "type_9",
+                                    field: "type",
+                                    position: 8,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "number_10": {
+                                    selected: false,
+                                    name: "number_10",
+                                    field: 'number',
+                                    position: 9,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "priority_10": {
+                                    selected: false,
+                                    name: "priority_10",
+                                    field: "priority",
+                                    position: 9,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "state_10": {
+                                    selected: false,
+                                    name: "state_10",
+                                    field: "state",
+                                    position: 9,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "description_10": {
+                                    selected: false,
+                                    name: "description_10",
+                                    field: "description",
+                                    position: 9,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "type_10": {
+                                    selected: false,
+                                    name: "type_10",
+                                    field: "type",
+                                    position: 9,
+                                    type: 'communications',
+                                    filter: {
+                                        "allProbe": false
+                                    }
+                                },
+                                "_endCause": {
+                                    name: "End cause",
+                                    "field": "_endCause"
+                                },
+                                "_probeCount": {
+                                    name: "Attempts",
+                                    "field": "_probeCount"
+                                },
+                                "callTime": {
+                                    "name": "Call time",
+                                    "type": "lastCall",
+                                    "field": "_log.steps.time"
+                                },
+                                "expire": {
+                                    "name": "Expire",
+                                    "type": "time",
+                                    "field": "expire"
+                                },
+                                "attempt_cause": {
+                                    "name": "Attempt end cause",
+                                    "field": "attempt_cause",
+                                    filter: {
+                                        "allProbe": true
+                                    }
+                                },
+                                "attempt_agent": {
+                                    "name": "Agent",
+                                    "field": "attempt_agent",
+                                    filter: {
+                                        "allProbe": true
+                                    }
+                                },
+                                "attempt_amd_result": {
+                                    "name": "AMD result",
+                                    "field": "attempt_amd_result",
+                                    filter: {
+                                        "allProbe": true
+                                    }
+                                },
+                                "attempt_communication_type_name": {
+                                    "name": "Communication type name",
+                                    "field": "attempt_communication_type_name",
+                                    filter: {
+                                        "allProbe": true
+                                    }
+                                },
+                                "attempt_communication_type_code": {
+                                    "name": "Communication type code",
+                                    "field": "attempt_communication_type_code",
+                                    filter: {
+                                        "allProbe": true
+                                    }
+                                },
+                                "attempt_callback_success": {
+                                    name: "Callback success",
+                                    field: "_log.callback.data.success",
+                                    filter: {
+                                        "allProbe": true
+                                    }
+                                },
+                                "attempt_callback_description": {
+                                    name: "Callback description",
+                                    field: "_log.callback.data.description",
+                                    filter: {
+                                        "allProbe": true
+                                    }
+                                }
+                            };
+                        }
+                        else if(method === 'import'){
+                            $scope.tColumns = {
+                                "name": {
+                                    selected: false,
+                                    name: "Name",
+                                    field: 'name'
+                                },
+                                "priority": {
+                                    selected: false,
+                                    name: "Priority",
+                                    field: 'priority'
+                                },
+                                "variable": {
+                                    "name": "Variable",
+                                    "field": "variable",
+                                    "type": "variable",
+                                    "value": "",
+                                    "varName": ""
+                                },
+                                //"timezone": {
+                                //    selected: false,
+                                //    name: "Timezone",
+                                //    field: 'timezone'
+                                //},
+                                "number_1": {
+                                    selected: false,
+                                    name: "number_1",
+                                    field: 'number',
+                                    position: 0,
+                                    type: 'communications'
+                                },
+                                "priority_1": {
+                                    selected: false,
+                                    name: "priority_1",
+                                    field: "priority",
+                                    position: 0,
+                                    type: 'communications'
+                                },
+                                "description_1": {
+                                    selected: false,
+                                    name: "description_1",
+                                    field: "description",
+                                    position: 0,
+                                    type: 'communications'
+                                },
+                                "type_1": {
+                                    selected: false,
+                                    name: "type_1",
+                                    field: "type",
+                                    position: 0,
+                                    type: 'communications'
+                                },
+                                "number_2": {
+                                    selected: false,
+                                    name: "number_2",
+                                    field: 'number',
+                                    position: 1,
+                                    type: 'communications'
+                                },
+                                "priority_2": {
+                                    selected: false,
+                                    name: "priority_2",
+                                    field: "priority",
+                                    position: 1,
+                                    type: 'communications'
+                                },
+                                "description_2": {
+                                    selected: false,
+                                    name: "description_2",
+                                    field: "description",
+                                    position: 1,
+                                    type: 'communications'
+                                },
+                                "type_2": {
+                                    selected: false,
+                                    name: "type_2",
+                                    field: "type",
+                                    position: 1,
+                                    type: 'communications'
+                                },
+                                "number_3": {
+                                    selected: false,
+                                    name: "number_3",
+                                    field: 'number',
+                                    position: 2,
+                                    type: 'communications'
+                                },
+                                "priority_3": {
+                                    selected: false,
+                                    name: "priority_3",
+                                    field: "priority",
+                                    position: 2,
+                                    type: 'communications'
+                                },
+                                "description_3": {
+                                    selected: false,
+                                    name: "description_3",
+                                    field: "description",
+                                    position: 2,
+                                    type: 'communications'
+                                },
+                                "type_3": {
+                                    selected: false,
+                                    name: "type_3",
+                                    field: "type",
+                                    position: 2,
+                                    type: 'communications'
+                                },
+                                "number_4": {
+                                    selected: false,
+                                    name: "number_4",
+                                    field: 'number',
+                                    position: 3,
+                                    type: 'communications'
+                                },
+                                "priority_4": {
+                                    selected: false,
+                                    name: "priority_4",
+                                    field: "priority",
+                                    position: 3,
+                                    type: 'communications'
+                                },
+                                "description_4": {
+                                    selected: false,
+                                    name: "description_4",
+                                    field: "description",
+                                    position: 3,
+                                    type: 'communications'
+                                },
+                                "type_4": {
+                                    selected: false,
+                                    name: "type_4",
+                                    field: "type",
+                                    position: 3,
+                                    type: 'communications'
+                                },
+                                "number_5": {
+                                    selected: false,
+                                    name: "number_5",
+                                    field: 'number',
+                                    position: 4,
+                                    type: 'communications'
+                                },
+                                "priority_5": {
+                                    selected: false,
+                                    name: "priority_5",
+                                    field: "priority",
+                                    position: 4,
+                                    type: 'communications'
+                                },
+                                "description_5": {
+                                    selected: false,
+                                    name: "description_5",
+                                    field: "description",
+                                    position: 4,
+                                    type: 'communications'
+                                },
+                                "type_5": {
+                                    selected: false,
+                                    name: "type_5",
+                                    field: "type",
+                                    position: 4,
+                                    type: 'communications'
+                                },
+                                "number_6": {
+                                    selected: false,
+                                    name: "number_6",
+                                    field: 'number',
+                                    position: 5,
+                                    type: 'communications'
+                                },
+                                "priority_6": {
+                                    selected: false,
+                                    name: "priority_6",
+                                    field: "priority",
+                                    position: 5,
+                                    type: 'communications'
+                                },
+                                "description_6": {
+                                    selected: false,
+                                    name: "description_6",
+                                    field: "description",
+                                    position: 5,
+                                    type: 'communications'
+                                },
+                                "type_6": {
+                                    selected: false,
+                                    name: "type_6",
+                                    field: "type",
+                                    position: 5,
+                                    type: 'communications'
+                                },
+                                "number_7": {
+                                    selected: false,
+                                    name: "number_7",
+                                    field: 'number',
+                                    position: 6,
+                                    type: 'communications'
+                                },
+                                "priority_7": {
+                                    selected: false,
+                                    name: "priority_7",
+                                    field: "priority",
+                                    position: 6,
+                                    type: 'communications'
+                                },
+                                "description_7": {
+                                    selected: false,
+                                    name: "description_7",
+                                    field: "description",
+                                    position: 6,
+                                    type: 'communications'
+                                },
+                                "type_7": {
+                                    selected: false,
+                                    name: "type_7",
+                                    field: "type",
+                                    position: 6,
+                                    type: 'communications'
+                                },
+                                "number_8": {
+                                    selected: false,
+                                    name: "number_8",
+                                    field: 'number',
+                                    position: 7,
+                                    type: 'communications'
+                                },
+                                "priority_8": {
+                                    selected: false,
+                                    name: "priority_8",
+                                    field: "priority",
+                                    position: 7,
+                                    type: 'communications'
+                                },
+                                "description_8": {
+                                    selected: false,
+                                    name: "description_8",
+                                    field: "description",
+                                    position: 7,
+                                    type: 'communications'
+                                },
+                                "type_8": {
+                                    selected: false,
+                                    name: "type_8",
+                                    field: "type",
+                                    position: 7,
+                                    type: 'communications'
+                                },
+                                "number_9": {
+                                    selected: false,
+                                    name: "number_9",
+                                    field: 'number',
+                                    position: 8,
+                                    type: 'communications'
+                                },
+                                "priority_9": {
+                                    selected: false,
+                                    name: "priority_9",
+                                    field: "priority",
+                                    position: 8,
+                                    type: 'communications'
+                                },
+                                "description_9": {
+                                    selected: false,
+                                    name: "description_9",
+                                    field: "description",
+                                    position: 8,
+                                    type: 'communications'
+                                },
+                                "type_9": {
+                                    selected: false,
+                                    name: "type_9",
+                                    field: "type",
+                                    position: 8,
+                                    type: 'communications'
+                                },
+                                "number_10": {
+                                    selected: false,
+                                    name: "number_10",
+                                    field: 'number',
+                                    position: 9,
+                                    type: 'communications'
+                                },
+                                "priority_10": {
+                                    selected: false,
+                                    name: "priority_10",
+                                    field: "priority",
+                                    position: 9,
+                                    type: 'communications'
+                                },
+                                "description_10": {
+                                    selected: false,
+                                    name: "description_10",
+                                    field: "description",
+                                    position: 9,
+                                    type: 'communications'
+                                },
+                                "type_10": {
+                                    selected: false,
+                                    name: "type_10",
+                                    field: "type",
+                                    position: 9,
+                                    type: 'communications'
+                                },
+                                "expire": {
+                                    name: "Expire",
+                                    field: "expire",
+                                    type: "time"
+                                }
+                            };
+                        }
+                        if(item){
+                            DialerModel.members.templateItem(dialerId, item.id, domainName, function(err, res){
+                                if(err) {
+                                    notifi.error(err, 5000);
+                                    return $scope.cancel();
+                                }
+                                $scope.template = res && res.data;
+                            });
+                        }
+                        $scope.isEdit = isEdit && !!item;
+
+                        $scope.up = function (row) {
+                            moveUp($scope.template.template.data, row)
+                        };
+
+                        $scope.down = function (row) {
+                            moveDown($scope.template.template.data, row)
+                        };
+
+                        $scope.ok = function () {
+                            $modalInstance.close({
+                                template: $scope.template
+                            });
+                        };
+
+
+                    }],
+
+                });
+
+                modalInstance.result.then(function (settings) {
+                    var func = isEdit ? DialerModel.members.updateTemplate : DialerModel.members.addTemplate;
+                    func($scope.dialer._id , settings.template, $scope.domain , function (err, res) {
+                        if(err)
+                            return notifi.error(err);
+                        $scope.reloadTemplates();
+                    });
+                });
+            }
+        }]);
     
     app.controller('MemberDialerPageCtrl', ['$scope', '$modalInstance', 'notifi', 'DialerModel', 'options', 'fileModel',
     function ($scope, $modalInstance, notifi, DialerModel, options, fileModel) {
