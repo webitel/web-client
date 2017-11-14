@@ -20,7 +20,8 @@
 
                 <div class="col-sm-2">
                     <div class="form-group" >
-                        <label style="width: 100%">Add headers</label>
+                        <label ng-if="template.action === 'export'" style="width: 100%">Add headers</label>
+                        <label ng-if="template.action === 'import'" style="width: 100%">Skip headers</label>
                         <label class="switch switch-success"><input type="checkbox" ng-model="template.template.headers" ><i></i></label>
                     </div>
                 </div>
@@ -87,12 +88,14 @@
                                 {{$index + 1}}
                             </td>
                             <td>
-                                <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.field && !item.value}">
-                                    <select ng-if="template.action === 'export'" required ng-model="item.field" class="form-control" ng-change="clearExportItem(item)">
+                                <div ng-if="template.action === 'export'" style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.field }">
+                                    <select required ng-model="item.field" class="form-control" ng-change="clearExportItem(item)">
                                         <option value="">--</option>
                                         <option ng-selected="{{k==item.field}}" ng-repeat="(k, col) in tColumns" value="{{k}}">{{col.name}}</option>
                                     </select>
-                                    <select ng-if="template.action === 'import'" ng-model="item.value" class="form-control" ng-change="clearImportItem(item)">
+                                </div>
+                                <div ng-if="template.action === 'import'" style="margin: 0;" class="form-group">
+                                    <select ng-model="item.value" class="form-control" ng-change="clearImportItem(item)">
                                         <option value="">--</option>
                                         <option ng-selected="{{k==item.value}}" ng-repeat="(k, clol) in tColumns" value="{{k}}">{{clol.name}}</option>
                                     </select>
@@ -150,7 +153,7 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-disabled="templateCsvForm.$invalid || template.template.data.length == 0" ng-click="ok()">Export</button>
-        <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" type="button" ng-disabled="templateCsvForm.$invalid || template.template.data.length == 0" ng-click="ok()">Save</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()">Close</button>
     </div>
 </form>
