@@ -2497,45 +2497,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     });
             };
 
-            function getMemberFromTemplate (row, template) {
-                var m = {
-                    name: row[template.name],
-                    communications: [],
-                    expire: null,
-                    _variables: []
-                };
-
-                angular.forEach(template.communications, function (v) {
-                    if (!v) return;
-                    m.communications.push({
-                        number: row[v.number],
-                        type: row[v.type],
-                        priority: +row[v.priority] || 0,
-                        status : 0,
-                        state : 0,
-                        description : row[v.description] || ""
-
-                    })
-                });
-                angular.forEach(template.variables, function (v, key) {
-                    if (key && row[v]) {
-                        m._variables.push({
-                            key: key,
-                            value: row[v]
-                        })
-                    }
-                });
-
-                if (template.hasOwnProperty('expire') && typeof template.expire.id == 'number' && row[template.expire.id]) {
-                    var timeExpire = moment(row[template.expire.id], template.expire.format).valueOf();
-                    if (timeExpire)
-                        m.expire = timeExpire;
-                }
-
-                return m;
-
-            }
-
             $scope.showImportPage = function (template) {
                 var modalInstance = $modal.open({
                     animation: true,
@@ -2551,6 +2512,45 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         }
                     }
                 });
+
+                function getMemberFromTemplate (row, template) {
+                    var m = {
+                        name: row[template.name],
+                        communications: [],
+                        expire: null,
+                        _variables: []
+                    };
+
+                    angular.forEach(template.communications, function (v) {
+                        if (!v) return;
+                        m.communications.push({
+                            number: row[v.number],
+                            type: row[v.type],
+                            priority: +row[v.priority] || 0,
+                            status : 0,
+                            state : 0,
+                            description : row[v.description] || ""
+
+                        })
+                    });
+                    angular.forEach(template.variables, function (v, key) {
+                        if (key && row[v]) {
+                            m._variables.push({
+                                key: key,
+                                value: row[v]
+                            })
+                        }
+                    });
+
+                    if (template.hasOwnProperty('expire') && typeof template.expire.id == 'number' && row[template.expire.id]) {
+                        var timeExpire = moment(row[template.expire.id], template.expire.format).valueOf();
+                        if (timeExpire)
+                            m.expire = timeExpire;
+                    }
+
+                    return m;
+
+                }
 
                 function createMembers(result){
                     if (result.headers)
