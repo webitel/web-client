@@ -12,10 +12,10 @@
                 <i class="glyphicon glyphicon-refresh"></i>
             </a>
 
-            <span ng-disabled="!domain || !canUpdate" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark  btn-file"  ng-click="showImportPage()" style="padding: 0"
-                  tooltip-popup-delay="800" tooltip="Import">
-                    <i class="glyphicon glyphicon-cloud-upload"></i>
-            </span>
+            <!--<span ng-disabled="!domain || !canUpdate" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark  btn-file"  ng-click="showImportPage()" style="padding: 0"-->
+                  <!--tooltip-popup-delay="800" tooltip="Import">-->
+                    <!--<i class="glyphicon glyphicon-cloud-upload"></i>-->
+            <!--</span>-->
 
             <span ng-disabled="!domain || !canUpdate" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark  btn-file"  ng-click="showResetPage()" style="padding: 0"
                   tooltip-popup-delay="800" tooltip="Reset">
@@ -115,8 +115,8 @@
                 <input st-search="communications__probe" type="number" class="form-control"/>
             </th>
             <th>
-                <a href="javascript:;" style="padding: 0" ng-click="exportMembers()" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-cloud-download"></i></a>
-                <a href="javascript:;" style="padding: 0" ng-click="removeMembers()" ng-if="canDelete" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                <!--<a href="javascript:;" style="padding: 0" ng-click="exportMembers()" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-cloud-download"></i></a>-->
+                <a href="javascript:;" style="padding: 0" ng-click="removeMembers()" ng-if="canDelete" class="btn-icon btn-icon-sm  btn-gap-v btn-default pull-right"><i class="glyphicon glyphicon-remove"></i></a>
             </th>
         </tr>
         <tr ng-show="membersRowCollection.length <= 0">
