@@ -2497,7 +2497,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     });
             };
 
-            $scope.showImportPage = function (template) {
+            $scope.showImportCSVPage = function (template) {
                 var modalInstance = $modal.open({
                     animation: true,
                     templateUrl: '/modules/dialer/importCsv.html',
@@ -2815,7 +2815,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                 })();
             }
 
-            $scope.openTemplate = function(method, item, isEdit){
+            $scope.openCsvTemplate = function(method, item, isEdit){
                 var modalInstance = $modal.open({
                     animation: true,
                     templateUrl: '/modules/dialer/templateCsvModal.html',
@@ -2901,6 +2901,108 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                             if(item.value !== 'expire')delete item.format;
                             if(item.value !== 'variable')delete item.varName;
                         }
+                    }],
+
+                });
+
+                modalInstance.result.then(function (settings) {
+                    var func = isEdit ? DialerModel.members.updateTemplate : DialerModel.members.addTemplate;
+                    func($scope.dialer._id , settings.template, $scope.domain , function (err, res) {
+                        if(err)
+                            return notifi.error(err);
+                        $scope.reloadTemplates();
+                    });
+                });
+            }
+            
+            $scope.openSqlTemplate = function (method, item, isEdit) {
+                var modalInstance = $modal.open({
+                    animation: true,
+                    templateUrl: '/modules/dialer/templateSqlModal.html',
+                    size: 'lg',
+                    resolve: {
+                        dialerId: function () {
+                            return $scope.dialer._id
+                        },
+                        domainName: function () {
+                            return $scope.domain
+                        },
+                        exportColumns: function () {
+                            return $scope.ExportColumns
+                        },
+                        importColumns: function () {
+                            return $scope.MemberColumns
+                        }
+                    },
+                    controller: ['$scope','$modalInstance', 'notifi', 'dialerId', 'domainName', 'exportColumns', 'importColumns', function ($scope, $modalInstance, notifi, dialerId, domainName, exportColumns, importColumns) {
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+
+                        $scope.template= {
+                            name: '',
+                            action: method,
+                            type: 'SQL',
+                            template: {
+                               deleteBefore: false,
+                               method: 'POST',
+                               url: '',
+                               body: {
+                                   webitel:{
+                                       token: '',
+                                       expire: ''
+                                   },
+                                   sql:{
+                                       connectionString: '',
+                                       SQLTable: '',
+                                       DataTime: '',
+                                       PrimaryColumn: '',
+                                       SQLFilter: '',
+                                       ColumnMappings: {}
+                                   }
+                               }
+                            }
+                        }
+                        $scope.columns=[];
+
+                        $scope.CharSet = utils.CharSet;
+                        $scope.tColumns = [];
+                        if(method === 'export'){
+                            $scope.tColumns = exportColumns;
+                        }
+                        else if(method === 'import'){
+                            $scope.tColumns = importColumns;
+                        }
+                        if(item){
+                            DialerModel.members.templateItem(dialerId, item.id, domainName, function(err, res){
+                                if(err) {
+                                    notifi.error(err, 5000);
+                                    return $scope.cancel();
+                                }
+                                $scope.template = res && res.data;
+                                var cols = $scope.template.template.body.sql.ColumnMappings;
+                                Object.keys(cols).forEach(function(item){
+                                   $scope.columns.push({
+                                       key: item,
+                                       value: cols[item]
+                                   })
+                                });
+                            });
+                        }
+
+                        $scope.isEdit = isEdit && !!item;
+
+                        $scope.ok = function () {
+                            var columnMaps = {};
+                            $scope.columns.forEach(function(item){
+                               columnMaps[item.key] = item.value;
+                            });
+                            $scope.template.template.body.sql.ColumnMappings = columnMaps;
+                            $modalInstance.close({
+                                template: $scope.template
+                            });
+                        };
                     }],
 
                 });
