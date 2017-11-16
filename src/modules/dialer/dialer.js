@@ -3008,6 +3008,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                                columnMaps[item.key] = item.value;
                             });
                             $scope.template.template.body.sql.ColumnMappings = columnMaps;
+                            $scope.template.template.url = ($scope.template.template.url+'/'+method).replace('//'+method, '/'+method);
                             $modalInstance.close({
                                 template: $scope.template
                             });
