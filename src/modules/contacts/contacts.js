@@ -140,8 +140,7 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
             company_name: 1,
             job_name: 1,
             description: 1,
-            id: 1,
-            communications: 1
+            id: 1
         }));
         var maxNodes = 40;
 
@@ -374,6 +373,17 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
                 return $scope[$route.current.method]();
             };
         }();
+
+        $scope.getItemForExport = function(id){
+            ContactModel.item(id, $scope.domain, function(err, item) {
+                if (err) {
+                    return notifi.error(err, 5000);
+                }
+                var contact = item && item.data;
+                if(!contact.communications)contact.communications=[];
+                $scope.createVCard(contact);
+            });
+        }
 
         function generateVCard (contact) {
             if(!contact)
