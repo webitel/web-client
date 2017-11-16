@@ -2464,8 +2464,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                     type: 1,
                     action: 1,
                     description: 1,
-                    id: 1,
-                    template: 1
+                    id: 1
                 }));
 
                 DialerModel.members.templateList($scope.dialer._id,
@@ -2496,6 +2495,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/callflows/editor', 'mo
                         });
                     });
             };
+            $scope.getItemForAction = function(id, cb){
+                DialerModel.members.templateItem($scope.dialer._id, id, $scope.domain, function(err, res){
+                    if(err) {
+                        return notifi.error(err, 5000);
+                    }
+                    var template = res && res.data;
+                    if(template.template)
+                        cb(template.template);
+                });
+            }
 
             $scope.showImportCSVPage = function (template) {
                 var modalInstance = $modal.open({

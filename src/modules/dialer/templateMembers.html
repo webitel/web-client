@@ -74,8 +74,8 @@
             <td >{{row.action}}</td>
             <td >{{row.type}}</td>
             <td style="text-align: end">
-                <a ng-if="row.action === 'export' && row.type === 'CSV'" ng-click="exportCSV(row.template)" class="btn-icon btn-icon-sm  btn-gap-v btn-primary"><i class="fa fa-download"></i></a>
-                <a ng-if="row.action === 'import' && row.type === 'CSV'" ng-click="showImportCSVPage(row.template)" class="btn-icon btn-icon-sm  btn-gap-v btn-success"><i class="fa fa-upload"></i></a>
+                <a ng-if="row.action === 'export' && row.type === 'CSV'" ng-click="getItemForAction(row.id, exportCSV)" class="btn-icon btn-icon-sm  btn-gap-v btn-primary"><i class="fa fa-download"></i></a>
+                <a ng-if="row.action === 'import' && row.type === 'CSV'" ng-click="getItemForAction(row.id, showImportCSVPage)" class="btn-icon btn-icon-sm  btn-gap-v btn-success"><i class="fa fa-upload"></i></a>
 
                 <a ng-click="openCsvTemplate(row.action, row, true)" ng-if="canUpdate && row.type === 'CSV'" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
                 <a ng-click="openCsvTemplate(row.action, row, false)" ng-if="viewMode && row.type === 'CSV'" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-file"></i></a>
