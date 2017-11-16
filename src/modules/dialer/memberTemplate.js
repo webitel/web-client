@@ -1,7 +1,7 @@
 /**
  * Created by matvij on 16.11.17.
  */
-define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
+define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], function(app, async, utils, fileSaver) {
 
     function moveUp (arr, value, by) {
         if (!arr)
@@ -35,7 +35,956 @@ define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
         arr.splice(newPos,0, value);
     }
 
-    app.controller('MemberDialerImportCtrl', ['$scope', '$modalInstance', 'notifi', 'importTemplate', 'memberColumns', function ($scope, $modalInstance, notifi, importTemplate, memberColumns) {
+    var ExportColumns = {
+        "name": {
+            selected: false,
+            name: "Name",
+            field: 'name'
+        },
+        "callSuccessful": {
+            selected: false,
+            name: "Call success",
+            field: 'callSuccessful'
+        },
+        "_id": {
+            selected: false,
+            name: "Id",
+            field: '_id'
+        },
+        "priority": {
+            selected: false,
+            name: "Priority",
+            field: 'priority'
+        },
+        "variable": {
+            "name": "Variable",
+            "field": "variable",
+            "type": "variable",
+            "value": "",
+            "varName": ""
+        },
+        //"timezone": {
+        //    selected: false,
+        //    name: "Timezone",
+        //    field: 'timezone'
+        //},
+        "number": {
+            name: "Number",
+            field: 'number',
+            position: 0,
+            type: 'communications',
+            filter: {
+                "allProbe": true
+            }
+        },
+        "description": {
+            name: "Description",
+            field: 'description',
+            position: 0,
+            type: 'communications',
+            filter: {
+                "allProbe": true
+            }
+        },
+        "priority_number": {
+            selected: false,
+            name: "Priority number",
+            field: "priority_number",
+            position: 0,
+            type: 'communications',
+            filter: {
+                "allProbe": true
+            }
+        },
+        "state": {
+            selected: false,
+            name: "State",
+            field: "state",
+            position: 0,
+            type: 'communications',
+            filter: {
+                "allProbe": true
+            }
+        },
+        "number_1": {
+            selected: false,
+            name: "number_1",
+            field: 'number',
+            position: 0,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "priority_1": {
+            selected: false,
+            name: "priority_1",
+            field: "priority",
+            position: 0,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "state_1": {
+            selected: false,
+            name: "state_1",
+            field: "state",
+            position: 0,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "description_1": {
+            selected: false,
+            name: "description_1",
+            field: "description",
+            position: 0,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "type_1": {
+            selected: false,
+            name: "type_1",
+            field: "type",
+            position: 0,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "number_2": {
+            selected: false,
+            name: "number_2",
+            field: 'number',
+            position: 1,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "priority_2": {
+            selected: false,
+            name: "priority_2",
+            field: "priority",
+            position: 1,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "state_2": {
+            selected: false,
+            name: "state_2",
+            field: "state",
+            position: 1,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "description_2": {
+            selected: false,
+            name: "description_2",
+            field: "description",
+            position: 1,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "type_2": {
+            selected: false,
+            name: "type_2",
+            field: "type",
+            position: 1,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "number_3": {
+            selected: false,
+            name: "number_3",
+            field: 'number',
+            position: 2,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "priority_3": {
+            selected: false,
+            name: "priority_3",
+            field: "priority",
+            position: 2,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "state_3": {
+            selected: false,
+            name: "state_3",
+            field: "state",
+            position: 2,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "description_3": {
+            selected: false,
+            name: "description_3",
+            field: "description",
+            position: 2,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "type_3": {
+            selected: false,
+            name: "type_3",
+            field: "type",
+            position: 2,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "number_4": {
+            selected: false,
+            name: "number_4",
+            field: 'number',
+            position: 3,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "priority_4": {
+            selected: false,
+            name: "priority_4",
+            field: "priority",
+            position: 3,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "state_4": {
+            selected: false,
+            name: "state_4",
+            field: "state",
+            position: 3,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "description_4": {
+            selected: false,
+            name: "description_4",
+            field: "description",
+            position: 3,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "type_4": {
+            selected: false,
+            name: "type_4",
+            field: "type",
+            position: 3,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "number_5": {
+            selected: false,
+            name: "number_5",
+            field: 'number',
+            position: 4,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "priority_5": {
+            selected: false,
+            name: "priority_5",
+            field: "priority",
+            position: 4,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "state_5": {
+            selected: false,
+            name: "state_5",
+            field: "state",
+            position: 4,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "description_5": {
+            selected: false,
+            name: "description_5",
+            field: "description",
+            position: 4,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "type_5": {
+            selected: false,
+            name: "type_5",
+            field: "type",
+            position: 4,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "number_6": {
+            selected: false,
+            name: "number_6",
+            field: 'number',
+            position: 5,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "priority_6": {
+            selected: false,
+            name: "priority_6",
+            field: "priority",
+            position: 5,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "state_6": {
+            selected: false,
+            name: "state_6",
+            field: "state",
+            position: 5,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "description_6": {
+            selected: false,
+            name: "description_6",
+            field: "description",
+            position: 5,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "type_6": {
+            selected: false,
+            name: "type_6",
+            field: "type",
+            position: 5,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "number_7": {
+            selected: false,
+            name: "number_7",
+            field: 'number',
+            position: 6,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "priority_7": {
+            selected: false,
+            name: "priority_7",
+            field: "priority",
+            position: 6,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "state_7": {
+            selected: false,
+            name: "state_7",
+            field: "state",
+            position: 6,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "description_7": {
+            selected: false,
+            name: "description_7",
+            field: "description",
+            position: 6,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "type_7": {
+            selected: false,
+            name: "type_7",
+            field: "type",
+            position: 6,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "number_8": {
+            selected: false,
+            name: "number_8",
+            field: 'number',
+            position: 7,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "priority_8": {
+            selected: false,
+            name: "priority_8",
+            field: "priority",
+            position: 7,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "state_8": {
+            selected: false,
+            name: "state_8",
+            field: "state",
+            position: 7,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "description_8": {
+            selected: false,
+            name: "description_8",
+            field: "description",
+            position: 7,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "type_8": {
+            selected: false,
+            name: "type_8",
+            field: "type",
+            position: 7,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "number_9": {
+            selected: false,
+            name: "number_9",
+            field: 'number',
+            position: 8,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "priority_9": {
+            selected: false,
+            name: "priority_9",
+            field: "priority",
+            position: 8,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "state_9": {
+            selected: false,
+            name: "state_9",
+            field: "state",
+            position: 8,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "description_9": {
+            selected: false,
+            name: "description_9",
+            field: "description",
+            position: 8,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "type_9": {
+            selected: false,
+            name: "type_9",
+            field: "type",
+            position: 8,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "number_10": {
+            selected: false,
+            name: "number_10",
+            field: 'number',
+            position: 9,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "priority_10": {
+            selected: false,
+            name: "priority_10",
+            field: "priority",
+            position: 9,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "state_10": {
+            selected: false,
+            name: "state_10",
+            field: "state",
+            position: 9,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "description_10": {
+            selected: false,
+            name: "description_10",
+            field: "description",
+            position: 9,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "type_10": {
+            selected: false,
+            name: "type_10",
+            field: "type",
+            position: 9,
+            type: 'communications',
+            filter: {
+                "allProbe": false
+            }
+        },
+        "_endCause": {
+            name: "End cause",
+            "field": "_endCause"
+        },
+        "_probeCount": {
+            name: "Attempts",
+            "field": "_probeCount"
+        },
+        "callTime": {
+            "name": "Call time",
+            "type": "lastCall",
+            "field": "_log.steps.time"
+        },
+        "expire": {
+            "name": "Expire",
+            "type": "time",
+            "field": "expire"
+        },
+        "attempt_cause": {
+            "name": "Attempt end cause",
+            "field": "attempt_cause",
+            filter: {
+                "allProbe": true
+            }
+        },
+        "attempt_agent": {
+            "name": "Agent",
+            "field": "attempt_agent",
+            filter: {
+                "allProbe": true
+            }
+        },
+        "attempt_amd_result": {
+            "name": "AMD result",
+            "field": "attempt_amd_result",
+            filter: {
+                "allProbe": true
+            }
+        },
+        "attempt_communication_type_name": {
+            "name": "Communication type name",
+            "field": "attempt_communication_type_name",
+            filter: {
+                "allProbe": true
+            }
+        },
+        "attempt_communication_type_code": {
+            "name": "Communication type code",
+            "field": "attempt_communication_type_code",
+            filter: {
+                "allProbe": true
+            }
+        },
+        "attempt_callback_success": {
+            name: "Callback success",
+            field: "_log.callback.data.success",
+            filter: {
+                "allProbe": true
+            }
+        },
+        "attempt_callback_description": {
+            name: "Callback description",
+            field: "_log.callback.data.description",
+            filter: {
+                "allProbe": true
+            }
+        }
+    };
+    var MemberColumns = {
+        "name": {
+            selected: false,
+            name: "Name",
+            field: 'name'
+        },
+        "priority": {
+            selected: false,
+            name: "Priority",
+            field: 'priority'
+        },
+        "variable": {
+            "name": "Variable",
+            "field": "variable",
+            "type": "variable",
+            "value": "",
+            "varName": ""
+        },
+        //"timezone": {
+        //    selected: false,
+        //    name: "Timezone",
+        //    field: 'timezone'
+        //},
+        "number_1": {
+            selected: false,
+            name: "number_1",
+            field: 'number',
+            position: 0,
+            type: 'communications'
+        },
+        "priority_1": {
+            selected: false,
+            name: "priority_1",
+            field: "priority",
+            position: 0,
+            type: 'communications'
+        },
+        "description_1": {
+            selected: false,
+            name: "description_1",
+            field: "description",
+            position: 0,
+            type: 'communications'
+        },
+        "type_1": {
+            selected: false,
+            name: "type_1",
+            field: "type",
+            position: 0,
+            type: 'communications'
+        },
+        "number_2": {
+            selected: false,
+            name: "number_2",
+            field: 'number',
+            position: 1,
+            type: 'communications'
+        },
+        "priority_2": {
+            selected: false,
+            name: "priority_2",
+            field: "priority",
+            position: 1,
+            type: 'communications'
+        },
+        "description_2": {
+            selected: false,
+            name: "description_2",
+            field: "description",
+            position: 1,
+            type: 'communications'
+        },
+        "type_2": {
+            selected: false,
+            name: "type_2",
+            field: "type",
+            position: 1,
+            type: 'communications'
+        },
+        "number_3": {
+            selected: false,
+            name: "number_3",
+            field: 'number',
+            position: 2,
+            type: 'communications'
+        },
+        "priority_3": {
+            selected: false,
+            name: "priority_3",
+            field: "priority",
+            position: 2,
+            type: 'communications'
+        },
+        "description_3": {
+            selected: false,
+            name: "description_3",
+            field: "description",
+            position: 2,
+            type: 'communications'
+        },
+        "type_3": {
+            selected: false,
+            name: "type_3",
+            field: "type",
+            position: 2,
+            type: 'communications'
+        },
+        "number_4": {
+            selected: false,
+            name: "number_4",
+            field: 'number',
+            position: 3,
+            type: 'communications'
+        },
+        "priority_4": {
+            selected: false,
+            name: "priority_4",
+            field: "priority",
+            position: 3,
+            type: 'communications'
+        },
+        "description_4": {
+            selected: false,
+            name: "description_4",
+            field: "description",
+            position: 3,
+            type: 'communications'
+        },
+        "type_4": {
+            selected: false,
+            name: "type_4",
+            field: "type",
+            position: 3,
+            type: 'communications'
+        },
+        "number_5": {
+            selected: false,
+            name: "number_5",
+            field: 'number',
+            position: 4,
+            type: 'communications'
+        },
+        "priority_5": {
+            selected: false,
+            name: "priority_5",
+            field: "priority",
+            position: 4,
+            type: 'communications'
+        },
+        "description_5": {
+            selected: false,
+            name: "description_5",
+            field: "description",
+            position: 4,
+            type: 'communications'
+        },
+        "type_5": {
+            selected: false,
+            name: "type_5",
+            field: "type",
+            position: 4,
+            type: 'communications'
+        },
+        "number_6": {
+            selected: false,
+            name: "number_6",
+            field: 'number',
+            position: 5,
+            type: 'communications'
+        },
+        "priority_6": {
+            selected: false,
+            name: "priority_6",
+            field: "priority",
+            position: 5,
+            type: 'communications'
+        },
+        "description_6": {
+            selected: false,
+            name: "description_6",
+            field: "description",
+            position: 5,
+            type: 'communications'
+        },
+        "type_6": {
+            selected: false,
+            name: "type_6",
+            field: "type",
+            position: 5,
+            type: 'communications'
+        },
+        "number_7": {
+            selected: false,
+            name: "number_7",
+            field: 'number',
+            position: 6,
+            type: 'communications'
+        },
+        "priority_7": {
+            selected: false,
+            name: "priority_7",
+            field: "priority",
+            position: 6,
+            type: 'communications'
+        },
+        "description_7": {
+            selected: false,
+            name: "description_7",
+            field: "description",
+            position: 6,
+            type: 'communications'
+        },
+        "type_7": {
+            selected: false,
+            name: "type_7",
+            field: "type",
+            position: 6,
+            type: 'communications'
+        },
+        "number_8": {
+            selected: false,
+            name: "number_8",
+            field: 'number',
+            position: 7,
+            type: 'communications'
+        },
+        "priority_8": {
+            selected: false,
+            name: "priority_8",
+            field: "priority",
+            position: 7,
+            type: 'communications'
+        },
+        "description_8": {
+            selected: false,
+            name: "description_8",
+            field: "description",
+            position: 7,
+            type: 'communications'
+        },
+        "type_8": {
+            selected: false,
+            name: "type_8",
+            field: "type",
+            position: 7,
+            type: 'communications'
+        },
+        "number_9": {
+            selected: false,
+            name: "number_9",
+            field: 'number',
+            position: 8,
+            type: 'communications'
+        },
+        "priority_9": {
+            selected: false,
+            name: "priority_9",
+            field: "priority",
+            position: 8,
+            type: 'communications'
+        },
+        "description_9": {
+            selected: false,
+            name: "description_9",
+            field: "description",
+            position: 8,
+            type: 'communications'
+        },
+        "type_9": {
+            selected: false,
+            name: "type_9",
+            field: "type",
+            position: 8,
+            type: 'communications'
+        },
+        "number_10": {
+            selected: false,
+            name: "number_10",
+            field: 'number',
+            position: 9,
+            type: 'communications'
+        },
+        "priority_10": {
+            selected: false,
+            name: "priority_10",
+            field: "priority",
+            position: 9,
+            type: 'communications'
+        },
+        "description_10": {
+            selected: false,
+            name: "description_10",
+            field: "description",
+            position: 9,
+            type: 'communications'
+        },
+        "type_10": {
+            selected: false,
+            name: "type_10",
+            field: "type",
+            position: 9,
+            type: 'communications'
+        },
+        "expire": {
+            name: "Expire",
+            field: "expire",
+            type: "time"
+        }
+    };
+
+    app.controller('MemberDialerImportCtrl', ['$scope', '$modalInstance', 'notifi', 'importTemplate', function ($scope, $modalInstance, notifi, importTemplate) {
 
         $scope.settings = angular.copy(importTemplate);
         $scope.previewData = [];
@@ -81,7 +1030,7 @@ define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
             $modalInstance.dismiss('cancel');
         };
 
-        $scope.MemberColumns = memberColumns;
+        $scope.MemberColumns = MemberColumns;
 
         $scope.changeColumnsAlias = function (a, b) {
 
@@ -90,8 +1039,8 @@ define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
         $scope.CharSet = utils.CharSet;
     }]);
 
-    app.controller('CsvTemplateCtrl', ['$scope', 'DialerModel', '$modalInstance', 'notifi', 'dialerId', 'domainName', 'exportColumns', 'importColumns', 'funcParams',
-        function ($scope, DialerModel, $modalInstance, notifi, dialerId, domainName, exportColumns, importColumns, funcParams) {
+    app.controller('CsvTemplateCtrl', ['$scope', 'DialerModel', '$modalInstance', 'notifi', 'dialerId', 'domainName', 'funcParams',
+        function ($scope, DialerModel, $modalInstance, notifi, dialerId, domainName, funcParams) {
 
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
@@ -114,10 +1063,10 @@ define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
         $scope.CharSet = utils.CharSet;
         $scope.tColumns = [];
         if (funcParams.method === 'export') {
-            $scope.tColumns = exportColumns;
+            $scope.tColumns = ExportColumns;
         }
         else if (funcParams.method === 'import') {
-            $scope.tColumns = importColumns;
+            $scope.tColumns = MemberColumns;
         }
         if (funcParams.item) {
             DialerModel.members.templateItem(dialerId, funcParams.item.id, domainName, function (err, res) {
@@ -160,8 +1109,8 @@ define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
         }
     }]);
 
-    app.controller('SqlTemplateCtrl', ['$scope', 'DialerModel', '$modalInstance', 'notifi', 'dialerId', 'domainName', 'exportColumns', 'importColumns', 'funcParams',
-        function ($scope, DialerModel, $modalInstance, notifi, dialerId, domainName, exportColumns, importColumns, funcParams) {
+    app.controller('SqlTemplateCtrl', ['$scope', 'DialerModel', '$modalInstance', 'notifi', 'dialerId', 'domainName', 'funcParams',
+        function ($scope, DialerModel, $modalInstance, notifi, dialerId, domainName, funcParams) {
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
@@ -195,10 +1144,10 @@ define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
             $scope.CharSet = utils.CharSet;
             $scope.tColumns = [];
             if (funcParams.method === 'export') {
-                $scope.tColumns = exportColumns;
+                $scope.tColumns = ExportColumns;
             }
             else if (funcParams.method === 'import') {
-                $scope.tColumns = importColumns;
+                $scope.tColumns = MemberColumns;
             }
             if (funcParams.item) {
                 DialerModel.members.templateItem(dialerId, funcParams.item.id, domainName, function (err, res) {
@@ -236,954 +1185,6 @@ define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
         function ($scope, DialerModel, $modal, $confirm, notifi) {
             $scope.templateCollection = [];
             $scope.displayedTemplateCollection = [];
-            $scope.ExportColumns = {
-                "name": {
-                    selected: false,
-                    name: "Name",
-                    field: 'name'
-                },
-                "callSuccessful": {
-                    selected: false,
-                    name: "Call success",
-                    field: 'callSuccessful'
-                },
-                "_id": {
-                    selected: false,
-                    name: "Id",
-                    field: '_id'
-                },
-                "priority": {
-                    selected: false,
-                    name: "Priority",
-                    field: 'priority'
-                },
-                "variable": {
-                    "name": "Variable",
-                    "field": "variable",
-                    "type": "variable",
-                    "value": "",
-                    "varName": ""
-                },
-                //"timezone": {
-                //    selected: false,
-                //    name: "Timezone",
-                //    field: 'timezone'
-                //},
-                "number": {
-                    name: "Number",
-                    field: 'number',
-                    position: 0,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": true
-                    }
-                },
-                "description": {
-                    name: "Description",
-                    field: 'description',
-                    position: 0,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": true
-                    }
-                },
-                "priority_number": {
-                    selected: false,
-                    name: "Priority number",
-                    field: "priority_number",
-                    position: 0,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": true
-                    }
-                },
-                "state": {
-                    selected: false,
-                    name: "State",
-                    field: "state",
-                    position: 0,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": true
-                    }
-                },
-                "number_1": {
-                    selected: false,
-                    name: "number_1",
-                    field: 'number',
-                    position: 0,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "priority_1": {
-                    selected: false,
-                    name: "priority_1",
-                    field: "priority",
-                    position: 0,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "state_1": {
-                    selected: false,
-                    name: "state_1",
-                    field: "state",
-                    position: 0,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "description_1": {
-                    selected: false,
-                    name: "description_1",
-                    field: "description",
-                    position: 0,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "type_1": {
-                    selected: false,
-                    name: "type_1",
-                    field: "type",
-                    position: 0,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "number_2": {
-                    selected: false,
-                    name: "number_2",
-                    field: 'number',
-                    position: 1,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "priority_2": {
-                    selected: false,
-                    name: "priority_2",
-                    field: "priority",
-                    position: 1,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "state_2": {
-                    selected: false,
-                    name: "state_2",
-                    field: "state",
-                    position: 1,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "description_2": {
-                    selected: false,
-                    name: "description_2",
-                    field: "description",
-                    position: 1,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "type_2": {
-                    selected: false,
-                    name: "type_2",
-                    field: "type",
-                    position: 1,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "number_3": {
-                    selected: false,
-                    name: "number_3",
-                    field: 'number',
-                    position: 2,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "priority_3": {
-                    selected: false,
-                    name: "priority_3",
-                    field: "priority",
-                    position: 2,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "state_3": {
-                    selected: false,
-                    name: "state_3",
-                    field: "state",
-                    position: 2,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "description_3": {
-                    selected: false,
-                    name: "description_3",
-                    field: "description",
-                    position: 2,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "type_3": {
-                    selected: false,
-                    name: "type_3",
-                    field: "type",
-                    position: 2,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "number_4": {
-                    selected: false,
-                    name: "number_4",
-                    field: 'number',
-                    position: 3,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "priority_4": {
-                    selected: false,
-                    name: "priority_4",
-                    field: "priority",
-                    position: 3,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "state_4": {
-                    selected: false,
-                    name: "state_4",
-                    field: "state",
-                    position: 3,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "description_4": {
-                    selected: false,
-                    name: "description_4",
-                    field: "description",
-                    position: 3,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "type_4": {
-                    selected: false,
-                    name: "type_4",
-                    field: "type",
-                    position: 3,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "number_5": {
-                    selected: false,
-                    name: "number_5",
-                    field: 'number',
-                    position: 4,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "priority_5": {
-                    selected: false,
-                    name: "priority_5",
-                    field: "priority",
-                    position: 4,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "state_5": {
-                    selected: false,
-                    name: "state_5",
-                    field: "state",
-                    position: 4,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "description_5": {
-                    selected: false,
-                    name: "description_5",
-                    field: "description",
-                    position: 4,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "type_5": {
-                    selected: false,
-                    name: "type_5",
-                    field: "type",
-                    position: 4,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "number_6": {
-                    selected: false,
-                    name: "number_6",
-                    field: 'number',
-                    position: 5,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "priority_6": {
-                    selected: false,
-                    name: "priority_6",
-                    field: "priority",
-                    position: 5,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "state_6": {
-                    selected: false,
-                    name: "state_6",
-                    field: "state",
-                    position: 5,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "description_6": {
-                    selected: false,
-                    name: "description_6",
-                    field: "description",
-                    position: 5,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "type_6": {
-                    selected: false,
-                    name: "type_6",
-                    field: "type",
-                    position: 5,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "number_7": {
-                    selected: false,
-                    name: "number_7",
-                    field: 'number',
-                    position: 6,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "priority_7": {
-                    selected: false,
-                    name: "priority_7",
-                    field: "priority",
-                    position: 6,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "state_7": {
-                    selected: false,
-                    name: "state_7",
-                    field: "state",
-                    position: 6,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "description_7": {
-                    selected: false,
-                    name: "description_7",
-                    field: "description",
-                    position: 6,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "type_7": {
-                    selected: false,
-                    name: "type_7",
-                    field: "type",
-                    position: 6,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "number_8": {
-                    selected: false,
-                    name: "number_8",
-                    field: 'number',
-                    position: 7,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "priority_8": {
-                    selected: false,
-                    name: "priority_8",
-                    field: "priority",
-                    position: 7,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "state_8": {
-                    selected: false,
-                    name: "state_8",
-                    field: "state",
-                    position: 7,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "description_8": {
-                    selected: false,
-                    name: "description_8",
-                    field: "description",
-                    position: 7,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "type_8": {
-                    selected: false,
-                    name: "type_8",
-                    field: "type",
-                    position: 7,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "number_9": {
-                    selected: false,
-                    name: "number_9",
-                    field: 'number',
-                    position: 8,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "priority_9": {
-                    selected: false,
-                    name: "priority_9",
-                    field: "priority",
-                    position: 8,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "state_9": {
-                    selected: false,
-                    name: "state_9",
-                    field: "state",
-                    position: 8,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "description_9": {
-                    selected: false,
-                    name: "description_9",
-                    field: "description",
-                    position: 8,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "type_9": {
-                    selected: false,
-                    name: "type_9",
-                    field: "type",
-                    position: 8,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "number_10": {
-                    selected: false,
-                    name: "number_10",
-                    field: 'number',
-                    position: 9,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "priority_10": {
-                    selected: false,
-                    name: "priority_10",
-                    field: "priority",
-                    position: 9,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "state_10": {
-                    selected: false,
-                    name: "state_10",
-                    field: "state",
-                    position: 9,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "description_10": {
-                    selected: false,
-                    name: "description_10",
-                    field: "description",
-                    position: 9,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "type_10": {
-                    selected: false,
-                    name: "type_10",
-                    field: "type",
-                    position: 9,
-                    type: 'communications',
-                    filter: {
-                        "allProbe": false
-                    }
-                },
-                "_endCause": {
-                    name: "End cause",
-                    "field": "_endCause"
-                },
-                "_probeCount": {
-                    name: "Attempts",
-                    "field": "_probeCount"
-                },
-                "callTime": {
-                    "name": "Call time",
-                    "type": "lastCall",
-                    "field": "_log.steps.time"
-                },
-                "expire": {
-                    "name": "Expire",
-                    "type": "time",
-                    "field": "expire"
-                },
-                "attempt_cause": {
-                    "name": "Attempt end cause",
-                    "field": "attempt_cause",
-                    filter: {
-                        "allProbe": true
-                    }
-                },
-                "attempt_agent": {
-                    "name": "Agent",
-                    "field": "attempt_agent",
-                    filter: {
-                        "allProbe": true
-                    }
-                },
-                "attempt_amd_result": {
-                    "name": "AMD result",
-                    "field": "attempt_amd_result",
-                    filter: {
-                        "allProbe": true
-                    }
-                },
-                "attempt_communication_type_name": {
-                    "name": "Communication type name",
-                    "field": "attempt_communication_type_name",
-                    filter: {
-                        "allProbe": true
-                    }
-                },
-                "attempt_communication_type_code": {
-                    "name": "Communication type code",
-                    "field": "attempt_communication_type_code",
-                    filter: {
-                        "allProbe": true
-                    }
-                },
-                "attempt_callback_success": {
-                    name: "Callback success",
-                    field: "_log.callback.data.success",
-                    filter: {
-                        "allProbe": true
-                    }
-                },
-                "attempt_callback_description": {
-                    name: "Callback description",
-                    field: "_log.callback.data.description",
-                    filter: {
-                        "allProbe": true
-                    }
-                }
-            };
-            $scope.MemberColumns = {
-                "name": {
-                    selected: false,
-                    name: "Name",
-                    field: 'name'
-                },
-                "priority": {
-                    selected: false,
-                    name: "Priority",
-                    field: 'priority'
-                },
-                "variable": {
-                    "name": "Variable",
-                    "field": "variable",
-                    "type": "variable",
-                    "value": "",
-                    "varName": ""
-                },
-                //"timezone": {
-                //    selected: false,
-                //    name: "Timezone",
-                //    field: 'timezone'
-                //},
-                "number_1": {
-                    selected: false,
-                    name: "number_1",
-                    field: 'number',
-                    position: 0,
-                    type: 'communications'
-                },
-                "priority_1": {
-                    selected: false,
-                    name: "priority_1",
-                    field: "priority",
-                    position: 0,
-                    type: 'communications'
-                },
-                "description_1": {
-                    selected: false,
-                    name: "description_1",
-                    field: "description",
-                    position: 0,
-                    type: 'communications'
-                },
-                "type_1": {
-                    selected: false,
-                    name: "type_1",
-                    field: "type",
-                    position: 0,
-                    type: 'communications'
-                },
-                "number_2": {
-                    selected: false,
-                    name: "number_2",
-                    field: 'number',
-                    position: 1,
-                    type: 'communications'
-                },
-                "priority_2": {
-                    selected: false,
-                    name: "priority_2",
-                    field: "priority",
-                    position: 1,
-                    type: 'communications'
-                },
-                "description_2": {
-                    selected: false,
-                    name: "description_2",
-                    field: "description",
-                    position: 1,
-                    type: 'communications'
-                },
-                "type_2": {
-                    selected: false,
-                    name: "type_2",
-                    field: "type",
-                    position: 1,
-                    type: 'communications'
-                },
-                "number_3": {
-                    selected: false,
-                    name: "number_3",
-                    field: 'number',
-                    position: 2,
-                    type: 'communications'
-                },
-                "priority_3": {
-                    selected: false,
-                    name: "priority_3",
-                    field: "priority",
-                    position: 2,
-                    type: 'communications'
-                },
-                "description_3": {
-                    selected: false,
-                    name: "description_3",
-                    field: "description",
-                    position: 2,
-                    type: 'communications'
-                },
-                "type_3": {
-                    selected: false,
-                    name: "type_3",
-                    field: "type",
-                    position: 2,
-                    type: 'communications'
-                },
-                "number_4": {
-                    selected: false,
-                    name: "number_4",
-                    field: 'number',
-                    position: 3,
-                    type: 'communications'
-                },
-                "priority_4": {
-                    selected: false,
-                    name: "priority_4",
-                    field: "priority",
-                    position: 3,
-                    type: 'communications'
-                },
-                "description_4": {
-                    selected: false,
-                    name: "description_4",
-                    field: "description",
-                    position: 3,
-                    type: 'communications'
-                },
-                "type_4": {
-                    selected: false,
-                    name: "type_4",
-                    field: "type",
-                    position: 3,
-                    type: 'communications'
-                },
-                "number_5": {
-                    selected: false,
-                    name: "number_5",
-                    field: 'number',
-                    position: 4,
-                    type: 'communications'
-                },
-                "priority_5": {
-                    selected: false,
-                    name: "priority_5",
-                    field: "priority",
-                    position: 4,
-                    type: 'communications'
-                },
-                "description_5": {
-                    selected: false,
-                    name: "description_5",
-                    field: "description",
-                    position: 4,
-                    type: 'communications'
-                },
-                "type_5": {
-                    selected: false,
-                    name: "type_5",
-                    field: "type",
-                    position: 4,
-                    type: 'communications'
-                },
-                "number_6": {
-                    selected: false,
-                    name: "number_6",
-                    field: 'number',
-                    position: 5,
-                    type: 'communications'
-                },
-                "priority_6": {
-                    selected: false,
-                    name: "priority_6",
-                    field: "priority",
-                    position: 5,
-                    type: 'communications'
-                },
-                "description_6": {
-                    selected: false,
-                    name: "description_6",
-                    field: "description",
-                    position: 5,
-                    type: 'communications'
-                },
-                "type_6": {
-                    selected: false,
-                    name: "type_6",
-                    field: "type",
-                    position: 5,
-                    type: 'communications'
-                },
-                "number_7": {
-                    selected: false,
-                    name: "number_7",
-                    field: 'number',
-                    position: 6,
-                    type: 'communications'
-                },
-                "priority_7": {
-                    selected: false,
-                    name: "priority_7",
-                    field: "priority",
-                    position: 6,
-                    type: 'communications'
-                },
-                "description_7": {
-                    selected: false,
-                    name: "description_7",
-                    field: "description",
-                    position: 6,
-                    type: 'communications'
-                },
-                "type_7": {
-                    selected: false,
-                    name: "type_7",
-                    field: "type",
-                    position: 6,
-                    type: 'communications'
-                },
-                "number_8": {
-                    selected: false,
-                    name: "number_8",
-                    field: 'number',
-                    position: 7,
-                    type: 'communications'
-                },
-                "priority_8": {
-                    selected: false,
-                    name: "priority_8",
-                    field: "priority",
-                    position: 7,
-                    type: 'communications'
-                },
-                "description_8": {
-                    selected: false,
-                    name: "description_8",
-                    field: "description",
-                    position: 7,
-                    type: 'communications'
-                },
-                "type_8": {
-                    selected: false,
-                    name: "type_8",
-                    field: "type",
-                    position: 7,
-                    type: 'communications'
-                },
-                "number_9": {
-                    selected: false,
-                    name: "number_9",
-                    field: 'number',
-                    position: 8,
-                    type: 'communications'
-                },
-                "priority_9": {
-                    selected: false,
-                    name: "priority_9",
-                    field: "priority",
-                    position: 8,
-                    type: 'communications'
-                },
-                "description_9": {
-                    selected: false,
-                    name: "description_9",
-                    field: "description",
-                    position: 8,
-                    type: 'communications'
-                },
-                "type_9": {
-                    selected: false,
-                    name: "type_9",
-                    field: "type",
-                    position: 8,
-                    type: 'communications'
-                },
-                "number_10": {
-                    selected: false,
-                    name: "number_10",
-                    field: 'number',
-                    position: 9,
-                    type: 'communications'
-                },
-                "priority_10": {
-                    selected: false,
-                    name: "priority_10",
-                    field: "priority",
-                    position: 9,
-                    type: 'communications'
-                },
-                "description_10": {
-                    selected: false,
-                    name: "description_10",
-                    field: "description",
-                    position: 9,
-                    type: 'communications'
-                },
-                "type_10": {
-                    selected: false,
-                    name: "type_10",
-                    field: "type",
-                    position: 9,
-                    type: 'communications'
-                },
-                "expire": {
-                    name: "Expire",
-                    field: "expire",
-                    type: "time"
-                }
-            };
 
             $scope.reloadTemplates = function () {
 
@@ -1245,11 +1246,8 @@ define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
                     controller: 'MemberDialerImportCtrl',
                     size: 'lg',
                     resolve: {
-                        importTemplate: function () {
+                        importTemplate: function(){
                             return template;
-                        },
-                        memberColumns: function () {
-                            return $scope.MemberColumns;
                         }
                     }
                 });
@@ -1350,7 +1348,7 @@ define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
             $scope.exportCSV = function (template) {
                 var fields = [];
                 angular.forEach(template.data, function (i) {
-                    var s = $scope.ExportColumns[i.field];
+                    var s = ExportColumns[i.field];
                     if (s) {
                         i.name = s.name;
                         if (s.type == 'variable') {
@@ -1406,6 +1404,18 @@ define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
 
                     if (settings.allProbe && !angular.isArray(row._log)) {
                         return;
+                    }
+                    function getCommunicationDisplayName(code) {
+                        if (!code)
+                            return '-';
+
+                        var communicationTypes = $scope.communicationTypes;
+
+                        for (var i = 0; i < communicationTypes.length; i++)
+                            if (communicationTypes[i].code === code)
+                                return communicationTypes[i].name;
+
+                        return 'error type: ' + code;
                     }
                     function addNoAtempt() {
                         angular.forEach(settings.data, function (i, index) {
@@ -1568,12 +1578,6 @@ define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
                         domainName: function () {
                             return $scope.domain
                         },
-                        exportColumns: function () {
-                            return $scope.ExportColumns
-                        },
-                        importColumns: function () {
-                            return $scope.MemberColumns
-                        },
                         funcParams: function(){
                             return {
                                 method: method,
@@ -1607,12 +1611,6 @@ define(['app', 'async', 'scripts/webitel/utils'], function(app, async, utils) {
                         },
                         domainName: function () {
                             return $scope.domain
-                        },
-                        exportColumns: function () {
-                            return $scope.ExportColumns
-                        },
-                        importColumns: function () {
-                            return $scope.MemberColumns
                         },
                         funcParams: function(){
                             return {
