@@ -21,17 +21,17 @@
                                 <div class="col-sm-4" ng-if="template.action === 'import'">
                                     <div class="form-group">
                                         <label style="width: 100%">Before importing delete all members</label>
-                                        <label class="switch switch-success"><input type="checkbox" ng-model="template.template.deleteBefore" ><i></i></label>
+                                        <label class="switch switch-success"><input type="checkbox" ng-model="template.before_delete" ><i></i></label>
                                     </div>
                                 </div>
                                 <div class="col-sm-12">
-                                    <div class="form-group" >
+                                    <div class="form-group">
                                         <label style="width: 100%">Web service URL</label>
                                         <input type="text"  class="form-control" name="name" required ng-model="template.template.url" >
                                     </div>
                                 </div>
                                 <div class="col-sm-8">
-                                    <div class="form-group" >
+                                    <div class="form-group">
                                         <label style="width: 100%">Token</label>
                                         <input type="text"  class="form-control" name="name" required ng-model="template.template.body.webitel.token" >
                                     </div>

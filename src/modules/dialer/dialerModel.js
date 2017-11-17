@@ -643,6 +643,39 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
         }
 
+        function sqlStartInput(dialerId, templateId, domainName, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!dialerId)
+                return cb(new Error("Dialer is required."));
+
+            if (!templateId)
+                return cb(new Error("Template Id is required."));
+
+            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/templates/' + templateId + '/execute?domain=' + domainName, {}, function(err, res) {
+                return cb && cb(err, res);
+            });
+        }
+
+        function sqlStopInput(dialerId, templateId, processId, domainName, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!dialerId)
+                return cb(new Error("Dialer is required."));
+
+            if (!templateId)
+                return cb(new Error("Template Id is required."));
+
+            if (!processId)
+                return cb(new Error("Process Id is required."));
+
+            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/templates/' + templateId + '/end/' + processId + '?domain=' + domainName, {cause: 'abort'}, function(err, res) {
+                return cb && cb(err, res);
+            });
+        }
+
         function deleteTemplate(dialerId, templateId, domainName, cb) {
             if(!domainName)
                 return cb(new Error("Domain is required."));
@@ -695,7 +728,9 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 addTemplate: addTemplate,
                 updateTemplate: updateTemplate,
                 deleteTemplate: deleteTemplate,
-                templateItem: templateItem
+                templateItem: templateItem,
+                sqlStartInput: sqlStartInput,
+                sqlStopInput: sqlStopInput
             }
         }
     }]);
