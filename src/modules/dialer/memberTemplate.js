@@ -34,6 +34,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
         arr.splice(index, 1);
         arr.splice(newPos,0, value);
     }
+    function timeToString(time) {
+        if (time)
+            return new Date(time).toLocaleString();
+    }
 
     var ExportColumns = {
         "name": {
@@ -1119,8 +1123,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                 name: '',
                 action: funcParams.method,
                 type: 'SQL',
+                before_delete: false,
                 template: {
-                    deleteBefore: false,
                     method: 'POST',
                     url: '',
                     body: {
@@ -1174,18 +1178,34 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     columnMaps[item.key] = item.value;
                 });
                 $scope.template.template.body.sql.ColumnMappings = columnMaps;
-                $scope.template.template.url = ($scope.template.template.url + '/' + funcParams.method).replace('//' + funcParams.method, '/' + funcParams.method);
+                //$scope.template.template.url = ($scope.template.template.url + '/' + funcParams.method).replace('//' + funcParams.method, '/' + funcParams.method);
                 $modalInstance.close({
                     template: $scope.template
                 });
             };
     }]);
 
-    app.controller('MembersTemplateCtrl', ['$scope', 'DialerModel', '$modal', '$confirm', 'notifi',
-        function ($scope, DialerModel, $modal, $confirm, notifi) {
+    app.controller('MembersTemplateCtrl', ['$scope', 'webitel', 'DialerModel', '$modal', '$confirm', 'notifi',
+        function ($scope, webitel, DialerModel, $modal, $confirm, notifi) {
+
+            // $scope.canDelete = webitel.connection.session.checkResource('dialer/templates', 'd');
+            // $scope.canUpdate = webitel.connection.session.checkResource('dialer/templates', 'u');
+            // $scope.canCreate = webitel.connection.session.checkResource('dialer/templates', 'c');
+            // $scope.viewMode = !$scope.canUpdate;
+
             $scope.templateCollection = [];
             $scope.displayedTemplateCollection = [];
 
+            $scope.timeToString = timeToString;
+
+            $scope.resetProcess = function(item){
+                DialerModel.members.sqlStopInput($scope.dialer._id, item.id, item.process_id, $scope.domain, function(err, res){
+                    if(err)
+                        return notifi.error(err, 5000);
+                    $scope.hideExecute = false;
+                    $scope.reloadTemplates();
+                })
+            }
             $scope.reloadTemplates = function () {
 
                 if (!$scope.dialer._id || !$scope.domain)
@@ -1197,7 +1217,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     type: 1,
                     action: 1,
                     description: 1,
-                    id: 1
+                    id: 1,
+                    process_state: 1,
+                    process_start: 1,
+                    process_id: 1,
+                    last_response_text: 1
                 }));
 
                 DialerModel.members.templateList($scope.dialer._id,
@@ -1211,6 +1235,12 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                         if (err)
                             return notifi.error(err, 5000);
                         $scope.templateCollection = res && res.data;
+                        for(var i = 0; i<$scope.templateCollection.length; i++){
+                            if($scope.templateCollection[i].process_start){
+                                $scope.hideExecute = true;
+                                break;
+                            }
+                        }
                     });
             };
 
@@ -1564,6 +1594,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     option.page++;
                     DialerModel.members.list($scope.domain, $scope.dialer._id, option, process);
                 })();
+            }
+            $scope.importFromSql = function(id){
+                DialerModel.members.sqlStartInput($scope.dialer._id, id, $scope.domain, function(err, res){
+                    if(err)
+                        return notifi.error(err, 5000);
+                    $scope.reloadTemplates();
+                })
             }
 
             $scope.openCsvTemplate = function (method, item, isEdit) {
