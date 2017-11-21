@@ -1054,7 +1054,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
             action: funcParams.method,
             type: 'CSV',
             template: {
-                separator: ';',
+                separator: ',',
                 allProbe: false,
                 headers: true,
                 skipFilter: false,
