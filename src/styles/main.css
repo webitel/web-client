@@ -1462,7 +1462,8 @@ button,input,select,textarea {
 
 a {
     color: #333;
-    text-decoration: none
+    text-decoration: none;
+    cursor: pointer;
 }
 
 a:focus,a:hover {

@@ -5,7 +5,7 @@
     <div class="modal-body">
         <div class="row">
             <div class="col-sm-8">
-                <div class="form-group">
+                <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.name.$invalid }">
                     <label for>Name</label>
                     <input type="text"  class="form-control" name="name" required ng-model="template.name" >
                 </div>
@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="col-sm-2">
-                    <div class="form-group">
+                    <div class="form-group"  ng-class="{ 'has-error' : templateSqlForm.separ.$invalid }">
                         <label for>Separator</label>
                         <input type="text"  class="form-control" name="separ" required ng-model="template.template.separator" >
                     </div>

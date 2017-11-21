@@ -1119,6 +1119,36 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                 $modalInstance.dismiss('cancel');
             };
 
+            $scope.getImports = function () {
+
+                if (!dialerId || !domainName)
+                    return $scope.importCollection = [];
+
+                $scope.isLoading = true;
+                var col = encodeURIComponent(JSON.stringify({
+                    name: 1,
+                    id: 1
+                }));
+                var filter = encodeURIComponent(JSON.stringify({
+                    action: 'import',
+                    type: 'SQL'
+                }));
+
+                DialerModel.members.templateList(dialerId,
+                    {
+                        columns: col,
+                        limit: 5000,
+                        page: 1,
+                        filter: filter,
+                        domain: domainName
+                    }, function (err, res) {
+                        if (err)
+                            return notifi.error(err, 5000);
+                        $scope.importCollection = res && res.data;
+                        if(!$scope.template.next_process_id)$scope.template.next_process_id = '';
+                    });
+            };
+
             $scope.template = {
                 name: '',
                 action: funcParams.method,
@@ -1138,6 +1168,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                             DataTime: '',
                             PrimaryColumn: '',
                             SQLFilter: '',
+                            PreExecute: '',
                             ColumnMappings: {}
                         }
                     }
@@ -1148,6 +1179,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
             $scope.CharSet = utils.CharSet;
             $scope.tColumns = [];
             if (funcParams.method === 'export') {
+                delete $scope.template.template.body.webitel.expire;
                 $scope.tColumns = ExportColumns;
             }
             else if (funcParams.method === 'import') {
@@ -1162,10 +1194,20 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     $scope.template = res && res.data;
                     var cols = $scope.template.template.body.sql.ColumnMappings;
                     Object.keys(cols).forEach(function (item) {
-                        $scope.columns.push({
-                            key: item,
-                            value: cols[item]
-                        })
+                        if(cols[item].indexOf('variable') === -1){
+                            $scope.columns.push({
+                                key: item,
+                                value: cols[item]
+                            })
+                        }
+                        else{
+                            var tmp = cols[item].split('.');
+                            $scope.columns.push({
+                                key: item,
+                                value: tmp[0],
+                                var: tmp.slice(1).join('.')
+                            })
+                        }
                     });
                 });
             }
@@ -1175,7 +1217,12 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
             $scope.ok = function () {
                 var columnMaps = {};
                 $scope.columns.forEach(function (item) {
-                    columnMaps[item.key] = item.value;
+                    if(item.var){
+                        columnMaps[item.key] = item.value + '.' + item.var;
+                    }
+                    else{
+                        columnMaps[item.key] = item.value;
+                    }
                 });
                 $scope.template.template.body.sql.ColumnMappings = columnMaps;
                 //$scope.template.template.url = ($scope.template.template.url + '/' + funcParams.method).replace('//' + funcParams.method, '/' + funcParams.method);

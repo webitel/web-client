@@ -12,8 +12,8 @@
                         </tab-heading>
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="col-sm-8">
-                                    <div class="form-group">
+                                <div class="" ng-class="{'col-sm-12': template.action === 'export', 'col-sm-8': template.action === 'import'}">
+                                    <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.name.$invalid }">
                                         <label for>Name</label>
                                         <input type="text"  class="form-control" name="name" required ng-model="template.name" >
                                     </div>
@@ -25,21 +25,36 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-12">
-                                    <div class="form-group">
+                                    <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.url.$invalid }">
                                         <label style="width: 100%">Web service URL</label>
-                                        <input type="text"  class="form-control" name="name" required ng-model="template.template.url" >
+                                        <input type="text"  class="form-control" name="url" required ng-model="template.template.url" >
                                     </div>
                                 </div>
-                                <div class="col-sm-8">
-                                    <div class="form-group">
+                                <div class="" ng-class="{'col-sm-12': template.action === 'export', 'col-sm-8': template.action === 'import'}">
+                                    <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.token.$invalid }">
                                         <label style="width: 100%">Token</label>
-                                        <input type="text"  class="form-control" name="name" required ng-model="template.template.body.webitel.token" >
+                                        <input type="text"  class="form-control" name="token" required ng-model="template.template.body.webitel.token" >
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group" >
+                                <div class="col-sm-12" ng-if="template.action === 'export'">
+                                    <div class="form-group">
+                                        <label style="width: 100%">Run import after export</label>
+                                        <select ng-model="template.next_process_id" ng-init="getImports()" class="form-control">
+                                            <option value="">--</option>
+                                            <option ng-selected="{{imp.id==template.next_process_id}}" ng-repeat="imp in importCollection" value="{{imp.id}}">{{imp.name}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4" ng-if="template.action === 'import'">
+                                    <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.expire.$invalid }">
                                         <label style="width: 100%">Expire after</label>
-                                        <input type="text"  class="form-control" name="name" required ng-model="template.template.body.webitel.expire" >
+                                        <input type="text"  class="form-control" name="expire" required ng-model="template.template.body.webitel.expire" >
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.cron.$invalid }">
+                                        <label style="width: 100%">Сron job</label>
+                                        <input type="text"  class="form-control" name="cron" ng-model="template.cron" ng-pattern="/^(\*|([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])|\*\/([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])) (\*|([0-9]|1[0-9]|2[0-3])|\*\/([0-9]|1[0-9]|2[0-3])) (\*|([1-9]|1[0-9]|2[0-9]|3[0-1])|\*\/([1-9]|1[0-9]|2[0-9]|3[0-1])) (\*|([1-9]|1[0-2])|\*\/([1-9]|1[0-2])) (\*|([0-6])|\*\/([0-6]))$/" >
                                     </div>
                                 </div>
                             </div>
@@ -51,33 +66,39 @@
                         </tab-heading>
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="form-group" >
+                                <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.connectionString.$invalid }">
                                     <label style="width: 100%">Connection string</label>
-                                    <input type="text"  class="form-control" name="name" required ng-model="template.template.body.sql.connectionString" >
+                                    <input type="text"  class="form-control" name="connectionString" required ng-model="template.template.body.sql.connectionString" >
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group" >
+                                <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.SQLTable.$invalid }">
                                     <label style="width: 100%">Table name</label>
-                                    <input type="text"  class="form-control" name="name" required ng-model="template.template.body.sql.SQLTable" >
+                                    <input type="text"  class="form-control" name="SQLTable" required ng-model="template.template.body.sql.SQLTable" >
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group" >
+                                <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.PrimaryColumn.$invalid }">
                                     <label style="width: 100%">Primary column</label>
-                                    <input type="text"  class="form-control" name="name" required ng-model="template.template.body.sql.PrimaryColumn" >
+                                    <input type="text"  class="form-control" name="PrimaryColumn" required ng-model="template.template.body.sql.PrimaryColumn" >
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group" >
+                                <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.DataTime.$invalid }">
                                     <label style="width: 100%">DataTime column</label>
-                                    <input type="text"  class="form-control" name="name" required ng-model="template.template.body.sql.DataTime" >
+                                    <input type="text"  class="form-control" name="DataTime" ng-model="template.template.body.sql.DataTime" >
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group" >
-                                    <label style="width: 100%">Select filter</label>
-                                    <input type="text"  class="form-control" name="name" required ng-model="template.template.body.sql.SQLFilter" >
+                                <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.SQLFilter.$invalid }">
+                                    <label style="width: 100%">Custom filter</label>
+                                    <input type="text"  class="form-control" name="SQLFilter" ng-model="template.template.body.sql.SQLFilter" >
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.PreExecute.$invalid }">
+                                    <label style="width: 100%">PreExecute</label>
+                                    <textarea class="form-control" name="PreExecute" ng-model="template.template.body.sql.PreExecute" />
                                 </div>
                             </div>
                         </div>
@@ -129,6 +150,11 @@
                                                             <option value="">--</option>
                                                             <option ng-selected="{{k==item.value}}" ng-repeat="(k, col) in tColumns" value="{{k}}">{{col.name}}</option>
                                                         </select>
+                                                        <div ng-if="item.value=='variable'">
+                                                            <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.var }">
+                                                                <input ng-required="item.var=='variable'" class="form-control" type="text"  ng-model="item.var" >
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </td>
                                                 <td style="width: 50px;">
