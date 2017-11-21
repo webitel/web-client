@@ -1216,12 +1216,12 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     name: 1,
                     type: 1,
                     action: 1,
-                    description: 1,
                     id: 1,
                     process_state: 1,
                     process_start: 1,
                     process_id: 1,
-                    last_response_text: 1
+                    last_response_text: 1,
+                    before_delete: 1
                 }));
 
                 DialerModel.members.templateList($scope.dialer._id,
@@ -1595,12 +1595,24 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     DialerModel.members.list($scope.domain, $scope.dialer._id, option, process);
                 })();
             }
-            $scope.importFromSql = function(id){
-                DialerModel.members.sqlStartInput($scope.dialer._id, id, $scope.domain, function(err, res){
-                    if(err)
-                        return notifi.error(err, 5000);
-                    $scope.reloadTemplates();
-                })
+            $scope.importFromSql = function(row){
+                var start = function(){
+                    DialerModel.members.sqlStartInput($scope.dialer._id, row.id, $scope.domain, function(err, res){
+                        if(err)
+                            return notifi.error(err, 5000);
+                        $scope.reloadTemplates();
+                    });
+                };
+                if(row.before_delete){
+                    $confirm({text: 'Do you really want to delete all members from the dialer?'}, {templateUrl: 'views/confirm.html'})
+                        .then(function () {
+                            start();
+                        });
+                }
+                else{
+                    start();
+                }
+
             }
 
             $scope.openCsvTemplate = function (method, item, isEdit) {
