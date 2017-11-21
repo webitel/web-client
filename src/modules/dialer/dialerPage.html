@@ -127,7 +127,7 @@
 
                                                         <div class="form-group" ng-show="dialer.type==diealerTypes[2]">
                                                             <label class="control-label">Playback file</label>
-                                                            <ui-select ng-disabled="viewMode" name="playbackFile"  ng-model="dialer.playbackFile" theme="bootstrap"  title="Choose a file">
+                                                            <ui-select ng-disabled="viewMode" name="playbackFile" ng-change="mediaChanged($select.selected)" ng-model="dialer.playbackFile" theme="bootstrap"  title="Choose a file">
                                                                 <ui-select-match placeholder="Select or search file...">{{$select.selected.name}}</ui-select-match>
                                                                 <ui-select-choices refresh="getMediaFiles()" repeat="c in mediaFiles | filter: $select.search">
                                                                     <span ng-bind-html="c.name | highlight: $select.search"></span>

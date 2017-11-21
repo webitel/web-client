@@ -193,7 +193,10 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     if (err)
                         return notifi.error(err, 5000);
 
-                    $scope.mediaFiles = [];
+                    $scope.mediaFiles = [{
+                        id: -2,
+                        name: 'Empty'
+                    }];
                     if (angular.isArray(res)) {
                         res.forEach(function (item) {
                             $scope.mediaFiles.push({
@@ -205,7 +208,12 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     }
                 });
             };
-            
+            $scope.mediaChanged = function(item){
+                if(item.id === -2){
+                    $scope.dialer.playbackFile = null;
+                }
+            };
+
             $scope.activeProcessDialer = false;
 
             $scope.textStateAction = '';
