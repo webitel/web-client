@@ -643,7 +643,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
         }
 
-        function sqlStartInput(dialerId, templateId, domainName, cb) {
+        function sqlStart(dialerId, templateId, domainName, cb) {
             if (!domainName)
                 return cb(new Error("Domain is required."));
 
@@ -658,7 +658,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
         }
 
-        function sqlStopInput(dialerId, templateId, processId, domainName, cb) {
+        function sqlStop(dialerId, templateId, processId, domainName, cb) {
             if (!domainName)
                 return cb(new Error("Domain is required."));
 
@@ -729,8 +729,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 updateTemplate: updateTemplate,
                 deleteTemplate: deleteTemplate,
                 templateItem: templateItem,
-                sqlStartInput: sqlStartInput,
-                sqlStopInput: sqlStopInput
+                sqlStart: sqlStart,
+                sqlStop: sqlStop
             }
         }
     }]);

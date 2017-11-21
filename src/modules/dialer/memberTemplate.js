@@ -1246,7 +1246,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
             $scope.timeToString = timeToString;
 
             $scope.resetProcess = function(item){
-                DialerModel.members.sqlStopInput($scope.dialer._id, item.id, item.process_id, $scope.domain, function(err, res){
+                DialerModel.members.sqlStop($scope.dialer._id, item.id, item.process_id, $scope.domain, function(err, res){
                     if(err)
                         return notifi.error(err, 5000);
                     $scope.hideExecute = false;
@@ -1642,9 +1642,18 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     DialerModel.members.list($scope.domain, $scope.dialer._id, option, process);
                 })();
             }
+
+            $scope.exportToSql = function(row) {
+                DialerModel.members.sqlStart($scope.dialer._id, row.id, $scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+                    $scope.reloadTemplates();
+                });
+            };
+
             $scope.importFromSql = function(row){
                 var start = function(){
-                    DialerModel.members.sqlStartInput($scope.dialer._id, row.id, $scope.domain, function(err, res){
+                    DialerModel.members.sqlStart($scope.dialer._id, row.id, $scope.domain, function(err, res){
                         if(err)
                             return notifi.error(err, 5000);
                         $scope.reloadTemplates();
@@ -1659,7 +1668,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                 else{
                     start();
                 }
-
             }
 
             $scope.openCsvTemplate = function (method, item, isEdit) {
