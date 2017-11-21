@@ -71,7 +71,7 @@
             <td >{{timeToString(row.process_start*1000)}}</td>
             <td style="text-align: end">
                 <a ng-if="row.process_start" ng-click="resetProcess(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-danger"><i class="fa fa-stop"></i></a>
-                <a ng-if="row.action === 'import' && row.type === 'SQL' && !hideExecute" ng-click="importFromSql(row.id)" class="btn-icon btn-icon-sm  btn-gap-v btn-success"><i class="fa fa-upload"></i></a>
+                <a ng-if="row.action === 'import' && row.type === 'SQL' && !hideExecute" ng-click="importFromSql(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-success"><i class="fa fa-upload"></i></a>
                 <a ng-if="row.action === 'export' && row.type === 'CSV' && !hideExecute" ng-click="getItemForAction(row.id, exportCSV)" class="btn-icon btn-icon-sm  btn-gap-v btn-primary"><i class="fa fa-download"></i></a>
                 <a ng-if="row.action === 'import' && row.type === 'CSV' && !hideExecute" ng-click="getItemForAction(row.id, showImportCSVPage)" class="btn-icon btn-icon-sm  btn-gap-v btn-success"><i class="fa fa-upload"></i></a>
 
