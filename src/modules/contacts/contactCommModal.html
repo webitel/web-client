@@ -30,9 +30,14 @@
                     <tbody>
                     <tr ng-repeat="row in communication_types track by $index"  ng-class="{'bg-gray': row.name.toLowerCase() === 'phone' || row.name.toLowerCase() === 'email'}">
                         <td>
-                            <span>{{row.name}}</span>
+                            <div ng-show="editableElement === row.id" style="margin: 0;" class="form-group">
+                                <input class="form-control" type="text"  ng-model="row.name">
+                            </div>
+                            <span ng-hide="editableElement === row.id">{{row.name}}</span>
                         </td>
                         <td style="width: 10%; min-width: 83px; text-align: end;">
+                            <a href="javascript:;" ng-click="updateCommunication(row)" ng-show="editableElement === row.id" class="btn-icon btn-icon-sm  btn-gap-v btn-primary"><i class="glyphicon glyphicon-ok"></i></a>
+                            <a href="javascript:;" ng-click="edit(row)" ng-hide="editableElement === row.id || row.name.toLowerCase() === 'phone' || row.name.toLowerCase() === 'email'" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
                             <a href="javascript:;" ng-click="removeCommunication(row)" ng-hide="row.name.toLowerCase() === 'phone' || row.name.toLowerCase() === 'email'" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                         </td>
                     </tr>

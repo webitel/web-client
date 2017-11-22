@@ -987,7 +987,79 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
             type: "time"
         }
     };
-
+    var SqlColumnsExport = {
+        "name": {
+            name: "Name"
+        },
+        string:{name:'String'},
+        "callSuccessful": {
+            name: "Call success"
+        },
+        "_id": {
+            name: "Id"
+        },
+        "variables": {
+            "name": "Variable"
+        },
+        // "priority_number": {
+        //     name: "Priority number"
+        // },
+        "communications":{
+            name: "Communications",
+            values:[{name:'Priority', value:'priority'},{name:'Number', value:'number'},{name:'Description', value:'description'},{name:'Type', value:'type'}]
+        },
+        "_endCause": {
+            name: "End cause"
+        },
+        "_probeCount": {
+            name: "Attempts"
+        },
+        "callTime": {
+            "name": "Call time"
+        },
+        "expire": {
+            "name": "Expire"
+        },
+        "attempt_cause": {
+            "name": "Attempt end cause"
+        },
+        "attempt_agent": {
+            "name": "Agent"
+        },
+        "attempt_amd_result": {
+            "name": "AMD result"
+        },
+        "attempt_communication_type_name": {
+            "name": "Communication type name"
+        },
+        "attempt_communication_type_code": {
+            "name": "Communication type code"
+        },
+        "attempt_callback_success": {
+            name: "Callback success"
+        },
+        "attempt_callback_description": {
+            name: "Callback description"
+        }
+    };
+    var SqlColumnsImport = {
+        "name": {
+            name: "Name"
+        },
+        "string":{
+            name:'String'
+        },
+        "variables": {
+            "name": "Variable"
+        },
+        "communications":{
+            name: "Communications",
+            values:[{name:'Priority', value:'priority'},{name:'Number', value:'number'},{name:'Description', value:'description'},{name:'Type', value:'type'}]
+        },
+        "expire": {
+            name: "Expire"
+        }
+    };
     app.controller('MemberDialerImportCtrl', ['$scope', '$modalInstance', 'notifi', 'importTemplate', function ($scope, $modalInstance, notifi, importTemplate) {
 
         $scope.settings = angular.copy(importTemplate);
@@ -1176,15 +1248,15 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
             }
             $scope.columns = [];
 
-            $scope.CharSet = utils.CharSet;
+            //$scope.CharSet = utils.CharSet;
             $scope.tColumns = {};
 
             if (funcParams.method === 'export') {
                 delete $scope.template.template.body.webitel.expire;
-                $scope.tColumns = Object.assign({string:{name:'String'}}, ExportColumns);
+                $scope.tColumns = SqlColumnsExport;
             }
             else if (funcParams.method === 'import') {
-                $scope.tColumns = Object.assign({string:{name:'String'}}, MemberColumns);
+                $scope.tColumns = SqlColumnsImport;
             }
 
             if (funcParams.item) {
@@ -1196,12 +1268,20 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     $scope.template = res && res.data;
                     var cols = $scope.template.template.body.sql.ColumnMappings;
                     Object.keys(cols).forEach(function (item) {
-                        if(cols[item].indexOf('variable') !== -1){
+                        if(cols[item].indexOf('variables') !== -1){
                             var tmp = cols[item].split('.');
                             $scope.columns.push({
                                 key: item,
                                 value: tmp[0],
                                 var: tmp.slice(1).join('.')
+                            })
+                        }
+                        else if(cols[item].indexOf('communications') !== -1){
+                            var tmp = cols[item].split('.');
+                            $scope.columns.push({
+                                key: item,
+                                value: tmp[0],
+                                commType: tmp.slice(1).join('.')
                             })
                         }
                         else if(Object.keys($scope.tColumns).indexOf(cols[item]) === -1){
@@ -1231,6 +1311,9 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     }
                     else if(item.strVar){
                         columnMaps[item.key] = item.strVar;
+                    }
+                    else if(item.commType){
+                        columnMaps[item.key] = item.value + '.' + item.commType;
                     }
                     else {
                         columnMaps[item.key] = item.value;
