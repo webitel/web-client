@@ -155,6 +155,11 @@
                                                                 <input ng-required="item.var=='variable'" class="form-control" type="text"  ng-model="item.var" >
                                                             </div>
                                                         </div>
+                                                        <div ng-if="item.value=='string'">
+                                                            <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.strVar }">
+                                                                <input ng-required="item.strVar=='string'" class="form-control" type="text"  ng-model="item.strVar" >
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </td>
                                                 <td style="width: 50px;">
