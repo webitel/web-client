@@ -138,64 +138,6 @@ define(['angular', 'config'], function (angular, config) {
         //     ]
         // },
         {
-            href: "#/gateways",
-            caption: "Gateways",
-
-            acl: 'gateway',
-            templateUrl: 'modules/gateways/gateways.html',
-            controller: 'GatewaysCtrl',
-            controllerUrl: 'modules/gateways/gateways.js',
-            iconClass: 'fa fa-random',
-            routes: [{
-                href: '/gateways/new',
-                templateUrl: 'modules/gateways/gatewayPage.html',
-                controller: 'GatewaysCtrl',
-                controllerUrl: 'modules/gateways/gateways.js',
-                method: "create"
-            },{
-                href: '/gateways/:id/edit',
-                templateUrl: 'modules/gateways/gatewayPage.html',
-                controller: 'GatewaysCtrl',
-                controllerUrl: 'modules/gateways/gateways.js',
-                method: "edit"
-            },{
-                href: '/gateways/:id/view',
-                templateUrl: 'modules/gateways/gatewayPage.html',
-                controller: 'GatewaysCtrl',
-                controllerUrl: 'modules/gateways/gateways.js',
-                method: "view"
-            }]
-        },
-        {
-            href: "#/calendars",
-            caption: "Calendar",
-
-            acl: 'calendar',
-            templateUrl: 'modules/calendar/calendar.html',
-            controller: 'CalendarCtrl',
-            controllerUrl: 'modules/calendar/calendar.js',
-            iconClass: 'fa fa-calendar',
-            routes: [{
-                href: '/calendars/new',
-                templateUrl: 'modules/calendar/calendarPage.html',
-                controller: 'CalendarCtrl',
-                controllerUrl: 'modules/calendar/calendar.js',
-                method: "create"
-            },{
-                href: '/calendars/:id/edit',
-                templateUrl: 'modules/calendar/calendarPage.html',
-                controller: 'CalendarCtrl',
-                controllerUrl: 'modules/calendar/calendar.js',
-                method: "edit"
-            },{
-                href: '/calendars/:id/view',
-                templateUrl: 'modules/calendar/calendarPage.html',
-                controller: 'CalendarCtrl',
-                controllerUrl: 'modules/calendar/calendar.js',
-                method: "view"
-            }]
-        },
-        {
             href: "#/directory",
             caption: "Directory",
 
@@ -237,16 +179,6 @@ define(['angular', 'config'], function (angular, config) {
             },
 
             {
-                list: true,
-                href: "/directory/vmail",
-                caption: "Voice mail",
-                acl: 'vmail',
-                templateUrl: 'modules/vMail/vMailSection.html',
-                controller: 'VoiceMailCtrl',
-                controllerUrl: 'modules/vMail/vMail.js'
-            },
-
-            {
                 href: '/directory/contacts/:id/edit',
                 templateUrl: 'modules/contacts/contactPage.html',
                 controller: 'ContactsCtrl',
@@ -269,6 +201,17 @@ define(['angular', 'config'], function (angular, config) {
             },
 
             {
+                list: true,
+                href: "/directory/vmail",
+                caption: "Voicemail",
+                acl: 'vmail',
+                templateUrl: 'modules/vMail/vMailSection.html',
+                controller: 'VoiceMailCtrl',
+                controllerUrl: 'modules/vMail/vMail.js'
+            },
+
+
+            {
                 href: "/directory/contactEditor",
                 caption: "Contact edit",
                 hide: true,
@@ -276,6 +219,7 @@ define(['angular', 'config'], function (angular, config) {
                 controller: 'ContactPropsCtrl',
                 controllerUrl: 'modules/contacts/contactProperties.js'
             }
+
             ]
         },
         {
@@ -540,6 +484,64 @@ define(['angular', 'config'], function (angular, config) {
 
 
             ]
+        },
+        {
+            href: "#/gateways",
+            caption: "Gateways",
+
+            acl: 'gateway',
+            templateUrl: 'modules/gateways/gateways.html',
+            controller: 'GatewaysCtrl',
+            controllerUrl: 'modules/gateways/gateways.js',
+            iconClass: 'fa fa-random',
+            routes: [{
+                href: '/gateways/new',
+                templateUrl: 'modules/gateways/gatewayPage.html',
+                controller: 'GatewaysCtrl',
+                controllerUrl: 'modules/gateways/gateways.js',
+                method: "create"
+            },{
+                href: '/gateways/:id/edit',
+                templateUrl: 'modules/gateways/gatewayPage.html',
+                controller: 'GatewaysCtrl',
+                controllerUrl: 'modules/gateways/gateways.js',
+                method: "edit"
+            },{
+                href: '/gateways/:id/view',
+                templateUrl: 'modules/gateways/gatewayPage.html',
+                controller: 'GatewaysCtrl',
+                controllerUrl: 'modules/gateways/gateways.js',
+                method: "view"
+            }]
+        },
+        {
+            href: "#/calendars",
+            caption: "Calendar",
+
+            acl: 'calendar',
+            templateUrl: 'modules/calendar/calendar.html',
+            controller: 'CalendarCtrl',
+            controllerUrl: 'modules/calendar/calendar.js',
+            iconClass: 'fa fa-calendar',
+            routes: [{
+                href: '/calendars/new',
+                templateUrl: 'modules/calendar/calendarPage.html',
+                controller: 'CalendarCtrl',
+                controllerUrl: 'modules/calendar/calendar.js',
+                method: "create"
+            },{
+                href: '/calendars/:id/edit',
+                templateUrl: 'modules/calendar/calendarPage.html',
+                controller: 'CalendarCtrl',
+                controllerUrl: 'modules/calendar/calendar.js',
+                method: "edit"
+            },{
+                href: '/calendars/:id/view',
+                templateUrl: 'modules/calendar/calendarPage.html',
+                controller: 'CalendarCtrl',
+                controllerUrl: 'modules/calendar/calendar.js',
+                method: "view"
+            }]
         },
         {
             href: "#/media",
