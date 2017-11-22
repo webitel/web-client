@@ -150,9 +150,17 @@
                                                             <option value="">--</option>
                                                             <option ng-selected="{{k==item.value}}" ng-repeat="(k, col) in tColumns" value="{{k}}">{{col.name}}</option>
                                                         </select>
-                                                        <div ng-if="item.value=='variable'">
+                                                        <div ng-if="item.value=='variables'">
                                                             <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.var }">
                                                                 <input ng-required="item.var=='variable'" class="form-control" type="text"  ng-model="item.var" >
+                                                            </div>
+                                                        </div>
+                                                        <div ng-if="item.value=='communications'">
+                                                            <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.commType }">
+                                                                <select required ng-model="item.commType" class="form-control">
+                                                                    <option value="">--</option>
+                                                                    <option ng-selected="{{t.value==item.commType}}" ng-repeat="t in tColumns.communications.values" value="{{t.value}}">{{t.name}}</option>
+                                                                </select>
                                                             </div>
                                                         </div>
                                                         <div ng-if="item.value=='string'">

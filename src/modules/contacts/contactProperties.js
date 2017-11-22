@@ -136,6 +136,18 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                             $modalInstance.dismiss('cancel');
                         };
 
+                        self.edit = function(row){
+                            if(self.oldValue){
+                                var oldElem = self.communication_types.filter(function(item){
+                                    return item.id === self.editableElement;
+                                })[0];
+                                if(oldElem) oldElem.name = self.oldValue;
+                            }
+                            self.editableElement = row.id;
+                            self.oldValue = row.name;
+                        };
+
+
                         self.addCommunication = function () {
                             if ($scope.comm_name && $scope.comm_name.value !== '' && $scope.comm_name.value.toLowerCase() !== 'phone' && $scope.comm_name.value.toLowerCase() !== 'email') {
                                 ContactModel.addCommunicaiton({name:$scope.comm_name.value}, domainName, function (err, res) {
@@ -146,6 +158,17 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                                 })
                             }
                         };
+
+                        self.updateCommunication = function(row) {
+                            if (row && row.name !=='' && row.name.toLowerCase() !== 'phone' && row.name.toLowerCase() !== 'email') {
+                                ContactModel.updateCommunicaiton(row.id, row, domainName, function (err, res) {
+                                    if(err)
+                                        return notifi.error(err, 5000);
+                                    self.editableElement = -1;
+                                    self.oldValue = null;
+                                });
+                            }
+                        }
 
                         self.removeCommunication = function (row) {
                             ContactModel.removeCommunicaiton(row.id, domainName, function (err, res) {

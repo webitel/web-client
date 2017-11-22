@@ -392,10 +392,10 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
             var communications = "";
             if(contact.communications)
                 contact.communications.forEach(function (item) {
-                    if(item.type_name.toLowerCase() === "phone"){
+                    if(item.type_name.toLowerCase() === "phone"){  // || /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$/.test(item.number)
                         communications = communications + angular.copy($scope.vTelTemplate.replace("#PHONE_NUMBER#", item.number));
                     }
-                    else if(item.type_name.toLowerCase() === "email"){
+                    else if(item.type_name.toLowerCase() === "email"){ // || /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(item.number)
                         communications = communications + angular.copy($scope.vEmailTemplate.replace("#EMAIL#", item.number));
                     }
                 });
