@@ -343,7 +343,16 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
                     ava.src =  $scope.contact.photo;
                     $scope.hasImage = true;
                 }
-                $scope.generateQR();
+                try{
+                    $scope.generateQR();
+                    $scope.hideQR = false;
+                }
+                catch (e){
+                    $scope.hideQR = true;
+                   //  var elem = document.getElementById("qrcode");
+                   // debugger;
+                    notifi.error('QR is not generated!', 5000);
+                }
                 disableEditMode();
             });
         }

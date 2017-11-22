@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-sm-6">
 
-                    <div style="text-align: center;">
+                    <div style="text-align: center; margin-bottom: 30px">
                         <img id="avatar" class="img-circle avatar" src="/modules/contacts/profile-user.svg">
                         <a href="javascript:;" ng-show="hasImage && canUpdate" ng-click="deleteImg()" class="btn-icon btn-icon-sm  btn-gap-v btn-default clear-button">
                             <i class="glyphicon glyphicon-remove"></i>
@@ -30,30 +30,6 @@
                         <input type="text" class="form-control" name="job_name" data-ng-model="contact.job_name"  ng-disabled="viewMode">
                     </div>
 
-                    <div style="margin-left: -15px; margin-right: -15px;">
-                        <div  ng-repeat="item in properties">
-                            <div class={{"col-sm-"+item.width}}>
-                                <div class="form-group" ng-class="{ 'has-error' : contactPageForm[item.name].$invalid }">
-
-                                    <label class="control-label">{{item.caption}}</label>
-                                    <input ng-if="item.type === 'text' && !item.required" name="item.name" type="text" class="form-control" data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">
-                                    <input ng-if="item.type === 'number' && !item.required" name="item.name" type="number" class="form-control" data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">
-                                    <label ng-if="item.type === 'boolean' && !item.required" name="item.name" style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="contact.custom_data[item.name]" class="ng-pristine ng-valid" ng-disabled="viewMode"><i></i></label>
-                                    <select ng-if="item.type === 'select' && !item.required" name="item.name" class="form-control" ng-model="contact.custom_data[item.name]" ng-disabled="viewMode">
-                                        <option ng-repeat="o in item.options" ng-selected="{{o==contact.custom_data[item.name]}}" value="{{o}}">{{o}}</option>
-                                    </select>
-
-                                    <!--<input ng-if="item.type === 'text' && item.required" name="item.name" type="text" class="form-control" required data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">-->
-                                    <!--<input ng-if="item.type === 'number' && item.required" name="item.name" type="number" class="form-control" required data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">-->
-                                    <!--<select ng-if="item.type === 'select' && item.required" name="item.name" class="form-control" required ng-model="contact.custom_data[item.name]">-->
-                                        <!--<option ng-repeat="o in item.options" ng-selected="{{o==contact.custom_data[item.name]}}" value="{{o}}">{{o}}</option>-->
-                                    <!--</select>-->
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
                 <div class="col-sm-6">
                     <div class="ui-tab-container ui-tab-dark">
@@ -63,6 +39,39 @@
                                     <tab-heading>
                                         <span>Communications</span>
                                     </tab-heading>
+                                    <div class="table-responsive">
+                                        <div class="row text-center" style=" height: 323px;" ng-if="!contact.communications || contact.communications.length == 0">
+                                            <div class="center-block col-md-4" style="float: none;">
+                                                <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                                                <h2>No results found</h2>
+                                            </div>
+                                        </div>
+                                        <table style="width: 100%; display:block;" ng-show="contact.communications.length > 0" st-safe-src="contact.communications" class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th style="width: 42%;" st-skip-natural="true">Value</th>
+                                                <th style="width: 60%;" st-skip-natural="true">Type</th>
+                                                <th style="width: 10%;"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody style="height: 264px;
+                                                display: inline-block;
+                                                 width: 100%;
+                                                overflow: auto;">
+                                            <tr ng-repeat="row in contact.communications track by $index">
+                                                <td style="width: 45%;">
+                                                    <span>{{row.number}}</span>
+                                                </td>
+                                                <td style="width: 60%;">
+                                                    <span>{{row.type_name}}</span>
+                                                </td>
+                                                <td style="width: 10%; text-align: end;">
+                                                    <a href="javascript:;" ng-click="deleteComm($index)" class="btn-icon btn-icon-sm  btn-gap-v btn-default" ng-disabled="viewMode"><i class="glyphicon glyphicon-remove"></i></a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                     <div class="row">
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" name="number" ng-model="communication.number"> </input>
@@ -79,55 +88,47 @@
                                             <button class="btn btn-default" ng-click="addComm()" ng-disabled="viewMode">Add</button>
                                         </div>
                                     </div>
-                                    <div class="table-responsive">
-                                        <div class="row text-center" ng-if="!contact.communications || contact.communications.length == 0">
-                                            <div class="center-block col-md-4" style="float: none;">
-                                                <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
-                                                <h2>No results found</h2>
-                                            </div>
-                                        </div>
-                                        <table ng-show="contact.communications.length > 0" st-safe-src="contact.communications" class="table table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th st-skip-natural="true">Value</th>
-                                                <th st-skip-natural="true">Type</th>
-                                                <th></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr ng-repeat="row in contact.communications track by $index">
-                                                <td>
-                                                    <span>{{row.number}}</span>
-                                                </td>
-                                                <td>
-                                                    <span>{{row.type_name}}</span>
-                                                </td>
-                                                <td style="width: 10%; min-width: 83px; text-align: end;">
-                                                    <a href="javascript:;" ng-click="deleteComm($index)" class="btn-icon btn-icon-sm  btn-gap-v btn-default" ng-disabled="viewMode"><i class="glyphicon glyphicon-remove"></i></a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
                                 </tab>
-                                <tab>
+                                <tab ng-hide="hideQR">
                                     <tab-heading>
                                         <span>QR Code</span>
                                     </tab-heading>
-                                    <button ng-disabled="!isEdit" type="button" ng-click="generateQR()" class="btn btn-w-lg btn-dark">REGENERATE</button>
-                                    <div id="qrcode" style="margin-top: 15px;">
+                                    <div id="qrcode">
                                     </div>
                                 </tab>
                                 <tab>
                                     <tab-heading>
                                         <span>Description</span>
                                     </tab-heading>
-                                    <div class="form-group" ng-class="{ 'has-error' : contactPageForm.description.$invalid }">
+                                    <div class="form-group" style="height: 343px;" ng-class="{ 'has-error' : contactPageForm.description.$invalid }">
                                         <label class="control-label">Description</label>
                                         <textarea  class="form-control" name="description" data-ng-model="contact.description"  ng-disabled="viewMode"/>
                                     </div>
                                 </tab>
                             </tabset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-left: -15px; height: 358px; margin-right: -15px;">
+                <div  ng-repeat="item in properties">
+                    <div class={{"col-sm-"+item.width}}>
+                        <div class="form-group" ng-class="{ 'has-error' : contactPageForm[item.name].$invalid }">
+
+                            <label class="control-label">{{item.caption}}</label>
+                            <input ng-if="item.type === 'text' && !item.required" name="item.name" type="text" class="form-control" data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">
+                            <input ng-if="item.type === 'number' && !item.required" name="item.name" type="number" class="form-control" data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">
+                            <label ng-if="item.type === 'boolean' && !item.required" name="item.name" style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="contact.custom_data[item.name]" class="ng-pristine ng-valid" ng-disabled="viewMode"><i></i></label>
+                            <select ng-if="item.type === 'select' && !item.required" name="item.name" class="form-control" ng-model="contact.custom_data[item.name]" ng-disabled="viewMode">
+                                <option ng-repeat="o in item.options" ng-selected="{{o==contact.custom_data[item.name]}}" value="{{o}}">{{o}}</option>
+                            </select>
+
+                            <!--<input ng-if="item.type === 'text' && item.required" name="item.name" type="text" class="form-control" required data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">-->
+                            <!--<input ng-if="item.type === 'number' && item.required" name="item.name" type="number" class="form-control" required data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">-->
+                            <!--<select ng-if="item.type === 'select' && item.required" name="item.name" class="form-control" required ng-model="contact.custom_data[item.name]">-->
+                            <!--<option ng-repeat="o in item.options" ng-selected="{{o==contact.custom_data[item.name]}}" value="{{o}}">{{o}}</option>-->
+                            <!--</select>-->
+
                         </div>
                     </div>
                 </div>
