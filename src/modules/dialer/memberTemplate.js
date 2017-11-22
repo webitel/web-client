@@ -1065,7 +1065,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
             }
         }
         $scope.CharSet = utils.CharSet;
-        $scope.tColumns = [];
+        $scope.tColumns = {};
         if (funcParams.method === 'export') {
             $scope.tColumns = ExportColumns;
         }
@@ -1177,14 +1177,16 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
             $scope.columns = [];
 
             $scope.CharSet = utils.CharSet;
-            $scope.tColumns = [];
+            $scope.tColumns = {};
+
             if (funcParams.method === 'export') {
                 delete $scope.template.template.body.webitel.expire;
-                $scope.tColumns = ExportColumns;
+                $scope.tColumns = Object.assign({string:{name:'String'}}, ExportColumns);
             }
             else if (funcParams.method === 'import') {
-                $scope.tColumns = MemberColumns;
+                $scope.tColumns = Object.assign({string:{name:'String'}}, MemberColumns);
             }
+
             if (funcParams.item) {
                 DialerModel.members.templateItem(dialerId, funcParams.item.id, domainName, function (err, res) {
                     if (err) {
@@ -1194,18 +1196,25 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     $scope.template = res && res.data;
                     var cols = $scope.template.template.body.sql.ColumnMappings;
                     Object.keys(cols).forEach(function (item) {
-                        if(cols[item].indexOf('variable') === -1){
-                            $scope.columns.push({
-                                key: item,
-                                value: cols[item]
-                            })
-                        }
-                        else{
+                        if(cols[item].indexOf('variable') !== -1){
                             var tmp = cols[item].split('.');
                             $scope.columns.push({
                                 key: item,
                                 value: tmp[0],
                                 var: tmp.slice(1).join('.')
+                            })
+                        }
+                        else if(Object.keys($scope.tColumns).indexOf(cols[item]) === -1){
+                            $scope.columns.push({
+                                key: item,
+                                value: 'string',
+                                strVar: cols[item]
+                            })
+                        }
+                        else{
+                            $scope.columns.push({
+                                key: item,
+                                value: cols[item]
                             })
                         }
                     });
@@ -1220,7 +1229,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     if(item.var){
                         columnMaps[item.key] = item.value + '.' + item.var;
                     }
-                    else{
+                    else if(item.strVar){
+                        columnMaps[item.key] = item.strVar;
+                    }
+                    else {
                         columnMaps[item.key] = item.value;
                     }
                 });
