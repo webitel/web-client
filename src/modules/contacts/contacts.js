@@ -231,7 +231,7 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
         $scope.save = save;
 
         function closePage() {
-            $location.path('/contacts');
+            $location.path('/directory/contacts');
         };
 
         $scope.create = function(){
