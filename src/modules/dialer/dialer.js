@@ -51,6 +51,9 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
             $scope.canDelete = webitel.connection.session.checkResource('dialer', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('dialer', 'u');
             $scope.canCreate = webitel.connection.session.checkResource('dialer', 'c');
+
+            $scope.canCreateTemplate = webitel.connection.session.checkResource('dialer/templates', 'r');
+
             $scope.domain = webitel.domain();
             $scope.dialer = {};
 

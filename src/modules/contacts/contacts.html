@@ -19,7 +19,7 @@
                             <input type="file" nv-file-select="" uploader="uploaderImport" accept=".vcf">
                         </span>
 
-                        <a href="#/directory/contactEditor?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-info">
+                        <a ng-if="canCreate" href="#/directory/contactEditor?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-info">
                             <i class="glyphicon glyphicon-cog"></i>
                         </a>
                     </div>

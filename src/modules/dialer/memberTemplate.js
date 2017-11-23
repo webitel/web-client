@@ -1153,7 +1153,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                 $scope.template = res && res.data;
             });
         }
-        $scope.isEdit = funcParams.isEdit && !!funcParams.item;
+        $scope.viewMode = !funcParams.isEdit && !!funcParams.item;
 
         $scope.up = function (row) {
             moveUp($scope.template.template.data, row)
@@ -1301,7 +1301,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                 });
             }
 
-            $scope.isEdit = funcParams.isEdit && !!funcParams.item;
+            $scope.viewMode = !funcParams.isEdit && !!funcParams.item;
 
             $scope.ok = function () {
                 var columnMaps = {};
@@ -1330,10 +1330,10 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
     app.controller('MembersTemplateCtrl', ['$scope', 'webitel', 'DialerModel', '$modal', '$confirm', 'notifi',
         function ($scope, webitel, DialerModel, $modal, $confirm, notifi) {
 
-            // $scope.canDelete = webitel.connection.session.checkResource('dialer/templates', 'd');
-            // $scope.canUpdate = webitel.connection.session.checkResource('dialer/templates', 'u');
-            // $scope.canCreate = webitel.connection.session.checkResource('dialer/templates', 'c');
-            // $scope.viewMode = !$scope.canUpdate;
+            $scope.canDelete = webitel.connection.session.checkResource('dialer/templates', 'd');
+            $scope.canUpdate = webitel.connection.session.checkResource('dialer/templates', 'u');
+            $scope.canCreate = webitel.connection.session.checkResource('dialer/templates', 'c');
+            $scope.viewMode = !$scope.canUpdate;
 
             $scope.templateCollection = [];
             $scope.displayedTemplateCollection = [];
