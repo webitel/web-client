@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="no-border pull-left">
-                        <a  ng-if="canCreate" href="#/accounts/new?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
+                        <a  ng-if="canCreate" href="#/directory/accounts/new?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
                             <i class="fa fa-plus"></i>
                         </a>
 
@@ -64,7 +64,7 @@
                     <tr id="account-{{row.id}}" ng-repeat="row in displayedCollection">
 
                         <td class="account-id">
-                            <a ng-if="canUpdate" href="#/accounts/{{row.id}}/edit?domain={{domain}}">
+                            <a ng-if="canUpdate" href="#/directory/accounts/{{row.id}}/edit?domain={{domain}}">
                                 {{row.id}}
                             </a>
                             <div ng-if="!canUpdate">
@@ -101,8 +101,8 @@
                         </td>
                         <td class="account-descript">{{row.descript}}</td>
                         <td style="text-align: end">
-                            <a href="#/accounts/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate || getAccessRo(row.id)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
-                            <a href="#/accounts/{{row.id}}/view?domain={{domain}}" ng-if="viewMode" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon  glyphicon-file"></i></a>
+                            <a href="#/directory/accounts/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate || getAccessRo(row.id)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                            <a href="#/directory/accounts/{{row.id}}/view?domain={{domain}}" ng-if="viewMode" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon  glyphicon-file"></i></a>
                             <a href="javascript:;" ng-click="changeStatus(row)" ng-if="canUpdate || getAccessRo(row.id)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-retweet"></i></a>
                             <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                         </td>

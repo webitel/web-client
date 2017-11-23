@@ -1,0 +1,159 @@
+<form name="templateCsvForm">
+    <div class="modal-header">
+        <h3 class="modal-title">Template CSV</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.name.$invalid }">
+                    <label for>Name</label>
+                    <input type="text"  class="form-control" name="name" required ng-model="template.name" >
+                </div>
+            </div>
+            <div class="col-sm-4" ng-if="template.action === 'import'">
+                <div class="form-group">
+                    <label style="width: 100%">Delete all members before import</label>
+                    <label class="switch switch-success"><input type="checkbox" ng-model="template.template.deleteBefore" ><i></i></label>
+                </div>
+            </div>
+            <div class="col-sm-12">
+
+                <div class="col-sm-2">
+                    <div class="form-group" >
+                        <label ng-if="template.action === 'export'" style="width: 100%">Add headers</label>
+                        <label ng-if="template.action === 'import'" style="width: 100%">Skip headers</label>
+                        <label class="switch switch-success"><input type="checkbox" ng-model="template.template.headers" ><i></i></label>
+                    </div>
+                </div>
+                <div class="col-sm-2" ng-if="template.action === 'export'">
+                    <div class="form-group" >
+                        <label style="width: 100%">Skip filter</label>
+                        <label class="switch switch-success"><input type="checkbox" ng-model="template.template.skipFilter" ><i></i></label>
+                    </div>
+                </div>
+                <div class="col-sm-2"  ng-if="template.action === 'export'">
+                    <div class="form-group" >
+                        <label style="width: 100%">All attempts</label>
+                        <label class="switch switch-success"><input type="checkbox" ng-model="template.template.allProbe" ><i></i></label>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for>Char set</label>
+                        <select class="form-control"  ng-model="template.template.charSet">
+                            <option ng-repeat="c in CharSet | orderBy:'name'" ng-selected="c.id==template.template.charSet" value="{{c.id}}">{{c.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="form-group"  ng-class="{ 'has-error' : templateSqlForm.separ.$invalid }">
+                        <label for>Separator</label>
+                        <input type="text"  class="form-control" name="separ" required ng-model="template.template.separator" >
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-12">
+                <a  ng-click="template.template.data.push({})"  style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v bg-success">
+                    <i class="fa fa-plus"></i>
+                </a>
+            </div>
+
+            <div class="col-sm-12">
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                Field
+                            </th>
+                            <th>
+                                Value
+                            </th>
+                            <th>
+                                Position
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in template.template.data">
+                            <td>
+                                {{$index + 1}}
+                            </td>
+                            <td>
+                                <div ng-if="template.action === 'export'" style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.field }">
+                                    <select required ng-model="item.field" class="form-control" ng-change="clearExportItem(item)">
+                                        <option value="">--</option>
+                                        <option ng-selected="{{k==item.field}}" ng-repeat="(k, col) in tColumns" value="{{k}}">{{col.name}}</option>
+                                    </select>
+                                </div>
+                                <div ng-if="template.action === 'import'" style="margin: 0;" class="form-group">
+                                    <select ng-model="item.value" class="form-control" ng-change="clearImportItem(item)">
+                                        <option value="">--</option>
+                                        <option ng-selected="{{k==item.value}}" ng-repeat="(k, clol) in tColumns" value="{{k}}">{{clol.name}}</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div ng-if="template.action === 'export'">
+                                    <div ng-if="item.field=='variable'">
+                                        <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.value }">
+                                            <input ng-required="item.value=='variable'" class="form-control" type="text"  ng-model="item.value" >
+                                        </div>
+                                    </div>
+
+                                    <div ng-if="item.field=='callTime' || item.field=='expire'">
+                                        <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.type }">
+                                            <select class="form-control" required name="strategy" ng-model="item.type">
+                                                <option value="timestamp">timestamp</option>
+                                                <option value="string">string</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-if="template.action === 'import'">
+                                    <div ng-if="item.value=='variable'">
+                                        <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.varName }">
+                                            <input ng-required="item.value=='variable'" class="form-control" type="text"  ng-model="item.varName" >
+                                        </div>
+                                    </div>
+                                    <div ng-if="item.value=='expire'">
+                                        <div style="margin: 0;" class="form-group" ng-class="{ 'has-error' : !item.format }">
+                                            <input style="min-width: 135px;" ng-required="item.value=='expire'" class="form-control" type="text" ng-init="item.format = item.format ? item.format : 'DD-MM-YYYY HH:mm'" ng-model="item.format" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--<div ng-if="item.field=='expire'">-->
+                                    <!--<input style="min-width: 135px;" ng-required="item.value=='expire'" class="form-control" type="text" ng-init="item.format = item.format ? item.format : 'DD-MM-YYYY HH:mm'" ng-model="item.format" >-->
+                                <!--</div>-->
+                            </td>
+                            <td style="width: 127px;">
+                                <p>
+                                    <a ng-click="up(item)" href="javascript:;" class="btn btn-default btn-direction btn-up">Up</a>
+                                    <a ng-click="down(item)" href="javascript:;" class="btn btn-default btn-direction btn-down">Down</a>
+                                </p>
+                            </td>
+                            <td style="width: 50px;">
+                                <a href="javascript:;" ng-click="template.template.data.splice($index, 1)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-if="!viewMode" ng-disabled="templateCsvForm.$invalid || template.template.data.length == 0" ng-click="ok()">Save</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()">Close</button>
+    </div>
+</form>

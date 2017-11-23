@@ -145,7 +145,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         });
 
         function reloadData () {
-            if ($location.$$path != '/accounts')
+            if ($location.$$path != '/directory/accounts')
                 return 0;
 
             if (!$scope.domain)
@@ -290,7 +290,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         };
         
         function closePage() {
-            $location.path('/accounts');
+            $location.path('/directory/accounts');
         };
             
 
@@ -301,7 +301,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                     return notifi.error(err, 5000);
 
                 if ($scope.account._new) {
-                    return $location.path('/accounts/' + $scope.account.id + '/edit');
+                    return $location.path('/directory/accounts/' + $scope.account.id + '/edit');
                 } else {
                     $scope.account.__time = Date.now();
                     return edit();

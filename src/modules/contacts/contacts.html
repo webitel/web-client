@@ -19,7 +19,7 @@
                             <input type="file" nv-file-select="" uploader="uploaderImport" accept=".vcf">
                         </span>
 
-                        <a href="#/contactEditor?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-info">
+                        <a ng-if="canCreate" href="#/directory/contactEditor?domain={{domain}}" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-info">
                             <i class="glyphicon glyphicon-cog"></i>
                         </a>
                     </div>
@@ -50,7 +50,7 @@
                             <th style="width: 20%" st-skip-natural="true" st-sort="name" >Name</th>
                             <th style="width: 20%" st-skip-natural="true" st-sort="company_name" >Company</th>
                             <th style="width: 20%" st-skip-natural="true" st-sort="job_name" >Job</th>
-                            <th style="width: 10%" st-skip-natural="true" st-sort="description" >Description</th>
+                            <!--<th style="width: 10%" st-skip-natural="true" st-sort="description" >Description</th>-->
                             <th style="width: 10%; min-width: 116px; text-align: end;">
                                 Count: {{rowCollection.length}}
                             </th>
@@ -59,7 +59,7 @@
                     <tbody ng-show="rowCollection.length > 0">
                         <tr ng-repeat="row in rowCollection">
                             <td >
-                                <a ng-if="canUpdate" href="#/contacts/{{row.id}}/edit">
+                                <a ng-if="canUpdate" href="#/directory/contacts/{{row.id}}/edit">
                                     {{row.name}}
                                 </a>
                                 <div ng-if="!canUpdate">
@@ -68,11 +68,11 @@
                             </td>
                             <td >{{row.company_name}}</td>
                             <td >{{row.job_name}}</td>
-                            <td >{{row.description}}</td>
+                            <!--<td >{{row.description}}</td>-->
                             <td style="text-align: end">
-                                <a href="javascript:;" ng-click="createVCard(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-cloud-download"></i></a>
-                                <a href="#/contacts/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
-                                <a href="#/contacts/{{row.id}}/view?domain={{domain}}" ng-if="viewMode" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-file"></i></a>
+                                <a href="javascript:;" ng-click="getItemForExport(row.id)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-cloud-download"></i></a>
+                                <a href="#/directory/contacts/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                                <a href="#/directory/contacts/{{row.id}}/view?domain={{domain}}" ng-if="viewMode" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-file"></i></a>
                                 <a href="javascript:;" ng-click="delete(row)" ng-if="canDelete" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                             </td>
                         </tr>
