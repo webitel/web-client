@@ -1376,6 +1376,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                         $scope.isLoading = false;
                         if (err)
                             return notifi.error(err, 5000);
+                        $scope.hideExecute = false;
                         $scope.templateCollection = res && res.data;
                         for(var i = 0; i<$scope.templateCollection.length; i++){
                             if($scope.templateCollection[i].process_start){
