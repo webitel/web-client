@@ -28,9 +28,9 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
         $scope.properties = [];
         $scope.isRoot = !webitel.connection.session.domain;
 
-        $scope.canDelete = webitel.connection.session.checkResource('book', 'd');
-        $scope.canUpdate = webitel.connection.session.checkResource('book', 'u');
-        $scope.canCreate = webitel.connection.session.checkResource('book', 'c');
+        $scope.canDelete = false//webitel.connection.session.checkResource('book', 'd');
+        $scope.canUpdate = false//webitel.connection.session.checkResource('book', 'u');
+        $scope.canCreate = false//webitel.connection.session.checkResource('book', 'c');
 
         $scope.isLoading = false;
         $scope.$watch('isLoading', function (val) {
@@ -45,12 +45,27 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
 
         $scope.view = function () {
             var id = $routeParams.id;
-
+            initProperties();
             ContactModel.item(id, $scope.domain, function(err, item) {
                 if (err) {
                     return notifi.error(err, 5000);
                 }
                 $scope.contact = item.data;
+                if($scope.contact.photo){
+                    var ava = document.getElementById('avatar');
+                    ava.src =  $scope.contact.photo;
+                    $scope.hasImage = true;
+                }
+                try{
+                    $scope.generateQR();
+                    $scope.hideQR = false;
+                }
+                catch (e){
+                    $scope.hideQR = true;
+                    //  var elem = document.getElementById("qrcode");
+                    // debugger;
+                    notifi.error('QR is not generated!', 5000);
+                }
                 disableEditMode();
             });
         };

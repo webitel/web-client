@@ -432,6 +432,7 @@ define(['angular'], function (angular) {
 
         'dialer',
         'dialer/members',
+        'dialer/templates',
 
         'cc/tiers',
         'cc/members',
