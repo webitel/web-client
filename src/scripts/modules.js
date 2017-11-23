@@ -107,93 +107,120 @@ define(['angular', 'config'], function (angular, config) {
             iconClass: 'fa fa-usd'
         },
 
+        // {
+        //     href: "#/accounts",
+        //     caption: "Directory",
+        //
+        //     acl: 'account',
+        //     templateUrl: 'modules/accounts/accounts.html',
+        //     controller: 'AccountsCtrl',
+        //     controllerUrl: 'modules/accounts/accounts.js',
+        //     iconClass: 'fa fa-users',
+        //     routes: [{
+        //         href: '/accounts/new',
+        //         templateUrl: 'modules/accounts/accountPage.html',
+        //         controller: 'AccountsCtrl',
+        //         controllerUrl: 'modules/accounts/accounts.js',
+        //         method: "create"
+        //     },{
+        //         href: '/accounts/:id/edit',
+        //         templateUrl: 'modules/accounts/accountPage.html',
+        //         controller: 'AccountsCtrl',
+        //         controllerUrl: 'modules/accounts/accounts.js',
+        //         method: "edit"
+        //     },{
+        //         href: '/accounts/:id/view',
+        //         templateUrl: 'modules/accounts/accountPage.html',
+        //         controller: 'AccountsCtrl',
+        //         controllerUrl: 'modules/accounts/accounts.js',
+        //         method: "view"
+        //     }
+        //     ]
+        // },
         {
-            href: "#/accounts",
+            href: "#/directory",
             caption: "Directory",
 
-            acl: 'account',
-            templateUrl: 'modules/accounts/accounts.html',
-            controller: 'AccountsCtrl',
-            controllerUrl: 'modules/accounts/accounts.js',
+            acl: ['account', 'book', 'vmail'],
+            templateUrl: 'modules/directory/directory.html',
+            controller: 'DirectoryCtrl',
+            controllerUrl: 'modules/directory/directory.js',
             iconClass: 'fa fa-users',
+            homeTemplate: {
+                url: "views/templates/directory.html"
+            },
+            list: true,
             routes: [{
-                href: '/accounts/new',
+                list: true,
+                acl: 'account',
+                caption: 'Accounts',
+                templateUrl: 'modules/accounts/accounts.html',
+                controller: 'AccountsCtrl',
+                href: '/directory/accounts',
+                controllerUrl: 'modules/accounts/accounts.js',
+            },{
+                href: '/directory/accounts/new',
                 templateUrl: 'modules/accounts/accountPage.html',
                 controller: 'AccountsCtrl',
                 controllerUrl: 'modules/accounts/accounts.js',
                 method: "create"
             },{
-                href: '/accounts/:id/edit',
+                href: '/directory/accounts/:id/edit',
                 templateUrl: 'modules/accounts/accountPage.html',
                 controller: 'AccountsCtrl',
                 controllerUrl: 'modules/accounts/accounts.js',
                 method: "edit"
             },{
-                href: '/accounts/:id/view',
+                href: '/directory/accounts/:id/view',
                 templateUrl: 'modules/accounts/accountPage.html',
                 controller: 'AccountsCtrl',
                 controllerUrl: 'modules/accounts/accounts.js',
                 method: "view"
+            },
+
+            {
+                href: '/directory/contacts/:id/edit',
+                templateUrl: 'modules/contacts/contactPage.html',
+                controller: 'ContactsCtrl',
+                controllerUrl: 'modules/contacts/contacts.js',
+                method: "edit"
+            },{
+                href: '/directory/contacts/:id/view',
+                templateUrl: 'modules/contacts/contactPage.html',
+                controller: 'ContactsCtrl',
+                controllerUrl: 'modules/contacts/contacts.js',
+                method: "view"
+            },{
+                list: true,
+                href: "/directory/contacts",
+                caption: "Contacts",
+                acl: 'book',
+                templateUrl: 'modules/contacts/contacts.html',
+                controller: 'ContactsCtrl',
+                controllerUrl: 'modules/contacts/contacts.js'
+            },
+
+            {
+                list: true,
+                href: "/directory/vmail",
+                caption: "Voicemail",
+                acl: 'vmail',
+                templateUrl: 'modules/vMail/vMailSection.html',
+                controller: 'VoiceMailCtrl',
+                controllerUrl: 'modules/vMail/vMail.js'
+            },
+
+
+            {
+                href: "/directory/contactEditor",
+                caption: "Contact edit",
+                hide: true,
+                templateUrl: 'modules/contacts/contactProperties.html',
+                controller: 'ContactPropsCtrl',
+                controllerUrl: 'modules/contacts/contactProperties.js'
             }
+
             ]
-        },
-        {
-            href: "#/gateways",
-            caption: "Gateways",
-
-            acl: 'gateway',
-            templateUrl: 'modules/gateways/gateways.html',
-            controller: 'GatewaysCtrl',
-            controllerUrl: 'modules/gateways/gateways.js',
-            iconClass: 'fa fa-random',
-            routes: [{
-                href: '/gateways/new',
-                templateUrl: 'modules/gateways/gatewayPage.html',
-                controller: 'GatewaysCtrl',
-                controllerUrl: 'modules/gateways/gateways.js',
-                method: "create"
-            },{
-                href: '/gateways/:id/edit',
-                templateUrl: 'modules/gateways/gatewayPage.html',
-                controller: 'GatewaysCtrl',
-                controllerUrl: 'modules/gateways/gateways.js',
-                method: "edit"
-            },{
-                href: '/gateways/:id/view',
-                templateUrl: 'modules/gateways/gatewayPage.html',
-                controller: 'GatewaysCtrl',
-                controllerUrl: 'modules/gateways/gateways.js',
-                method: "view"
-            }]
-        },
-        {
-            href: "#/calendars",
-            caption: "Calendar",
-
-            acl: 'calendar',
-            templateUrl: 'modules/calendar/calendar.html',
-            controller: 'CalendarCtrl',
-            controllerUrl: 'modules/calendar/calendar.js',
-            iconClass: 'fa fa-calendar',
-            routes: [{
-                href: '/calendars/new',
-                templateUrl: 'modules/calendar/calendarPage.html',
-                controller: 'CalendarCtrl',
-                controllerUrl: 'modules/calendar/calendar.js',
-                method: "create"
-            },{
-                href: '/calendars/:id/edit',
-                templateUrl: 'modules/calendar/calendarPage.html',
-                controller: 'CalendarCtrl',
-                controllerUrl: 'modules/calendar/calendar.js',
-                method: "edit"
-            },{
-                href: '/calendars/:id/view',
-                templateUrl: 'modules/calendar/calendarPage.html',
-                controller: 'CalendarCtrl',
-                controllerUrl: 'modules/calendar/calendar.js',
-                method: "view"
-            }]
         },
         {
             href: "#/callflows",
@@ -459,6 +486,64 @@ define(['angular', 'config'], function (angular, config) {
             ]
         },
         {
+            href: "#/gateways",
+            caption: "Gateways",
+
+            acl: 'gateway',
+            templateUrl: 'modules/gateways/gateways.html',
+            controller: 'GatewaysCtrl',
+            controllerUrl: 'modules/gateways/gateways.js',
+            iconClass: 'fa fa-random',
+            routes: [{
+                href: '/gateways/new',
+                templateUrl: 'modules/gateways/gatewayPage.html',
+                controller: 'GatewaysCtrl',
+                controllerUrl: 'modules/gateways/gateways.js',
+                method: "create"
+            },{
+                href: '/gateways/:id/edit',
+                templateUrl: 'modules/gateways/gatewayPage.html',
+                controller: 'GatewaysCtrl',
+                controllerUrl: 'modules/gateways/gateways.js',
+                method: "edit"
+            },{
+                href: '/gateways/:id/view',
+                templateUrl: 'modules/gateways/gatewayPage.html',
+                controller: 'GatewaysCtrl',
+                controllerUrl: 'modules/gateways/gateways.js',
+                method: "view"
+            }]
+        },
+        {
+            href: "#/calendars",
+            caption: "Calendar",
+
+            acl: 'calendar',
+            templateUrl: 'modules/calendar/calendar.html',
+            controller: 'CalendarCtrl',
+            controllerUrl: 'modules/calendar/calendar.js',
+            iconClass: 'fa fa-calendar',
+            routes: [{
+                href: '/calendars/new',
+                templateUrl: 'modules/calendar/calendarPage.html',
+                controller: 'CalendarCtrl',
+                controllerUrl: 'modules/calendar/calendar.js',
+                method: "create"
+            },{
+                href: '/calendars/:id/edit',
+                templateUrl: 'modules/calendar/calendarPage.html',
+                controller: 'CalendarCtrl',
+                controllerUrl: 'modules/calendar/calendar.js',
+                method: "edit"
+            },{
+                href: '/calendars/:id/view',
+                templateUrl: 'modules/calendar/calendarPage.html',
+                controller: 'CalendarCtrl',
+                controllerUrl: 'modules/calendar/calendar.js',
+                method: "view"
+            }]
+        },
+        {
             href: "#/media",
             caption: "Media",
 
@@ -468,16 +553,16 @@ define(['angular', 'config'], function (angular, config) {
             controllerUrl: 'modules/media/media.js',
             iconClass: 'fa fa-play'
         },
-        {
-            href: "#/vmail",
-            caption: "Voice mail",
-
-            acl: 'vmail',
-            templateUrl: 'modules/vMail/vMailSection.html',
-            controller: 'VoiceMailCtrl',
-            controllerUrl: 'modules/vMail/vMail.js',
-            iconClass: 'fa fa-envelope-o'
-        },
+        // {
+        //     href: "#/vmail",
+        //     caption: "Voice mail",
+        //
+        //     acl: 'vmail',
+        //     templateUrl: 'modules/vMail/vMailSection.html',
+        //     controller: 'VoiceMailCtrl',
+        //     controllerUrl: 'modules/vMail/vMail.js',
+        //     iconClass: 'fa fa-envelope-o'
+        // },
         {
             href: "#/queue/dialer/:id/stats",
             caption: "Dialer stats",
@@ -488,40 +573,40 @@ define(['angular', 'config'], function (angular, config) {
             controllerUrl: 'modules/dialer/dialer.js',
             iconClass: 'fa fa-eject'
         },
-        {
-            href: "#/contacts",
-            caption: "Contacts",
-
-            acl: 'cdr/media',
-            templateUrl: 'modules/contacts/contacts.html',
-            controller: 'ContactsCtrl',
-            controllerUrl: 'modules/contacts/contacts.js',
-            iconClass: 'fa fa-user',
-            routes: [
-            {
-                href: '/contacts/:id/edit',
-                templateUrl: 'modules/contacts/contactPage.html',
-                controller: 'ContactsCtrl',
-                controllerUrl: 'modules/contacts/contacts.js',
-                method: "edit"
-            },{
-                href: '/contacts/:id/view',
-                templateUrl: 'modules/contacts/contactPage.html',
-                controller: 'ContactsCtrl',
-                controllerUrl: 'modules/contacts/contacts.js',
-                method: "view"
-            }]
-        },
-        {
-            href: "#/contactEditor",
-            caption: "Contact edit",
-            hide: true,
-            acl: 'cdr/media',
-            templateUrl: 'modules/contacts/contactProperties.html',
-            controller: 'ContactPropsCtrl',
-            controllerUrl: 'modules/contacts/contactProperties.js',
-            iconClass: 'fa fa-bug'
-        },
+        // {
+        //     href: "#/contacts",
+        //     caption: "Contacts",
+        //
+        //     acl: 'book',
+        //     templateUrl: 'modules/contacts/contacts.html',
+        //     controller: 'ContactsCtrl',
+        //     controllerUrl: 'modules/contacts/contacts.js',
+        //     iconClass: 'fa fa-user',
+        //     routes: [
+        //     {
+        //         href: '/contacts/:id/edit',
+        //         templateUrl: 'modules/contacts/contactPage.html',
+        //         controller: 'ContactsCtrl',
+        //         controllerUrl: 'modules/contacts/contacts.js',
+        //         method: "edit"
+        //     },{
+        //         href: '/contacts/:id/view',
+        //         templateUrl: 'modules/contacts/contactPage.html',
+        //         controller: 'ContactsCtrl',
+        //         controllerUrl: 'modules/contacts/contacts.js',
+        //         method: "view"
+        //     }]
+        // },
+        // {
+        //     href: "#/contactEditor",
+        //     caption: "Contact edit",
+        //     hide: true,
+        //     acl: 'cdr/media',
+        //     templateUrl: 'modules/contacts/contactProperties.html',
+        //     controller: 'ContactPropsCtrl',
+        //     controllerUrl: 'modules/contacts/contactProperties.js',
+        //     iconClass: 'fa fa-bug'
+        // },
         {
             href: "#/widget",
             caption: "Widget",

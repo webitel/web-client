@@ -28,9 +28,9 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
         $scope.properties = [];
         $scope.isRoot = !webitel.connection.session.domain;
 
-        $scope.canDelete = webitel.connection.session.checkResource('book', 'd');
-        $scope.canUpdate = webitel.connection.session.checkResource('book', 'u');
-        $scope.canCreate = webitel.connection.session.checkResource('book', 'c');
+        $scope.canDelete = false//webitel.connection.session.checkResource('book', 'd');
+        $scope.canUpdate = false//webitel.connection.session.checkResource('book', 'u');
+        $scope.canCreate = false//webitel.connection.session.checkResource('book', 'c');
 
         $scope.isLoading = false;
         $scope.$watch('isLoading', function (val) {
@@ -45,12 +45,27 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
 
         $scope.view = function () {
             var id = $routeParams.id;
-
+            initProperties();
             ContactModel.item(id, $scope.domain, function(err, item) {
                 if (err) {
                     return notifi.error(err, 5000);
                 }
                 $scope.contact = item.data;
+                if($scope.contact.photo){
+                    var ava = document.getElementById('avatar');
+                    ava.src =  $scope.contact.photo;
+                    $scope.hasImage = true;
+                }
+                try{
+                    $scope.generateQR();
+                    $scope.hideQR = false;
+                }
+                catch (e){
+                    $scope.hideQR = true;
+                    //  var elem = document.getElementById("qrcode");
+                    // debugger;
+                    notifi.error('QR is not generated!', 5000);
+                }
                 disableEditMode();
             });
         };
@@ -140,8 +155,7 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
             company_name: 1,
             job_name: 1,
             description: 1,
-            id: 1,
-            communications: 1
+            id: 1
         }));
         var maxNodes = 40;
 
@@ -232,7 +246,7 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
         $scope.save = save;
 
         function closePage() {
-            $location.path('/contacts');
+            $location.path('/directory/contacts');
         };
 
         $scope.create = function(){
@@ -344,7 +358,16 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
                     ava.src =  $scope.contact.photo;
                     $scope.hasImage = true;
                 }
-                $scope.generateQR();
+                try{
+                    $scope.generateQR();
+                    $scope.hideQR = false;
+                }
+                catch (e){
+                    $scope.hideQR = true;
+                   //  var elem = document.getElementById("qrcode");
+                   // debugger;
+                    notifi.error('QR is not generated!', 5000);
+                }
                 disableEditMode();
             });
         }
@@ -375,6 +398,17 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
             };
         }();
 
+        $scope.getItemForExport = function(id){
+            ContactModel.item(id, $scope.domain, function(err, item) {
+                if (err) {
+                    return notifi.error(err, 5000);
+                }
+                var contact = item && item.data;
+                if(!contact.communications)contact.communications=[];
+                $scope.createVCard(contact);
+            });
+        }
+
         function generateVCard (contact) {
             if(!contact)
                 return;
@@ -382,10 +416,10 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
             var communications = "";
             if(contact.communications)
                 contact.communications.forEach(function (item) {
-                    if(item.type_name.toLowerCase() === "phone"){
+                    if(item.type_name.toLowerCase() === "phone"){  // || /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$/.test(item.number)
                         communications = communications + angular.copy($scope.vTelTemplate.replace("#PHONE_NUMBER#", item.number));
                     }
-                    else if(item.type_name.toLowerCase() === "email"){
+                    else if(item.type_name.toLowerCase() === "email"){ // || /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(item.number)
                         communications = communications + angular.copy($scope.vEmailTemplate.replace("#EMAIL#", item.number));
                     }
                 });
