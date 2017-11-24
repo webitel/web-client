@@ -1237,9 +1237,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                         sql: {
                             connectionString: '',
                             SQLTable: '',
-                            DataTime: '',
-                            PrimaryColumn: '',
-                            SQLFilter: '',
                             PreExecute: '',
                             ColumnMappings: {}
                         }
