@@ -317,7 +317,7 @@
                                                     <tbody>
                                                     <tr class="agent-container {{ag.stateName}}" id="{{ag.name}}" ng-repeat="ag in agentDisplayedCollection" ng-show="showAgentStatus[ag.stateName]">
                                                         <td class="agent-id">
-                                                            <a href="#/accounts/{{ag.number}}/edit?domain={{domain}}">{{ag.number}}</a>
+                                                            <a href="#/directory/accounts/{{ag.number}}/edit?domain={{domain}}">{{ag.number}}</a>
                                                             <br>
                                                             <span class="label btn btn-default" ng-click="canUpdateAgent && changeStatus(ag.number)">
                                                                 {{ag.stateName}}
