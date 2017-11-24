@@ -71,25 +71,25 @@
                                     <input type="text"  class="form-control" name="connectionString" required ng-model="template.template.body.sql.connectionString" >
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div ng-class="{ 'col-sm-6':template.action === 'import', 'col-sm-12': template.action === 'export'}">
                                 <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.SQLTable.$invalid }">
                                     <label style="width: 100%">Table name</label>
                                     <input type="text"  class="form-control" name="SQLTable" required ng-model="template.template.body.sql.SQLTable" >
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-6" ng-if="template.action === 'import'">
                                 <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.PrimaryColumn.$invalid }">
                                     <label style="width: 100%">Primary column</label>
                                     <input type="text"  class="form-control" name="PrimaryColumn" required ng-model="template.template.body.sql.PrimaryColumn" >
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-6" ng-if="template.action === 'import'">
                                 <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.DataTime.$invalid }">
                                     <label style="width: 100%">DataTime column</label>
                                     <input type="text"  class="form-control" name="DataTime" ng-model="template.template.body.sql.DataTime" >
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-6" ng-if="template.action === 'import'">
                                 <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.SQLFilter.$invalid }">
                                     <label style="width: 100%">Custom filter</label>
                                     <input type="text"  class="form-control" name="SQLFilter" ng-model="template.template.body.sql.SQLFilter" >
