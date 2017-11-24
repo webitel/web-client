@@ -1902,8 +1902,9 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                         }
 
                         if (item.idle_sec) {
-                            if (item.call_count) {
-                                avgIdleSec = Math.round(item.idle_sec / (item.call_count - (item.missed_call || 0)));
+                            var cc = (item.call_count - (item.missed_call || 0));
+                            if (item.call_count && cc > 0) {
+                                avgIdleSec = Math.round(item.idle_sec / cc);
                             } else {
                                 avgIdleSec = item.idle_sec;
                             }
