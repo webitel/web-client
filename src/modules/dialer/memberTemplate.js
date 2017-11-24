@@ -1014,9 +1014,6 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
         "_probeCount": {
             name: "Attempts"
         },
-        "callTime": {
-            "name": "Call time"
-        },
         "expire": {
             "name": "Expire"
         },
@@ -1032,14 +1029,26 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
         "attempt_communication_type_name": {
             "name": "Communication type name"
         },
-        "attempt_communication_type_code": {
-            "name": "Communication type code"
+        "_log.callNumber": {
+            "name": "Call number"
         },
-        "attempt_callback_success": {
-            name: "Callback success"
+        "_log.causeQ850": {
+            "name": "Cause code"
         },
-        "attempt_callback_description": {
-            name: "Callback description"
+        "_log.bridgedTime": {
+            "name": "Bridged"
+        },
+        "_log.callState": {
+            "name": "State"
+        },
+        "_log.callTime": {
+            "name": "Call time"
+        },
+        "_log.callDescription": {
+            "name": "Description"
+        },
+        "_log.callback.data.description": {
+            "name": "Callback description"
         }
     };
     var SqlColumnsImport = {
