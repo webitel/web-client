@@ -671,9 +671,14 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             if (!processId)
                 return cb(new Error("Process Id is required."));
 
-            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/templates/' + templateId + '/end/' + processId + '?domain=' + domainName, {cause: 'abort'}, function(err, res) {
-                return cb && cb(err, res);
-            });
+            webitel.api(
+                'PUT',
+                '/api/v2/dialer/' + dialerId + '/templates/' + templateId + '/end/' + processId + '?domain=' + domainName
+                    + '&success=false&message=abort',
+                function(err, res) {
+                    return cb && cb(err, res);
+                }
+            );
         }
 
         function deleteTemplate(dialerId, templateId, domainName, cb) {
