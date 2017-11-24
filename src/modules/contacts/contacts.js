@@ -28,9 +28,9 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
         $scope.properties = [];
         $scope.isRoot = !webitel.connection.session.domain;
 
-        $scope.canDelete = false//webitel.connection.session.checkResource('book', 'd');
-        $scope.canUpdate = false//webitel.connection.session.checkResource('book', 'u');
-        $scope.canCreate = false//webitel.connection.session.checkResource('book', 'c');
+        $scope.canDelete = webitel.connection.session.checkResource('book', 'd');
+        $scope.canUpdate = webitel.connection.session.checkResource('book', 'u');
+        $scope.canCreate = webitel.connection.session.checkResource('book', 'c');
 
         $scope.isLoading = false;
         $scope.$watch('isLoading', function (val) {
