@@ -1316,7 +1316,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                         columnMaps[item.key] = item.value + '.' + item.var;
                     }
                     else if(item.strVar){
-                        columnMaps[item.key] = item.strVar;
+                        columnMaps[item.key] = '`' + item.strVar + '`';
                     }
                     else if(item.commType){
                         columnMaps[item.key] = item.value + '.' + item.commType;
