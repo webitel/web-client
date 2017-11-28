@@ -39,7 +39,7 @@
                     <div class="form-group" ng-class="{ 'has-error' : contactEditForm.company_name.$invalid }">
                         <label class="control-label">Type</label>
                         <select class="form-control" required data-ng-model="property.type" name="type">
-                            <option value="{{i}}" ng-repeat="i in types">{{i}}</option>
+                            <option ng-selected="{{i==property.type}}" value="{{i}}" ng-repeat="i in types">{{i}}</option>
                         </select>
                     </div>
 
