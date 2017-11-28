@@ -1294,7 +1294,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                             $scope.columns.push({
                                 key: item,
                                 value: 'string',
-                                strVar: cols[item]
+                                strVar: cols[item].replace(/`/g,'')
                             })
                         }
                         else{
