@@ -101,8 +101,10 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
         uploader.onAfterAddingFile = function(item) {
             console.info('onAfterAddingFile', item);
 
-            if(item._file.type.substr(0,5) !== 'image' || item._file.size > 250000)
-                return notifi.error("Bad image" ,10000);
+            if(item._file.type.substr(0,5) !== 'image')
+                return notifi.error("Bad image. File is not image");
+            if(item._file.size > 250000)
+                return notifi.error("Bad image. Maximum file size is 250Kb", 10000);
 
             var reader = new FileReader();
             reader.onload = function(event) {
@@ -275,6 +277,8 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
 
                     self.ok = function () {
                         self.contact.communications = self.communications;
+                        var ava = document.getElementById('avatar');
+                        self.contact.photo = ava.src;
                         $modalInstance.close({
                             contact: self.contact
                         });

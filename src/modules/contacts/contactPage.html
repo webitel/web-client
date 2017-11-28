@@ -40,6 +40,22 @@
                                         <span>Communications</span>
                                     </tab-heading>
                                     <div class="table-responsive">
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="number" ng-model="communication.number"> </input>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <ui-select name="communication_type"  ng-model="communication.type" theme="bootstrap"  title="Choose a communication type">
+                                                    <ui-select-match placeholder="Select type...">{{$select.selected.name}}</ui-select-match>
+                                                    <ui-select-choices refresh="getCommunications()" repeat="c in communication_types | filter: $select.search">
+                                                        <span ng-bind-html="c.name | highlight: $select.search"></span>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button class="btn btn-default" ng-click="addComm()" ng-disabled="viewMode">Add</button>
+                                            </div>
+                                        </div>
                                         <div class="row text-center" style=" height: 323px;" ng-if="!contact.communications || contact.communications.length == 0">
                                             <div class="center-block col-md-4" style="float: none;">
                                                 <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
@@ -49,6 +65,7 @@
                                         <table style="width: 100%; display:block;" ng-show="contact.communications.length > 0" st-safe-src="contact.communications" class="table table-hover">
                                             <thead>
                                             <tr>
+                                                <th></th>
                                                 <th style="width: 42%;" st-skip-natural="true">Value</th>
                                                 <th style="width: 60%;" st-skip-natural="true">Type</th>
                                                 <th style="width: 10%;"></th>
@@ -71,22 +88,6 @@
                                             </tr>
                                             </tbody>
                                         </table>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <input type="text" class="form-control" name="number" ng-model="communication.number"> </input>
-                                        </div>
-                                        <div class="col-sm-5">
-                                            <ui-select name="communication_type"  ng-model="communication.type" theme="bootstrap"  title="Choose a communication type">
-                                                <ui-select-match placeholder="Select type...">{{$select.selected.name}}</ui-select-match>
-                                                <ui-select-choices refresh="getCommunications()" repeat="c in communication_types | filter: $select.search">
-                                                    <span ng-bind-html="c.name | highlight: $select.search"></span>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <button class="btn btn-default" ng-click="addComm()" ng-disabled="viewMode">Add</button>
-                                        </div>
                                     </div>
                                 </tab>
                                 <tab ng-hide="hideQR">
