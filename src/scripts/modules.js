@@ -106,37 +106,6 @@ define(['angular', 'config'], function (angular, config) {
             controllerUrl: 'modules/server/settings/settings.js',
             iconClass: 'fa fa-usd'
         },
-
-        // {
-        //     href: "#/accounts",
-        //     caption: "Directory",
-        //
-        //     acl: 'account',
-        //     templateUrl: 'modules/accounts/accounts.html',
-        //     controller: 'AccountsCtrl',
-        //     controllerUrl: 'modules/accounts/accounts.js',
-        //     iconClass: 'fa fa-users',
-        //     routes: [{
-        //         href: '/accounts/new',
-        //         templateUrl: 'modules/accounts/accountPage.html',
-        //         controller: 'AccountsCtrl',
-        //         controllerUrl: 'modules/accounts/accounts.js',
-        //         method: "create"
-        //     },{
-        //         href: '/accounts/:id/edit',
-        //         templateUrl: 'modules/accounts/accountPage.html',
-        //         controller: 'AccountsCtrl',
-        //         controllerUrl: 'modules/accounts/accounts.js',
-        //         method: "edit"
-        //     },{
-        //         href: '/accounts/:id/view',
-        //         templateUrl: 'modules/accounts/accountPage.html',
-        //         controller: 'AccountsCtrl',
-        //         controllerUrl: 'modules/accounts/accounts.js',
-        //         method: "view"
-        //     }
-        //     ]
-        // },
         {
             href: "#/directory",
             caption: "Directory",
@@ -153,7 +122,7 @@ define(['angular', 'config'], function (angular, config) {
             routes: [{
                 list: true,
                 acl: 'account',
-                caption: 'Accounts',
+                caption: 'Users',
                 templateUrl: 'modules/accounts/accounts.html',
                 controller: 'AccountsCtrl',
                 href: '/directory/accounts',
@@ -553,16 +522,6 @@ define(['angular', 'config'], function (angular, config) {
             controllerUrl: 'modules/media/media.js',
             iconClass: 'fa fa-play'
         },
-        // {
-        //     href: "#/vmail",
-        //     caption: "Voice mail",
-        //
-        //     acl: 'vmail',
-        //     templateUrl: 'modules/vMail/vMailSection.html',
-        //     controller: 'VoiceMailCtrl',
-        //     controllerUrl: 'modules/vMail/vMail.js',
-        //     iconClass: 'fa fa-envelope-o'
-        // },
         {
             href: "#/queue/dialer/:id/stats",
             caption: "Dialer stats",
@@ -573,40 +532,6 @@ define(['angular', 'config'], function (angular, config) {
             controllerUrl: 'modules/dialer/dialer.js',
             iconClass: 'fa fa-eject'
         },
-        // {
-        //     href: "#/contacts",
-        //     caption: "Contacts",
-        //
-        //     acl: 'book',
-        //     templateUrl: 'modules/contacts/contacts.html',
-        //     controller: 'ContactsCtrl',
-        //     controllerUrl: 'modules/contacts/contacts.js',
-        //     iconClass: 'fa fa-user',
-        //     routes: [
-        //     {
-        //         href: '/contacts/:id/edit',
-        //         templateUrl: 'modules/contacts/contactPage.html',
-        //         controller: 'ContactsCtrl',
-        //         controllerUrl: 'modules/contacts/contacts.js',
-        //         method: "edit"
-        //     },{
-        //         href: '/contacts/:id/view',
-        //         templateUrl: 'modules/contacts/contactPage.html',
-        //         controller: 'ContactsCtrl',
-        //         controllerUrl: 'modules/contacts/contacts.js',
-        //         method: "view"
-        //     }]
-        // },
-        // {
-        //     href: "#/contactEditor",
-        //     caption: "Contact edit",
-        //     hide: true,
-        //     acl: 'cdr/media',
-        //     templateUrl: 'modules/contacts/contactProperties.html',
-        //     controller: 'ContactPropsCtrl',
-        //     controllerUrl: 'modules/contacts/contactProperties.js',
-        //     iconClass: 'fa fa-bug'
-        // },
         {
             href: "#/widget",
             caption: "Widget",
