@@ -278,7 +278,8 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
                     self.ok = function () {
                         self.contact.communications = self.communications;
                         var ava = document.getElementById('avatar');
-                        self.contact.photo = ava.src;
+                        if(ava.src.indexOf('/modules/contacts/profile-user.svg')===-1)
+                           self.contact.photo = ava.src;
                         $modalInstance.close({
                             contact: self.contact
                         });
