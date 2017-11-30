@@ -47,7 +47,7 @@
             <th style="width: 10%" st-skip-natural="true" st-sort="action">Action</th>
             <th style="width: 10%" st-skip-natural="true" st-sort="type">Type</th>
             <th style="width: 15%" st-skip-natural="true" st-sort="process_state">Process state</th>
-            <th style="width: 15%" st-skip-natural="true" st-sort="process_start">Start process</th>
+            <th style="width: 15%" st-skip-natural="true" st-sort="process_start">Last run time</th>
             <th style="width: 10%; min-width: 90px; text-align: end;">
                 Count: {{displayedTemplateCollection.length}}
             </th>
@@ -69,7 +69,7 @@
             <td >{{row.action}}</td>
             <td >{{row.type}}</td>
             <td >{{row.process_start ? row.process_state : row.last_response_text}}</td>
-            <td >{{timeToString(row.process_start*1000)}}</td>
+            <td >{{timeToString(row.execute_time*1000)}}</td>
             <td style="text-align: end">
                 <a ng-if="row.process_start" ng-click="resetProcess(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-danger"><i class="fa fa-stop"></i></a>
                 <a ng-if="row.action === 'export' && row.type === 'SQL' && !hideExecute" ng-click="exportToSql(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-success"><i class="fa fa-upload"></i></a>
