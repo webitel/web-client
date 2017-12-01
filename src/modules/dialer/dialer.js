@@ -2106,6 +2106,11 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     $scope.connectRate = 0;
                 }
 
+                $scope.awt = 0;
+                if (stats && stats.waitSec && stats.connectedCall) {
+                    $scope.awt = (stats.waitSec / stats.connectedCall).toFixed(2);
+                }
+
                 $scope.abandoned = ((stats.predictAbandoned * 100) / stats.callCount) || 0;
 
                 $scope.attempts = (stats.callCount || 0);
