@@ -1366,7 +1366,7 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     action: 1,
                     id: 1,
                     process_state: 1,
-                    process_start: 1,
+                    execute_time: 1,
                     process_id: 1,
                     last_response_text: 1,
                     before_delete: 1
