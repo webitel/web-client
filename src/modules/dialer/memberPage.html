@@ -174,11 +174,19 @@
                                                             <dt>Call time</dt>
                                                             <dd>{{timeToString(probe.callTime)}}</dd>
 
+                                                            <dt>Connected time</dt>
+                                                            <dd>{{probe.connectedTime ? timeToString(probe.connectedTime) : "Not connected" }}</dd>
+
                                                             <dt>Bridge time</dt>
                                                             <dd>{{probe.bridgedTime ? timeToString(probe.bridgedTime) : "Not bridged"}}</dd>
 
                                                             <dt>Talk time</dt>
                                                             <dd>{{secToString(probe.talkSec)}}</dd>
+
+                                                            <div ng-if="probe.waitSec">
+                                                                <dt>Wait time</dt>
+                                                                <dd>{{secToString(probe.waitSec)}}</dd>
+                                                            </div>
 
                                                             <div ng-if="!!probe.agentId">
                                                                 <dt>Agent</dt>
