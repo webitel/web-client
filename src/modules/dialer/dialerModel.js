@@ -470,7 +470,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "state" : +option.state || 0,
                 "type" : option.type,
                 "priority" : angular.isNumber(option.priority) ? option.priority : 1,
-                "active" : typeof option.active == 'boolean' ? option.active : false,
+                "active" : typeof option.active === 'boolean' ? option.active : false,
                 "calendar" : calendar,
                 "playbackFile" : option.playbackFile,
                 "communications" : option.communications,
@@ -510,7 +510,9 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     "silenceThreshold": amd.silenceThreshold || 256,
                     "afterGreetingSilence": amd.afterGreetingSilence || 800,
                     "greeting": amd.greeting || 1500,
-                    "initialSilence": amd.initialSilence || 2500
+                    "initialSilence": amd.initialSilence || 2500,
+                    "playbackFile": amd.playbackFile || null,
+                    "beforePlaybackFileTime": amd.beforePlaybackFileTime || 1000
                 },
                 "causesError": causesError,
                 "causesRetry": causesRetry,
