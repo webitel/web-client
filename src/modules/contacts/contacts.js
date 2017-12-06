@@ -94,6 +94,7 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
             return $scope.isEdit = !!oldValue.id;
         }, true);
 
+
         var uploader = $scope.uploader = new FileUploader();
         uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
             console.info('onWhenAddingFileFailed', item, filter, options);
@@ -222,6 +223,8 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
         };
 
         $scope.addComm  = function() {
+            if(!$scope.communication.number || !$scope.communication.type)
+                return;
             $scope.contact.communications.push({
                 number: $scope.communication.number,
                 type_id: $scope.communication.type.id,
@@ -344,6 +347,15 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
                 $scope.contact.__time = Date.now();
                 return edit();
             };
+
+            if ($scope.contact.tags && $scope.contact.tags.length>0) {
+                var tags = [];
+                angular.forEach($scope.contact.tags, function (item) {
+                    if (item)
+                        tags.push(item.text);
+                });
+                $scope.contact.tags = tags;
+            }
             ContactModel.update($scope.contact.id, angular.copy($scope.contact), $scope.domain, cb);
         };
 
