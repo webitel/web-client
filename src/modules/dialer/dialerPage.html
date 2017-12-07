@@ -244,6 +244,21 @@
                                                                                 <input ng-disabled="viewMode" class="form-control" type="number" name="maxPredictiveSilentCalls" ng-model="dialer.parameters.maxPredictiveSilentCalls" min="0" max="100">
                                                                             </div>
                                                                         </div>
+
+                                                                        <div class="col-sm-6"  ng-show="dialer.type==diealerTypes[2]" >
+                                                                            <div class="form-group" ng-class="{ 'has-error' : dialerForm.predictStartCallCount.$invalid }">
+                                                                                <label class="control-label">Start predict call count</label>
+                                                                                <input ng-disabled="viewMode" class="form-control" type="number" name="predictStartCallCount" ng-model="dialer.parameters.predictStartCallCount" min="0" max="1000">
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-sm-6"  ng-show="dialer.type==diealerTypes[2]" >
+                                                                            <div class="form-group" ng-class="{ 'has-error' : dialerForm.predictStartBridgedCount.$invalid}">
+                                                                                <label class="control-label">Start predict bridged call count</label>
+                                                                                <input ng-disabled="viewMode" class="form-control" type="number" name="predictStartBridgedCount" ng-model="dialer.parameters.predictStartBridgedCount" min="0" max="200">
+                                                                            </div>
+                                                                        </div>
+
                                                                     </div>
 
 

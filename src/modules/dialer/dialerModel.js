@@ -482,6 +482,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     "intervalTryCount" : angular.isNumber(option.parameters && option.parameters.intervalTryCount) ? option.parameters.intervalTryCount : 60,
                     "wrapUpTime" : angular.isNumber(option.parameters && option.parameters.wrapUpTime) ? option.parameters.wrapUpTime : 60,
                     "predictAdjust" : angular.isNumber(option.parameters && option.parameters.predictAdjust) ? option.parameters.predictAdjust : 150,
+                    "predictStartCallCount" : angular.isNumber(option.parameters && option.parameters.predictStartCallCount) ? option.parameters.predictStartCallCount : 200,
+                    "predictStartBridgedCount" : angular.isNumber(option.parameters && option.parameters.predictStartBridgedCount) ? option.parameters.predictStartBridgedCount : 10,
                     "targetPredictiveSilentCalls" : angular.isNumber(option.parameters && option.parameters.targetPredictiveSilentCalls) ? option.parameters.targetPredictiveSilentCalls : 2.5,
                     "maxPredictiveSilentCalls" : angular.isNumber(option.parameters && option.parameters.maxPredictiveSilentCalls) ? option.parameters.maxPredictiveSilentCalls : 3,
                     'waitingForResultStatus': option.parameters && option.parameters.waitingForResultStatus,
