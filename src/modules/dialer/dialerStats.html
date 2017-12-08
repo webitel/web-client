@@ -222,8 +222,17 @@
                                         <div class="col-sm-12">
                                             <div class="text-center h4">{{causeCartCompleteStr}}</div>
                                         </div>
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-12" style="max-height: 100px;">
                                             <nvd3 options="causeCartComplete.options" data="causeCartComplete.data"></nvd3>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" ng-if="dialer.type === 'Predictive Dialer'">
+                                        <div class="col-sm-12">
+                                            <div class="text-center h4">Predict adjust, %</div>
+                                        </div>
+                                        <div class="col-sm-12" style="max-height: 100px; width: 100%">
+                                            <nvd3 options="predictAdjustChart.options" data="predictAdjustChart.data"></nvd3>
                                         </div>
                                     </div>
 

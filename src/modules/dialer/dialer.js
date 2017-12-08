@@ -2100,14 +2100,24 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
             function setStats(stats, amd) {
 
-                $scope.activeCalls = (stats && stats.active) || 0;
-                $scope.connectRate = ((stats && stats.callCount) / (stats && stats.bridgedCall));
+                if (!stats) {
+                    stats = {}
+                }
+
+                if (angular.isNumber(stats.predictAdjust)) {
+                    $scope.predictAdjustChart.data.measures = $scope.predictAdjustChart.data.markers = [Math.round(stats.predictAdjust * 100 / 1000)];
+                } else if  ($scope.dialer && $scope.dialer.parameters.predictAdjust) {
+                    $scope.predictAdjustChart.data.measures = $scope.predictAdjustChart.data.markers = [Math.round($scope.dialer.parameters.predictAdjust * 100 / 1000)];
+                }
+
+                $scope.activeCalls = (stats.active) || 0;
+                $scope.connectRate = ((stats.callCount) / (stats.bridgedCall));
                 if (!isFinite($scope.connectRate)) {
                     $scope.connectRate = 0;
                 }
 
                 $scope.awt = 0;
-                if (stats && stats.waitSec && stats.connectedCall) {
+                if (stats.waitSec && stats.connectedCall) {
                     $scope.awt = Math.round((stats.waitSec / stats.connectedCall));
                 }
 
@@ -2166,7 +2176,40 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                 }
             }
 
-            $scope.causeCartCompleteStr = ""; 
+            $scope.causeCartCompleteStr = "";
+
+            $scope.predictAdjustChart = {
+                data: {
+                    "ranges": [0, 100],
+                    "rangeLabels": ["Min", "Max"],
+                    "measures": [0],
+                    "measureLabels": ["Current"],
+                    "markers": [0],
+                    "markerLabels": ["Current"]
+                },
+                options: {
+                    chart: {
+                        type: 'bulletChart',
+                        margin: {
+                            top: 10,
+                            right: 20,
+                            bottom: 10,
+                            left: 20
+                        },
+                        tooltip: {
+                            enabled: true,
+                            valueFormatter: function (d) {
+                                return d3.format(',f')(d)
+                            }
+                        }
+                    },
+                    title: {
+                        enable: false,
+                        text: ""
+                    }
+                }
+            };
+
             $scope.causeCartComplete = {
                 data: {
 
