@@ -68,7 +68,11 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
         }
 
         function remove (id, domainName, cb) {
+            if (!id) {
+                return cb(new Error("Id is required"))
+            }
 
+            webitel.api("DELETE", "/api/v2/routes/extensions/" + id + "?domain=" + (domainName || ""), cb);
         }
 
         return {
