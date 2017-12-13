@@ -19,19 +19,61 @@
 
             	<div class="col-sm-12">
 
-					<div class="col-sm-4">
+					<div class="col-sm-3">
 						<div class="form-group" ng-class="{ 'has-error' : defaultForm.name.$invalid }">
 							<label class="control-label">Name</label>
 							<input ng-disabled="viewMode" type="text" required class="form-control" name="name"  placeholder="Name" ng-model="default.name">
 						</div>
 					</div>
 
-					<div class="col-sm-3">
-						<div class="form-group" ng-class="{ 'has-error' : defaultForm.number.$invalid }">
-							<label class="control-label">Number</label>
-							<input ng-disabled="viewMode" type="text" required class="form-control" name="number" placeholder="Number" ng-model="default.destination_number">
-						</div>
-					</div>
+                    <div class="col-sm-4">
+                        <div class="form-group" ng-class="{ 'has-error' : !validNumber }">
+                            <label class="control-label">Number</label>
+                            <div class="input-group">
+                                <input ng-change="testRegexp(default.destination_number)" ng-disabled="viewMode" required  name="number" placeholder="Number" ng-model="default.destination_number" type="text" class="form-control">
+                                <span class="input-group-btn">
+                                <div  class="btn-group" >
+                                   <button style="min-width: 40px;" ng-click="toggleTester()" type="button" class="btn btn-default">
+                                       <span ng-show="!isOpenedTester" class="fa fa-question"></span>
+                                       <span ng-show="isOpenedTester" class="fa fa-times"></span>
+                                   </button>
+                                   <div ng-style="{'display': isOpenedTester ? 'block' : 'none'}" style="min-width: 300px;" class="dropdown-menu pull-right  panel">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Test number</label>
+                                                        <input ng-change="testRegexp(default.destination_number)" type="text" class="form-control" placeholder="Test number" ng-model="testNumber">
+                                                    </div>
+                                                </div>
+                                                <div style="margin-top: 5px;" class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <ul class="list-group">
+                                                            <li clipboard text="res.name" on-copied="onCopied(res.name)" on-error="onCopiedFail(err)" style="cursor:pointer;" ng-click="test()" class="list-group-item" ng-repeat="res in testNumberResults">
+                                                                <span class="pull-right">{{res.name}}</span>
+                                                                {{res.val}}
+                                                            </li>
+                                                            <li class="list-group-item" ng-show="testNumberResults.length === 0">
+                                                                No match
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+
+					<!--<div class="col-sm-3">-->
+						<!--<div class="form-group" ng-class="{ 'has-error' : defaultForm.number.$invalid }">-->
+							<!--<label class="control-label">Number</label>-->
+							<!--<input ng-disabled="viewMode" type="text" required class="form-control" name="number" placeholder="Number" ng-model="default.destination_number">-->
+						<!--</div>-->
+					<!--</div>-->
 
 					<div class="col-sm-3">
 						<div class="form-group" ng-class="{ 'has-error' : defaultForm.timezone.$invalid }">
