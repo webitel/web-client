@@ -18,6 +18,61 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
             $scope.diagramOpened = false;
             $scope.cfDiagram = null;
 
+            function testRegexp(val) {
+                console.error("ONTEST");
+                $scope.validNumber = false;
+                $scope.testNumberResults = [];
+                if (!val)
+                    return false;
+
+                try {
+                    var reg = new RegExp(val);
+                    $scope.validNumber = true;
+                    $timeout(function () {
+                        $scope.$apply()
+                    });
+                    if (!$scope.testNumber) {
+                        return true
+                    }
+                    setTestValuesRegExp(reg, $scope.testNumber);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            function setTestValuesRegExp(reg, number) {
+                try {
+                    reg.exec(number).forEach(function (item, idx) {
+                        $scope.testNumberResults.push({
+                            val: item || '-',
+                            name: '&reg0.$' + idx
+                        })
+                    });
+                } catch (e) {
+
+                }
+            }
+
+            function toggleTester() {
+                $scope.isOpenedTester = !$scope.isOpenedTester;
+            }
+
+            $scope.testRegexp = testRegexp;
+            $scope.toggleTester = toggleTester;
+            $scope.testNumber = "";
+            $scope.validNumber = true;
+            $scope.isOpenedTester = false;
+            $scope.testNumberResults = [];
+
+            $scope.onCopied = function (val) {
+                return notifi.info('Copied: ' + val.replace('&', '&amp;'), 1000)
+            };
+
+            $scope.onCopiedFail = function (err) {
+                return notifi.error(err, 1000)
+            };
+
             $scope.$watch('isLoading', function (val) {
                 if (val) {
                     cfpLoadingBar.start()
@@ -242,8 +297,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                         });
                     }, 100);
 
-                }
-                else{
+                } else {
                     CallflowDiagram.updateModel();
                     CallflowDiagram.clearReducer();
 					$scope.cfDiagram = angular.copy($scope.oldCfDiagram);
