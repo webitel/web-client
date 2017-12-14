@@ -19,7 +19,6 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
             $scope.cfDiagram = null;
 
             function testRegexp(val) {
-                console.error("ONTEST");
                 $scope.validNumber = false;
                 $scope.testNumberResults = [];
                 if (!val)

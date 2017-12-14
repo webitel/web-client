@@ -12,6 +12,12 @@
                     <li><a href="javascript:;" ng-click="openCsvTemplate('export', null, false)">Export statistics CSV</a></li>
                 </ul>
             </div>
+
+            <span ng-if="canCreate" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark btn-file"  ng-disabled="!domain" style="padding: 0">
+                <i class="glyphicon glyphicon-cloud-upload"></i>
+                <input type="file" nv-file-select="" uploader="uploaderTemplate" accept=".json">
+            </span>
+
             <a ng-click="reloadTemplates()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v bg-dark">
                 <i class="glyphicon glyphicon-refresh"></i>
             </a>
@@ -48,7 +54,7 @@
             <th style="width: 10%" st-skip-natural="true" st-sort="type">Type</th>
             <th style="width: 15%" st-skip-natural="true" st-sort="process_state">Process state</th>
             <th style="width: 15%" st-skip-natural="true" st-sort="process_start">Last run time</th>
-            <th style="width: 10%; min-width: 90px; text-align: end;">
+            <th style="width: 10%; min-width: 120px; text-align: end;">
                 Count: {{displayedTemplateCollection.length}}
             </th>
         </tr>
@@ -82,6 +88,8 @@
 
                 <a ng-click="openSqlTemplate(row.action, row, true)" ng-if="canUpdate && row.type === 'SQL'" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
                 <a ng-click="openSqlTemplate(row.action, row, false)" ng-if="viewMode && row.type === 'SQL'" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-file"></i></a>
+
+                <a href="javascript:;" ng-click="saveTemplateToDisk(row.id)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-cloud-download"></i></a>
 
                 <a href="javascript:;" ng-click="removeTemplate(row)" ng-if="canDelete" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
             </td>

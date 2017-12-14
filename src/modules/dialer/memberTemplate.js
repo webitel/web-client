@@ -1333,8 +1333,8 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
             };
     }]);
 
-    app.controller('MembersTemplateCtrl', ['$scope', 'webitel', 'DialerModel', '$modal', '$confirm', 'notifi',
-        function ($scope, webitel, DialerModel, $modal, $confirm, notifi) {
+    app.controller('MembersTemplateCtrl', ['$scope', 'webitel', 'DialerModel', '$modal', '$confirm', 'notifi', 'FileUploader',
+        function ($scope, webitel, DialerModel, $modal, $confirm, notifi, FileUploader) {
 
             $scope.canDelete = webitel.connection.session.checkResource('dialer/templates', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('dialer/templates', 'u');
@@ -1771,7 +1771,46 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                 else{
                     start();
                 }
-            }
+            };
+
+            $scope.saveTemplateToDisk = function (id) {
+
+                DialerModel.members.templateItem($scope.dialer._id, id, $scope.domain, function (err, res) {
+                    if (err) {
+                        return notifi.error(err, 5000);
+                    }
+                    var template = res && res.data;
+                    if (template) {
+                        delete template.success_data;
+                        utils.saveJsonToPc(template, template.name + '.json');
+                    }
+                });
+            };
+
+            var uploaderTemplate = $scope.uploaderTemplate = new FileUploader();
+            uploaderTemplate.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+                console.info('onWhenAddingFileFailed', item, filter, options);
+            };
+            uploaderTemplate.onAfterAddingFile = function(item) {
+                console.info('onAfterAddingFile', item);
+
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        var data = JSON.parse(event.target.result);
+                        DialerModel.members.addTemplate($scope.dialer._id, data, $scope.domain, function (err, res) {
+                            if (err)
+                                return notifi.error(err, 5000);
+
+                            $scope.reloadTemplates();
+                            return notifi.info("Added template " + data.name || "", 2000)
+                        });
+                    } catch (e) {
+                        notifi.error(e, 10000);
+                    }
+                };
+                reader.readAsText(item._file);
+            };
 
             $scope.openCsvTemplate = function (method, item, isEdit) {
                 var modalInstance = $modal.open({
