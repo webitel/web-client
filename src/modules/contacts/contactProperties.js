@@ -149,7 +149,8 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
 
 
                         self.addCommunication = function () {
-                            if ($scope.comm_name && $scope.comm_name.value !== '' && $scope.comm_name.value.toLowerCase() !== 'phone' && $scope.comm_name.value.toLowerCase() !== 'email') {
+                            if ($scope.comm_name && $scope.comm_name.value !== '' /*
+                             && $scope.comm_name.value.toLowerCase() !== 'phone' && $scope.comm_name.value.toLowerCase() !== 'email'*/) {
                                 ContactModel.addCommunicaiton({name:$scope.comm_name.value}, domainName, function (err, res) {
                                     if(err)
                                        return notifi.error(err, 5000);
