@@ -129,6 +129,23 @@
                                 <option ng-repeat="o in item.options" ng-selected="{{o==contact.custom_data[item.name]}}" value="{{o}}">{{o}}</option>
                             </select>
 
+                            <div ng-if="item.type === 'date' && !item.required" class="input-group ui-datepicker">
+                                <input type="text"
+                                       class="form-control"
+                                       name="item.name"
+                                       datepicker-popup="dd.MM.yyyy"
+                                       ng-model="contact.custom_data[item.name]"
+                                       popup-placement="top-left"
+                                       offset-height="100"
+                                       datepicker-append-to-body="true"
+                                       is-open="dateControl.openedDate"
+                                       offset-height="300"
+                                       datepicker-options="dateOptions"
+                                       show-button-bar="false"
+                                >
+                                <span class="btn input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
+                            </div>
+
                             <!--<input ng-if="item.type === 'text' && item.required" name="item.name" type="text" class="form-control" required data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">-->
                             <!--<input ng-if="item.type === 'number' && item.required" name="item.name" type="number" class="form-control" required data-ng-model="contact.custom_data[item.name]"  ng-disabled="viewMode">-->
                             <!--<select ng-if="item.type === 'select' && item.required" name="item.name" class="form-control" required ng-model="contact.custom_data[item.name]">-->
