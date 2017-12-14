@@ -74,7 +74,8 @@ define(['app', 'scripts/webitel/utils', 'modules/contacts/contactModel'], functi
                             'text',
                             'number',
                             'select',
-                            'boolean'
+                            'boolean',
+                            'date'
                         ];
 
                         self.ok = function () {

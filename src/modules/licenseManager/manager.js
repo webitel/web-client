@@ -111,19 +111,13 @@ define(['app', 'scripts/webitel/utils', 'modules/licenseManager/managerModel'], 
                 });
             };
 
-            $scope.init = function init () {
-                if (!!$route.current.method) {
-                    return $scope[$route.current.method]();
-                };
-                reloadData();
-            }();
 
             $scope.openDate = function($event) {
                 return $event.preventDefault(),
                     $event.stopPropagation(),
                     $scope.openedDate = !0
             };
-            
+
             $scope.onCopied = function () {
                 return notifi.info('Copied', 1000)
             };
@@ -136,6 +130,15 @@ define(['app', 'scripts/webitel/utils', 'modules/licenseManager/managerModel'], 
                 "year-format": "'yy'",
                 "starting-day": 1
             };
+
+            $scope.init = function init () {
+                if (!!$route.current.method) {
+                    return $scope[$route.current.method]();
+                };
+                reloadData();
+            }();
+
+
         	
     }]);
 });

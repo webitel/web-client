@@ -32,6 +32,22 @@ define(['app', 'qrcode', 'scripts/webitel/utils', 'modules/contacts/contactModel
         $scope.canUpdate = webitel.connection.session.checkResource('book', 'u');
         $scope.canCreate = webitel.connection.session.checkResource('book', 'c');
 
+        $scope.dateOptions = {
+            "year-format": "'yy'",
+            "starting-day": 1
+        };
+
+        $scope.dateControl = {
+            openedDate: false
+        };
+
+        $scope.openDate = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.dateControl.openedDate = true;
+            return true
+        };
+
         $scope.isLoading = false;
         $scope.$watch('isLoading', function (val) {
             if (val) {
