@@ -1331,6 +1331,11 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                     template: $scope.template
                 });
             };
+
+            $scope.status = {
+                isPreExecute: false,
+                isPostExecute: false
+            };
     }]);
 
     app.controller('MembersTemplateCtrl', ['$scope', 'webitel', 'DialerModel', '$modal', '$confirm', 'notifi', 'FileUploader',
