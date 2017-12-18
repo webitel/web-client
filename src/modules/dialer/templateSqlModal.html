@@ -95,11 +95,24 @@
                                     <input type="text"  class="form-control" name="SQLFilter" ng-model="template.template.body.sql.SQLFilter" >
                                 </div>
                             </div>
+
                             <div class="col-sm-12">
-                                <div class="form-group" ng-class="{ 'has-error' : templateSqlForm.PreExecute.$invalid }">
-                                    <label style="width: 100%">PreExecute</label>
-                                    <textarea class="form-control" name="PreExecute" ng-model="template.template.body.sql.PreExecute" />
-                                </div>
+
+                                <accordion close-others="true">
+                                    <div accordion-group style="padding: 2px;" class="panel-default" heading="Pre execute" is-open="status.isFirstOpen" is-disabled="status.isPreExecute">
+                                        <div class="row" style="padding: 0; margin-top: -13px;margin-bottom: -13px">
+                                            <textarea rows="4" class="form-control" name="PreExecute" ng-model="template.template.body.sql.PreExecute" />
+                                        </div>
+                                    </div>
+
+                                    <div accordion-group style="padding: 2px;" class="panel-default" heading="Post execute" is-open="status.isPostExecute" is-disabled="status.isPostExecute">
+                                        <div class="row" style="padding: 0; margin-top: -13px;margin-bottom: -13px">
+                                            <textarea rows="4" class="form-control" name="PostExecute" ng-model="template.template.body.sql.PostExecute" />
+                                        </div>
+                                    </div>
+
+                                </accordion>
+
                             </div>
                         </div>
                     </tab>
