@@ -2167,10 +2167,13 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                         })
                     }
 
-                    if (notMachine) {
-                        var m = stats.amd["MACHINE"] || 0;
-                        $scope.amdMachine = (m * 100) / (notMachine + m);
+                    var m = stats.amd["MACHINE"];
+                    if (m) {
+                        $scope.amdMachine = ((m - (stats.amd["CANCEL"] || 0)) * 100) /  $scope.connectedCall ;
+                    } else {
+                        $scope.amdMachine = 0;
                     }
+
 
                     $scope.amdState.data = data;
                 }
