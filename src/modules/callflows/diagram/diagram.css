@@ -13,9 +13,31 @@
   flex-direction: column;
   overflow: hidden;
 }
-#root button, #root input, #root optgroup, #root select, #root textarea {
+.parent-container input, .parent-container optgroup, .parent-container select, .parent-container textarea {
   font: caption;
 }
+
+.callflow-diagram-params-item {
+    z-index: 1032;
+    background-color: #647278;
+    display: inline-block;
+    width: -webkit-fill-available;
+    width: -moz-available;
+    padding: 8px;
+    margin-bottom: 2px;
+    list-style: none;
+}
+
+.callflow-diagram-params-item span {
+    color: white;
+    vertical-align: -webkit-baseline-middle;
+    vertical-align: -moz-middle-with-baseline;
+}
+
+.callflow-diagram-params-item button {
+    display: none;
+}
+
 pre{
   display: block;
   font-family: monospace;
@@ -396,6 +418,7 @@ pre{
   font-weight: bold;
   margin: 0 4px;
   text-align: center;
+  padding-top: 7px;
 }
 
 .parent-container .controls .parameters button:hover, .parent-container .controls .parameters button:focus {
@@ -480,7 +503,7 @@ pre{
   vertical-align: -moz-middle-with-baseline;
 }
 
-.parent-container .controls .parameters .params-list li button {
+.parent-container .controls .parameters .params-list li  button {
   background-color: transparent;
   padding: 6px 10px;
   border-radius: 10px;
