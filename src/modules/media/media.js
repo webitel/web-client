@@ -89,7 +89,7 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
             }
 
             function getType (fileItem) {
-                if (fileItem.file.type == "audio/wav")
+                if (fileItem.file.type === "audio/wav" || fileItem.file.type === "audio/x-wav")
                     return 'wav';
                 else return 'mp3'
             }
