@@ -71,8 +71,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 domain: domainName,
                 fs_timezone: def.fs_timezone && def.fs_timezone.id,
                 callflow: def.callflow,
-                callflow_on_disconnect: def.onDisconnect,
-                cf_diagram: def.cfDiagram
+                callflow_on_disconnect: def.callflow_on_disconnect,
+                cf_diagram: def.cf_diagram
             };
         };
 

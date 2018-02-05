@@ -565,7 +565,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                     //     $scope.cf = cd ? JSON.stringify(cd.callflowJson) : $scope.cf;
                     //     DiagramDesigner.removeDesigner();
                     // }
-                    $scope.default.cfDiagram = angular.copy($scope.cfDiagram);
+                    $scope.default.cf_diagram = angular.copy($scope.cfDiagram);
 	        		$scope.default.callflow = JSON.parse($scope.cf);
 					if ($scope.cfOnDisconnect) {
 						$scope.default.callflow_on_disconnect = JSON.parse($scope.cfOnDisconnect);

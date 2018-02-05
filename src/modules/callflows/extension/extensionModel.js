@@ -49,8 +49,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 name: ext.name,
                 fs_timezone: ext.fs_timezone && ext.fs_timezone.id,
                 callflow: ext.callflow,
-                callflow_on_disconnect: ext.onDisconnect,
-                cf_diagram: ext.cfDiagram
+                callflow_on_disconnect: ext.callflow_on_disconnect,
+                cf_diagram: ext.cf_diagram
             };
         };
 
