@@ -100,6 +100,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                     user.state = e['Account-User-State'];
                     user.status = e['Account-Status'];
                     user.descript = descript;
+                    user.cc = agentLeggedInCC(e['Account-Agent-Status']);
                     $scope.$apply();
                 }
             };
@@ -157,11 +158,23 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                     return notifi.error(err, 5000);
                 var arr = [];
                 angular.forEach(res.data || res.info, function(item) {
+                    item.cc = agentLeggedInCC(item['agent.status']);
                     arr.push(item);
                 });
                 $scope.rowCollection = arr;
             });
         };
+
+        function agentLeggedInCC(status) {
+            if (status) {
+                status = decodeURIComponent(status);
+                return status === "Available" ||
+                    status === "Available (On Demand)" ||
+                    status === "On Break";
+            } else {
+                return false;
+            }
+        }
 
         function findTier(array, queueName) {
             for (var i in array)
