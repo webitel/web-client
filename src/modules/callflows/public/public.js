@@ -496,12 +496,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
                     //     $scope.cf = cd ? JSON.stringify(cd.callflowJson) : $scope.cf;
                     //     DiagramDesigner.removeDesigner();
                     // }
-                    $scope.public.cfDiagram = angular.copy($scope.cfDiagram);
+                    $scope.public.cf_diagram = angular.copy($scope.cfDiagram);
 	        		$scope.public.callflow = JSON.parse($scope.cf);
 					if ($scope.cfOnDisconnect) {
-						$scope.public.onDisconnect = JSON.parse($scope.cfOnDisconnect);
+						$scope.public.callflow_on_disconnect = JSON.parse($scope.cfOnDisconnect);
 					} else {
-						$scope.public.onDisconnect = [];
+						$scope.public.callflow_on_disconnect = [];
 					}
 		        	if (!$scope.public.id) {
 	        			CallflowPublicModel.add($scope.public, $scope.domain, cb)

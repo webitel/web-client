@@ -265,12 +265,12 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                     //     $scope.cf = cd ? JSON.stringify(cd.callflowJson) : $scope.cf;
                     //     DiagramDesigner.removeDesigner();
                     // }
-                    $scope.extension.cfDiagram = angular.copy($scope.cfDiagram);
+                    $scope.extension.cf_diagram = angular.copy($scope.cfDiagram);
                     $scope.extension.callflow = JSON.parse($scope.cf);
                     if ($scope.cfOnDisconnect) {
-                        $scope.extension.onDisconnect = JSON.parse($scope.cfOnDisconnect);
+                        $scope.extension.callflow_on_disconnect = JSON.parse($scope.cfOnDisconnect);
                     } else {
-                        $scope.extension.onDisconnect = [];
+                        $scope.extension.callflow_on_disconnect = [];
                     }
 
                     CallflowExtensionModel.update($scope.extension, $scope.domain, cb)
