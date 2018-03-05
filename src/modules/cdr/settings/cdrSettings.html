@@ -41,11 +41,9 @@
                         <thead>
 
                             <tr ng-show="rowCollection.length > 0">
-                                <th st-sort="id" >Id</th>
+                                <th st-sort="name" >Name</th>
                                 <th st-sort="caption" >Caption</th>
                                 <th st-sort="type" >Type</th>
-                                <th st-sort="detail" >Detail</th>
-
                                 <th style="text-align: end">Action</th>
                             </tr>
                         </thead>
@@ -56,15 +54,16 @@
                         </span>
                         </div>
                         <tbody ng-show="rowCollection.length > 0">
-                            <tr ng-repeat="row in displayedCollection">
-                                <td>{{row.id}}</td>
+                            <tr ng-repeat="(id, row) in displayedCollection">
+                                <td>{{row.name}}</td>
                                 <td>{{row.caption}}</td>
                                 <td>{{row.type}}</td>
-                                <td>{{row.options.detail}}</td>
-
                                 <td style="text-align: end">
-                                    <a href="javascript:;" ng-click="editItem(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
-                                    <a href="javascript:;" ng-click="remove(row)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                                    <a ng-disabled="$first" ng-click="up(rowCollection, id)" class="btn btn-default btn-direction btn-up">Up</a>
+                                    <a ng-disabled="$last" ng-click="down(rowCollection, id)" class="btn btn-default btn-direction btn-down">Down</a>
+
+                                    <a href="javascript:;" ng-click="editItem(rowCollection, id)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
+                                    <a href="javascript:;" ng-click="remove(rowCollection, id)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                                 </td>
                             </tr>
                         </tbody>

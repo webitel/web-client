@@ -11,28 +11,17 @@ define(['app', 'modules/cdr/cdrModel'], function (app) {
         $scope.remove = remove;
         $scope.editItem = editItem;
         $scope.reset = reset;
+        $scope.up = up;
+        $scope.down = down;
 
         function reset () {
-            CdrModel.mapColumn(true);
-            reloadData();
-        };
+            saveColumns(CdrModel.getDefaultColumnsSettings())
+        }
 
-        function reloadData() {
-            var data = [];
-            var _c = angular.copy(CdrModel.mapColumn());
-            angular.forEach(_c, function (item, key) {
-                if (item.noRender) return;
-                item.id = key;
-                data.push(item);
-            });
-            $scope.rowCollection = data;
-
-        };
-
-        function remove(item) {
-            CdrModel.removeMapColumn(item.id);
-            reloadData();
-        };
+        function remove(rows, id) {
+            rows.splice(id, 1);
+            saveColumns(rows);
+        }
 
         function addColumn() {
             var modalInstance = $modal.open({
@@ -47,18 +36,12 @@ define(['app', 'modules/cdr/cdrModel'], function (app) {
             });
 
             modalInstance.result.then(function (newCol) {
-                var col = angular.copy(newCol);
-                try {
-                    var c = new CdrModel.Column(col.id, col.type, col.caption, setTagsInput(col));
-                    c.save();
-                } catch (e) {
-                    notifi.error(e)
-                }
-                reloadData();
+                $scope.rowCollection.push(newCol);
+                saveColumns($scope.rowCollection);
             }, function () {
 
             });
-        };
+        }
 
         function setTagsInput(col) {
             if (col.options && angular.isArray(col.options.select)) {
@@ -71,14 +54,10 @@ define(['app', 'modules/cdr/cdrModel'], function (app) {
                 col.options.select = data;
             };
             return col.options;
-        };
+        }
 
-        function editItem (row) {
-            var item = CdrModel.getMapColumn(row.id);
-            if (!item)
-                return notifi.error(new Error("Bad column id"), 5000);
-
-            var col = angular.copy(item);
+        function editItem (rows, id) {
+            var col = angular.copy(rows[id]);
 
             var modalInstance = $modal.open({
                 animation: true,
@@ -92,19 +71,45 @@ define(['app', 'modules/cdr/cdrModel'], function (app) {
             });
 
             modalInstance.result.then(function (editCol) {
-                try {
-                    var col = angular.copy(editCol);
-                    var c = new CdrModel.Column(col.id, col.type, col.caption, setTagsInput(col));
-                    c.save();
-                } catch (e) {
-                    notifi.error(e);
-                }
-                reloadData();
+                rows[id] = editCol;
+                saveColumns(rows);
             }, function () {
 
             });
-        };
+        }
+        
+        function saveColumns(columns) {
+            CdrModel.updateGridColumns(columns, function (err) {
+                reloadData();
+            })
+        }
 
+        function reloadData() {
+            CdrModel.listGridColumns(function (err, res) {
+                if (err)
+                    return err;
+
+                $scope.rowCollection = res;
+            })
+        }
+
+        function up(rows, id) {
+            if (rows[id - 1]) {
+                var v = rows[id];
+                rows[id] = rows[id - 1];
+                rows[id - 1] = v;
+                saveColumns(rows);
+            }
+        }
+
+        function down(rows, id) {
+            if (rows[id + 1]) {
+                var v = rows[id];
+                rows[id] = rows[id + 1];
+                rows[id + 1] = v;
+                saveColumns(rows);
+            }
+        }
         reloadData();
     }]);
 
@@ -119,14 +124,11 @@ define(['app', 'modules/cdr/cdrModel'], function (app) {
             },
             {
                 id: "integer"
-            },
-            {
-                id: "select"
             }
         ];
 
         $scope.ok = function () {
-            if (!column.id || !column.type || !column.caption) {
+            if (!column.name || !column.type || !column.caption) {
                 return notifi.error(new Error("Bad parameters"))
             }
             $modalInstance.close($scope.column, 5000);

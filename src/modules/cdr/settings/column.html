@@ -6,22 +6,16 @@
         <div class="col-sm-12">
             <div class="form-group" >
                 <label for>Id</label>
-                <input type="text" class="form-control" required ng-disabled="!column._new" data-ng-model="column.id" style="">
+                <input type="text" class="form-control" required ng-disabled="!column._new" data-ng-model="column.name" style="">
             </div>
 
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12">
             <div class="form-group" >
                 <label for>Caption</label>
                 <input type="text" class="form-control" required  data-ng-model="column.caption" style="">
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="form-group" >
-                <label  for>Detail</label>
-                <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="column.options.detail" class="ng-valid ng-dirty"><i></i></label>
             </div>
         </div>
     </div>

@@ -31,25 +31,20 @@ define(["app"], function(app) {
             return uri;
         };
 
-        function getJsonObject(call_uuid, cb) {
-            var body = {};
-            body.columns = {};
-            body.fields = {};
+        function getJsonObject(uuid, cb) {
+            webitel.cdr("GET", "/api/v2/cdr/" + uuid + "?leg=a", cb);
+        }
 
-            body.filter = {"variables.uuid": call_uuid};
-            body.sort = {};
-            body.limit = 1;
-
-            body = JSON.stringify(body);
-
-            webitel.cdr("POST", "/api/v2/cdr/searches/", body, cb);
-        };
+        function getLegB(uuid, cb) {
+            webitel.cdr("GET", "/api/v2/cdr/" + uuid + "?leg=b", cb);
+        }
 
         return {
             getFiles: getFiles,
             getUri: getUri,
             updateFile: updateFile,
-            getJsonObject: getJsonObject
+            getJsonObject: getJsonObject,
+            getLegB: getLegB
         }
     }]);
 });
