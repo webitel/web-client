@@ -208,6 +208,14 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
             });
         };
 
+        function getStatistic(domain, body, cb) {
+            if (!domain)
+                return cb(new Error("Bad domain name"));
+            webitel.cdr("POST", "/api/v2/accounts/text?domain=" + domain, JSON.stringify(body), function(err, res){
+                return cb(err, res)
+            });
+        }
+
         function createEmpty() {
             return {
                 id: null,
@@ -268,6 +276,7 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
             getRoles: getRoles,
             getTierList: getTiers,
             setStatus: setStatus,
+            getStatistic: getStatistic,
             getQueueList: AcdModel.list,
             addTier: AcdModel.addTier,
             removeTier: AcdModel.removeTier,
