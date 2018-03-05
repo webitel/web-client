@@ -37,10 +37,9 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             $scope.setSource = null;
             $scope.count = 0;
 
-            var canDeleteFile = webitel.connection.session.checkResource('cdr/files', 'd');
-            var canReadFile = webitel.connection.session.checkResource('cdr/files', 'r') || webitel.connection.session.checkResource('cdr/files', 'ro');
-            var canDeleteCDR = $scope.canDeleteCDR = webitel.connection.session.checkResource('cdr', 'd');
-
+            $scope.canDeleteFile = webitel.connection.session.checkResource('cdr/files', 'd');
+            $scope.canReadFile = webitel.connection.session.checkResource('cdr/files', 'r') || webitel.connection.session.checkResource('cdr/files', 'ro');
+            $scope.canDeleteCDR = webitel.connection.session.checkResource('cdr', 'd');
 
             if (!webitel.connection.session.domain) {
                 var changeDomainEvent = $rootScope.$on('webitel:changeDomain', function (e, domainName) {
