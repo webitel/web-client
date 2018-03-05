@@ -58,7 +58,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                             if (allCount - progress < maxNodes) {
                                // maxNodes = allCount - progress;
                             }
-                            if (progress == allCount || res.length < maxNodes) {
+                            if (progress === allCount || res.length < maxNodes) {
                                 table = endTable(table);
                                 tableToExcel(table, 'cdr_' + new Date().toLocaleDateString() + '.xls');
                                 scope.cdrProgressExport = 0;
@@ -94,8 +94,8 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                     function setRow (table, row) {
                         table += '<tr>';
                         angular.forEach(_map, function (col, key) {
-                            if (col.value.noRender) return;
-                            table += '<td>' + (col.value.type == 'timestamp' ? parseTimeStamp((row[col.id] || '')) : (row[col.id] || ''))+ '</td>';
+                            if (col.noRender) return;
+                            table += '<td>' + (col.type === 'timestamp' ? parseTimeStamp((row[col.name] || '')) : (row[col.name] || ''))+ '</td>';
                         });
                         table += '</tr>';
                         return table;
@@ -111,10 +111,7 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                         table += '<thead><tr>';
                         for (var key in columns) {
                             if (columns[key].noRender) continue;
-                            _map.push({
-                                id: key,
-                                value: columns[key]
-                            });
+                            _map.push(columns[key]);
                             table += '<th>' + (columns[key].caption || '') + '</th>'
                         }
                         table += '</tr></thead>';
@@ -286,13 +283,13 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                 var exportFiles = function (_filter, qs, sort, domain, cb) {
                     var _page = 0,
                         maxNodes = 100,
-                        columns = {other: ["variables.uuid", "variables.record_seconds"]};
+                        columns = {other: ["uuid"]};
 
                     if (domain) {
                         columns.domain = domain;
                     }
 
-                    var filter = [_filter, {"range": {"variables.record_seconds": {"gt": 0}}}];
+                    var filter = [_filter, {"exists": {"field": "recordings"}}];
 
                     var progress = 0;
                     var errorFiles = [];
@@ -304,10 +301,8 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                         async.eachSeries(
                             arr,
                             function (i, cb) {
-                                if (!i["variables.record_seconds"])
-                                    return cb();
 
-                                fileModel.getFiles(i["variables.uuid"], function (err, files) {
+                                fileModel.getFiles(i["uuid"].toString(), function (err, files) {
 
                                     if (!files)
                                         return cb();
