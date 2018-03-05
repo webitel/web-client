@@ -75,7 +75,8 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 if($scope.panelStatistic){
                     $scope.getInboundStats();
                     $scope.getDirectionStats();
-                    $scope.getAvgStats();
+                    $scope.getAvgDurationStats();
+                    $scope.getAbandoned();
                 }
             }, true);
 
@@ -285,7 +286,8 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 if($scope.panelStatistic){
                     $scope.getInboundStats();
                     $scope.getDirectionStats();
-                    $scope.getAvgStats();
+                    $scope.getAvgDurationStats();
+                    $scope.getAbandoned();
                 }
                 getData($scope.tableState);
             };
@@ -555,224 +557,135 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 if(value){
                     $scope.getInboundStats();
                     $scope.getDirectionStats();
-                    $scope.getAvgStats();
+                    $scope.getAvgDurationStats();
+                    $scope.getAbandoned();
                 }
             };
 
             $scope.getInboundStats = function () {
-                $scope.statRequests.inbound.filter[1].range['created_time'].gte = $scope.startDate.getTime();
-                $scope.statRequests.inbound.filter[1].range['created_time'].lte = $scope.endDate.getTime();
-                $scope.statRequests.inbound.domain = $scope.domain;
-                $scope.statRequests.inbound.query = $scope.queryString;
-                CdrModel.getStatistic($scope.domain, $scope.statRequests.inbound, function(err, res){
+                $scope.statsReq.answeredInbound.filter[0].range.created_time.gte = $scope.startDate.getTime();
+                $scope.statsReq.answeredInbound.filter[0].range.created_time.lte = $scope.endDate.getTime();
+                $scope.statsReq.answeredInbound.query = $scope.queryString;
+                CdrModel.getStatistic($scope.domain, $scope.statsReq.answeredInbound, function(err, res){
                     if (err)
                         return notifi.error(err);
-                    $scope.inbound_total = res.hits.total;
-                    $scope.inbound_answered = res.aggregations && res.aggregations.Answered.value;
-                    $scope.inbound_abandoned = res.aggregations && res.aggregations.Abandoned.value;
-                });
-            };
 
-            $scope.getAvgStats = function () {
-                $scope.statRequests.avg.filter[0].range['created_time'].gte = $scope.startDate.getTime();
-                $scope.statRequests.avg.filter[0].range['created_time'].lte = $scope.endDate.getTime();
-                $scope.statRequests.avg.domain = $scope.domain;
-                $scope.statRequests.avg.query = $scope.queryString;
-                $scope.avgConnectedCallMetr.data.forEach(function(item){
-                    item.values = [];
-                });
-                CdrModel.getStatistic($scope.domain, $scope.statRequests.avg, function(err, res){
-                    if (err)
-                        return notifi.error(err);
-                    if(!!res.aggregations)
-                        res.aggregations.avgg.buckets.Bridged.avggg.buckets.forEach(function (item) {
-                            $scope.avgConnectedCallMetr.data[0].values.push({
-                                label: item.key,
-                                value: item.bbd.value
-                            });
-                            $scope.avgConnectedCallMetr.data[1].values.push({
-                                label: item.key,
-                                value: item.ccd.value
-                            });
-                            $scope.avgConnectedCallMetr.data[2].values.push({
-                                label: item.key,
-                                value: item.cd.value
-                            })
+                    $scope.answered_total = res.hits.total;
+                    $scope.avg_talk_time = res.aggregations && res.aggregations["2"].value.toFixed(2);
+                    $scope.total_talk_time = res.aggregations && res.aggregations["3"].value;
+                    $scope.uniqueInboundChart.data = angular.copy($scope.unique);
+                    if(res.aggregations && res.aggregations["4"] && res.aggregations["4"].buckets){
+                        res.aggregations["4"].buckets.forEach(function (item) {
+                            $scope.uniqueInboundChart.data[1].values.push({x:item.key, y:item.doc_count});
+                            $scope.uniqueInboundChart.data[0].values.push({x:item.key, y:item["3"].value});
                         });
+                    }
                 });
             };
 
             $scope.getDirectionStats = function () {
-                $scope.statRequests.direction.filter[0].range['created_time'].gte = $scope.startDate.getTime();
-                $scope.statRequests.direction.filter[0].range['created_time'].lte = $scope.endDate.getTime();
-                $scope.statRequests.direction.domain = $scope.domain;
-                $scope.statRequests.direction.query = $scope.queryString;
-                $scope.callDirection.data = [];
-                $scope.causeByAttemptChart.data[0].values = [];
+                $scope.statsReq.direction.filter[0].bool.must[0].range.created_time.gte = $scope.startDate.getTime();
+                $scope.statsReq.direction.filter[0].bool.must[0].range.created_time.lte = $scope.endDate.getTime();
+                $scope.statsReq.direction.query = $scope.queryString;
+
+
                 $scope.outbound = 0;
-                var data = [];
-                CdrModel.getStatistic($scope.domain, $scope.statRequests.direction, function(err, res){
+                CdrModel.getStatistic($scope.domain, $scope.statsReq.direction, function(err, res){
                     if (err)
                         return notifi.error(err);
-                    if(res.aggregations && res.aggregations.directions){
-                        res.aggregations.directions.buckets.forEach(function (item) {
-                            data.push({
+                    if(res.aggregations && res.aggregations["2"] && res.aggregations["2"].buckets){
+                        $scope.callDirection.data = [];
+                        res.aggregations["2"].buckets.forEach(function (item) {
+                            $scope.callDirection.data.push({
                                 key: item.key,
                                 y: item.doc_count
                             });
                             if(item.key === 'outbound') $scope.outbound = item.doc_count;
                         });
-                        $scope.callDirection.data = data;
                     }
-                    if(res.aggregations && res.aggregations.hangup_causes){
-                        data = [];
-                        res.aggregations.hangup_causes.buckets.forEach(function (item) {
-                            data.push({
-                                label: item.key,
-                                value: item.doc_count
+                    if(res.aggregations && res.aggregations["7"] && res.aggregations["7"].buckets){
+                        $scope.causeByAttemptChart.data = [];
+                        res.aggregations["7"].buckets.forEach(function (item) {
+                            $scope.causeByAttemptChart.data.push({
+                                key: item.key,
+                                y: item.doc_count
                             });
                         });
-                        $scope.causeByAttemptChart.data[0].values = data;
                     }
                 });
             };
 
-            $scope.statRequests = {
-                inbound: {
-                    "aggs": {
-                        "Abandoned": {
-                            "sum": {
-                                "script": {
-                                    "inline": "doc['billsec'].value > 0 ? 0 : 1",
-                                        "lang": "painless"
-                                }
+            $scope.getAvgDurationStats = function () {
+                $scope.statsReq.avgDurationByExtension.filter[0].bool.must[0].range.created_time.gte = $scope.startDate.getTime();
+                $scope.statsReq.avgDurationByExtension.filter[0].bool.must[0].range.created_time.lte = $scope.endDate.getTime();
+                $scope.statsReq.avgDurationByExtension.query = $scope.queryString;
+                CdrModel.getStatistic($scope.domain, $scope.statsReq.avgDurationByExtension, function(err, res){
+                    if (err)
+                        return notifi.error(err);
+                    if(res.aggregations && res.aggregations["2"] && res.aggregations["2"].buckets){
+                        $scope.avgDuration.data = angular.copy($scope.avg);
+                        res.aggregations["2"].buckets.forEach(function (item) {
+                            if(item["1"].value){
+                                $scope.avgDuration.data[0].values.push({
+                                    label: item.key,
+                                    value: item["1"].value
+                                })
                             }
-                        },
-                        "Answered": {
-                            "sum": {
-                                "script": {
-                                    "inline": "doc['billsec'].value > 0 ? 1 : 0",
-                                        "lang": "painless"
-                                }
+                            if(item["3"].value){
+                                $scope.avgDuration.data[2].values.push({
+                                    label: item.key,
+                                    value: item["3"].value
+                                })
                             }
-                        }
+                            if(item["4"].value){
+                                $scope.avgDuration.data[1].values.push({
+                                    label: item.key,
+                                    value: item["4"].value
+                                })
+                            }
+                        });
+                        $scope.avgDuration.data.forEach(function (item, index) {
+                            if (item.values.length === 0){
+                                $scope.avgDuration.data.splice(index, 1);
+                            }
+                        })
+                    }
+                });
+            };
+
+            $scope.getAbandoned = function () {
+                $scope.statsReq.abandoned.filter[0].range.created_time.gte = $scope.startDate.getTime();
+                $scope.statsReq.abandoned.filter[0].range.created_time.lte = $scope.endDate.getTime();
+                $scope.statsReq.abandoned.query = $scope.queryString;
+                CdrModel.getStatistic($scope.domain, $scope.statsReq.abandoned, function(err, res){
+                    if (err)
+                        return notifi.error(err);
+                    $scope.abandonedChart.data = [];
+                    if(res.aggregations && res.aggregations["2"] && res.aggregations["2"].buckets){
+                        $scope.abandonedChart.data.push({
+                            key: "<= 5 sec",
+                            y: res.aggregations["2"].buckets["<= 5 sec"].doc_count
+                        });
+                        $scope.abandonedChart.data.push({
+                            key: "<= 20 sec",
+                            y: res.aggregations["2"].buckets["<= 20 sec"].doc_count
+                        });
+                        $scope.abandonedChart.data.push({
+                            key: "> 20 sec",
+                            y: res.aggregations["2"].buckets["> 20 sec"].doc_count
+                        });
+                    }
+                });
+            };
+
+            $scope.statsReq = {
+                direction:{
+                    "size": 0,
+                    "_source": {
+                        "excludes": []
                     },
-                    "limit": 0,
-                    "query": $scope.queryString,
-                    "filter": [
-                        {
-                            "match_phrase": {
-                                "direction": {
-                                    "query": "inbound"
-                                }
-                            }
-                        },
-                        {
-                            "range": {
-                                "created_time": {
-                                    "gte": $scope.startDate.getTime(),
-                                    "lte": $scope.endDate.getTime(),
-                                    "format": "epoch_millis"
-                                }
-                            }
-                        },
-                        {
-                            "bool": {
-                                "must_not": [
-                                    {
-                                        "term": {
-                                            "hangup_cause": "LOSE_RACE"
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ],
-                    "sort": {},
-                    "domain": $scope.domain
-                },
-                avg:{
                     "aggs": {
-                        "avgg": {
-                            "filters": {
-                                "filters": {
-                                    "Bridged": {
-                                        "query_string": {
-                                            "query": "Bridged: true",
-                                            "analyze_wildcard": true
-                                        }
-                                    }
-                                }
-                            },
-                            "aggs": {
-                                "avggg": {
-                                    "terms": {
-                                        "field": "extension",
-                                        "size": 10,
-                                        "order": {
-                                            "cd": "desc"
-                                        }
-                                    },
-                                    "aggs": {
-                                        "cd": {
-                                            "avg": {
-                                                "field": "duration"
-                                            }
-                                        },
-                                        "bbd": {
-                                            "avg": {
-                                                "field": "Before Bridge Delay"
-                                            }
-                                        },
-                                        "ccd": {
-                                            "avg": {
-                                                "field": "Connected call duration"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "limit": 0,
-                    "query": $scope.queryString,
-                    "filter": [
-                        {
-                            "range": {
-                                "created_time": {
-                                    "gte": $scope.startDate.getTime(),
-                                    "lte": $scope.endDate.getTime(),
-                                    "format": "epoch_millis"
-                                }
-                            }
-                        },
-                        {
-                            "bool": {
-                                "must_not": [
-                                    {
-                                        "term": {
-                                            "hangup_cause": "LOSE_RACE"
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                        ],
-                    "sort": {},
-                    "domain": $scope.domain
-                },
-                direction: {
-                    "aggs": {
-                        "hangup_causes": {
-                            "terms": {
-                                "field": "hangup_cause",
-                                "size": 5,
-                                "order": {
-                                    "_count": "desc"
-                                }
-                            }
-                        },
-                        "directions": {
+                        "2": {
                             "terms": {
                                 "field": "direction",
                                 "size": 5,
@@ -780,37 +693,467 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                                     "_count": "desc"
                                 }
                             }
+                        },
+                        "7": {
+                            "terms": {
+                                "field": "hangup_cause",
+                                "size": 10,
+                                "order": {
+                                    "_count": "desc"
+                                }
+                            }
                         }
                     },
-                    "limit": 0,
+                    "version": true,
+                    "stored_fields": [
+                        "*"
+                    ],
+                    "script_fields": {
+                        "duration_time": {
+                            "script": {
+                                "inline": "doc['duration'].value",
+                                "lang": "painless"
+                            }
+                        },
+                        "billsec_time": {
+                            "script": {
+                                "inline": "doc['billsec'].value",
+                                "lang": "painless"
+                            }
+                        },
+                        "queue_waiting_time": {
+                            "script": {
+                                "inline": "doc['queue.wait_duration'].value",
+                                "lang": "painless"
+                            }
+                        },
+                        "queue_duration_time": {
+                            "script": {
+                                "inline": "doc['queue.duration'].value",
+                                "lang": "painless"
+                            }
+                        },
+                        "hangup_side": {
+                            "script": {
+                                "inline": "doc['hangup_disposition'].value == 'send_bye' ? 'Recieve hangup' : doc['hangup_disposition'].value == 'recv_bye' ? 'Send hangup' : doc['hangup_disposition'].value == 'recv_refuse' ? 'Send refuse' : doc['hangup_disposition'].value == 'send_refuse' ? 'Recieve refuse' : doc['hangup_disposition'].value == 'send_cancel' ? 'Recieve cancel' : doc['hangup_disposition'].value == 'recv_cancel' ? 'Send cancel' : 'Unknown'",
+                                "lang": "painless"
+                            }
+                        }
+                    },
+                    "docvalue_fields": [
+                        "callflow.times.answered_time",
+                        "callflow.times.bridged_time",
+                        "callflow.times.created_time",
+                        "callflow.times.hangup_time",
+                        "callflow.times.hold_accum_time",
+                        "callflow.times.last_hold_time",
+                        "callflow.times.profile_created_time",
+                        "callflow.times.progress_media_time",
+                        "callflow.times.progress_time",
+                        "callflow.times.resurrect_time",
+                        "callflow.times.transfer_time",
+                        "created_time",
+                        "queue.answered_time",
+                        "queue.exit_time",
+                        "queue.joined_time",
+                        "recordings.createdOn"
+                    ],
                     "query": $scope.queryString,
                     "filter": [
                         {
-                            "range": {
-                                "created_time": {
-                                    "gte": $scope.startDate.getTime(),
-                                    "lte": $scope.endDate.getTime(),
-                                    "format": "epoch_millis"
-                                }
-                            }
-                        },
-                        {
                             "bool": {
-                                "must_not": [
+                                "must": [
                                     {
-                                        "term": {
-                                            "hangup_cause": "LOSE_RACE"
+                                        "range": {
+                                            "created_time": {
+                                                "gte": $scope.startDate.getTime(),
+                                                "lte": $scope.endDate.getTime(),
+                                                "format": "epoch_millis"
+                                            }
                                         }
                                     }
                                 ]
                             }
                         }
-                    ],
-                    "sort": {},
-                    "domain": $scope.domain
-                }
+                    ]
+                },
+                answeredInbound:
+                    {
+                        "size": 0,
+                        "_source": {
+                            "excludes": []
+                        },
+                        "aggs": {
+                            "2": {
+                                "avg": {
+                                    "script": {
+                                        "inline": "doc['billsec'].value",
+                                        "lang": "painless"
+                                    }
+                                }
+                            },
+                            "3": {
+                                "sum": {
+                                    "script": {
+                                        "inline": "doc['billsec'].value",
+                                        "lang": "painless"
+                                    }
+                                }
+                            },
+                            "4": {
+                                "date_histogram": {
+                                    "field": "created_time",
+                                    "interval": "3h",
+                                    // "time_zone": "Europe/Helsinki",
+                                    "min_doc_count": 1
+                                },
+                                "aggs": {
+                                    "3": {
+                                        "cardinality": {
+                                            "field": "caller_id_number"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "version": true,
+                        "script_fields": {
+                            "duration_time": {
+                                "script": {
+                                    "inline": "doc['duration'].value",
+                                    "lang": "painless"
+                                }
+                            },
+                            "billsec_time": {
+                                "script": {
+                                    "inline": "doc['billsec'].value",
+                                    "lang": "painless"
+                                }
+                            },
+                            "queue_waiting_time": {
+                                "script": {
+                                    "inline": "doc['queue.wait_duration'].value",
+                                    "lang": "painless"
+                                }
+                            },
+                            "queue_duration_time": {
+                                "script": {
+                                    "inline": "doc['queue.duration'].value",
+                                    "lang": "painless"
+                                }
+                            },
+                            "hangup_side": {
+                                "script": {
+                                    "inline": "doc['hangup_disposition'].value == 'send_bye' ? 'Recieve hangup' : doc['hangup_disposition'].value == 'recv_bye' ? 'Send hangup' : doc['hangup_disposition'].value == 'recv_refuse' ? 'Send refuse' : doc['hangup_disposition'].value == 'send_refuse' ? 'Recieve refuse' : doc['hangup_disposition'].value == 'send_cancel' ? 'Recieve cancel' : doc['hangup_disposition'].value == 'recv_cancel' ? 'Send cancel' : 'Unknown'",
+                                    "lang": "painless"
+                                }
+                            }
+                        },
+                        "docvalue_fields": [
+                            "callflow.times.answered_time",
+                            "callflow.times.bridged_time",
+                            "callflow.times.created_time",
+                            "callflow.times.hangup_time",
+                            "callflow.times.hold_accum_time",
+                            "callflow.times.last_hold_time",
+                            "callflow.times.profile_created_time",
+                            "callflow.times.progress_media_time",
+                            "callflow.times.progress_time",
+                            "callflow.times.resurrect_time",
+                            "callflow.times.transfer_time",
+                            "created_time",
+                            "queue.answered_time",
+                            "queue.exit_time",
+                            "queue.joined_time",
+                            "recordings.createdOn"
+                        ],
+                        "query": $scope.queryString,
+                        "filter":[
+                            {
+                                "range": {
+                                    "created_time": {
+                                        "gte": $scope.startDate.getTime(),
+                                        "lte": $scope.endDate.getTime(),
+                                        "format": "epoch_millis"
+                                    }
+                                }
+                            },
+                            {
+                                "match_phrase": {
+                                    "direction": {
+                                        "query": "inbound"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                abandoned:
+                    {
+                        "size": 0,
+                        "_source": {
+                            "excludes": []
+                        },
+                        "aggs": {
+                            "2": {
+                                "filters": {
+                                    "filters": {
+                                        "<= 5 sec": {
+                                            "query_string": {
+                                                "query": "billsec:<=5",
+                                                "analyze_wildcard": true,
+                                                "default_field": "*"
+                                            }
+                                        },
+                                        "<= 20 sec": {
+                                            "query_string": {
+                                                "query": "billsec:>5 && billsec:<=20",
+                                                "analyze_wildcard": true,
+                                                "default_field": "*"
+                                            }
+                                        },
+                                        "> 20 sec": {
+                                            "query_string": {
+                                                "query": "billsec:>20",
+                                                "analyze_wildcard": true,
+                                                "default_field": "*"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "version": true,
+                        "script_fields": {
+                            "duration_time": {
+                                "script": {
+                                    "inline": "doc['duration'].value",
+                                    "lang": "painless"
+                                }
+                            },
+                            "billsec_time": {
+                                "script": {
+                                    "inline": "doc['billsec'].value",
+                                    "lang": "painless"
+                                }
+                            },
+                            "queue_waiting_time": {
+                                "script": {
+                                    "inline": "doc['queue.wait_duration'].value",
+                                    "lang": "painless"
+                                }
+                            },
+                            "queue_duration_time": {
+                                "script": {
+                                    "inline": "doc['queue.duration'].value",
+                                    "lang": "painless"
+                                }
+                            },
+                            "hangup_side": {
+                                "script": {
+                                    "inline": "doc['hangup_disposition'].value == 'send_bye' ? 'Recieve hangup' : doc['hangup_disposition'].value == 'recv_bye' ? 'Send hangup' : doc['hangup_disposition'].value == 'recv_refuse' ? 'Send refuse' : doc['hangup_disposition'].value == 'send_refuse' ? 'Recieve refuse' : doc['hangup_disposition'].value == 'send_cancel' ? 'Recieve cancel' : doc['hangup_disposition'].value == 'recv_cancel' ? 'Send cancel' : 'Unknown'",
+                                    "lang": "painless"
+                                }
+                            }
+                        },
+                        "docvalue_fields": [
+                            "callflow.times.answered_time",
+                            "callflow.times.bridged_time",
+                            "callflow.times.created_time",
+                            "callflow.times.hangup_time",
+                            "callflow.times.hold_accum_time",
+                            "callflow.times.last_hold_time",
+                            "callflow.times.profile_created_time",
+                            "callflow.times.progress_media_time",
+                            "callflow.times.progress_time",
+                            "callflow.times.resurrect_time",
+                            "callflow.times.transfer_time",
+                            "created_time",
+                            "queue.answered_time",
+                            "queue.exit_time",
+                            "queue.joined_time",
+                            "recordings.createdOn"
+                        ],
+                        "query": $scope.queryString,
+                        "filter": [
+                            {
+                                "range": {
+                                    "created_time": {
+                                        "gte": $scope.startDate.getTime(),
+                                        "lte": $scope.endDate.getTime(),
+                                        "format": "epoch_millis"
+                                    }
+                                }
+                            },
+                            {
+                                "bool": {
+                                    "must_not":[
+                                        {
+                                            "exists": {
+                                                "field": "extension"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                avgDurationByExtension:
+                    {
+                        "size": 0,
+                        "_source": {
+                            "excludes": []
+                        },
+                        "aggs": {
+                            "2": {
+                                "terms": {
+                                    "field": "extension",
+                                    "size": 20,
+                                    "order": {
+                                        "_term": "desc"
+                                    }
+                                },
+                                "aggs": {
+                                    "1": {
+                                        "avg_bucket": {
+                                            "buckets_path": "1-bucket>1-metric"
+                                        }
+                                    },
+                                    "3": {
+                                        "avg_bucket": {
+                                            "buckets_path": "3-bucket>3-metric"
+                                        }
+                                    },
+                                    "4": {
+                                        "avg": {
+                                            "script": {
+                                                "inline": "doc['waitsec'].value",
+                                                "lang": "painless"
+                                            }
+                                        }
+                                    },
+                                    "1-bucket": {
+                                        "filters": {
+                                            "filters": {
+                                                "billsec:>1": {
+                                                    "query_string": {
+                                                        "query": "billsec:>1",
+                                                        "analyze_wildcard": true,
+                                                        "default_field": "*"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "aggs": {
+                                            "1-metric": {
+                                                "avg": {
+                                                    "script": {
+                                                        "inline": "doc['billsec'].value",
+                                                        "lang": "painless"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "3-bucket": {
+                                        "filters": {
+                                            "filters": {
+                                                "holdsec:>1": {
+                                                    "query_string": {
+                                                        "query": "holdsec:>1",
+                                                        "analyze_wildcard": true,
+                                                        "default_field": "*"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "aggs": {
+                                            "3-metric": {
+                                                "avg": {
+                                                    "script": {
+                                                        "inline": "doc['holdsec'].value",
+                                                        "lang": "painless"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "version": true,
+                        "script_fields": {
+                            "billsec_time": {
+                                "script": {
+                                    "inline": "doc['billsec'].value",
+                                    "lang": "painless"
+                                }
+                            },
+                            "waitsec_time": {
+                                "script": {
+                                    "inline": "doc['waitsec'].value",
+                                    "lang": "painless"
+                                }
+                            },
+                            "holdsec_time": {
+                                "script": {
+                                    "inline": "doc['holdsec'].value",
+                                    "lang": "painless"
+                                }
+                            },
+                            "hangup_side": {
+                                "script": {
+                                    "inline": "doc['hangup_disposition'].value == 'send_bye' ? 'Recieve hangup' : doc['hangup_disposition'].value == 'recv_bye' ? 'Send hangup' : doc['hangup_disposition'].value == 'recv_refuse' ? 'Send refuse' : doc['hangup_disposition'].value == 'send_refuse' ? 'Recieve refuse' : doc['hangup_disposition'].value == 'send_cancel' ? 'Recieve cancel' : doc['hangup_disposition'].value == 'recv_cancel' ? 'Send cancel' : 'Unknown'",
+                                    "lang": "painless"
+                                }
+                            }
+                        },
+                        "docvalue_fields": [
+                            "callflow.times.answered_time",
+                            "callflow.times.bridged_time",
+                            "callflow.times.created_time",
+                            "callflow.times.hangup_time",
+                            "callflow.times.hold_accum_time",
+                            "callflow.times.last_hold_time",
+                            "callflow.times.profile_created_time",
+                            "callflow.times.progress_media_time",
+                            "callflow.times.progress_time",
+                            "callflow.times.resurrect_time",
+                            "callflow.times.transfer_time",
+                            "created_time",
+                            "queue.answered_time",
+                            "queue.exit_time",
+                            "queue.joined_time",
+                            "recordings.createdOn"
+                        ],
+                        "query": $scope.queryString,
+                        "filter": [
+                            {
+                                "bool": {
+                                    "must": [
+                                        {
+                                            "range": {
+                                                "created_time": {
+                                                    "gte": 1519643003538,
+                                                    "lte": 1520247803538,
+                                                    "format": "epoch_millis"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "must_not": [
+                                        {
+                                            "match_phrase": {
+                                                "hangup_cause": {
+                                                    "query": "LOSE_RACE"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
             };
-
 
             $scope.callDirection = {
                 data: [],
@@ -852,18 +1195,18 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 }
             };
 
-            $scope.avgConnectedCallMetr = {
+            $scope.avgDuration = {
                 options: {
                     title: {
                         enable: true,
-                        text: "Avg connected calls metrics"
+                        text: "Avg duration by extension"
                     },
                     chart: {
                         type: 'multiBarHorizontalChart',
                         height: 550,
                         x: function(d){return d.label;},
                         y: function(d){return d.value;},
-                        showControls: true,
+                        showControls: false,
                         showValues: true,
                         duration: 500,
                         xAxis: {
@@ -877,74 +1220,143 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         }
                     }
                 },
-                data: [
-                    {
-                        "key": "Avg answer delay, s",
-                        "color": "#44d680",
-                        "values": [
-                        ]
-                    },
-                    {
-                        "key": "Avg talk time, s",
-                        "color": "#1f77b4",
-                        "values": [
-                        ]
-                    },
-                    {
-                        "key": "Avg call duration, s",
-                        "color": "#ff7f0e",
-                        "values": [
-                        ]
-                    }
-                ]
+                data: []
             };
 
+            $scope.avg = [
+                {
+                    "key": "Avg talk time, s",
+                    "color": "#44d680",
+                    "values": [
+                    ]
+                },
+                {
+                    "key": "Avg waiting time, s",
+                    "color": "#1f77b4",
+                    "values": [
+                    ]
+                },
+                {
+                    "key": "Avg hold time, s",
+                    "color": "#ff7f0e",
+                    "values": [
+                    ]
+                }
+            ];
+
             $scope.causeByAttemptChart = {
-                data: [
-                    {
-                        key: "Cumulative Return",
-                        values: []
-                    }
-                ],
+                data: [],
                 options: {
                     title: {
                         enable: true,
-                        text: "TOP 5 hangup causes"
+                        text: "TOP 10 hangup causes"
                     },
                     chart: {
-                        type: 'discreteBarChart',
-                        height: 400,
-                        margin : {
-                            top: 20,
-                            right: 20,
-                            bottom: 150,
-                            left: 50
-                        },
-                        // yDomain: [0, 100],
-                        x: function(d){return d.label;},
-                        y: function(d){return d.value;},
-                        showValues: true,
-                        valueFormat: function(d){
-                            return d3.format(',d')(d);
-                        },
-
+                        type: 'pieChart',
+                        height: 350,
+                        x: function(d){return d.key;},
+                        y: function(d){return d.y;},
+                        showLabels: false,
                         duration: 500,
-                        xAxis: {
-                            rotateYLabel: true,
-                            rotateLabels: 45,
-                            fontSize: 10
-                        },
-                        yAxis: {
-                            // axisLabel: '%',
-                            // axisLabelDistance: 0,
-                            showMaxMin: false,
-                            tickFormat: function(d){
-                                return d3.format(',d')(d);
+                        //labelThreshold: 0.01,
+                        //labelSunbeamLayout: true,
+                        legend: {
+                            margin: {
+                                top: 5,
+                                right: 35,
+                                bottom: 5,
+                                left: 0
                             }
                         }
                     }
                 }
             };
+
+            $scope.abandonedChart = {
+                data:[],
+                options:{
+                    title: {
+                        enable: true,
+                        text: "Abandoned calls on the 5/20 sec"
+                    },
+                    chart: {
+                        type: 'pieChart',
+                        height: 350,
+                        donut: true,
+                        x: function(d){return d.key;},
+                        y: function(d){return d.y;},
+                        showLabels: true,
+                        pie: {
+                            startAngle: function(d) { return d.startAngle/2 -Math.PI/2 },
+                            endAngle: function(d) { return d.endAngle/2 -Math.PI/2 }
+                        },
+                        duration: 500,
+                        legend: {
+                            margin: {
+                                top: 5,
+                                right: 70,
+                                bottom: 5,
+                                left: 0
+                            }
+                        }
+                    }
+                }
+            };
+
+            $scope.uniqueInboundChart = {
+                data:[],
+                options:{
+                    title: {
+                        enable: true,
+                        text: "Unique inbound calls timeline"
+                    },
+                    chart: {
+                        type: 'lineChart',
+                        height: 450,
+                        margin : {
+                            top: 20,
+                            right: 20,
+                            bottom: 40,
+                            left: 55
+                        },
+                        x: function(d){ return d.x; },
+                        y: function(d){ return d.y; },
+                        useInteractiveGuideline: true,
+                        dispatch: {
+                            stateChange: function(e){ console.log("stateChange"); },
+                            changeState: function(e){ console.log("changeState"); },
+                            tooltipShow: function(e){ console.log("tooltipShow"); },
+                            tooltipHide: function(e){ console.log("tooltipHide"); }
+                        },
+                        xAxis: {
+                            axisLabel: 'Time',
+                            tickFormat: function(d) {
+                                return d3.time.format('%H:%M %d/%m')(new Date(d))
+                            }
+                        },
+                        yAxis: {
+                            axisLabel: 'Calls',
+                            tickFormat: function(d){
+                                return d3.format('.02f')(d);
+                            },
+                            axisLabelDistance: -10
+                        }
+                    },
+                }
+            };
+            $scope.unique = [
+                {
+                    key: "unique inbound",
+                    values:[],
+                    color: '#7777ff',
+                    area: true
+                },
+                {
+                    key: "inbound",
+                    color: '#2ca02c',
+                    values:[]
+                }
+            ];
 
             $scope.callServer = getData;
             $scope.getTableState = null;
