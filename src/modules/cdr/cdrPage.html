@@ -38,7 +38,7 @@
             </td>
 
             <td class="cdr-actions">
-                <div class="btn-group dropup cdr-btn" dropdown="" ng-show="row.recordings.length">
+                <div ng-if="canReadFile" class="btn-group dropup cdr-btn" dropdown="" ng-show="row.recordings.length">
                     <button ng-click="openFile(row.recordings[row._selectedRecordings])" class="btn btn-default">
                         <i class="glyphicon glyphicon-play"></i>
                     </button>
@@ -58,14 +58,14 @@
                                 Download
                             </a>
                         </li>
-                        <li>
+                        <li ng-show="false">
                             <a href="javascript:;">
                                 <i class="fa fa-lock"></i>
                                 Lock
                             </a>
                         </li>
-                        <li class="divider"></li>
-                        <li>
+                        <li ng-show="canDeleteFile" class="divider"></li>
+                        <li ng-show="canDeleteFile" >
                             <a ng-click="deleteResource(row.recordings[row._selectedRecordings], row.recordings)">
                                 <i class="fa fa-trash-o"></i>
                                 Remove
@@ -89,8 +89,8 @@
                                 {{row.pinned_items.length ? 'Unpin' : 'Pin' }}
                             </a>
                         </li>
-                        <li class="divider"></li>
-                        <li>
+                        <li ng-show="canDeleteCDR" class="divider"></li>
+                        <li ng-show="canDeleteCDR">
                             <a ng-click="deleteCdr(row.uuid)">
                                 <i class="fa fa-trash-o"></i>
                                 Remove
