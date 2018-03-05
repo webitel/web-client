@@ -657,7 +657,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.CharSet = utils.CharSet;
     }
     
-    app.controller('AccountStatisticCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
+    app.controller('AccountStatisticCtrl', ['$scope', '$timeout', 'AccountModel', 'notifi', function ($scope, $timeout, AccountModel, notifi) {
         var timerId = null;
         $scope.$watch('$parent.panelStatistic', function(val){
             if (val)
@@ -749,7 +749,6 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                     y: status[key] || 0
                 })
             });
-
 
             $timeout(function () {
                 $scope.$apply();
@@ -874,6 +873,328 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                 }
             }
         };
+
+        $scope.onBreak = {
+            data: [],
+            options: {
+                title: {
+                    enable: true,
+                    text: "On break"
+                },
+                chart: {
+                    type: 'pieChart',
+                    height: 350,
+                    margin : {
+                        top: 5,
+                        right: 0,
+                        bottom: 0,
+                        left: 0
+                    },
+                    donut: true,
+                    x: function(d){return d.key;},
+                    y: function(d){return d.y;},
+                    showValues: true,
+                    showLegend: false,
+                    valueFormat: function(d){
+                        return d3.format(',d')(d);
+                    },
+
+                    duration: 500,
+                    xAxis: {
+                        axisLabel: 'Type'
+                    },
+                    yAxis: {
+                        axisLabel: 'Count',
+                        axisLabelDistance: 0,
+                        tickFormat: function(d){
+                            return d3.format(',d')(d);
+                        }
+                    }
+                }
+            }
+        };
+
+        $scope.accountExtensions = {
+            options: {
+                title: {
+                    enable: true,
+                    text: "Extension by call direction"
+                },
+                chart: {
+                    type: 'multiBarHorizontalChart',
+                    height: 550,
+                    x: function(d){return d.label;},
+                    y: function(d){return d.value;},
+                    showControls: true,
+                    showValues: true,
+                    duration: 500,
+                    stacked: true,
+                    xAxis: {
+                        showMaxMin: false
+                    },
+                    yAxis: {
+                        axisLabel: 'Values',
+                        tickFormat: function(d){
+                            return d3.format(',.2f')(d);
+                        }
+                    }
+                }
+            },
+            data: []
+        };
+        $scope.directions = [
+            {
+                "key": "inbound",
+                "color": "#1f77b4",
+                "values": []
+            },
+            {
+                "key": "outbound",
+                "color": "#ff7f0e",
+                "values": []
+            },
+            {
+                "key": "conference",
+                "color": "#b4152a",
+                "values": []
+            },
+            {
+                "key": "eavesdrop",
+                "color": "#42b42a",
+                "values": []
+            },
+            {
+                "key": "internal",
+                "color": "#9b0eb4",
+                "values": []
+            }
+        ];
+        $scope.accountExtensionsRequest =
+            {
+                  "size": 0,
+                  "_source": {
+                    "excludes": []
+                  },
+                  "aggs": {
+                    "2": {
+                      "terms": {
+                        "field": "extension",
+                        "size": 10,
+                        "order": {
+                          "_count": "desc"
+                        }
+                      },
+                      "aggs": {
+                        "3": {
+                          "terms": {
+                            "field": "direction",
+                            "size": 5,
+                            "order": {
+                              "_count": "desc"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "version": true,
+                  "stored_fields": [
+                    "*"
+                  ],
+                  "script_fields": {
+                    "duration_time": {
+                      "script": {
+                        "inline": "doc['duration'].value",
+                        "lang": "painless"
+                      }
+                    },
+                    "billsec_time": {
+                      "script": {
+                        "inline": "doc['billsec'].value",
+                        "lang": "painless"
+                      }
+                    },
+                    "queue_waiting_time": {
+                      "script": {
+                        "inline": "doc['queue.wait_duration'].value",
+                        "lang": "painless"
+                      }
+                    },
+                    "queue_duration_time": {
+                      "script": {
+                        "inline": "doc['queue.duration'].value",
+                        "lang": "painless"
+                      }
+                    },
+                    "hangup_side": {
+                      "script": {
+                        "inline": "doc['hangup_disposition'].value == 'send_bye' ? 'Recieve hangup' : doc['hangup_disposition'].value == 'recv_bye' ? 'Send hangup' : doc['hangup_disposition'].value == 'recv_refuse' ? 'Send refuse' : doc['hangup_disposition'].value == 'send_refuse' ? 'Recieve refuse' : doc['hangup_disposition'].value == 'send_cancel' ? 'Recieve cancel' : doc['hangup_disposition'].value == 'recv_cancel' ? 'Send cancel' : 'Unknown'",
+                        "lang": "painless"
+                      }
+                    }
+                  },
+                  "docvalue_fields": [
+                    "callflow.times.answered_time",
+                    "callflow.times.bridged_time",
+                    "callflow.times.created_time",
+                    "callflow.times.hangup_time",
+                    "callflow.times.hold_accum_time",
+                    "callflow.times.last_hold_time",
+                    "callflow.times.profile_created_time",
+                    "callflow.times.progress_media_time",
+                    "callflow.times.progress_time",
+                    "callflow.times.resurrect_time",
+                    "callflow.times.transfer_time",
+                    "created_time",
+                    "queue.answered_time",
+                    "queue.exit_time",
+                    "queue.joined_time",
+                    "recordings.createdOn"
+                  ],
+                    "filter": [
+                        {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "range": {
+                                            "created_time": {
+                                                "gte": 1519641887143,
+                                                "lte": 1520246687143,
+                                                "format": "epoch_millis"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                };
+        $scope.accountOnBreakRequest =
+            {
+                "size": 0,
+                "aggs": {
+                    "2": {
+                        "terms": {
+                            "field": "display_status",
+                            "size": 10,
+                            "order": {
+                                "1": "desc"
+                            }
+                        },
+                        "aggs": {
+                            "1": {
+                                "sum": {
+                                    "script": {
+                                        "inline": "doc['duration'].value",
+                                        "lang": "painless"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "version": true,
+                "script_fields": {
+                    "duration_time": {
+                        "script": {
+                            "inline": "doc['duration'].value",
+                            "lang": "painless"
+                        }
+                    },
+                    "created_datetime": {
+                        "script": {
+                            "inline": "doc['created_time'].value",
+                            "lang": "painless"
+                        }
+                    }
+                },
+                "docvalue_fields": [
+                    "created_time",
+                    "end_time"
+                ],
+                "query": "",
+                "filter": [
+                    {
+                        "bool": {
+                            "must": [
+                                {
+                                    "range": {
+                                        "created_time": {
+                                            "gte": 1519641887143,
+                                            "lte": 1520246687143,
+                                            "format": "epoch_millis"
+                                        }
+                                    }
+                                },
+                                {
+                                    "query_string": {
+                                        "query": "display_status:\"On Break\" || status:ONBREAK",
+                                        "analyze_wildcard": true,
+                                        "default_field": "*"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+            };
+        $scope.getExtensionStats = function (startDate, endDate) {
+            $scope.accountExtensionsRequest.filter[0].bool.must[0].range.created_time.gte = startDate.getTime();
+            $scope.accountExtensionsRequest.filter[0].bool.must[0].range.created_time.lte = endDate.getTime();
+            AccountModel.getStatistic($scope.domain, $scope.accountExtensionsRequest, function (err, res) {
+                if(err)
+                    return notifi.error(err, 5000);
+                if(res && res.aggregations && res.aggregations["2"] && res.aggregations["2"].buckets){
+                    res.aggregations["2"].buckets.forEach(function (item) {
+                        if(item["3"].buckets.length>0){
+                            $scope.accountExtensions.data = angular.copy($scope.directions);
+                            item["3"].buckets.forEach(function (direction) {
+                                var values = $scope.accountExtensions.data.filter(function (f_item) {
+                                    return f_item.key === direction.key;
+                                })[0];
+                                if(values){
+                                    values.push({
+                                        label: item.key,
+                                        value: direction.doc_count
+                                    });
+                                }
+                            })
+                        }
+                    })
+                }
+                $scope.accountExtensions.data.forEach(function (item, index) {
+                    if (item.values.length === 0){
+                        $scope.accountExtensions.data.splice(index, 1);
+                    }
+                })
+            });
+        };
+        $scope.getOnBreakStats = function (startDate, endDate) {
+            $scope.accountOnBreakRequest.filter[0].bool.must[0].range.created_time.gte = startDate.getTime();
+            $scope.accountOnBreakRequest.filter[0].bool.must[0].range.created_time.lte = endDate.getTime();
+            AccountModel.getStatistic($scope.domain, $scope.accountOnBreakRequest, function (err, res) {
+                if(err)
+                    return notifi.error(err, 5000);
+                if(res && res.aggregations && res.aggregations["2"] && res.aggregations["2"].buckets){
+                    res.aggregations["2"].buckets.forEach(function (item) {
+                        if(item["1"].value && item["1"].value>0){
+                            $scope.onBreak.data.push({
+                                key: item.key,
+                                y: item["1"].value
+                            });
+                        }
+                    })
+                }
+            });
+        };
+        $scope.initCharts = function () {
+            var tmpDate = new Date();
+            var startDate = new Date(tmpDate.getFullYear(), tmpDate.getMonth(), tmpDate.getDate(), 0, 0, 0);
+            var endDate = new Date(tmpDate.getFullYear(), tmpDate.getMonth(), tmpDate.getDate()+1, 0, 0, 0);
+            $scope.getExtensionStats(startDate, endDate);
+            $scope.getOnBreakStats(startDate, endDate);
+        }
+        $scope.initCharts();
     }]);
 
     app.controller('AccountStateCtrl', ['$scope', 'options', '$modalInstance', 'AcdModel', 'notifi', 'AccountModel',
