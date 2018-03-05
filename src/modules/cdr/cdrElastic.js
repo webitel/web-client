@@ -7,8 +7,8 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
     function (app, moment, jsZIP, async) {
 
     app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm',
-        'TableSearch', '$timeout', 'cfpLoadingBar',
-        function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, TableSearch, $timeout, cfpLoadingBar) {
+        'TableSearch', '$timeout', 'cfpLoadingBar', '$q',
+        function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, TableSearch, $timeout, cfpLoadingBar, $q) {
             //$scope.queries = (localStorage.getItem('cdrQueries') && JSON.parse(localStorage.getItem('cdrQueries'))) || [];
             $scope.pinSearch = false;
             $scope.isLoading = false;
@@ -84,13 +84,32 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 $scope.panelStatistic = false;
             }, true);
 
-            $scope.mapColumns = CdrModel.mapColumn();
-            $scope.columns = CdrModel.availableColumns();
-            $scope._countColumns = 0;
+            $scope.filter = "";
+
+            $scope.mapColumns = [];
             $scope.columnsArr = [];
             $scope.columnsDateArr = [];
-            $scope.filter = "";
-            $scope.detailtColumns = [];
+            
+            function initColumns(columns) {
+                $scope.mapColumns = columns;
+                angular.forEach($scope.mapColumns, function (item, key) {
+                    if (item.type === 'timestamp')
+                        $scope.columnsDateArr.push(item.name);
+                    else $scope.columnsArr.push(item.name);
+                });
+                $scope._initColumns = true;
+                $timeout(function () {
+                    $scope.$apply();
+                })
+            }
+            $scope._initColumns = false;
+            CdrModel.listGridColumns(function (err, columns) {
+                if (err)
+                    return;
+
+                initColumns(columns)
+            });
+
 
             $scope.dateOpenedControl = {
                 start: false,
@@ -121,20 +140,6 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     $event.stopPropagation(),
                     $scope.dateOpenedControl[attr] = !0
             };
-
-            angular.forEach($scope.mapColumns, function (item, key) {
-                if (item.type == 'timestamp')
-                    $scope.columnsDateArr.push(key);
-                else $scope.columnsArr.push(key);
-
-                if (!item.noRender)
-                    $scope._countColumns++;
-
-                if (item.options && item.options.detail) {
-                    $scope.detailtColumns.push(key);
-                    $scope._countColumns--;
-                }
-            });
 
             $scope.detailLoadingText = "";
 
@@ -177,7 +182,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 var _page = 0;
                 var queryString = angular.copy($scope.queryString);
                 var sort = {
-                    "Call start time": {
+                    "created_time": {
                         "order": "asc"
                     }
                 };
@@ -211,7 +216,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     CdrModel.getElasticData(
                         null,
                         10000,
-                        {other: ["variables.uuid"], date: [], domain: $scope.domain},
+                        {other: ["uuid"], date: [], domain: $scope.domain},
                         filter,
                         queryString,
                         null,
@@ -230,9 +235,9 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
 
                     async.eachSeries(data,
                         function (item, cb) {
-                            if (!item['variables.uuid']) return cb();
+                            if (!item['uuid']) return cb();
 
-                            CdrModel.removeCdr(item['variables.uuid'], function (err, res) {
+                            CdrModel.removeCdr(item['uuid'], function (err, res) {
                                 if (err && err.statusCode != 404) {
                                     return cb(err);
                                 } else if (err) {
@@ -289,83 +294,33 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 //$scope.filterAPI.resetFilter();
             };
 
-            $scope.selectRow = function (row) {
-                if ($scope.activeRow == row) return $scope.activeRow = null;
-                $scope.activeRow = row;
-                row.pinned = row.pinnedItems && ~row.pinnedItems.indexOf(webitel.connection.session.username);
-                if (row._files && row._files.length > 1) return;
-                row._files = [
-                    {
-                        "name": "open",
-                        "uuid": row["variables.uuid"],
-                        "action": "open",
-                        "class": "fa fa-file-code-o",
-                        "buttons": [
-                            {
-                                "row": row,
-                                "action": "pin",
-                                "class": "fa fa-thumb-tack",
-                                "ngClass": "{'btn-warning':row.pinned, 'pinned': row.pinned, 'unpinned': !row.pinned}"
-                            }
-                        ]
-                    }
-                ];
 
-                if (canDeleteCDR) {
-                    row._files[0].buttons.push(
-                        {
-                            "action": "removeCdr",
-                            "class": "glyphicon glyphicon-remove"
-                        }
-                    )
-                }
-
-                if (!canReadFile)
+            $scope.loadLegsB = function (row) {
+                if (row.legs_b) {
+                    //TODO
+                    delete row.legs_b;
                     return;
-
-                setLoadingDetail(1);
-
-                fileModel.getFiles(row['variables.uuid'], function (err, res) {
-                    setLoadingDetail(0);
-                    if (err)
-                        return notifi.error(err);
-
-                    angular.forEach(res, function (item) {
-                        var _f = {
-                            "_id": item._id,
-                            "_lock": item._lock,
-                            "name": item.name || "",
-                            "content-type": item['content-type'] || "",
-                            "action": "stream",
-                            "domain": item.domain,
-                            "uuid": row["variables.uuid"],
-                            "private": item.private,
-                            "uri": fileModel.getUri(row["variables.uuid"], item.name, item["createdOn"], _getTypeFile(item['content-type'])),
-                            "href": item.path,
-                            "class": item['content-type'] === "application/pdf" ? "fa fa-file-pdf-o" :"fa fa-file-audio-o",
-                            "buttons": [
-                                {
-                                    "action": "load",
-                                    "class": "glyphicon glyphicon-cloud-download"
+                }
+                row._loadB = true;
+                CdrModel.getLegB(
+                    row.uuid.toString(),
+                    {domain: $scope.domain, other: $scope.columnsArr, date: $scope.columnsDateArr},
+                    [
+                        {"range": {
+                                "created_time": {
+                                    "gte": $scope.startDate.getTime(),
+                                    "lte": $scope.endDate.getTime(),
+                                    "format": "epoch_millis"
                                 }
-                            ]
-                        };
-                        if (canDeleteFile) {
-                            _f.buttons = _f.buttons.concat(
-                                {
-                                    "action": "setLock",
-                                    "class": "fa fa-lock",
-                                    "ngClass": "{'btn-success': file._lock}"
-                                },
-                                {
-                                    "action": "delete",
-                                    "class": "fa fa-trash-o"
-                                }
-                            )
-                        }
-                        row._files.push(_f);
-                    })
-                })
+                            }}
+
+                    ],
+                    null,
+                    (err, res) => {
+                        row._loadB = false;
+                        row.legs_b = res;
+                    }
+                );
             };
 
             function _getTypeFile(contentType) {
@@ -388,86 +343,72 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 // TODO
             };
 
-            $scope.fileAction = function (file, parent, files) {
-                switch (file.action) {
-                    case "pin":
-                        pinItem(file.row);
-                        break;
-
-                    case "open":
-                        showJsonPreview(file.uuid);
-                        break;
-
-                    case "delete":
-                        deleteResource(parent, files);
-                        break;
-
-                    case "load":
-                        loadResource(parent);
-                        break;
-
-                    case "stream":
-                        // TODO preview pdf
-                        if (file['content-type'] == "application/pdf")
-                            return loadResource(file);
-                        play(file);
-                        break;
-
-                    case "removeCdr":
-                        deleteCdr(parent.uuid);
-                        break;
-
-                    case "setLock":
-                        var lock = parent._lock !== true;
-                        var params = {
-                            id: parent._id,
-                            uuid: parent.uuid,
-                            data: {
-                                _lock: lock
-                            }
-                        };
-                        
-                        fileModel.updateFile(parent.domain, params, function (err, res) {
-                            if (err)
-                                return notifi.error(err, 3000);
-
-                            parent._lock = lock;
-                        });
-                        break;
-                    default :
-                        notifi.error("No action :(", 3000)
-                }
-            };
-
-            var pinItem = function(row){
+            $scope.pinItem = function(row) {
                 var user = webitel.connection.session.username;
-                if(row.pinnedItems && ~row.pinnedItems.indexOf(user)){
-                    CdrModel.unpinItem(row["variables.uuid"], row._index, $scope.domain, function(err, res){
+                if(row.pinned_items && ~row.pinned_items.indexOf(user)){
+                    CdrModel.unpinItem(row["uuid"], row._index, $scope.domain, function(err, res){
                         if(err)
                             notifi.error(err);
                         row.pinned = false;
-                        var userIndex = row.pinnedItems.indexOf(user);
-                        row.pinnedItems.splice(userIndex, 1)
+                        var userIndex = row.pinned_items.indexOf(user);
+                        row.pinned_items.splice(userIndex, 1);
                         if($scope.pinSearch){
                             var i = $scope.rowCollection.indexOf(row);
                             $scope.rowCollection.splice(i, 1);
                         }
                     });
-                }
-                else{
-                    CdrModel.pinItem(row["variables.uuid"], row._index, $scope.domain, function(err, res){
+                } else {
+                    CdrModel.pinItem(row["uuid"], row._index, $scope.domain, function(err, res){
                         if(err)
                             notifi.error(err);
                         row.pinned = true;
-                        if(row.pinnedItems){
-                            row.pinnedItems.push(user);
+                        if(!angular.isArray(row.pinned_items)){
+                            row.pinned_items = [];
                         }
-                        else{
-                            row.pinnedItems = [];
-                            row.pinnedItems.push(user);
-                        }
+                        row.pinned_items.push(user);
                     });
                 }
+            };
+
+            $scope.setActiveFile = function (row, pos) {
+                row._selectedRecordings = pos;
+                $scope.openFile(row.recordings[pos])
+            };
+
+            //TODO...
+            $scope.setLockFile = function (file) {
+                var lock = file._lock !== true;
+                var params = {
+                    id: file._id,
+                    uuid: file.uuid,
+                    data: {
+                        _lock: lock
+                    }
+                };
+
+                fileModel.updateFile(file.domain, params, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 3000);
+
+                    file._lock = lock;
+                });
+            };
+
+            $scope.openFile = function (file) {
+                // TODO preview pdf
+                file.uri = fileModel.getUri(file.uuid, file.name, file.createdOn, _getTypeFile(file['content-type']));
+                if (file['content-type'] === "application/pdf")
+                    return loadResource(file);
+                play(file);
+            };
+
+            $scope.downloadFile = function (file) {
+                file.uri = fileModel.getUri(file.uuid, file.name, file.createdOn, _getTypeFile(file['content-type']));
+                loadResource(file)
+            };
+
+            $scope.openCdr = function (item, legB) {
+                showJsonPreview(item.uuid, legB);
             };
 
             var deleteCdr = function (uuid) {
@@ -483,6 +424,8 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     });
             };
 
+            $scope.deleteCdr = deleteCdr;
+
             var deleteResource = function (file, files) {
                 $confirm({text: 'Are you sure you want to delete ' + file.name + '.mp3 or .wav file ?'},  { templateUrl: 'views/confirm.html' })
                     .then(function() {
@@ -491,12 +434,14 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                                 return notifi.error(err);
 
                             for (var i = 0, len = files.length; i < len; i++)
-                                if (files[i] == file)
+                                if (files[i] === file)
                                     return files.splice(i, 1);
 
                         })
                     });
             };
+
+            $scope.deleteResource = deleteResource;
 
             var loadResource = function (file) {
                 var $a = document.createElement('a');
@@ -528,62 +473,80 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 }, true);
             };
 
-            var showJsonPreview = function(id) {
-                fileModel.getJsonObject(id, function(err, res) {
-
-
-                    var jsonData = JSON.stringify(res, null, '\t');
-
-                    var jsonWindow = window.open("", id, "width=800, height=600");
-
-                    if (jsonWindow) {
-
-                        // додаємо розмітку у вікно для перегляду json обєкта і кнопки для скачування
-                        jsonWindow.document.write(
-                            '<button id="save-cdrJSON" style="position: fixed; right: 0; z-index: 1;">Save</button>' +
-                            '<div id="cdr-jsonViewver"></div>' +
-                            '<style type="text/css">' +
-                            'body { margin: 0; padding: 0; background: #e7ebee; }' +
-                            '</style>'
-                        );
-
-                        $('#cdr-jsonViewver', jsonWindow.document).JSONView(JSON.parse(jsonData, {collapsed: false}));
-
-                        $('#save-cdrJSON', jsonWindow.document).off("click");
-                        $('#save-cdrJSON', jsonWindow.document).on("click", function () {
-
-                            var textFileAsBlob = new Blob([jsonData], {type: 'application/json'}),
-                                downloadLink = document.createElement("a");
-
-                            downloadLink.download = id + ".json";
-                            downloadLink.innerHTML = "Download File";
-
-                            if (window.webkitURL !== null) {
-                                downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-                            }
-                            else {
-                                downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-                                downloadLink.onclick = destroyClickedElement;
-                                downloadLink.style.display = "none";
-                                document.body.appendChild(downloadLink);
-                            }
-                            downloadLink.click();
-                        });
-                    }
-                    else {
-                        notifi.warn("Please, allow popup window!", 5000);
-                        return;
-                    }
-                })
+            var showJsonPreview = function(id, legB) {
+                if (legB) {
+                    fileModel.getLegB(id, openJsonPreviewWindow)
+                } else {
+                    fileModel.getJsonObject(id, openJsonPreviewWindow)
+                }
             };
 
+            function openJsonPreviewWindow(err, res) {
+                if (err) {
+                    return notifi.error(err, 5000)
+                }
+                var id = res.variables.uuid;
+
+                var jsonData = JSON.stringify(res, null, '\t');
+
+                var jsonWindow = window.open("", id, "width=800, height=600");
+
+                if (jsonWindow) {
+
+                    // додаємо розмітку у вікно для перегляду json обєкта і кнопки для скачування
+                    jsonWindow.document.write(
+                        '<button id="save-cdrJSON" style="position: fixed; right: 0; z-index: 1;">Save</button>' +
+                        '<div id="cdr-jsonViewver"></div>' +
+                        '<style type="text/css">' +
+                        'body { margin: 0; padding: 0; background: #e7ebee; }' +
+                        '</style>'
+                    );
+
+                    $('#cdr-jsonViewver', jsonWindow.document).JSONView(JSON.parse(jsonData, {collapsed: false}));
+
+                    $('#save-cdrJSON', jsonWindow.document).off("click");
+                    $('#save-cdrJSON', jsonWindow.document).on("click", function () {
+
+                        var textFileAsBlob = new Blob([jsonData], {type: 'application/json'}),
+                            downloadLink = document.createElement("a");
+
+                        downloadLink.download = id + ".json";
+                        downloadLink.innerHTML = "Download File";
+
+                        if (window.webkitURL !== null) {
+                            downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+                        }
+                        else {
+                            downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+                            downloadLink.onclick = destroyClickedElement;
+                            downloadLink.style.display = "none";
+                            document.body.appendChild(downloadLink);
+                        }
+                        downloadLink.click();
+                    });
+                }
+                else {
+                    notifi.warn("Please, allow popup window!", 5000);
+                    return;
+                }
+            }
+
             $scope.renderCell = function (value, cell) {
-                if (cell.type == 'timestamp') {
+                if (cell.type === 'timestamp') {
                     if (!value || value === 0) return "-";
 
-                    return new Date(value).toLocaleString()
-                };
+                    if (angular.isArray(value)) {
+                        return value.map(function (i) {
+                            return new Date(i).toLocaleString()
+                        }).join('\n')
+                    }
 
+                    return new Date(value).toLocaleString()
+                }
+
+                if (angular.isArray(value)) {
+                    return value.join('\n')
+                }
                 return value
 
             };
@@ -598,8 +561,8 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             };
 
             $scope.getInboundStats = function () {
-                $scope.statRequests.inbound.filter[1].range['variables.start_stamp'].gte = $scope.startDate.getTime();
-                $scope.statRequests.inbound.filter[1].range['variables.start_stamp'].lte = $scope.endDate.getTime();
+                $scope.statRequests.inbound.filter[1].range['created_time'].gte = $scope.startDate.getTime();
+                $scope.statRequests.inbound.filter[1].range['created_time'].lte = $scope.endDate.getTime();
                 $scope.statRequests.inbound.domain = $scope.domain;
                 $scope.statRequests.inbound.query = $scope.queryString;
                 CdrModel.getStatistic($scope.domain, $scope.statRequests.inbound, function(err, res){
@@ -612,8 +575,8 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             };
 
             $scope.getAvgStats = function () {
-                $scope.statRequests.avg.filter[0].range['variables.start_stamp'].gte = $scope.startDate.getTime();
-                $scope.statRequests.avg.filter[0].range['variables.start_stamp'].lte = $scope.endDate.getTime();
+                $scope.statRequests.avg.filter[0].range['created_time'].gte = $scope.startDate.getTime();
+                $scope.statRequests.avg.filter[0].range['created_time'].lte = $scope.endDate.getTime();
                 $scope.statRequests.avg.domain = $scope.domain;
                 $scope.statRequests.avg.query = $scope.queryString;
                 $scope.avgConnectedCallMetr.data.forEach(function(item){
@@ -641,8 +604,8 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             };
 
             $scope.getDirectionStats = function () {
-                $scope.statRequests.direction.filter[0].range['variables.start_stamp'].gte = $scope.startDate.getTime();
-                $scope.statRequests.direction.filter[0].range['variables.start_stamp'].lte = $scope.endDate.getTime();
+                $scope.statRequests.direction.filter[0].range['created_time'].gte = $scope.startDate.getTime();
+                $scope.statRequests.direction.filter[0].range['created_time'].lte = $scope.endDate.getTime();
                 $scope.statRequests.direction.domain = $scope.domain;
                 $scope.statRequests.direction.query = $scope.queryString;
                 $scope.callDirection.data = [];
@@ -673,7 +636,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         $scope.causeByAttemptChart.data[0].values = data;
                     }
                 });
-            }
+            };
 
             $scope.statRequests = {
                 inbound: {
@@ -681,7 +644,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         "Abandoned": {
                             "sum": {
                                 "script": {
-                                    "inline": "doc['Bridged'].value ? 0 : 1",
+                                    "inline": "doc['billsec'].value > 0 ? 0 : 1",
                                         "lang": "painless"
                                 }
                             }
@@ -689,7 +652,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         "Answered": {
                             "sum": {
                                 "script": {
-                                    "inline": "doc['Bridged'].value ? 1 : 0",
+                                    "inline": "doc['billsec'].value > 0 ? 1 : 0",
                                         "lang": "painless"
                                 }
                             }
@@ -700,14 +663,14 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     "filter": [
                         {
                             "match_phrase": {
-                                "Call direction": {
+                                "direction": {
                                     "query": "inbound"
                                 }
                             }
                         },
                         {
                             "range": {
-                                "variables.start_stamp": {
+                                "created_time": {
                                     "gte": $scope.startDate.getTime(),
                                     "lte": $scope.endDate.getTime(),
                                     "format": "epoch_millis"
@@ -719,7 +682,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                                 "must_not": [
                                     {
                                         "term": {
-                                            "Hangup cause": "LOSE_RACE"
+                                            "hangup_cause": "LOSE_RACE"
                                         }
                                     }
                                 ]
@@ -745,7 +708,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                             "aggs": {
                                 "avggg": {
                                     "terms": {
-                                        "field": "User ID",
+                                        "field": "extension",
                                         "size": 10,
                                         "order": {
                                             "cd": "desc"
@@ -754,7 +717,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                                     "aggs": {
                                         "cd": {
                                             "avg": {
-                                                "field": "Call duration"
+                                                "field": "duration"
                                             }
                                         },
                                         "bbd": {
@@ -777,7 +740,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     "filter": [
                         {
                             "range": {
-                                "variables.start_stamp": {
+                                "created_time": {
                                     "gte": $scope.startDate.getTime(),
                                     "lte": $scope.endDate.getTime(),
                                     "format": "epoch_millis"
@@ -789,7 +752,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                                 "must_not": [
                                     {
                                         "term": {
-                                            "Hangup cause": "LOSE_RACE"
+                                            "hangup_cause": "LOSE_RACE"
                                         }
                                     }
                                 ]
@@ -803,7 +766,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     "aggs": {
                         "hangup_causes": {
                             "terms": {
-                                "field": "Hangup cause",
+                                "field": "hangup_cause",
                                 "size": 5,
                                 "order": {
                                     "_count": "desc"
@@ -812,7 +775,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         },
                         "directions": {
                             "terms": {
-                                "field": "Call direction",
+                                "field": "direction",
                                 "size": 5,
                                 "order": {
                                     "_count": "desc"
@@ -825,7 +788,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                     "filter": [
                         {
                             "range": {
-                                "variables.start_stamp": {
+                                "created_time": {
                                     "gte": $scope.startDate.getTime(),
                                     "lte": $scope.endDate.getTime(),
                                     "format": "epoch_millis"
@@ -837,7 +800,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                                 "must_not": [
                                     {
                                         "term": {
-                                            "Hangup cause": "LOSE_RACE"
+                                            "hangup_cause": "LOSE_RACE"
                                         }
                                     }
                                 ]
@@ -993,7 +956,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             function getFilter() {
                 var filter = [
                     {"range": {
-                        "variables.start_stamp": {
+                        "created_time": {
                             "gte": $scope.startDate.getTime(),
                             "lte": $scope.endDate.getTime(),
                             "format": "epoch_millis"
@@ -1004,7 +967,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 if($scope.pinSearch) {
                     filter.push({
                         "terms":{
-                            "pinnedItems": [webitel.connection.session.username]
+                            "pinned_items": [webitel.connection.session.username]
                         }
                     });
                 }
@@ -1014,7 +977,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             $scope.pinnedItems = function(){
                 $scope.pinSearch = !$scope.pinSearch;
                 $scope.applyFilter();
-            }
+            };
 
             function getData(tableState) {
                 if ($scope.isLoading) return void 0;
@@ -1069,6 +1032,5 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
 
             };
         }]);
-
 
 });

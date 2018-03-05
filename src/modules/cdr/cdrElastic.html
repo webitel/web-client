@@ -1,6 +1,6 @@
 <div class="page" style="position: relative" >
     <div class="panel" style="min-height: 470px;">
-        <div class="panel-body" >
+        <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-inline">
@@ -103,8 +103,10 @@
                     <span class="pull-right">Count: {{count}}</span>
                 </div>
             </div>
-            <div ng-if="!panelStatistic" data-ng-include="'modules/cdr/cdrPage.html'"></div>
-            <div ng-if="panelStatistic" data-ng-include="'modules/cdr/cdrStatistic.html'"></div>
+            <div ng-if="_initColumns">
+                <div ng-show="!panelStatistic" data-ng-include="'modules/cdr/cdrPage.html'"></div>
+                <div ng-show="panelStatistic" data-ng-include="'modules/cdr/cdrStatistic.html'"></div>
+            </div>
         </div>
     </div>
 

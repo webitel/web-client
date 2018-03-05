@@ -2,203 +2,122 @@
  * Created by i.navrotskyj on 01.03.2016.
  */
 define(["app", "config"], function(app, config) {
-    app.factory("CdrModel", ["webitel", "$localStorage", function(webitel, $localStorage) {
-        var useElastic = config.cdr.useElastic;
+
+    app.factory("CdrModel", ["webitel", "$localStorage", "notifi", "$q", function(webitel, $localStorage, notifi, $q) {
+
+        var defaultMapColumn = [
+            {
+                "name": "created_time",
+                "type": "timestamp",
+                "caption": "Call start time"
+            },
+            {
+                "name": "caller_id_number",
+                "type": "string",
+                "caption": "Caller number"
+            },
+            {
+                "name": "caller_id_name",
+                "type": "string",
+                "caption": "Caller name"
+            },
+            {
+                "name": "destination_number",
+                "type": "string",
+                "caption": "Destination number"
+            },
+
+            {
+                "name": "billsec",
+                "type": "integer",
+                "caption": "Billsec"
+            },
+            {
+                "name": "duration",
+                "type": "integer",
+                "caption": "Duration"
+            },
+            {
+                "name": "direction",
+                "type": "string",
+                "caption": "Direction"
+            },
+            {
+                "name": "hangup_cause",
+                "type": "string",
+                "caption": "Hangup cause"
+            },
+            {
+                "name": "callflow.times.hangup_time",
+                "type": "timestamp",
+                "caption": "hangup_time"
+            }
+        ];
+
+        var cacheColumn = null;
+
+        function getDomainName() {
+            return (webitel.connection.session.domain ?
+                webitel.connection.session.domain : "root")
+        }
+
+        function setMetadataColumns(data, domain, cb) {
+            webitel.api('POST', '/api/v2/metadata/cdr?domain=' + getDomainName(), JSON.stringify(data), cb)
+        }
+
+        function updateGridColumns(columns, cb) {
+            setMetadataColumns(angular.copy(columns), getDomainName(), function (err, res) {
+                if (err)
+                    return notifi.error(err, 5000);
+
+                var item = res && res.data;
+                if (item && angular.isArray(item.data)) {
+                    cacheColumn = item.data;
+                    return cb(null, item.data)
+                } else {
+                    cacheColumn = defaultMapColumn;
+                    return cb(null, defaultMapColumn)
+                }
+            })
+        }
+
+        function getDefaultColumnsSettings() {
+            return defaultMapColumn;
+        }
+
+        function listGridColumns(cb) {
+            if (cacheColumn) {
+                return cb(null, cacheColumn, 1)
+            }
+            webitel.api('GET', '/api/v2/metadata/cdr?domain=' + getDomainName(), function (err, res) {
+                if (err) {
+                    if (err.statusCode !== 404) {
+                        notifi.error(err, 5000);
+                        return cb(err);
+                    }
+                    cacheColumn = defaultMapColumn;
+                    return cb(null, defaultMapColumn)
+                }
+                var item = res && res.data;
+                if (item && angular.isArray(item.data)) {
+                    cacheColumn = item.data;
+                    return cb(null, item.data)
+                } else {
+                    cacheColumn = defaultMapColumn;
+                    return cb(null, defaultMapColumn)
+                }
+            });
+        }
+
+
         function getMapColumns (reset) {
             // TODO API!!!
             if ($localStorage.cdrColumns && !reset)
                 return $localStorage.cdrColumns;
 
-            var mapColumn = {};
-
-            if (useElastic) {
-                mapColumn = {
-                    "variables.outbound_caller_id_name": {
-                        "type": "string",
-                        "caption": "Caller name"
-                    },
-                    "CallerID number": {
-                        "type": "string",
-                        "caption": "Caller number"
-                    },
-                    "Destination number": {
-                        "type": "string",
-                        "caption": "Destination number"
-                    },
-                    "Call start time": {
-                        "type": "timestamp",
-                        "caption": "Call start time"
-                    },
-                    "variables.billsec": {
-                        "type": "integer",
-                        "caption": "Billsec"
-                    },
-                    "variables.duration": {
-                        "type": "integer",
-                        "caption": "Duration"
-                    },
-                    "variables.webitel_direction": {
-                        "type": "string",
-                        "caption": "Direction",
-                    },
-                    "variables.hangup_cause": {
-                        "type": "string",
-                        "caption": "Hangup cause"
-                    },
-                    "Call answer time": {
-                        "type": "timestamp",
-                        "caption": "Answered time",
-                        "options": {
-                            "detail": true
-                        }
-                    },
-                    "Bridge time": {
-                        "type": "timestamp",
-                        "caption": "Bridge time",
-                        "options": {
-                            "detail": true
-                        }
-                    },
-                    "variables.domain_name": {
-                        "type": "string",
-                        "caption": "Domain",
-                    },
-                    "Call end time": {
-                        "type": "timestamp",
-                        "caption": "Call end time",
-                        "options": {
-                            "detail": true
-                        }
-                    },
-                    "Queue ID": {
-                        "type": "string",
-                        "caption": "Queue"
-
-                    },
-                    "variables.uuid": {
-                        "type": "string",
-                        "caption": "UUID",
-                        "noRender": true
-                    },
-                    "variables.cc_member_uuid": {
-                        "type": "string",
-                        "caption": "cc_member_uuid",
-                        "noRender": true
-                    }
-                }
-            } else {
-                mapColumn = {
-                    "callflow.caller_profile.caller_id_name": {
-                        "type": "string",
-                        "caption": "Caller name"
-                    },
-                    "callflow.caller_profile.caller_id_number": {
-                        "type": "string",
-                        "caption": "Caller number"
-                    },
-                    "callflow.caller_profile.destination_number": {
-                        "type": "string",
-                        "caption": "Destination number"
-                    },
-                    "callflow.times.created_time": {
-                        "type": "timestamp",
-                        "caption": "Created time"
-                    },
-                    "variables.billsec": {
-                        "type": "integer",
-                        "caption": "Billsec"
-                    },
-                    "variables.duration": {
-                        "type": "integer",
-                        "caption": "Duration"
-                    },
-                    "variables.webitel_direction": {
-                        "type": "select",
-                        "caption": "Direction",
-                        "options": {
-                            "select": [
-                                "inbound",
-                                "outbound",
-                                "conference",
-                                "internal",
-                                "eavesdrop"
-                            ]
-                        }
-                    },
-                    "variables.hangup_cause": {
-                        "type": "select",
-                        "caption": "Hangup cause",
-                        "options": {
-                            "select": [
-                                "CALL_REJECTED",
-                                "DESTINATION_OUT_OF_ORDER",
-                                "NORMAL_CLEARING",
-                                "RECOVERY_ON_TIMER_EXPIRE",
-                                "ORIGINATOR_CANCEL",
-                                "USER_NOT_REGISTERED",
-                                "UNALLOCATED_NUMBER",
-                                "MANAGER_REQUEST",
-                                "INCOMPATIBLE_DESTINATION",
-                                "SYSTEM_SHUTDOWN",
-                                "USER_BUSY",
-                                "NO_ANSWER",
-                                "USER_CHALLENGE",
-                                "NO_ROUTE_DESTINATION",
-                                "EXCHANGE_ROUTING_ERROR",
-                                "INVALID_GATEWAY",
-                                "LOSE_RACE",
-                                "CHAN_NOT_IMPLEMENTED",
-                                "SUBSCRIBER_ABSENT",
-                                "NORMAL_UNSPECIFIED",
-                                "MEDIA_TIMEOUT",
-                                "INCOMING_CALL_BARRED",
-                                "NONE",
-                                "NORMAL_TEMPORARY_FAILURE",
-                                "MANDATORY_IE_MISSING",
-                                "UNKNOWN",
-                                "ATTENDED_TRANSFER",
-                                "INVALID_NUMBER_FORMAT",
-                                "SERVICE_NOT_IMPLEMENTED",
-                                "ALLOTTED_TIMEOUT"
-                            ]
-                        }
-                    },
-                    "callflow.times.answered_time": {
-                        "type": "timestamp",
-                        "caption": "Answered time",
-                        "options": {
-                            "detail": true
-                        }
-                    },
-                    "callflow.times.bridged_time": {
-                        "type": "timestamp",
-                        "caption": "Bridged time",
-                        "options": {
-                            "detail": true
-                        }
-                    },
-                    "callflow.times.hangup_time": {
-                        "type": "timestamp",
-                        "caption": "Hangup",
-                        "options": {
-                            "detail": true
-                        }
-                    },
-                    "variables.domain_name": {
-                        "type": "string",
-                        "caption": "Domain",
-                    },
-                    "variables.uuid": {
-                        "type": "string",
-                        "caption": "UUID",
-                        "noRender": true
-                    },
-                };
-            };
-
             $localStorage.cdrColumns = mapColumn;
             return mapColumn;
-        };
+        }
 
         function setMapColumn (col) {
             var cols = $localStorage.cdrColumns;
@@ -218,7 +137,7 @@ define(["app", "config"], function(app, config) {
         };
 
         function removeMapColumn (id) {
-            if (!id || id == 'variables.uuid')
+            if (!id || id === 'uuid')
                 throw "Bad id";
             delete $localStorage.cdrColumns[id];
         };
@@ -246,10 +165,12 @@ define(["app", "config"], function(app, config) {
             var availableDefColumns = {};
 
             angular.forEach(getMapColumns(), function (item, key) {
-                return availableDefColumns[key] = 1;
+                return availableDefColumns[item.name] = 1;
             });
             return availableDefColumns;
         };
+
+
 
         function getData(pageNumber, limit, columns, filter, sort, cb) {
             var body = {};
@@ -268,20 +189,47 @@ define(["app", "config"], function(app, config) {
                     return cb(err);
                 return cb(null, parseResponse(res));
             });
-        };
+        }
+
         function getElasticData(pageNumber, limit, columns, filter, qs, sort, scroll, cb) {
-            var body = {};
-            body.columns = columns.other; //availableColumns();
-            if (!~body.columns.indexOf('pinnedItems')) {
-                body.columns.push('pinnedItems')
+            getElasticDataFromLeg(pageNumber, limit, columns, filter, qs, sort, scroll, null, cb)
+        }
+
+        function getLegB(legA, columns, filter, sort, cb) {
+            if (!angular.isArray(filter)) {
+                filter = [];
             }
-            body.columnsDate = columns.date;
+
+            filter.push({
+                "term": {
+                    "parent_uuid": legA
+                }
+            });
+            getElasticDataFromLeg(0, 100, columns, filter, "*", sort, null, "b", cb)
+        }
+
+        function getElasticDataFromLeg(pageNumber, limit, columns, filter, qs, sort, scroll, leg, cb) {
+            var body = {};
+            body.columnsDate = angular.copy(columns.other);
+            angular.forEach(columns.date, function (val) {
+                body.columnsDate.push(val);
+            });
+
+            if (!~body.columnsDate.indexOf("uuid")) {
+                body.columnsDate.push("uuid");
+            }
+            if (!~body.columnsDate.indexOf("pinned_items")) {
+                body.columnsDate.push("pinned_items");
+            }
+
+            body.columns = [];
+            body.includes = ["recordings"];
             body.pageNumber = pageNumber;
             body.limit = limit;
             body.query = qs || "*";
             body.filter = filter || {};
             body.sort = sort;
-            
+
             if (columns.domain)
                 body.domain = columns.domain;
 
@@ -290,8 +238,7 @@ define(["app", "config"], function(app, config) {
 
             // TODO BUG!
             body = JSON.stringify(body);
-
-            webitel.cdr("POST", "/api/v2/cdr/text", body, function (err, res, statusCode) {
+            webitel.cdr("POST", "/api/v2/cdr" + (leg ? "-"+ leg : "") + "/text", body, function (err, res, statusCode) {
                 if (err) {
                     err.statusCode = statusCode;
                     return cb(err);
@@ -317,21 +264,19 @@ define(["app", "config"], function(app, config) {
 
         function parseElasticResponse (res) {
             var data = [];
-            var _st = Date.now();
             var t = {};
             angular.forEach(res, function (item) {
-                t = {
-                    _index: item._index
-                };
+                t = {};
+                angular.forEach(item.fields, function (v, k) {
+                    t[k] = v
+                });
+                t._index = item._index;
 
-                if (item.fields.pinnedItems) {
-                    t.pinnedItems = item.fields.pinnedItems;
-                    delete item.fields.pinnedItems
+                if (item._source && item._source.recordings) {
+                    t.recordings = item._source.recordings;
+                    t._selectedRecordings = 0;
                 }
 
-                angular.forEach(item.fields, function (val, key) {
-                    t[key] = val[0];
-                });
                 data.push(t);
             });
             return data;
@@ -417,16 +362,16 @@ define(["app", "config"], function(app, config) {
             getElasticData: getElasticData,
             scrollElasticData: scrollElasticData,
             getCount: getCount,
-            availableColumns: availableColumns,
-            mapColumn: getMapColumns,
             remove: remove,
-            Column: Column,
-            setMapColumn: setMapColumn,
-            removeMapColumn: removeMapColumn,
-            getMapColumn: getMapColumn,
             removeCdr: removeCdr,
             pinItem: pinItem,
-            unpinItem: unpinItem
+            unpinItem: unpinItem,
+            getLegB: getLegB,
+
+            updateGridColumns: updateGridColumns,
+            listGridColumns: listGridColumns,
+            getDefaultColumnsSettings: getDefaultColumnsSettings
+
         }
     }]);
 });
