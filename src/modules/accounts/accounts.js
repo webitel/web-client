@@ -877,10 +877,6 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.onBreak = {
             data: [],
             options: {
-                title: {
-                    enable: true,
-                    text: "On break"
-                },
                 chart: {
                     type: 'pieChart',
                     height: 400,
@@ -916,10 +912,6 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
 
         $scope.accountExtensions = {
             options: {
-                title: {
-                    enable: true,
-                    text: "Extension by call direction"
-                },
                 chart: {
                     type: 'multiBarHorizontalChart',
                     height: 400,
