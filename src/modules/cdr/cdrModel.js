@@ -12,25 +12,24 @@ define(["app", "config"], function(app, config) {
                 "caption": "Call start time"
             },
             {
+                "name": "direction",
+                "type": "string",
+                "caption": "Direction"
+            },
+            {
                 "name": "caller_id_number",
                 "type": "string",
                 "caption": "Caller number"
-            },
-            {
-                "name": "caller_id_name",
-                "type": "string",
-                "caption": "Caller name"
             },
             {
                 "name": "destination_number",
                 "type": "string",
                 "caption": "Destination number"
             },
-
             {
-                "name": "billsec",
-                "type": "integer",
-                "caption": "Billsec"
+                "name": "extension",
+                "type": "string",
+                "caption": "Extension"
             },
             {
                 "name": "duration",
@@ -38,19 +37,14 @@ define(["app", "config"], function(app, config) {
                 "caption": "Duration"
             },
             {
-                "name": "direction",
-                "type": "string",
-                "caption": "Direction"
+                "name": "billsec",
+                "type": "integer",
+                "caption": "Bill, sec"
             },
             {
                 "name": "hangup_cause",
                 "type": "string",
                 "caption": "Hangup cause"
-            },
-            {
-                "name": "callflow.times.hangup_time",
-                "type": "timestamp",
-                "caption": "hangup_time"
             }
         ];
 
