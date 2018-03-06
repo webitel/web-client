@@ -883,7 +883,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                 },
                 chart: {
                     type: 'pieChart',
-                    height: 350,
+                    height: 400,
                     margin : {
                         top: 5,
                         right: 0,
@@ -922,7 +922,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                 },
                 chart: {
                     type: 'multiBarHorizontalChart',
-                    height: 550,
+                    height: 400,
                     x: function(d){return d.label;},
                     y: function(d){return d.value;},
                     showControls: true,
@@ -1194,7 +1194,11 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
             $scope.getExtensionStats(startDate, endDate);
             $scope.getOnBreakStats(startDate, endDate);
         }
-        $scope.initCharts();
+        $scope.$watch('domain', function(val){
+            if(val){
+                $scope.initCharts();
+            }
+        });
     }]);
 
     app.controller('AccountStateCtrl', ['$scope', 'options', '$modalInstance', 'AcdModel', 'notifi', 'AccountModel',
