@@ -571,8 +571,10 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         return notifi.error(err);
 
                     $scope.answered_total = res.hits.total;
-                    $scope.avg_talk_time = res.aggregations && res.aggregations["2"].value.toFixed(2);
-                    $scope.total_talk_time = res.aggregations && res.aggregations["3"].value;
+                    $scope.avg_talk_time = res.aggregations && res.aggregations["2"].value.toFixed(1);
+                    var tmpDate = new Date(1970, 0, 0, 0, 0, 0);
+                    tmpDate.setSeconds(res.aggregations && res.aggregations["3"].value);
+                    $scope.total_talk_time = tmpDate.toTimeString().substr(0,8);
                     $scope.uniqueInboundChart.data = angular.copy($scope.unique);
                     if(res.aggregations && res.aggregations["4"] && res.aggregations["4"].buckets){
                         res.aggregations["4"].buckets.forEach(function (item) {
@@ -1213,7 +1215,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                             showMaxMin: false
                         },
                         yAxis: {
-                            axisLabel: 'Values',
+                            axisLabel: 'Seconds',
                             tickFormat: function(d){
                                 return d3.format(',.2f')(d);
                             }
