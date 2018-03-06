@@ -1,4 +1,4 @@
-define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel', 'css!modules/accounts/account.css'], function (app, utils, async) {
+define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel', 'modules/cdr/cdrModel', 'css!modules/accounts/account.css'], function (app, utils, async) {
 
     app.controller('AccountsCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'AccountModel', '$route', '$location', '$routeParams',
         '$confirm', '$timeout', 'TableSearch', '$modal', 'cfpLoadingBar',
@@ -657,7 +657,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.CharSet = utils.CharSet;
     }
     
-    app.controller('AccountStatisticCtrl', ['$scope', '$timeout', 'AccountModel', 'notifi', function ($scope, $timeout, AccountModel, notifi) {
+    app.controller('AccountStatisticCtrl', ['$scope', '$timeout', 'AccountModel', 'CdrModel', 'notifi', function ($scope, $timeout, AccountModel, CdrModel, notifi) {
         var timerId = null;
         $scope.$watch('$parent.panelStatistic', function(val){
             if (val)
@@ -990,41 +990,6 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                     }
                   },
                   "version": true,
-                  "stored_fields": [
-                    "*"
-                  ],
-                  "script_fields": {
-                    "duration_time": {
-                      "script": {
-                        "inline": "doc['duration'].value",
-                        "lang": "painless"
-                      }
-                    },
-                    "billsec_time": {
-                      "script": {
-                        "inline": "doc['billsec'].value",
-                        "lang": "painless"
-                      }
-                    },
-                    "queue_waiting_time": {
-                      "script": {
-                        "inline": "doc['queue.wait_duration'].value",
-                        "lang": "painless"
-                      }
-                    },
-                    "queue_duration_time": {
-                      "script": {
-                        "inline": "doc['queue.duration'].value",
-                        "lang": "painless"
-                      }
-                    },
-                    "hangup_side": {
-                      "script": {
-                        "inline": "doc['hangup_disposition'].value == 'send_bye' ? 'Recieve hangup' : doc['hangup_disposition'].value == 'recv_bye' ? 'Send hangup' : doc['hangup_disposition'].value == 'recv_refuse' ? 'Send refuse' : doc['hangup_disposition'].value == 'send_refuse' ? 'Recieve refuse' : doc['hangup_disposition'].value == 'send_cancel' ? 'Recieve cancel' : doc['hangup_disposition'].value == 'recv_cancel' ? 'Send cancel' : 'Unknown'",
-                        "lang": "painless"
-                      }
-                    }
-                  },
                   "docvalue_fields": [
                     "callflow.times.answered_time",
                     "callflow.times.bridged_time",
@@ -1086,20 +1051,6 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                     }
                 },
                 "version": true,
-                "script_fields": {
-                    "duration_time": {
-                        "script": {
-                            "inline": "doc['duration'].value",
-                            "lang": "painless"
-                        }
-                    },
-                    "created_datetime": {
-                        "script": {
-                            "inline": "doc['created_time'].value",
-                            "lang": "painless"
-                        }
-                    }
-                },
                 "docvalue_fields": [
                     "created_time",
                     "end_time"
@@ -1128,37 +1079,42 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                             ]
                         }
                     }
-                ],
+                ]
             };
         $scope.getExtensionStats = function (startDate, endDate) {
             $scope.accountExtensionsRequest.filter[0].bool.must[0].range.created_time.gte = startDate.getTime();
             $scope.accountExtensionsRequest.filter[0].bool.must[0].range.created_time.lte = endDate.getTime();
-            AccountModel.getStatistic($scope.domain, $scope.accountExtensionsRequest, function (err, res) {
+            CdrModel.getStatistic($scope.domain, $scope.accountExtensionsRequest, function (err, res) {
                 if(err)
                     return notifi.error(err, 5000);
+                $scope.accountExtensions.data = angular.copy($scope.directions);
+                var pushed = false;
                 if(res && res.aggregations && res.aggregations["2"] && res.aggregations["2"].buckets){
                     res.aggregations["2"].buckets.forEach(function (item) {
                         if(item["3"].buckets.length>0){
-                            $scope.accountExtensions.data = angular.copy($scope.directions);
-                            item["3"].buckets.forEach(function (direction) {
-                                var values = $scope.accountExtensions.data.filter(function (f_item) {
-                                    return f_item.key === direction.key;
-                                })[0];
-                                if(values){
-                                    values.push({
+                            $scope.accountExtensions.data.forEach(function(col){
+                                item["3"].buckets.forEach(function (direction) {
+                                    if(col.key === direction.key){
+                                        col.values.push({
+                                               label: item.key,
+                                               value: direction.doc_count
+                                           });
+                                        pushed = true;
+                                    }
+                                });
+                                if(!pushed){
+                                    col.values.push({
                                         label: item.key,
-                                        value: direction.doc_count
+                                        value: 0
                                     });
+                                } else{
+                                    pushed = false;
                                 }
-                            })
+                            });
                         }
-                    })
+                    });
                 }
-                $scope.accountExtensions.data.forEach(function (item, index) {
-                    if (item.values.length === 0){
-                        $scope.accountExtensions.data.splice(index, 1);
-                    }
-                })
+                console.log($scope.accountExtensions.data)
             });
         };
         $scope.getOnBreakStats = function (startDate, endDate) {
