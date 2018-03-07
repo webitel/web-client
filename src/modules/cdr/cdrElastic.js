@@ -566,14 +566,15 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 $scope.statsReq.answeredInbound.filter[0].range.created_time.gte = $scope.startDate.getTime();
                 $scope.statsReq.answeredInbound.filter[0].range.created_time.lte = $scope.endDate.getTime();
                 $scope.statsReq.answeredInbound.query = $scope.queryString;
+                $scope.statsReq.answeredInbound.domain = $scope.domain;
                 CdrModel.getStatistic($scope.domain, $scope.statsReq.answeredInbound, function(err, res){
                     if (err)
                         return notifi.error(err);
 
                     $scope.answered_total = res.hits.total;
-                    $scope.avg_talk_time = res.aggregations && res.aggregations["2"].value.toFixed(1);
+                    $scope.avg_talk_time = res.aggregations && res.aggregations["2"].value && res.aggregations["2"].value.toFixed(1);
                     var tmpDate = new Date(1970, 0, 0, 0, 0, 0);
-                    tmpDate.setSeconds(res.aggregations && res.aggregations["3"].value);
+                    if(res.aggregations && res.aggregations["3"].value) tmpDate.setSeconds(res.aggregations && res.aggregations["3"].value);
                     $scope.total_talk_time = tmpDate.toTimeString().substr(0,8);
                     $scope.uniqueInboundChart.data = angular.copy($scope.unique);
                     if(res.aggregations && res.aggregations["4"] && res.aggregations["4"].buckets){
@@ -589,14 +590,14 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 $scope.statsReq.direction.filter[0].bool.must[0].range.created_time.gte = $scope.startDate.getTime();
                 $scope.statsReq.direction.filter[0].bool.must[0].range.created_time.lte = $scope.endDate.getTime();
                 $scope.statsReq.direction.query = $scope.queryString;
-
-
+                $scope.statsReq.direction.domain = $scope.domain;
                 $scope.outbound = 0;
                 CdrModel.getStatistic($scope.domain, $scope.statsReq.direction, function(err, res){
                     if (err)
                         return notifi.error(err);
+                    $scope.callDirection.data = [];
+                    $scope.causeByAttemptChart.data = [];
                     if(res.aggregations && res.aggregations["2"] && res.aggregations["2"].buckets){
-                        $scope.callDirection.data = [];
                         res.aggregations["2"].buckets.forEach(function (item) {
                             $scope.callDirection.data.push({
                                 key: item.key,
@@ -606,7 +607,6 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         });
                     }
                     if(res.aggregations && res.aggregations["7"] && res.aggregations["7"].buckets){
-                        $scope.causeByAttemptChart.data = [];
                         res.aggregations["7"].buckets.forEach(function (item) {
                             $scope.causeByAttemptChart.data.push({
                                 key: item.key,
@@ -621,11 +621,12 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 $scope.statsReq.avgDurationByExtension.filter[0].bool.must[0].range.created_time.gte = $scope.startDate.getTime();
                 $scope.statsReq.avgDurationByExtension.filter[0].bool.must[0].range.created_time.lte = $scope.endDate.getTime();
                 $scope.statsReq.avgDurationByExtension.query = $scope.queryString;
+                $scope.statsReq.avgDurationByExtension.domain = $scope.domain;
                 CdrModel.getStatistic($scope.domain, $scope.statsReq.avgDurationByExtension, function(err, res){
                     if (err)
                         return notifi.error(err);
+                    $scope.avgDuration.data = angular.copy($scope.avg);
                     if(res.aggregations && res.aggregations["2"] && res.aggregations["2"].buckets){
-                        $scope.avgDuration.data = angular.copy($scope.avg);
                         res.aggregations["2"].buckets.forEach(function (item) {
                             if(item["1"].value){
                                 $scope.avgDuration.data[0].values.push({
@@ -658,6 +659,7 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             $scope.getAbandoned = function () {
                 $scope.statsReq.abandoned.filter[0].range.created_time.gte = $scope.startDate.getTime();
                 $scope.statsReq.abandoned.filter[0].range.created_time.lte = $scope.endDate.getTime();
+                $scope.statsReq.abandoned.domain = $scope.domain;
                 $scope.statsReq.abandoned.query = $scope.queryString;
                 CdrModel.getStatistic($scope.domain, $scope.statsReq.abandoned, function(err, res){
                     if (err)
@@ -707,41 +709,6 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                         }
                     },
                     "version": true,
-                    "stored_fields": [
-                        "*"
-                    ],
-                    "script_fields": {
-                        "duration_time": {
-                            "script": {
-                                "inline": "doc['duration'].value",
-                                "lang": "painless"
-                            }
-                        },
-                        "billsec_time": {
-                            "script": {
-                                "inline": "doc['billsec'].value",
-                                "lang": "painless"
-                            }
-                        },
-                        "queue_waiting_time": {
-                            "script": {
-                                "inline": "doc['queue.wait_duration'].value",
-                                "lang": "painless"
-                            }
-                        },
-                        "queue_duration_time": {
-                            "script": {
-                                "inline": "doc['queue.duration'].value",
-                                "lang": "painless"
-                            }
-                        },
-                        "hangup_side": {
-                            "script": {
-                                "inline": "doc['hangup_disposition'].value == 'send_bye' ? 'Recieve hangup' : doc['hangup_disposition'].value == 'recv_bye' ? 'Send hangup' : doc['hangup_disposition'].value == 'recv_refuse' ? 'Send refuse' : doc['hangup_disposition'].value == 'send_refuse' ? 'Recieve refuse' : doc['hangup_disposition'].value == 'send_cancel' ? 'Recieve cancel' : doc['hangup_disposition'].value == 'recv_cancel' ? 'Send cancel' : 'Unknown'",
-                                "lang": "painless"
-                            }
-                        }
-                    },
                     "docvalue_fields": [
                         "callflow.times.answered_time",
                         "callflow.times.bridged_time",
@@ -819,38 +786,6 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                             }
                         },
                         "version": true,
-                        "script_fields": {
-                            "duration_time": {
-                                "script": {
-                                    "inline": "doc['duration'].value",
-                                    "lang": "painless"
-                                }
-                            },
-                            "billsec_time": {
-                                "script": {
-                                    "inline": "doc['billsec'].value",
-                                    "lang": "painless"
-                                }
-                            },
-                            "queue_waiting_time": {
-                                "script": {
-                                    "inline": "doc['queue.wait_duration'].value",
-                                    "lang": "painless"
-                                }
-                            },
-                            "queue_duration_time": {
-                                "script": {
-                                    "inline": "doc['queue.duration'].value",
-                                    "lang": "painless"
-                                }
-                            },
-                            "hangup_side": {
-                                "script": {
-                                    "inline": "doc['hangup_disposition'].value == 'send_bye' ? 'Recieve hangup' : doc['hangup_disposition'].value == 'recv_bye' ? 'Send hangup' : doc['hangup_disposition'].value == 'recv_refuse' ? 'Send refuse' : doc['hangup_disposition'].value == 'send_refuse' ? 'Recieve refuse' : doc['hangup_disposition'].value == 'send_cancel' ? 'Recieve cancel' : doc['hangup_disposition'].value == 'recv_cancel' ? 'Send cancel' : 'Unknown'",
-                                    "lang": "painless"
-                                }
-                            }
-                        },
                         "docvalue_fields": [
                             "callflow.times.answered_time",
                             "callflow.times.bridged_time",
@@ -925,38 +860,6 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                             }
                         },
                         "version": true,
-                        "script_fields": {
-                            "duration_time": {
-                                "script": {
-                                    "inline": "doc['duration'].value",
-                                    "lang": "painless"
-                                }
-                            },
-                            "billsec_time": {
-                                "script": {
-                                    "inline": "doc['billsec'].value",
-                                    "lang": "painless"
-                                }
-                            },
-                            "queue_waiting_time": {
-                                "script": {
-                                    "inline": "doc['queue.wait_duration'].value",
-                                    "lang": "painless"
-                                }
-                            },
-                            "queue_duration_time": {
-                                "script": {
-                                    "inline": "doc['queue.duration'].value",
-                                    "lang": "painless"
-                                }
-                            },
-                            "hangup_side": {
-                                "script": {
-                                    "inline": "doc['hangup_disposition'].value == 'send_bye' ? 'Recieve hangup' : doc['hangup_disposition'].value == 'recv_bye' ? 'Send hangup' : doc['hangup_disposition'].value == 'recv_refuse' ? 'Send refuse' : doc['hangup_disposition'].value == 'send_refuse' ? 'Recieve refuse' : doc['hangup_disposition'].value == 'send_cancel' ? 'Recieve cancel' : doc['hangup_disposition'].value == 'recv_cancel' ? 'Send cancel' : 'Unknown'",
-                                    "lang": "painless"
-                                }
-                            }
-                        },
                         "docvalue_fields": [
                             "callflow.times.answered_time",
                             "callflow.times.bridged_time",
@@ -1083,32 +986,6 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                             }
                         },
                         "version": true,
-                        "script_fields": {
-                            "billsec_time": {
-                                "script": {
-                                    "inline": "doc['billsec'].value",
-                                    "lang": "painless"
-                                }
-                            },
-                            "waitsec_time": {
-                                "script": {
-                                    "inline": "doc['waitsec'].value",
-                                    "lang": "painless"
-                                }
-                            },
-                            "holdsec_time": {
-                                "script": {
-                                    "inline": "doc['holdsec'].value",
-                                    "lang": "painless"
-                                }
-                            },
-                            "hangup_side": {
-                                "script": {
-                                    "inline": "doc['hangup_disposition'].value == 'send_bye' ? 'Recieve hangup' : doc['hangup_disposition'].value == 'recv_bye' ? 'Send hangup' : doc['hangup_disposition'].value == 'recv_refuse' ? 'Send refuse' : doc['hangup_disposition'].value == 'send_refuse' ? 'Recieve refuse' : doc['hangup_disposition'].value == 'send_cancel' ? 'Recieve cancel' : doc['hangup_disposition'].value == 'recv_cancel' ? 'Send cancel' : 'Unknown'",
-                                    "lang": "painless"
-                                }
-                            }
-                        },
                         "docvalue_fields": [
                             "callflow.times.answered_time",
                             "callflow.times.bridged_time",

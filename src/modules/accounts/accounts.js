@@ -925,7 +925,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                         showMaxMin: false
                     },
                     yAxis: {
-                        axisLabel: 'Values',
+                        axisLabel: 'Calls',
                         tickFormat: function(d){
                             return d3.format(',.2f')(d);
                         }
@@ -1084,6 +1084,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
         $scope.getExtensionStats = function (startDate, endDate) {
             $scope.accountExtensionsRequest.filter[0].bool.must[0].range.created_time.gte = startDate.getTime();
             $scope.accountExtensionsRequest.filter[0].bool.must[0].range.created_time.lte = endDate.getTime();
+            $scope.accountExtensionsRequest.domain = $scope.domain;
             CdrModel.getStatistic($scope.domain, $scope.accountExtensionsRequest, function (err, res) {
                 if(err)
                     return notifi.error(err, 5000);
@@ -1114,15 +1115,16 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                         }
                     });
                 }
-                console.log($scope.accountExtensions.data)
             });
         };
         $scope.getOnBreakStats = function (startDate, endDate) {
             $scope.accountOnBreakRequest.filter[0].bool.must[0].range.created_time.gte = startDate.getTime();
             $scope.accountOnBreakRequest.filter[0].bool.must[0].range.created_time.lte = endDate.getTime();
+            $scope.accountOnBreakRequest.domain = $scope.domain;
             AccountModel.getStatistic($scope.domain, $scope.accountOnBreakRequest, function (err, res) {
                 if(err)
                     return notifi.error(err, 5000);
+                $scope.onBreak.data = [];
                 if(res && res.aggregations && res.aggregations["2"] && res.aggregations["2"].buckets){
                     res.aggregations["2"].buckets.forEach(function (item) {
                         if(item["1"].value && item["1"].value>0){
