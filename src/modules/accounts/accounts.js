@@ -660,10 +660,12 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
     app.controller('AccountStatisticCtrl', ['$scope', '$timeout', 'AccountModel', 'CdrModel', 'notifi', function ($scope, $timeout, AccountModel, CdrModel, notifi) {
         var timerId = null;
         $scope.$watch('$parent.panelStatistic', function(val){
-            if (val)
+            if (val){
                 $timeout(function(){
                     window.dispatchEvent(new Event('resize'));
                 }, 0);
+            }
+            $scope.initCharts();
         });
         $scope.data;
         $scope.$watch('$parent.rowCollection', function (val) {
@@ -1143,7 +1145,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
             var endDate = new Date(tmpDate.getFullYear(), tmpDate.getMonth(), tmpDate.getDate()+1, 0, 0, 0);
             $scope.getExtensionStats(startDate, endDate);
             $scope.getOnBreakStats(startDate, endDate);
-        }
+        };
         $scope.$watch('domain', function(val){
             if(val){
                 $scope.initCharts();
