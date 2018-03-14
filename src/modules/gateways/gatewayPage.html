@@ -53,7 +53,7 @@
                                             <!--<input ng-if="row.type == 'password'" type="password" name="{{row.fieldName}}"  class="form-control" ng-model="gateway.attr[row.fieldName]" required>-->
 
                                             <div class="input-group" ng-if="row.type == 'password'" >
-                                                <input  ng-disabled="viewMode" name="{{row.fieldName}}"  class="form-control" ng-model="gateway.attr[row.fieldName]" required ng-style="{'-webkit-text-security': viewPassword ? '' : 'disc' }">
+                                                <input  ng-disabled="viewMode" name="{{row.fieldName}}"  class="form-control" ng-model="gateway.attr[row.fieldName]" type="{{!viewPassword ? 'password' : 'text'}}" required>
                                                 <span class="input-group-btn">
                                                     <button ng-show="!viewPassword" ng-click="toggleViewPassword()" class="btn btn-default" type="button">
                                                         <i class="glyphicon glyphicon-eye-open"></i>
