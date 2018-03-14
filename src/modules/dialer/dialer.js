@@ -367,6 +367,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                 if(cfGetter){
                     $scope.cf = aceEditor.getStrFromJson(cfGetter.callflowJson);
                     $scope.cfDiagram = cfGetter.callflowModel;
+                    $scope.oldCfDiagram = angular.copy($scope.cfDiagram);
                 }
             }
 
