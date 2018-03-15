@@ -44,9 +44,9 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
     }
 
     app.controller('DialerCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'DialerModel', '$location', '$route', '$routeParams',
-        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel', 'AccountModel', '$q', '$filter', 'MediaModel', 'GatewayModel', 'AcdModel', 'cfpLoadingBar',
+        '$confirm', 'TableSearch', '$timeout', '$modal', 'CalendarModel', 'AccountModel', '$q', '$filter', 'MediaModel', 'GatewayModel', 'AcdModel', 'cfpLoadingBar', 'FileUploader',
         function ($scope, webitel, $rootScope, notifi, DialerModel, $location, $route, $routeParams, $confirm, TableSearch,
-                  $timeout, $modal, CalendarModel, AccountModel, $q, $filter, MediaModel, GatewayModel, AcdModel, cfpLoadingBar) {
+                  $timeout, $modal, CalendarModel, AccountModel, $q, $filter, MediaModel, GatewayModel, AcdModel, cfpLoadingBar, FileUploader) {
 
             $scope.canDelete = webitel.connection.session.checkResource('dialer', 'd');
             $scope.canUpdate = webitel.connection.session.checkResource('dialer', 'u');
@@ -347,6 +347,38 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
                 });
             }
+
+            $scope.downloadCfScheme = function () {
+                DialerModel.item($scope.dialer._id, $scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    utils.saveJsonToPc(res._cfDiagram, res.name + '.json');
+                });
+            };
+
+            var uploader = $scope.uploader = new FileUploader();
+            uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+                console.info('onWhenAddingFileFailed', item, filter, options);
+            };
+            uploader.onAfterAddingFile = function(item) {
+                console.info('onAfterAddingFile', item);
+
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        var data = JSON.parse(event.target.result);
+                        if(!data.id)
+                            return;
+                        $scope.cfDiagram = data;
+                        $scope.openDiagram(true);
+                        $scope.$apply();
+                    } catch (e) {
+                        notifi.error(e, 10000);
+                    }
+                };
+                reader.readAsText(item._file);
+            };
 
             function disableVisual() {
                 $scope.visualCfEnabled = false;

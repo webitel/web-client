@@ -735,6 +735,13 @@
                                             <a ng-click="createVisual()" ng-show="!visualCfEnabled" type="button" class="btn-icon btn-icon-sm btn-gap-v btn-success">
                                                 <i class="fa fa-cogs"></i>
                                             </a>
+                                            <span class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark  btn-file pull-right"  ng-disabled="!domain" style="padding: 0">
+                                                <i class="glyphicon glyphicon-cloud-upload"></i>
+                                                <input type="file" nv-file-select="" uploader="uploader" accept=".json">
+                                            </span>
+                                            <a ng-click="downloadCfScheme()" ng-if="visualCfEnabled" class="btn-icon btn-icon-sm  btn-gap-v btn-success pull-right" style="margin-right: 3px">
+                                                <i class="glyphicon glyphicon-cloud-download"></i>
+                                            </a>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
