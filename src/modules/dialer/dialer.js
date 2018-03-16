@@ -1256,7 +1256,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                 filter: tableState.search.predicateObject || {},
                 page: _page,
                 limit: $scope.CountItemsByPage,
-                columns: ["createdOn", "name", "priority", "timezone", "communications", "_endCause", "_lock", "_waitingForResultStatusCb"]
+                columns: ["createdOn", "_nextTryTime", "name", "priority", "timezone", "communications", "_endCause", "_lock", "_waitingForResultStatusCb"]
             };
 
             if (((tableState.pagination.start / tableState.pagination.number) || 0) === 0) {

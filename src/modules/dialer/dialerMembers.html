@@ -46,6 +46,7 @@
         <thead >
         <tr>
             <th class="text-center" style="vertical-align:middle;width: 88px" st-skip-natural="true" rowspan=2 st-sort="createdOn" >Created on</th>
+            <th class="text-center" style="vertical-align:middle;width: 88px" st-skip-natural="true" rowspan=2 st-sort="_nextTryTime" >Next call</th>
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="name" >Name</th>
             <th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="priority" >Priority</th>
             <!--<th class="text-center" style="vertical-align:middle" st-skip-natural="true" rowspan=2 st-sort="timezone" >Timezone</th>-->
@@ -64,6 +65,9 @@
         </tr>
 
         <tr>
+            <th colspan="1">
+                <!--<input st-search="createdOn" class="form-control" placeholder="Start with..." type="search"/>-->
+            </th>
             <th colspan="1">
                 <!--<input st-search="createdOn" class="form-control" placeholder="Start with..." type="search"/>-->
             </th>
@@ -120,7 +124,7 @@
             </th>
         </tr>
         <tr ng-show="membersRowCollection.length <= 0">
-            <th colspan="10">
+            <th colspan="11">
                 <div class="row text-center">
                     <div class="center-block col-md-4" style="float: none;">
                         <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
@@ -135,6 +139,9 @@
         <tr >
             <td rowspan="{{t.communications.length}}">
                 {{timeToString(t.createdOn)}}
+            </td>
+            <td rowspan="{{t.communications.length}}">
+                {{(t._endCause || !t._nextTryTime) ? '-' : timeToString(t._nextTryTime)}}
             </td>
             <td rowspan="{{t.communications.length}}">
                 {{t.name}}
