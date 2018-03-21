@@ -698,6 +698,10 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                 {
                     name: "Longest idle agent",
                     val: "longest_idle_agent"
+                },
+                {
+                    name: "With least utilization",
+                    val: "with_least_utilization"
                 }
             ];
             $scope.numberStrategy = [
