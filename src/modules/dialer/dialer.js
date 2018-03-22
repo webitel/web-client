@@ -702,6 +702,10 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                 {
                     name: "With least utilization",
                     val: "with_least_utilization"
+                },
+                {
+                    name: "With highest waiting time",
+                    val: "with_highest_waiting_time"
                 }
             ];
             $scope.numberStrategy = [
