@@ -85,6 +85,29 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
             }, true);
 
             $scope.filter = "";
+            $scope.legSearchA = true;
+            $scope.legSearchB = false;
+
+            $scope.setLegSearch = function (val) {
+                $scope.applyFilter();
+            };
+
+            $scope.$watch("legSearchA", setLegSearch);
+            $scope.$watch("legSearchB", setLegSearch);
+
+            function setLegSearch(val, old) {
+
+                if (val === old) return;
+
+                if ($scope.legSearchA && $scope.legSearchB) {
+                    $scope.legSearch = '*';
+                } else if ($scope.legSearchB) {
+                    $scope.legSearch = 'b'
+                } else {
+                    $scope.legSearch = 'a'
+                }
+                $scope.applyFilter();
+            }
 
             $scope.mapColumns = [];
             $scope.columnsArr = [];
@@ -408,8 +431,8 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 loadResource(file)
             };
 
-            $scope.openCdr = function (item, legB) {
-                showJsonPreview(item.uuid, legB);
+            $scope.openCdr = function (item) {
+                showJsonPreview(item);
             };
 
             var deleteCdr = function (uuid) {
@@ -474,57 +497,58 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
                 }, true);
             };
 
-            var showJsonPreview = function(id, legB) {
-                if (legB) {
-                    fileModel.getLegB(id, openJsonPreviewWindow)
-                } else {
-                    fileModel.getJsonObject(id, openJsonPreviewWindow)
-                }
+            var showJsonPreview = function(row) {
+                CdrModel.getAllLegsFromA(row.parent_uuid ? row.parent_uuid : row.uuid, $scope.domain, function (err, res) {
+                    openJsonPreviewWindow(err, res, row.uuid)
+                });
             };
 
-            function openJsonPreviewWindow(err, res) {
+            function openJsonPreviewWindow(err, res, defUuid) {
                 if (err) {
                     return notifi.error(err, 5000)
                 }
-                var id = res.variables.uuid;
 
-                var jsonData = JSON.stringify(res, null, '\t');
+                var legA = res.leg_a;
+                var legsB = res.legs_b || [];
+
+                var id = legA.variables.uuid;
 
                 var jsonWindow = window.open("", id, "width=800, height=600");
 
                 if (jsonWindow) {
+                    jsonWindow.cdrText = JSON.stringify(res, null, '\t');
+                    jsonWindow.cdrLegs = [{
+                        name: "Leg A",
+                        val: legA
+                    }];
 
-                    // додаємо розмітку у вікно для перегляду json обєкта і кнопки для скачування
-                    jsonWindow.document.write(
-                        '<button id="save-cdrJSON" style="position: fixed; right: 0; z-index: 1;">Save</button>' +
-                        '<div id="cdr-jsonViewver"></div>' +
-                        '<style type="text/css">' +
-                        'body { margin: 0; padding: 0; background: #e7ebee; }' +
-                        '</style>'
-                    );
+                    jsonWindow.defUuid = defUuid.toString();
 
-                    $('#cdr-jsonViewver', jsonWindow.document).JSONView(JSON.parse(jsonData, {collapsed: false}));
-
-                    $('#save-cdrJSON', jsonWindow.document).off("click");
-                    $('#save-cdrJSON', jsonWindow.document).on("click", function () {
-
-                        var textFileAsBlob = new Blob([jsonData], {type: 'application/json'}),
-                            downloadLink = document.createElement("a");
-
-                        downloadLink.download = id + ".json";
-                        downloadLink.innerHTML = "Download File";
-
-                        if (window.webkitURL !== null) {
-                            downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-                        }
-                        else {
-                            downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-                            downloadLink.onclick = destroyClickedElement;
-                            downloadLink.style.display = "none";
-                            document.body.appendChild(downloadLink);
-                        }
-                        downloadLink.click();
+                    angular.forEach(legsB, function (item, k) {
+                        jsonWindow.cdrLegs.push({
+                            name: "Leg B_" + k,
+                            val: item
+                        })
                     });
+
+                    jsonWindow.document.write(
+                        '<link rel="stylesheet" type="text/css" href="modules/cdr/libs/json-view/jquery.jsonview.min.css" />' +
+                        '<link rel="stylesheet" type="text/css" href="modules/cdr/window.css" />' +
+                        '<link rel="stylesheet" type="text/css" href="../styles/bootstrap/bootstrap/bootstrap3.css"/>' +
+                        '<body>' +
+                            '<ul class="nav nav-tabs menu-legs">' +
+                                '<li id="save-data" class="pull-right">' +
+                                    '<a class="btn" id="save-json">Save</a>' +
+                                '</li>' +
+                            '</ul>' +
+                            '<div  class="tab-content content-leg active">' +
+                                '<div id="json-preview"></div>' +
+                            '</div>' +
+                            '<script src="bower_components/jquery/dist/jquery.min.js"></script>' +
+                            '<script src="modules/cdr/libs/json-view/jquery.jsonview.js"></script>' +
+                            '<script src="modules/cdr/window.js"></script>' +
+                        '</body>'
+                    );
                 }
                 else {
                     notifi.warn("Please, allow popup window!", 5000);
@@ -1301,24 +1325,34 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
 
                 var filter =  getFilter();
 
-                CdrModel.getElasticData(_page, maxNodes, {domain: $scope.domain, other: $scope.columnsArr, date: $scope.columnsDateArr}, filter, $scope.queryString, $scope.sort, null, function (err, res, count) {
-                    $scope.isLoading = false;
-                    if (err) {
+                CdrModel.getElasticDataFromLeg(
+                    _page,
+                    maxNodes,
+                    {domain: $scope.domain, other: $scope.columnsArr, date: $scope.columnsDateArr},
+                    filter,
+                    $scope.queryString,
+                    $scope.sort,
+                    null,
+                    $scope.legSearch,
+                    function (err, res, count) {
+                        $scope.isLoading = false;
+                        if (err) {
 
-                        if (err.statusCode === 400) {
-                            return $scope.qsError = true;
-                        };
-                        return notifi.error(err);
-                    };
-                    $scope.qsError = false;
+                            if (err.statusCode === 400) {
+                                return $scope.qsError = true;
+                            }
+                            return notifi.error(err);
+                        }
+                        $scope.qsError = false;
 
-                    _page++;
-                    nexData = res.length == maxNodes;
-                    $scope.count  = count;
+                        _page++;
+                        nexData = res.length === maxNodes;
+                        $scope.count  = count;
 
-                    $scope.rowCollection = $scope.rowCollection.concat(res);
+                        $scope.rowCollection = $scope.rowCollection.concat(res);
 
-                });
+                    }
+                )
 
             };
         }]);

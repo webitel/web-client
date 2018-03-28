@@ -74,7 +74,7 @@
                     </ul>
                 </div>
 
-                <div class="btn-group dropup " dropdown="">
+                <div ng-show="!row.parent_uuid.length" class="btn-group dropup " dropdown="">
                     <button class="btn btn-default dropdown-toggle cdr-btn" aria-haspopup="true" aria-expanded="false">...</button>
                     <ul class="dropdown-menu dropdown-menu-right pull-right">
                         <li>
@@ -99,11 +99,17 @@
                     </ul>
                 </div>
 
-                <!--<button class="btn btn-default cdr-btn" >...</button>-->
-
-                <button ng-disabled="row._loadB" class="btn btn-default cdr-btn" ng-click="loadLegsB(row, false)">
+                <button ng-disabled="row._loadB" ng-show="!row.parent_uuid.length" class="btn btn-default cdr-btn" ng-click="loadLegsB(row, false)">
                     <i  ng-class="{'glyphicon glyphicon-repeat fa-spin': !!row._loadB, 'glyphicon glyphicon-minus': !row._loadB && !!row.legs_b, 'glyphicon glyphicon-plus': !row._loadB && !row.legs_b}" ></i>
                 </button>
+
+                <button ng-show="row.parent_uuid.length" class="btn btn-default cdr-btn" ng-click="openCdr(row)">
+                    <i  class="fa fa-file-code-o" ></i>
+                </button>
+
+                <!--<button class="btn btn-default cdr-btn" >...</button>-->
+
+
                 <!--<span class="cdr-info-text">-->
                         <!---->
                 <!--</span>-->
@@ -115,7 +121,7 @@
                 {{renderCell(v[item.name], item)}}
             </td>
             <td class="cdr-actions">
-                <button class="btn btn-default cdr-btn" ng-click="openCdr(v, true)">
+                <button class="btn btn-default cdr-btn" ng-click="openCdr(v)">
                     <i  class="fa fa-file-code-o" ></i>
                 </button>
             </td>

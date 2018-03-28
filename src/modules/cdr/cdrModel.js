@@ -212,6 +212,9 @@ define(["app", "config"], function(app, config) {
             if (!~body.columnsDate.indexOf("uuid")) {
                 body.columnsDate.push("uuid");
             }
+            if (!~body.columnsDate.indexOf("parent_uuid")) {
+                body.columnsDate.push("parent_uuid");
+            }
             if (!~body.columnsDate.indexOf("pinned_items")) {
                 body.columnsDate.push("pinned_items");
             }
@@ -336,13 +339,20 @@ define(["app", "config"], function(app, config) {
                 return cb(new Error('Bad request parameters.'));
 
             webitel.cdr("DELETE", "/api/v2/files/" + id + "?db=true&domain=" + domain + "&name=" + name, cb);
-        };
+        }
         
         function removeCdr(uuid, cb) {
             if (!uuid)
                 return cb(new Error('Bad request parameters.'));
 
             webitel.cdr("DELETE", "/api/v2/cdr/" + uuid, cb);
+        }
+
+        function getAllLegsFromA (id, domain, cb) {
+            if (!id)
+                return cb(new Error('Bad request parameters.'));
+
+            webitel.cdr("GET", "/api/v2/cdr/" + id + "/b?domain=" + domain, cb);
         }
 
         function getStatistic(domain, body, cb){
@@ -354,6 +364,7 @@ define(["app", "config"], function(app, config) {
             getStatistic: getStatistic,
             getData: getData,
             getElasticData: getElasticData,
+            getElasticDataFromLeg: getElasticDataFromLeg,
             scrollElasticData: scrollElasticData,
             getCount: getCount,
             remove: remove,
@@ -361,6 +372,7 @@ define(["app", "config"], function(app, config) {
             pinItem: pinItem,
             unpinItem: unpinItem,
             getLegB: getLegB,
+            getAllLegsFromA: getAllLegsFromA,
 
             updateGridColumns: updateGridColumns,
             listGridColumns: listGridColumns,
