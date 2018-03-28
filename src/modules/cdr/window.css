@@ -1,0 +1,19 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+.menu-legs {
+    padding-left: 10px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 41px;
+    background-color: #fff;
+    z-index: 100;
+}
+
+.content-leg {
+    height: 100%;
+    position: absolute;
+    top: 42px;
+}

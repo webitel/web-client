@@ -62,9 +62,35 @@
                     <div class="col-sm-12">
                         <div class="input-group" data-ng-class="{'has-error': qsError}" >
                             <input type="text" class="form-control" name="cdrQuery" ng-model="queryString"><!--ng-keyup="$event.keyCode == 13 && applyFilter()" -->
+
                             <span class=" btn input-group-addon" onclick=formQuery.sbmt.click()>
                                 <span class="glyphicon glyphicon-search" ></span>
                             </span>
+
+                            <div class="btn-group btn input-group-addon" style="padding: 0;" dropdown="">
+                                <span class="dropdown-toggle btn" aria-haspopup="true" aria-expanded="true">
+                                    <span class="caret"></span>
+                                </span>
+                                <ul class="dropdown-menu" role="menu" style="margin-left: -90px;">
+                                    <li>
+                                        <a ng-click="legSearchA = !legSearchA">
+                                            <label class="ui-checkbox">
+                                                <input type="checkbox"  ng-model="legSearchA">
+                                                <span class="checkbox-empty">Leg A</span>
+                                            </label>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="legSearchB = !legSearchB">
+                                            <label class="ui-checkbox" >
+                                                <input type="checkbox"  ng-model="legSearchB">
+                                                <span >Leg B</span>
+                                            </label>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
                             <a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.2/query-dsl-query-string-query.html#query-string-syntax" target="_blank" class="input-group-addon">
                                 <span class="fa fa-question"></span>
                             </a>
