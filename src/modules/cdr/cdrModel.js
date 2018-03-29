@@ -235,7 +235,7 @@ define(["app", "config"], function(app, config) {
 
             // TODO BUG!
             body = JSON.stringify(body);
-            webitel.cdr("POST", "/api/v2/cdr" + (leg ? "-"+ leg : "") + "/text", body, function (err, res, statusCode) {
+            webitel.cdr("POST", "/api/v2/cdr/text?leg=" + (leg ? leg : ""), body, function (err, res, statusCode) {
                 if (err) {
                     err.statusCode = statusCode;
                     return cb(err);

@@ -211,7 +211,7 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
         function getStatistic(domain, body, cb) {
             if (!domain)
                 return cb(new Error("Bad domain name"));
-            webitel.cdr("POST", "/api/v2/accounts/text?domain=" + domain, JSON.stringify(body), function(err, res){
+            webitel.cdr("POST", "/api/v2/statistic/accounts?domain=" + domain, JSON.stringify(body), function(err, res){
                 return cb(err, res)
             });
         }
