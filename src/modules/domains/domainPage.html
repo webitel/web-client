@@ -81,7 +81,7 @@
                                             <div class="form-group" ng-class="{ 'has-error' : domainForm.emailPass.$invalid }">
                                                 <label class="control-label">Password</label>
                                                 <div class="input-group" >
-                                                    <input  ng-disabled="viewMode" name="emailPass"  class="form-control" ng-model="domain.email.options.auth.pass" ng-style="{'-webkit-text-security': viewPassword ? '' : 'disc' }">
+                                                    <input  ng-disabled="viewMode" name="emailPass" type="{{!viewPassword ? 'password' : 'text'}}" class="form-control" ng-model="domain.email.options.auth.pass" >
                                                     <span class="input-group-btn">
                                                         <button ng-show="!viewPassword" ng-click="toggleViewPassword()" class="btn btn-default" type="button">
                                                             <i class="glyphicon glyphicon-eye-open"></i>
