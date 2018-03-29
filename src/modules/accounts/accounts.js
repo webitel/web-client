@@ -178,9 +178,9 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
 
         function findTier(array, queueName) {
             for (var i in array)
-                if (array[i].queue == queueName)
+                if (array[i].queue === queueName)
                     return array[i]
-        };
+        }
 
         $scope.$watch('account', function(newValue, oldValue) {
             if ($scope.account._new)
@@ -664,10 +664,10 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
                 $timeout(function(){
                     window.dispatchEvent(new Event('resize'));
                 }, 0);
+                $scope.initCharts();
             }
-            $scope.initCharts();
         });
-        $scope.data;
+
         $scope.$watch('$parent.rowCollection', function (val) {
             $timeout.cancel(timerId);
             timerId = $timeout(function () {
@@ -1147,7 +1147,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/accounts/accountModel
             $scope.getOnBreakStats(startDate, endDate);
         };
         $scope.$watch('domain', function(val){
-            if(val){
+            if(val && $scope.$parent.panelStatistic){
                 $scope.initCharts();
             }
         });
