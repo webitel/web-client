@@ -253,6 +253,65 @@
                                         </div>
                                     </div>
                                 </tab>
+
+                                <tab ng-if="domain.id">
+                                    <tab-heading>
+                                        <span>Auth</span>
+                                    </tab-heading>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+
+                                            <div   class="form-group" >
+                                                <label for>Enabled</label>
+                                                <label style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="domain.auth.enable"><i></i></label>
+                                            </div>
+
+                                            <div class="form-group" ng-class="{ 'has-error' : domainForm.authHost.$invalid }">
+                                                <label class="control-label">Token uri</label>
+                                                <input ng-disabled="viewMode" type="text" class="form-control" name="authHost" data-ng-model="domain.auth.host">
+                                            </div>
+
+                                            <div class="form-group" ng-class="{ 'has-error' : domainForm.authClientId.$invalid }">
+                                                <label class="control-label">Client Id</label>
+                                                <input ng-disabled="viewMode" type="text" class="form-control" name="authClientId" data-ng-model="domain.auth.client_id">
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-8">
+                                                    <div class="form-group" ng-class="{ 'has-error' : domainForm.authUserId.$invalid }">
+                                                        <label class="control-label">User Id</label>
+                                                        <input ng-disabled="viewMode" type="text" class="form-control" name="authUserId" data-ng-model="domain.auth.user_id">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div   class="form-group" >
+                                                        <label for>Guid</label>
+                                                        <label style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="domain.auth.user_id_guid"><i></i></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="form-group" ng-class="{ 'has-error' : domainForm.authSignature.$invalid }">
+                                                <label class="control-label">Certificate</label>
+                                                <div class="row"></div>
+                                                <span ng-disabled="domain.auth.signature" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark  btn-file"  style="padding: 0">
+                                                    <i class="glyphicon glyphicon-cloud-upload"></i>
+                                                    <input type="file" nv-file-select="" uploader="uploader">
+                                                </span>
+
+                                                <span ng-disabled="!domain.auth.signature" ng-click="downloadAuthSignature(domain.auth.signature)" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark"  style="padding: 0">
+                                                    <i class="glyphicon glyphicon-cloud-download"></i>
+                                                </span>
+
+                                                <span ng-disabled="!domain.auth.signature" ng-click="removeAuthSignature()" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark"  style="padding: 0">
+                                                    <i class="glyphicon glyphicon-remove"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tab>
                             </tabset>
                         </div>
                     </div>

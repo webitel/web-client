@@ -2397,6 +2397,20 @@
                     rawapi.execute();
                 },
 
+                hotdeskSignIn: function (cb) {
+                    var cmd = new WebitelCommand('hotdesk_signin', {
+                        address: "WIN-BH6JO9V4VPA"
+                    }, cb);
+                    cmd.execute();
+                },
+
+                hotdeskSignOut: function (cb) {
+                    var cmd = new WebitelCommand('hotdesk_signout', {
+
+                    }, cb);
+                    cmd.execute();
+                },
+
                 displace: function () {
                     // TODO
                 },
@@ -3009,6 +3023,9 @@
                 getRecordFileFromUUID: WebitelConnection.getRecordFileFromUUID,
                 channelDump: WebitelConnection.channelDump,
                 initWebrtc: WebitelConnection.initWebrtc,
+
+                hotdeskSignIn: WebitelConnection.hotdeskSignIn,
+                hotdeskSignOut: WebitelConnection.hotdeskSignOut,
 
                 guid: guid
             };
