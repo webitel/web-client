@@ -1,9 +1,9 @@
 define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts/webitel/domainModel'], function (app, utils) {
 
 	app.controller("DomainsCtrl", ['$scope', '$modal', 'DomainModel', '$routeParams', '$filter',
-	'$location', '$route', 'notifi', '$confirm', 'webitel', 'TableSearch', '$timeout', 'cfpLoadingBar',
+	'$location', '$route', 'notifi', '$confirm', 'webitel', 'TableSearch', '$timeout', 'cfpLoadingBar', 'FileUploader',
 	function ($scope, $modal, DomainModel, $routeParams, $filter, $location, $route, notifi, $confirm, webitel, TableSearch,
-		$timeout, cfpLoadingBar) {
+		$timeout, cfpLoadingBar, FileUploader) {
 
 		var self = $scope;
 		$scope.displayedCollection = [];
@@ -69,6 +69,32 @@ define(['app', 'scripts/webitel/utils','modules/accounts/accountModel',	'scripts
 		};
 
 		self.oldDomain = null;
+
+		//region file
+        var uploader = $scope.uploader = new FileUploader();
+        uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+            console.info('onWhenAddingFileFailed', item, filter, options);
+        };
+        uploader.onAfterAddingFile = function(item) {
+            console.info('onAfterAddingFile', item);
+
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                self.domain.auth.signature = event.target.result;
+                self.$apply();
+            };
+            reader.readAsText(item._file);
+        };
+
+		//endregion
+
+		self.removeAuthSignature = function () {
+            self.domain.auth.signature = null;
+        };
+
+		self.downloadAuthSignature = function (signature) {
+            utils.saveDataToDisk(signature, self.domain.id + ".crt", 'text/plain')
+        };
 
 		self.reloadData = reloadData;
 		self.closePage = closePage;

@@ -464,7 +464,9 @@ define(['angular'], function (angular) {
         'callback',
         'callback/members',
 
-        'metadata'
+        'metadata',
+
+        'hotdesk'
     ];
 
     var events = [

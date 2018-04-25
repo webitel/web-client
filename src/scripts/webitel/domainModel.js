@@ -180,6 +180,7 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
                                     if (result && result.info) {
                                         domain.storage = result.info.storage;
                                         tokens = result.info.tokens || [];
+                                        domain.auth = result.info.auth || {};
                                     }
                                     cb();
                                 });
@@ -234,7 +235,7 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
                     requestData.push(key + '=')
                 });
                 angular.forEach(fields, function (item, key) {
-                    if (key === 'email' || key == 'storage' || key === 'apiToken') return;
+                    if (key === 'email' || key === 'storage' || key === 'apiToken' || key === 'auth') return;
 
                     if (key === "default_language") {
                         requestData.push("default_language=" + domain.default_language)
@@ -245,7 +246,7 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
                     }
                 });
 
-                if (requestData.length < 1 && !fields.hasOwnProperty('email') && !fields.hasOwnProperty('storage'))
+                if (requestData.length < 1 && !fields.hasOwnProperty('email') && !fields.hasOwnProperty('storage') && !fields.hasOwnProperty('auth'))
                     return cb(new Error("Application parse variable error."));
 
                 async.parallel(
@@ -259,8 +260,8 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
                         },
 
                         function (cb) {
-                            if (fields.hasOwnProperty('storage')) {
-                                webitel.api('PUT', '/api/v2/domains/' + domain.id + '/settings', {storage: domain.storage}, cb)
+                            if (fields.hasOwnProperty('storage') || fields.hasOwnProperty('auth')) {
+                                webitel.api('PUT', '/api/v2/domains/' + domain.id + '/settings', {storage: domain.storage, auth: domain.auth}, cb)
                             } else {
                                 cb(null);
                             }
@@ -290,4 +291,4 @@ define(['angular', 'scripts/webitel/utils', 'async', 'scripts/webitel/webitel', 
             list: getDomains
         }
     }]);
-})
+});
