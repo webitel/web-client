@@ -80,9 +80,9 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/devices/deviceModel',
             $scope.vendors.forEach(function(item){
                 $scope.vendorsField.push(item.name);
             });
-            if(!$scope.device.vendor){
-                $scope.device.vendor = $scope.vendorsField[0];
-            }
+            // if(!$scope.device.vendor){
+            //     $scope.device.vendor = $scope.vendorsField[0];
+            // }
             $scope.getModels(true);
         };
 
@@ -96,13 +96,14 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/devices/deviceModel',
             $scope.modelsField = vendor.models;
             if(first && !$scope.device.model){
                 $scope.device.model = $scope.modelsField[0];
-            } else if (!first) {
-                $scope.device.model = $scope.modelsField[0];
-            } else if (first && $scope.device.model){
-                $scope.device.model = $scope.modelsField.filter(function (item) {
-                    return item.name === $scope.device.model;
-                })[0];
             }
+            // } else if (!first) {
+            //     $scope.device.model = $scope.modelsField[0];
+            // } else if (first && $scope.device.model){
+            //     $scope.device.model = $scope.modelsField.filter(function (item) {
+            //         return item.name === $scope.device.model;
+            //     })[0];
+            // }
         };
 
         $scope.query = TableSearch.get('device'); //$routeParams.search;
@@ -259,7 +260,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/devices/deviceModel',
 
         $scope.convertToDate = function(timestamp){
             if(timestamp && timestamp != 0)
-                return new Date(+timestamp).toString().split("GMT")[0];
+                return new Date(+timestamp*1000).toString().split("GMT")[0];
             else return "";
         }
 

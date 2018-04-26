@@ -42,9 +42,9 @@
                     <tr ng-show="rowCollection.length > 0">
                         <th st-skip-natural="true" st-sort="id" >Id</th>
                         <th st-skip-natural="true" st-sort="name" >Name</th>
-                        <th st-skip-natural="true" st-sort="vendor" >Vendor</th>
-                        <th st-skip-natural="true" st-sort="model" >Model</th>
+                        <th st-skip-natural="true" st-sort="user" >User</th>
                         <th st-skip-natural="true" st-sort="mac" >Mac</th>
+                        <th st-skip-natural="true" st-sort="hotdesk" >Hotdesk</th>
                         <th style="text-align: end; min-width: 116px;">
                             Count: {{displayedCollection.length}}
                         </th>
@@ -62,9 +62,9 @@
                             </div>
                         </td>
                         <td class="account-name">{{row.name}}</td>
-                        <td>{{row.vendor}}</td>
-                        <td>{{row.model}}</td>
+                        <td>{{row.user}}</td>
                         <td>{{row.mac}}</td>
+                        <td>{{row.hotdesk}}</td>
                         <td style="text-align: end">
                             <a href="#/directory/devices/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
                             <a href="#/directory/devices/{{row.id}}/view?domain={{domain}}" ng-if="viewMode" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon  glyphicon-file"></i></a>

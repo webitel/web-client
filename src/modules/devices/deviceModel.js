@@ -43,7 +43,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "name": device.name,
                 "password": device.password,
                 "vendor": device.vendor,
-                "model": device.model ? device.model.name : "",
+                "model": device.model,// ? device.model.name : "",
                 "mac": device.mac,
                 "alias": device.alias
                 //"variables": []
@@ -69,7 +69,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "name": device.name,
 
                 "vendor": device.vendor,
-                "model": device.model ? device.model.name : "",
+                "model": device.model,// ? device.model.name : "",
                 "mac": device.mac,
                 "alias": device.alias
                 //"variables": device.variables || []
