@@ -1,0 +1,158 @@
+<div class="page">
+
+    <form class="panel" name="deviceForm" autocomplete="off">
+
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="col-sm-6">
+
+                        <div class="row">
+                            <div ng-class="options.multiInsert ? 'col-sm-6' : 'col-sm-12'">
+                                <div class="form-group" ng-class="{ 'has-error' : !device.id || deviceForm.id.$invalid }">
+                                    <label class="control-label">
+                                        {{options.multiInsert ? 'Id (from)' : 'Id'}}
+                                    </label>
+                                    <input type="text" name="id" class="form-control" required ng-disabled="!device._new || viewMode" data-ng-model="device.id">
+                                </div>
+                            </div>
+                            <div ng-if="options.multiInsert" class="col-sm-6">
+                                <div class="form-group" ng-class="{ 'has-error' : deviceForm.id.$invalid }">
+                                    <label class="control-label">Id (to)</label>
+                                    <input type="text" name="id" class="form-control" required ng-disabled="!device._new || viewMode" data-ng-model="options.to">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div ng-if="!viewMode" class="form-group" ng-class="{ 'has-error' : deviceForm.password.$invalid }">
+                            <label class="control-label">Password</label>
+                            <!--<input autocomplete="off" name="password" ng-required="account._new" type="text" style="-webkit-text-security: disc;" class="form-control" data-ng-model="account.password">-->
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="password" ng-required="device._new"  autocomplete="off" data-ng-model="device.password" >
+                                    <span class="input-group-btn" >
+                                        <button ng-show="device.password.length > 0" class="btn btn-default" type="button" clipboard text="device.password" on-copied="onCopied()" on-error="onCopiedFail(err)">
+                                            <i class="fa fa-files-o"></i>
+                                        </button>
+                                        <button ng-click="genPassword(device)" class="btn btn-default" type="button">
+                                            <i class="glyphicon glyphicon-flash"></i>
+                                        </button>
+                                    </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group" >
+                            <label for>Name</label>
+                            <input ng-disabled="viewMode"  type="text"  class="form-control disabled"  ng-model="device.name" style="">
+                        </div>
+                        <div class="form-group"  ng-class="{ 'has-error' : !device['auth-acl'] && deviceForm.aclIp.$invalid }" >
+                            <label for>Auth ACL (mask IP)</label>
+                            <input ng-disabled="viewMode"  type="text" data-ng-pattern="/([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}\/\d+/" name="aclIp"  class="form-control"  ng-model="device['auth-acl']" style="">
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="control-label">HotDesk</label>
+                        <tags-input min-length="1" placeholder="Add a tags" type="text" class="form-group ui-tags-input" ng-model="device.alias">
+                        </tags-input>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group" >
+                            <label for>Last in</label>
+                            <input ng-disabled="true"  type="text"  class="form-control disabled"  ng-model="device.last_in" style="">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group" >
+                            <label for>Last out</label>
+                            <input ng-disabled="true"  type="text" class="form-control disabled"  ng-model="device.last_out" style="">
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group" >
+                            <label for>User</label>
+                            <input ng-disabled="true"  type="text"  class="form-control disabled"  ng-model="device.user" style="">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-6">
+                    <div class="ui-tab-container ui-tab-dark">
+                        <div class="ui-tab">
+                            <tabset>
+                                <tab>
+                                    <tab-heading>
+                                        <span>Autoprovision</span>
+                                    </tab-heading>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group" ng-class="{ 'has-error' : deviceForm.vendor.$invalid }">
+                                                <label for>Vendor</label>
+                                                <select class="form-control" name="vendor" required ng-model="device.vendor"
+                                                        ng-init="getVendors()"
+                                                        ng-change="getModels()">
+                                                    <option ng-repeat="v in vendorsField" ng-selected="{{v==device.vendor}}" value="{{v}}">{{v}}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group" ng-class="{ 'has-error' : deviceForm.model.$invalid }">
+                                                <label for>Model</label>
+                                                <select class="form-control" name="model" required ng-model="device.model">
+                                                        <!--ng-init="getModels()">-->
+                                                    <option ng-repeat="m in modelsField" ng-selected="{{(m==device.model)||(m==modelsField[0])}}" value="{{m.name}}">{{m.displayName}}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group" ng-class="{ 'has-error' : deviceForm.mac.$invalid }">
+                                                <label for>MAC</label>
+                                                <!--data-ng-pattern="/^[0-9a-f]{1,2}([\.:-])(?:[0-9a-f]{1,2}\1){4}[0-9a-f]{1,2}$/"-->
+                                                <input name="mac" data-ng-pattern="/^[0-9a-fA-F]{12}$/" ng-disabled="viewMode"  type="text"  class="form-control disabled"  ng-model="device.mac" style="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tab>
+                                <tab ng-if="false">
+                                    <tab-heading>
+                                        <span>Variables</span>
+                                    </tab-heading>
+                                    <webitel-variables
+                                            collection = "device.variables"
+                                            dictionary="userVariables"
+                                            remvar="remVar"
+                                            >
+
+                                    </webitel-variables>
+                                </tab>
+                            </tabset>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="panel-footer">
+            <!--<btn-save-exit save="save" save-exit="save"></btn-save-exit>-->
+            <button ng-show="isEdit && !viewMode" type="button" ng-disabled="deviceForm.$invalid" ng-click="save()" class="btn btn-w-md btn-gap-v btn-success">Save</button>
+            <button ng-show="isEdit && !isNew && !viewMode"  ng-click="cancel()" type="button" class="btn btn-w-md btn-gap-v btn-primary">Cancel</button>
+            <button  type="button" ng-click="closePage()" class="btn btn-w-md btn-gap-v btn-default">Close</button>
+
+
+            <div ng-if="isNew" style="display: initial">
+                <div class="form-group pull-right">
+                    <label class="switch switch-success">
+                        <input type="checkbox" ng-model="options.multiInsert" class="ng-pristine">
+                        <i></i>
+                    </label>
+                </div>
+                <label style="padding: 7px;" class="control-label pull-right">
+                    Multi
+                </label>
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
