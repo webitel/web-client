@@ -110,7 +110,7 @@ define(['angular', 'config'], function (angular, config) {
             href: "#/directory",
             caption: "Directory",
 
-            acl: ['account', 'book', 'vmail'],
+            acl: ['account', 'book', 'vmail', 'hotdesk'],
             templateUrl: 'modules/directory/directory.html',
             controller: 'DirectoryCtrl',
             controllerUrl: 'modules/directory/directory.js',
@@ -144,6 +144,34 @@ define(['angular', 'config'], function (angular, config) {
                 templateUrl: 'modules/accounts/accountPage.html',
                 controller: 'AccountsCtrl',
                 controllerUrl: 'modules/accounts/accounts.js',
+                method: "view"
+            },
+
+            {
+                list: true,
+                acl: 'hotdesk',
+                caption: 'Devices',
+                templateUrl: 'modules/devices/devices.html',
+                controller: 'DevicesCtrl',
+                href: '/directory/devices',
+                controllerUrl: 'modules/devices/devices.js',
+            },{
+                href: '/directory/devices/new',
+                templateUrl: 'modules/devices/devicePage.html',
+                controller: 'DevicesCtrl',
+                controllerUrl: 'modules/devices/devices.js',
+                method: "create"
+            },{
+                href: '/directory/devices/:id/edit',
+                templateUrl: 'modules/devices/devicePage.html',
+                controller: 'DevicesCtrl',
+                controllerUrl: 'modules/devices/devices.js',
+                method: "edit"
+            },{
+                href: '/directory/devices/:id/view',
+                templateUrl: 'modules/devices/devicePage.html',
+                controller: 'DevicesCtrl',
+                controllerUrl: 'modules/devices/devices.js',
                 method: "view"
             },
 
