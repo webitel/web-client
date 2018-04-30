@@ -6,7 +6,6 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/devices/deviceModel',
                   cfpLoadingBar) {
         $scope.domain = webitel.domain();
         $scope.device = {};
-        //$scope.userVariables = utils.switchVar;
 
 
         $scope.canDelete = webitel.connection.session.checkResource('hotdesk', 'd');
@@ -46,29 +45,29 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/devices/deviceModel',
 
         $scope.vendors = [
             {
-                name: "Grandstream",
+                name: "grandstream",
                 models: [
                     {
                         displayName: "GXP16XX",
-                        name: "GXP16XX"
+                        name: "gxp16xx"
                     }
                 ]
             },
             {
-                name: "Polycom",
+                name: "polycom",
                 models: [
                     {
                         displayName: "VVX411",
-                        name: "VVX"
+                        name: "vvx"
                     }
                 ]
             },
             {
-                name: "Yealink",
+                name: "yealink",
                 models: [
                     {
                         displayName: "T22",
-                        name: "T22"
+                        name: "t22"
                     }
                 ]
             }
@@ -80,9 +79,6 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/devices/deviceModel',
             $scope.vendors.forEach(function(item){
                 $scope.vendorsField.push(item.name);
             });
-            // if(!$scope.device.vendor){
-            //     $scope.device.vendor = $scope.vendorsField[0];
-            // }
             $scope.getModels(true);
         };
 
@@ -97,13 +93,6 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/devices/deviceModel',
             if(first && !$scope.device.model){
                 $scope.device.model = $scope.modelsField[0];
             }
-            // } else if (!first) {
-            //     $scope.device.model = $scope.modelsField[0];
-            // } else if (first && $scope.device.model){
-            //     $scope.device.model = $scope.modelsField.filter(function (item) {
-            //         return item.name === $scope.device.model;
-            //     })[0];
-            // }
         };
 
         $scope.query = TableSearch.get('device'); //$routeParams.search;
@@ -123,51 +112,8 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/devices/deviceModel',
             closePage();
         });
 
-        // if (!$route.current.method) {
-        //
-        //     var findAccountInRowCollection = function (id, domain) {
-        //         if (!$scope.rowCollection)
-        //             return;
-        //
-        //         for (var i = 0, len = $scope.rowCollection.length; i < len; i++)
-        //             if ($scope.rowCollection[i].id == id && $scope.rowCollection[i].domain == domain)
-        //                 return $scope.rowCollection[i];
-        //     };
-        //
-        //     var fnOnUserStatusChange = function (e) {
-        //         if (e["Account-Domain"] != $scope.domain)
-        //             return;
-        //
-        //         // var $row = $("#account-" + e["Account-User"]);
-        //         // // TODO ??? perf
-        //         // $row.find('td.account-state span').removeClass().addClass(e['Account-User-State'].toLocaleLowerCase()).text(e['Account-User-State']);
-        //         // $row.find('td.account-status span').removeClass().addClass(e['Account-Status'].toLocaleLowerCase()).text(e['Account-Status']);
-        //         var descript = e['Account-Status-Descript'] || "";
-        //         // $row.find('td.account-descript').text(decodeURIComponent(descript));
-        //
-        //         var user = findAccountInRowCollection(e["Account-User"], e["Account-Domain"]);
-        //         if (user) {
-        //             user.state = e['Account-User-State'];
-        //             user.status = e['Account-Status'];
-        //             user.descript = descript;
-        //             $scope.$apply();
-        //         }
-        //     };
-        //
-        //
-        //     webitel.connection.instance.onServerEvent("ACCOUNT_STATUS", fnOnUserStatusChange);
-        //
-        // };
-        //
-        // function unSubscribeGridEvents() {
-        //     if (!$route.current.method) {
-        //         webitel.connection.instance.unServerEvent("ACCOUNT_STATUS", null, fnOnUserStatusChange);
-        //     }
-        // }
-
         $scope.$on('$destroy', function () {
             changeDomainEvent();
-          //  unSubscribeGridEvents();
         });
 
         function reloadData () {
@@ -311,7 +257,6 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/devices/deviceModel',
                     DeviceModel.add($scope.device, cb);
                 }
             } else {
-                //var updateValues = utils.diff($scope.device,  $scope.oldDevice);
                 DeviceModel.update($scope.device, $scope.domain,/* updateValues, $scope.remVar, */cb)
             }
         };
@@ -332,12 +277,6 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/devices/deviceModel',
                 $scope.device.last_in = $scope.convertToDate($scope.device.last_in);
                 $scope.device.last_out =$scope.convertToDate($scope.device.last_out);
                 $scope.getModels(true);
-                // var v = $scope.vendors.filter(function (vendor) {
-                //     return item.vendor === vendor.name;
-                // })[0];
-                // $scope.device.model = v.models.filter(function (model) {
-                //     return item.model === model.name;
-                // })[0];
                 $scope.oldDevice = angular.copy(item);
                 disableEditMode();
             });

@@ -9,10 +9,6 @@
                             <i class="fa fa-plus"></i>
                         </a>
 
-                        <a class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark  btn-file" ng-disabled="!domain"  ng-click="showImportPage()" style="padding: 0">
-                            <i class="glyphicon glyphicon-cloud-upload"></i>
-                        </a>
-
                         <a href="" ng-click="reloadData()" ng-disabled="!domain" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
                             <i class="glyphicon glyphicon-refresh"></i>
                         </a>
@@ -44,6 +40,7 @@
                         <th st-skip-natural="true" st-sort="name" >Name</th>
                         <th st-skip-natural="true" st-sort="user" >User</th>
                         <th st-skip-natural="true" st-sort="mac" >Mac</th>
+                        <th st-skip-natural="true" st-sort="state" >State</th>
                         <th st-skip-natural="true" st-sort="hotdesk" >Hotdesk</th>
                         <th style="text-align: end; min-width: 116px;">
                             Count: {{displayedCollection.length}}
@@ -61,14 +58,14 @@
                                 {{row.id}}
                             </div>
                         </td>
-                        <td class="account-name">{{row.name}}</td>
+                        <td>{{row.name}}</td>
                         <td>{{row.user}}</td>
                         <td>{{row.mac}}</td>
+                        <td>{{row.state}}</td>
                         <td>{{row.hotdesk}}</td>
                         <td style="text-align: end">
                             <a href="#/directory/devices/{{row.id}}/edit?domain={{domain}}" ng-if="canUpdate" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
                             <a href="#/directory/devices/{{row.id}}/view?domain={{domain}}" ng-if="viewMode" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon  glyphicon-file"></i></a>
-                            <a href="javascript:;" ng-click="changeStatus(row)" ng-if="canUpdate || getAccessRo(row.id)" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-retweet"></i></a>
                             <a href="javascript:;" ng-click="removeItem(row)" ng-if="canDelete" class="btn-icon btn-icon-sm  btn-gap-v btn-default"><i class="glyphicon glyphicon-remove"></i></a>
                         </td>
                     </tr>
