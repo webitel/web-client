@@ -104,6 +104,9 @@ define(['app', 'modules/cdr/libs/fileSaver', 'async', 'jsZIP-utils', 'jsZIP', 'm
                     function parseTimeStamp (timestamp) {
                         // TODO
                         //return '=TEXT(DATE(1970;1;1)+' + timestamp + '/60/60/24/1000/1000;"yyyy-mm-dd hh:mm:ss")'; //
+                        if (angular.isArray(timestamp)) {
+                            timestamp = timestamp[0];
+                        }
                         return timestamp ? new Date(timestamp).toLocaleString() : '-';
                     }
 
