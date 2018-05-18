@@ -109,7 +109,7 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
 
             function edit () {
                 var id = $routeParams.id;
-                var domain = $routeParams.domain;
+                var domain = $scope.domain;
 
                 QueueCallbackModel.item(id, domain, function(err, item) {
                     if (err) {
