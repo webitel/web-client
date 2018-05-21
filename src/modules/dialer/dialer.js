@@ -448,6 +448,47 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     DiagramDesigner.removeDesigner();
                 }
             }
+
+            $scope.addCallResult = function(){
+                var modalInstance = $modal.open({
+                    animation: true,
+                    backdrop: false,
+                    templateUrl: '/modules/dialer/callResultModal.html',
+                    resolve: {
+                        selected: function () {
+                            return null
+                        }
+                    },
+                    controller: 'DialerCallResultCtrl'
+                });
+                modalInstance.result.then(function (result) {
+                    if(!$scope.dialer.callResult)
+                        $scope.dialer.callResult=[];
+                    $scope.dialer.callResult.push(result.item);
+                }, function () {});
+            }
+
+            $scope.editCallResult = function(index){
+                var item = $scope.dialer.callResult[index];
+                var modalInstance = $modal.open({
+                    animation: true,
+                    backdrop: false,
+                    templateUrl: '/modules/dialer/callResultModal.html',
+                    resolve: {
+                        selected: function () {
+                            return item
+                        }
+                    },
+                    controller: 'DialerCallResultCtrl'
+                });
+                modalInstance.result.then(function (result) {
+                    $scope.dialer.callResult[index] = result.item;
+                }, function () {});
+            }
+
+            $scope.deleteCallResult = function(index){
+                $scope.dialer.callResult.splice(index, 1);
+            }
             
             $scope.editResourceDialString = function (resource) {
                 var modalInstance = $modal.open({
@@ -2817,6 +2858,38 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
             $modalInstance.dismiss('cancel');
         };
     }]);
+
+    app.controller('DialerCallResultCtrl', ['$scope', '$modalInstance', 'selected',
+        function ($scope, $modalInstance, selected) {
+
+            $scope.item = selected || {
+                    name:'',
+                    type:'',
+                    items: []
+                };
+
+            $scope.addItems = function(){
+                if(!$scope.item.items)
+                    $scope.item.items = [];
+                $scope.item.items.push($scope.itemText);
+                $scope.itemText = '';
+            }
+
+            $scope.removeItems = function(index){
+                $scope.item.items.splice(index, 1);
+            }
+
+            $scope.ok = function () {
+                if (!$scope.item.name) {
+                    return notifi.error(new Error("Bad parameters"))
+                }
+                $modalInstance.close({item: $scope.item}, 5000);
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        }]);
 
     app.filter('cdrExportColumns', function ($filter) {
         return function (items, m) {
