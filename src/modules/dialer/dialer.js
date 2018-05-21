@@ -2871,6 +2871,8 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
             $scope.addItems = function(){
                 if(!$scope.item.items)
                     $scope.item.items = [];
+                if($scope.item.items.indexOf($scope.itemText) !== -1)
+                    return;
                 $scope.item.items.push($scope.itemText);
                 $scope.itemText = '';
             }

@@ -265,7 +265,7 @@
                                                                     <div class="col-sm-12" style="padding: 0">
                                                                         <div class="col-sm-6" ng-show="dialer.type!=diealerTypes[0]">
                                                                             <div class="form-group" >
-                                                                                <label class="control-label">Waiting for result status</label>
+                                                                                <label class="control-label">Waiting for call result</label>
                                                                                 <br>
                                                                                 <label  class="switch switch-success">
                                                                                     <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.parameters.waitingForResultStatus" class="ng-valid ng-dirty"><i></i></label>
@@ -293,6 +293,50 @@
 
                                                             </tab>
 
+                                                            <tab ng-if="dialer.parameters.waitingForResultStatus">
+                                                                <tab-heading>
+                                                                    <span>Call results</span>
+                                                                </tab-heading>
+                                                                <div class="col-sm-12">
+                                                                    <a  ng-if="canCreate" ng-click="addCallResult()" href="javascript:;" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
+                                                                        <i class="fa fa-plus"></i>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="table-responsive">
+                                                                    <div class="row text-center" ng-if="!dialer.callResult || dialer.callResult.length == 0">
+                                                                        <div class="center-block col-md-4" style="float: none;">
+                                                                            <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
+                                                                            <h2>No results found</h2>
+                                                                        </div>
+                                                                    </div>
+                                                                    <table ng-show="dialer.callResult.length > 0" st-safe-src="dialer.callResult" class="table table-hover">
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th st-skip-natural="true">Call result</th>
+                                                                            <th></th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr ng-repeat="row in dialer.callResult track by $index">
+                                                                            <td>
+                                                                                <span ng-if="!canUpdate">{{row.name}}</span>
+                                                                                <a ng-if="canUpdate" href="javascript:;" ng-click="editCallResult($index)">
+                                                                                    {{row.name}}
+                                                                                </a>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="pull-right">
+
+                                                                                    <button ng-click="editCallResult($index)" ng-show="canUpdate" class="btn btn-sm btn-default ng-hide"><i class="glyphicon glyphicon-pencil"></i></button>
+
+                                                                                    <button ng-click="deleteCallResult($index)" ng-show="canUpdate" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </tab>
 
                                                             <tab>
                                                                 <tab-heading>
@@ -393,50 +437,6 @@
                                                                             <input ng-disabled="viewMode || !dialer.amd.playbackFile" class="form-control" type="number" name="amdBeforePlaybackFileTime" ng-model="dialer.amd.beforePlaybackFileTime" min="0">
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            </tab>
-                                                            <tab ng-if="dialer.parameters.waitingForResultStatus">
-                                                                <tab-heading>
-                                                                    <span>Call result</span>
-                                                                </tab-heading>
-                                                                <div class="col-sm-12">
-                                                                    <a  ng-if="canCreate" ng-click="addCallResult()" href="javascript:;" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
-                                                                        <i class="fa fa-plus"></i>
-                                                                    </a>
-                                                                </div>
-                                                                <div class="table-responsive">
-                                                                    <div class="row text-center" ng-if="!dialer.callResult || dialer.callResult.length == 0">
-                                                                        <div class="center-block col-md-4" style="float: none;">
-                                                                            <h1 aria-hidden="true"><i aria-hidden="true" class="fa fa-meh-o"></i></h1>
-                                                                            <h2>No results found</h2>
-                                                                        </div>
-                                                                    </div>
-                                                                    <table ng-show="dialer.callResult.length > 0" st-safe-src="dialer.callResult" class="table table-hover">
-                                                                        <thead>
-                                                                        <tr>
-                                                                            <th st-skip-natural="true">Call result</th>
-                                                                            <th></th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        <tr ng-repeat="row in dialer.callResult track by $index">
-                                                                            <td>
-                                                                                <span ng-if="!canUpdate">{{row.name}}</span>
-                                                                                <a ng-if="canUpdate" href="javascript:;" ng-click="editCallResult($index)">
-                                                                                    {{row.name}}
-                                                                                </a>
-                                                                            </td>
-                                                                            <td>
-                                                                                <div class="pull-right">
-
-                                                                                    <button ng-click="editCallResult($index)" ng-show="canUpdate" class="btn btn-sm btn-default ng-hide"><i class="glyphicon glyphicon-pencil"></i></button>
-
-                                                                                    <button ng-click="deleteCallResult($index)" ng-show="canUpdate" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-remove"></i></button>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        </tbody>
-                                                                    </table>
                                                                 </div>
                                                             </tab>
                                                             <tab>
