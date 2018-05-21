@@ -464,6 +464,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
 
             var amd = option.amd || {};
             return {
+                "callResult": option.callResult,
                 "domain" : domain || "",
                 "name" : option.name || "",
                 "description" : option.description ||  "",
