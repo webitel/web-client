@@ -85,7 +85,7 @@ define(["app", "config"], function(app, config) {
             }
             webitel.api('GET', '/api/v2/metadata/cdr?domain=' + getDomainName(), function (err, res) {
                 if (err) {
-                    if (err.statusCode !== 404) {
+                    if (err.statusCode !== 404 && err.statusCode !== 403) {
                         notifi.error(err, 5000);
                         return cb(err);
                     }
