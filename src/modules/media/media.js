@@ -30,6 +30,13 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                     return utils.prettysize(size);
             };
 
+            $scope.convertTimestamp = function (timestamp) {
+                if (!timestamp)
+                    return "-"
+
+                return new Date(timestamp).toLocaleString()
+            };
+
             function playRow(row) {
 
                 $scope.setSource({

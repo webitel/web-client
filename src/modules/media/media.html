@@ -65,9 +65,10 @@
 
                 <tr >
                     <th style="width: 40%" st-skip-natural="true" st-sort="name" >Name</th>
-                    <th style="width: 15%" st-skip-natural="true" st-sort="format" >Format</th>
-                    <th style="width: 15%" st-skip-natural="true" st-sort="type" >Type</th>
-                    <th style="width: 15%" st-skip-natural="true" st-sort="size" >Size</th>
+                    <th style="width: 15%" st-skip-natural="true" st-sort="createdAt" >Created at</th>
+                    <th style="width: 10%" st-skip-natural="true" st-sort="format" >Format</th>
+                    <th style="width: 10%" st-skip-natural="true" st-sort="type" >Type</th>
+                    <th style="width: 10%" st-skip-natural="true" st-sort="size" >Size</th>
                     <!--<th>Play</th>-->
 
                     <th style="width: 15%; min-width: 116px; text-align: end;">
@@ -78,6 +79,7 @@
                 <tbody>
                     <tr ng-repeat="row in displayedCollection">
                         <td >{{row.name}}</td>
+                        <td >{{convertTimestamp(row.createdAt)}}</td>
                         <td >{{row.format}}</td>
                         <td >{{row.type}}</td>
                         <td >{{convertSize(row.size)}}</td>
