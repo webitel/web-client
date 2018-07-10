@@ -48,7 +48,7 @@ define(['app'], function (app) {
                 blacklist:[],
                 config:{
                     hookCountDown: 60,
-                    getCountryUrl: "https://freegeoip.net/json/",
+                    getCountryUrl: "https://geoip.nekudo.com/api",
                     publicWebRtc: "",
                     destinationNumber: "00",
                     publicPostApi: "",
