@@ -17,6 +17,11 @@ define(['angular', 'scripts/webitel/utils', 'scripts/webitel/webitel'], function
                 from: config.from,
                 options: config.options || {}
             };
+
+            if (request.options.hasOwnProperty("auth") && !request.options.auth.user && !request.options.auth.pass) {
+                request.options.auth = null
+            }
+
             request.options.debug = false;
             request.options.tls = {
                 "rejectUnauthorized" : false
