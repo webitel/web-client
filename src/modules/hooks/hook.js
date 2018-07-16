@@ -160,6 +160,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/hoo
             reader.onload = function(event) {
                 try {
                     var data = JSON.parse(event.target.result);
+                    data.domain = $scope.domain;
                     if(data._id){
                         HookModel.item(data._id, $scope.domain, function (err, item) {
                             if (err && err.statusCode !== 404)
