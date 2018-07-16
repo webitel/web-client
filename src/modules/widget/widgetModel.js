@@ -67,9 +67,6 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             if (!id)
                 return cb(new Error("Id is required."));
 
-            if (!domain)
-                return cb(new Error("Domain is required."));
-
             webitel.api('GET', '/api/v2/widget/' + id + '?domain=' + domain, function (err, res) {
                 if (err)
                     return cb(err);
