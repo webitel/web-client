@@ -46,28 +46,20 @@
                                                             <input ng-disabled="true" type="text"  class="form-control" ng-model="dialer._cause" >
                                                         </div>
 
-                                                        <div  class="form-group" ng-class="{ 'has-error' : !dialer.membersStrategy }">
-                                                            <label class="control-label">Members strategy</label>
-                                                            <select ng-disabled="viewMode" class="form-control" name="type" ng-model="dialer.membersStrategy" required >
-                                                                <option ng-repeat="type in membersStrategy" ng-selected="{{type==dialer.membersStrategy}}"  value="{{type.val}}">{{type.name}}</option>
-                                                            </select>
-                                                        </div>
-
                                                         <div  class="form-group" ng-if="dialer.nextTick">
                                                             <label class="control-label">Sleeping till</label>
                                                             <input ng-disabled="true" type="text"  class="form-control" value="{{toDateString(dialer.nextTick)}}" >
                                                         </div>
 
+                                                        <div class="form-group">
+                                                            <label class="control-label">Auto reset dialer statistics</label>
+                                                            <br>
+                                                            <label class="switch switch-success">
+                                                                <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.autoResetStats"><i></i>
+                                                            </label>
+                                                        </div>
+
                                                         <div class="row">
-                                                            <div class="col-sm-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Eternal queue</label>
-                                                                    <br>
-                                                                    <label class="switch switch-success">
-                                                                        <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.parameters.eternalQueue"><i></i>
-                                                                    </label>
-                                                                </div>
-                                                            </div>
                                                             <div class="col-sm-6">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Record session</label>
@@ -77,15 +69,13 @@
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                        </div>
 
-                                                        <div class="row" >
                                                             <div class="col-sm-6">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Retries by number</label>
+                                                                    <label class="control-label">Eternal queue</label>
                                                                     <br>
                                                                     <label class="switch switch-success">
-                                                                        <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.parameters.retriesByNumber"><i></i>
+                                                                        <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.parameters.eternalQueue"><i></i>
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -101,18 +91,19 @@
                                                             </div>
                                                         </div>
 
-
-
-
                                                     </div>
 
                                                     <div class="col-sm-6">
-
-                                                        <div class="form-group" ng-class="{ 'has-error' : dialerForm.priority.$invalid && !dialerForm.priority.$pristine }">
-                                                            <label class="control-label">Priority</label>
-                                                            <input  ng-disabled="viewMode" class="form-control" type="number" name="priority" ng-model="dialer.priority" min="0" max="999" required>
+                                                        <!--<div class="form-group" ng-class="{ 'has-error' : dialerForm.priority.$invalid && !dialerForm.priority.$pristine }">-->
+                                                        <!--<label class="control-label">Priority</label>-->
+                                                        <!--<input  ng-disabled="viewMode" class="form-control" type="number" name="priority" ng-model="dialer.priority" min="0" max="999" required>-->
+                                                        <!--</div>-->
+                                                        <div  class="form-group" ng-class="{ 'has-error' : !dialer.membersStrategy }">
+                                                            <label class="control-label">Members strategy</label>
+                                                            <select ng-disabled="viewMode" class="form-control" name="type" ng-model="dialer.membersStrategy" required >
+                                                                <option ng-repeat="type in membersStrategy" ng-selected="{{type==dialer.membersStrategy}}"  value="{{type.val}}">{{type.name}}</option>
+                                                            </select>
                                                         </div>
-
 
                                                         <div class="form-group" ng-class="{ 'has-error' : !dialer.calendar.id }">
                                                             <label class="control-label">Calendar</label>
@@ -123,7 +114,6 @@
                                                                 </ui-select-choices>
                                                             </ui-select>
                                                         </div>
-
 
                                                         <div class="form-group" ng-show="dialer.type==diealerTypes[2]">
                                                             <label class="control-label">Playback file</label>
@@ -142,28 +132,35 @@
                                                             </select>
                                                         </div>
 
-
                                                         <div class="form-group" ng-show="!isNew" style="padding-top: 6px;">
                                                             <label></label>
                                                             <button ng-disabled="checkDoNotClickButton || viewMode" style="width: 100%" ng-click="setProcessDialer(dialer)" type="button" ng-class="{'btn-warning': dialer.active, 'btn-success': !dialer.active}" class="btn">{{textStateAction}}</button>
                                                         </div>
 
-                                                        <div class="form-group">
-                                                            <label class="control-label">Auto reset dialer statistics</label>
-                                                            <br>
-                                                            <label class="switch switch-success">
-                                                                <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.autoResetStats"><i></i>
-                                                            </label>
-                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Retries by number</label>
+                                                                    <br>
+                                                                    <label class="switch switch-success">
+                                                                        <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.parameters.retriesByNumber"><i></i>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
 
-                                                        <div class="form-group">
-                                                            <label class="control-label">One day task</label>
-                                                            <br>
-                                                            <label class="switch switch-success">
-                                                                <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.parameters.oneDayTask"><i></i>
-                                                            </label>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">One day task</label>
+                                                                    <br>
+                                                                    <label class="switch switch-success">
+                                                                        <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.parameters.oneDayTask"><i></i>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+
                                                         </div>
                                                     </div>
+
 
                                                 </div>
                                             </div>
@@ -213,12 +210,12 @@
 
 
                                                                     <!--<div ng-show="dialer.type==diealerTypes[0] || !dialer.parameters.waitingForResultStatus" class="col-sm-12" style="padding: 0">-->
-                                                                        <!--<div class="col-sm-12"  >-->
-                                                                            <!--<div class="form-group" ng-class="{ 'has-error' : dialerForm.minBillSec.$invalid }">-->
-                                                                                <!--<label class="control-label">Minimum succeed call duration (in sec)</label>-->
-                                                                                <!--<input ng-disabled="viewMode" class="form-control" type="number" name="minBillSec" ng-model="dialer.parameters.minBillSec" min="0" required>-->
-                                                                            <!--</div>-->
-                                                                        <!--</div>-->
+                                                                    <!--<div class="col-sm-12"  >-->
+                                                                    <!--<div class="form-group" ng-class="{ 'has-error' : dialerForm.minBillSec.$invalid }">-->
+                                                                    <!--<label class="control-label">Minimum succeed call duration (in sec)</label>-->
+                                                                    <!--<input ng-disabled="viewMode" class="form-control" type="number" name="minBillSec" ng-model="dialer.parameters.minBillSec" min="0" required>-->
+                                                                    <!--</div>-->
+                                                                    <!--</div>-->
                                                                     <!--</div>-->
 
                                                                     <div class="col-sm-12" style="padding: 0">
@@ -349,7 +346,7 @@
                                                                             collection = "dialer._variables"
                                                                             dictionary="[]"
                                                                             remvar="remVar"
-                                                                            >
+                                                                    >
 
                                                                     </webitel-variables>
                                                                 </div>
@@ -624,7 +621,7 @@
                                                                     <span class="media">{{value.id}}</span>
                                                                     <span class="space space-xs"></span>
                                                                     <span class="media">{{value.name}}</span>
-                                        <span class="pull-right text-muted">
+                                                                    <span class="pull-right text-muted">
                                             <span>{{value.state}}/</span>
                                             <span>{{value.status}}</span>
                                         </span>
