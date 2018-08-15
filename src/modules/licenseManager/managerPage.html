@@ -46,13 +46,13 @@
                             <input type="text"
                                    class="form-control"
                                    name="expire"
-                                   datepicker-popup="dd.MM.yyyy"
+                                   datepicker-popup="shortDate"
                                    ng-model="license.exp"
                                    is-open="openedDate"
                                    datepicker-options="dateOptions"
                                    required
                                    show-button-bar="false"
-                                    >
+                            >
                             <span class="btn input-group-addon" ng-click="openDate($event)"><i class="fa fa-calendar"></i></span>
                         </div>
                     </div>
@@ -64,13 +64,13 @@
                                    class="form-control"
                                    name="iat"
                                    ng-disabled="true"
-                                   datepicker-popup="dd.MM.yyyy"
+                                   datepicker-popup="shortDate"
                                    ng-model="license.iat"
                                    is-open="false"
                                    datepicker-options="dateOptions"
                                    ng-required="true"
                                    show-button-bar="false"
-                                    >
+                            >
                             <span class="input-group-addon" ><i class="fa fa-calendar"></i></span>
                         </div>
                     </div>
@@ -81,14 +81,14 @@
                             <input type="text"
                                    class="form-control"
                                    name="nbf"
-                                   datepicker-popup="dd.MM.yyyy"
+                                   datepicker-popup="shortDate"
                                    ng-model="license.nbf"
                                    is-open="false"
                                    ng-disabled="true"
                                    datepicker-options="dateOptions"
                                    ng-required="true"
                                    show-button-bar="false"
-                                    >
+                            >
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                         </div>
                     </div>
@@ -96,9 +96,9 @@
                     <div class="form-group" ng-if="!license._new && license.token">
                         <label class="control-label">Token</label>
                         <div class="input-group">
-                        <input disabled type="text" class="form-control" required="" data-ng-model="license.token" style="">
+                            <input disabled type="text" class="form-control" required="" data-ng-model="license.token" style="">
 
-                        <span  class="btn input-group-addon" clipboard text="license.token" on-copied="onCopied()" on-error="onCopiedFail(err)">
+                            <span  class="btn input-group-addon" clipboard text="license.token" on-copied="onCopied()" on-error="onCopiedFail(err)">
                             <i class="fa fa-files-o"></i>
                         </span>
                         </div>
