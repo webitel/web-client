@@ -3,8 +3,8 @@ set -e
 SSL="on"
 ARCHIVE="on"
 
-if [ $FS_HOST ]; then
-    sed -i 's/freeswitch/'$FS_HOST'/g'/etc/nginx/conf.d/*
+if [ "$FS_HOST" ]; then
+    sed -i 's/freeswitch/'$FS_HOST'/g' /etc/nginx/conf.d/*
 fi
 
 if [ "$WEBITEL_SSL" == "$SSL" ]; then
