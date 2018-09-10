@@ -3,6 +3,10 @@ set -e
 SSL="on"
 ARCHIVE="on"
 
+if [ $FS_HOST ]; then
+    sed -i 's/freeswitch/'$FS_HOST'/g'/etc/nginx/conf.d/*
+fi
+
 if [ "$WEBITEL_SSL" == "$SSL" ]; then
     echo "Start HTTPS"
     cp -rf /etc/nginx/conf.d/default-ssl.template /etc/nginx/conf.d/default.conf
