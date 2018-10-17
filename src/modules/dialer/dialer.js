@@ -1539,8 +1539,8 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
 
     
-    app.controller('MemberDialerPageCtrl', ['$scope', '$modalInstance', 'notifi', 'DialerModel', 'options', 'fileModel',
-    function ($scope, $modalInstance, notifi, DialerModel, options, fileModel) {
+    app.controller('MemberDialerPageCtrl', ['$scope', '$modalInstance', 'notifi', 'DialerModel', 'options', 'fileModel', '$confirm',
+    function ($scope, $modalInstance, notifi, DialerModel, options, fileModel, $confirm) {
 
         if (options && options.member) {
             DialerModel.members.item(options.domain, options.dialerId, options.member._id, function (err, data) {
@@ -1680,6 +1680,18 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
+        };
+
+        $scope.terminate = function() {
+            $confirm({text: 'Are you sure you want to terminate member call ' +  ' ?'},  { templateUrl: 'views/confirm.html' })
+                .then(function() {
+                    DialerModel.members.terminate(options.domain, options.dialerId, options.member._id, function (err, res) {
+                        if (err)
+                            return notifi.error(err, 5000);
+
+                        $modalInstance.dismiss('cancel');
+                    });
+                });
         };
         
         $scope.openDate = function ($event) {

@@ -285,6 +285,7 @@
         </div>
 </div>
 <div class="modal-footer">
+    <button ng-show="!viewMode && member._id && !member._endCause && !member._waitingForResultStatusCb && !member._lock " class="btn btn-default pull-left" type="button" ng-click="terminate()">Terminate</button>
     <button ng-show="!viewMode" class="btn btn-primary" type="button" ng-click="ok()">Save</button>
     <button class="btn btn-default" type="button" ng-click="cancel()">Close</button>
 </div>

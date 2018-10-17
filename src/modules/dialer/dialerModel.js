@@ -575,6 +575,24 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             });
         }
 
+        function terminateMember(domainName, dialerId, memberId, cb) {
+            if (!domainName)
+                return cb(new Error("Domain is required."));
+
+            if (!memberId)
+                return cb(new Error("Id is required."));
+
+            if (!dialerId)
+                return cb(new Error("DialerId is required."));
+
+            webitel.api('PUT', '/api/v2/dialer/' + dialerId + '/members/' + memberId +
+                '/terminate?&domain=' + domainName, null, function(err, res) {
+                var data = res.data || res.info;
+                return cb && cb(err, data);
+            });
+
+        }
+
         function resetProcess(dialerId, domainName, cb) {
             if (!domainName)
                 return cb(new Error("Domain is required."));
@@ -734,6 +752,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 aggregate: aggregateMember,
                 removeMulti: removeMulti,
                 reset: resetMembers,
+                terminate: terminateMember,
                 templateList: templateList,
                 addTemplate: addTemplate,
                 updateTemplate: updateTemplate,
