@@ -42,8 +42,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
             if (!data.name)
                 return cb(new Error("Bad request data"));
 
-            if (!data.description)
-                return cb(new Error('Bad description'));
+            //if (!data.description)
+            //    return cb(new Error('Bad description'));
             data.domain = domain;
             webitel.api('PUT', '/api/v2/callback/'+callbackId+'?domain=' + domain, data, cb);
         }

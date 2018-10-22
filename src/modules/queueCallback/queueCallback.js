@@ -4,11 +4,13 @@
 
 "use strict";
 
-define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackModel', 'modules/queueCallback/memberModel'], function (app, utils) {
+define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackModel', 'modules/queueCallback/memberModel',
+'modules/accounts/accountModel'], function (app, utils) {
     app.controller("QueueCallbackCtrl", ['$scope', '$modal', '$routeParams', '$filter',
         '$location', '$route', 'notifi', '$confirm', 'webitel', 'TableSearch', '$timeout', '$rootScope', 'QueueCallbackModel',
+        'AccountModel',
         function ($scope, $modal, $routeParams, $filter, $location, $route, notifi, $confirm, webitel, TableSearch,
-                  $timeout, $rootScope, QueueCallbackModel) {
+                  $timeout, $rootScope, QueueCallbackModel, AccountModel) {
 
             var self = $scope;
             $scope.displayedCollection = [];
@@ -22,6 +24,12 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
 
             $scope.viewMode = !$scope.canUpdate;
 
+            $scope.selAgents = {};
+            $scope.selTiers = {};
+            $scope.agents = [];
+            $scope.tiers = [];
+            $scope.agentList = {};
+
             $scope.changePanel = function (panelStatistic) {
                 $scope.panelStatistic = !!panelStatistic;
             };
@@ -32,7 +40,7 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
                 TableSearch.set(newVal, 'domains');
             });
 
-            self.queueCallback = {};
+            self.queueCallback = {agents: []};
 
             var changeDomainEvent = $rootScope.$on('webitel:changeDomain', function (e, domainName) {
                 $scope.domain = domainName;
@@ -118,6 +126,9 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
 
                     $scope.oldQueueCallback = angular.copy(item);
                     $scope.queueCallback = item;
+                    if (!$scope.queueCallback.agents) {
+                        $scope.queueCallback.agents = [];
+                    }
                     disableEditMode();
                 });
             }
@@ -157,6 +168,125 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
                     $scope.rowCollection = arr;
                 });
             }
+
+
+            $scope.addTiers = function (all) {
+                var collection = all ? $scope.agents : $scope.selAgents;
+                if (!collection.length) {
+                    angular.forEach(collection, function (i, key) {
+                        if (!i) return;
+                        if (!~$scope.queueCallback.agents.indexOf(key)) {
+                            $scope.queueCallback.agents.push(key);
+                        }
+                    })
+                } else {
+                    angular.forEach(collection, function (i) {
+                        if (!~$scope.queueCallback.agents.indexOf(i.id)) {
+                            $scope.queueCallback.agents.push(i.id);
+                        }
+                    })
+                }
+                $scope.selAgents = {};
+                $scope.selTiers = {};
+            };
+
+            $scope.getCountAgents = function (agents) {
+                if (agents && agents.length > 0) {
+                    var i = 0;
+                    angular.forEach(agents, function (agent) {
+                        if (isAgentInTier(agent)) {
+                            i++;
+                        }
+                    });
+                    return i;
+                }
+                return 0;
+            };
+
+            function isAgentInTier(a) {
+                if (!$scope.queueCallback)
+                    return false;
+                return !~$scope.queueCallback.agents.indexOf(a.id);
+            }
+
+            $scope.copyList = function (list, skipTiers, filename) {
+                var text = 'number,name,state,status,role\n';
+                angular.forEach(list, function (item) {
+                    if (skipTiers && !isAgentInTier(item)) {
+                        return;
+                    }
+
+                    if (typeof item === 'string') {
+                        item = findAgentById(item);
+                        if (!item) {
+                            console.error('findAgentById not found ', item);
+                            return;
+                        }
+                    }
+                    text += item.id + ',' + item.name + ',' + item.state + ',' + item.status + ',' + item.role + '\n';
+                });
+
+                utils.saveDataToDisk(text, filename + '.csv', 'text/csv');
+            };
+
+            function findAgentById(agentId) {
+                var agents = $scope.agents;
+                if (!angular.isArray(agents)) {
+                    return null;
+                }
+
+                for (var i = 0; i < agents.length; i++) {
+                    if (agents[i].id === agentId)
+                        return agents[i]
+                }
+            }
+
+            $scope.isAgentInTier = isAgentInTier;
+
+            $scope.removeTiers = function (all) {
+                if (all) {
+                    $scope.selTiers = {};
+                    return $scope.queueCallback.agents = [];
+                }
+
+                var collection = $scope.selTiers;
+                angular.forEach(collection, function (i, key) {
+                    if (!i) return;
+                    if (~$scope.queueCallback.agents.indexOf(key)) {
+                        $scope.queueCallback.agents.splice($scope.queueCallback.agents.indexOf(key), 1);
+                    }
+                });
+                $scope.selAgents = {};
+                $scope.selTiers = {};
+            };
+
+            var agentsIds = [];
+
+            $scope.loadAgents = function () {
+                AccountModel.list($scope.domain, function (err, res) {
+                    if (err)
+                        return notifi.error(err, 5000);
+
+                    var data =  $scope.agentList = res.data || res.info;
+                    agentsIds = [];
+                    angular.forEach(data, function (i) {
+                        /*
+                        if (!i.agent || i.agent === "false") {
+                            return;
+                        }
+                        */
+                        $scope.agents.push(i);
+                        agentsIds.push(i.id);
+                    });
+
+                    if (angular.isArray($scope.queueCallback.agents)) {
+                        for (var i = 0; i < $scope.queueCallback.agents.length; i++)
+                            if (!~agentsIds.indexOf($scope.queueCallback.agents[i]))
+                                $scope.queueCallback.agents.splice(i, 1)
+                    }
+                })
+            };
+
 
 
             $scope.init = function init () {
