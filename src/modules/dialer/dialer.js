@@ -1420,6 +1420,11 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                 angular.forEach(member, function (v, k) {
                     $scope.membersRowCollection[index][k] = v;
                 });
+
+                if (result.clone) {
+                    $scope.membersRowCollection = [].concat(member, $scope.membersRowCollection);
+                }
+
             }, function () {
 
             });
@@ -1676,6 +1681,31 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
             } else {
                 DialerModel.members.add(options.domain, options.dialerId, $scope.member, cb);
             };
+        };
+
+        $scope.clone = function() {
+            var member = $scope.member;
+            var clone = DialerModel.members.create(options.dialerId, member);
+            clone.communications = member.communications.map(function(item) {
+                return {
+                    number: item.number,
+                    description: item.description,
+                    type: item.type,
+                    priority: item.priority,
+                    state: 0,
+                    status: 0
+                }
+            });
+            Object.assign(clone.variables, member.variables);
+            DialerModel.members.add(options.domain, options.dialerId, clone, function (err, res) {
+                if (err)
+                    return notifi.error(err, 5000);
+                var ins = res.insertedIds && res.insertedIds[0];
+                if (ins) {
+                    clone._id = ins;
+                }
+                $modalInstance.close({value: clone, clone: true}, 5000);
+            });
         };
 
         $scope.cancel = function () {
