@@ -1,0 +1,23 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label for>Vendor</label>
+            <select class="form-control" name="vendor" ng-model="vendor" ng-disabled="disable" ng-change="model = ''">
+                <option ng-repeat="v in vendors" ng-selected="{{v.value==vendor}}" value="{{v.value}}">{{v.name}}</option>
+            </select>
+        </div>
+        {{test}}
+        <div class="form-group" >
+            <label for>Model</label>
+            <select class="form-control" name="model" ng-model="model" ng-disabled="disable">
+                <!--ng-init="getModels()">-->
+                <option ng-repeat="m in models | filter:{vendor: vendor}" ng-selected="{{m==model}}" value="{{m.name}}">{{m.displayName}}</option>
+            </select>
+        </div>
+        <div class="form-group" >
+            <label for>MAC</label>
+            <!--data-ng-pattern="/^[0-9a-f]{1,2}([\.:-])(?:[0-9a-f]{1,2}\1){4}[0-9a-f]{1,2}$/"-->
+            <input name="mac" data-ng-pattern="/^[0-9a-fA-F]{12}$/" ng-disabled="disable"  type="text"  class="form-control"  ng-model="mac" >
+        </div>
+    </div>
+</div>

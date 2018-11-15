@@ -263,6 +263,73 @@ define(['angular'],
       }
     };
   })
+  .directive( 'autoProvision', function () {
+      return {
+          restrict: 'E',
+          scope: { vendor: '=', model: '=', mac: '=', disable: '=' },
+          templateUrl: 'views/templates/autoprovision.html',
+          link: function ($scope, $elem) {
+              $scope.vendors = [
+                  {
+                      name: "Empty",
+                      value: '',
+                      models: []
+                  },
+                  {
+                      name: "Grandstream",
+                      value: 'grandstream',
+                      models: [
+                          {
+                              displayName: "GXP16XX",
+                              name: "gxp16xx"
+                          },
+                          {
+                              displayName: "GAC2500",
+                              name: "gac2500"
+                          },
+                          {
+                              displayName: "GXP17xx",
+                              name: "gxp17xx"
+                          },
+                          {
+                              displayName: "GXP21xx",
+                              name: "gxp21xx"
+                          }
+                      ]
+                  },
+                  {
+                      name: "Polycom",
+                      value: "polycom",
+                      models: [
+                          {
+                              displayName: "VVX411",
+                              name: "vvx"
+                          }
+                      ]
+                  },
+                  {
+                      name: "Yealink",
+                      value: "yealink",
+                      models: [
+                          {
+                              displayName: "T22",
+                              name: "t22"
+                          }
+                      ]
+                  }
+              ];
+              
+              $scope.models = [];
+              
+              for (var i = 0; i < $scope.vendors.length; i++) {
+                  $scope.models = $scope.models.concat($scope.vendors[i].models.map(function (item) {
+                      item.vendor = $scope.vendors[i].value;
+                      return item
+                  }))
+              }
+          }
+      }
+  })
   .directive('scrollOnClick', function() {
     return {
       restrict: 'A',

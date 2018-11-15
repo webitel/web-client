@@ -85,30 +85,9 @@
                                     <tab-heading>
                                         <span>Autoprovision</span>
                                     </tab-heading>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div class="form-group" ng-class="{ 'has-error' : deviceForm.vendor.$invalid }">
-                                                <label for>Vendor</label>
-                                                <select class="form-control" name="vendor" ng-model="device.vendor"
-                                                        ng-init="getVendors()"
-                                                        ng-change="getModels()">
-                                                    <option ng-repeat="v in vendorsField" ng-selected="{{v==device.vendor}}" value="{{v}}">{{v}}</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group" ng-class="{ 'has-error' : deviceForm.model.$invalid }">
-                                                <label for>Model</label>
-                                                <select class="form-control" name="model" ng-model="device.model">
-                                                        <!--ng-init="getModels()">-->
-                                                    <option ng-repeat="m in modelsField" ng-selected="{{m==device.model}}" value="{{m.name}}">{{m.displayName}}</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group" ng-class="{ 'has-error' : deviceForm.mac.$invalid }">
-                                                <label for>MAC</label>
-                                                <!--data-ng-pattern="/^[0-9a-f]{1,2}([\.:-])(?:[0-9a-f]{1,2}\1){4}[0-9a-f]{1,2}$/"-->
-                                                <input name="mac" data-ng-pattern="/^[0-9a-fA-F]{12}$/" ng-disabled="viewMode"  type="text"  class="form-control disabled"  ng-model="device.mac" style="">
-                                            </div>
-                                        </div>
-                                    </div>
+
+                                    <auto-provision disable="viewMode" vendor="device.vendor" mac="device.mac" model="device.model"></auto-provision>
+
                                 </tab>
                                 <tab ng-if="false">
                                     <tab-heading>

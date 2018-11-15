@@ -43,57 +43,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/devices/deviceModel',
             multiInsert: false
         };
 
-        $scope.vendors = [
-            {
-                name: "grandstream",
-                models: [
-                    {
-                        displayName: "GXP16XX",
-                        name: "gxp16xx"
-                    }
-                ]
-            },
-            {
-                name: "polycom",
-                models: [
-                    {
-                        displayName: "VVX411",
-                        name: "vvx"
-                    }
-                ]
-            },
-            {
-                name: "yealink",
-                models: [
-                    {
-                        displayName: "T22",
-                        name: "t22"
-                    }
-                ]
-            }
-        ];
-        $scope.vendorsField =[];
-        $scope.modelsField =[];
 
-        $scope.getVendors = function(){
-            $scope.vendors.forEach(function(item){
-                $scope.vendorsField.push(item.name);
-            });
-            $scope.getModels(true);
-        };
-
-        $scope.getModels = function(first){
-            $scope.modelsField = [];
-            if(!$scope.device.vendor)
-                return;
-            var vendor = $scope.vendors.filter(function(item){
-                return item.name === $scope.device.vendor;
-            })[0];
-            $scope.modelsField = vendor.models;
-            if(first && !$scope.device.model){
-                $scope.device.model = $scope.modelsField[0];
-            }
-        };
 
         $scope.query = TableSearch.get('device'); //$routeParams.search;
 
@@ -276,7 +226,7 @@ define(['app', 'scripts/webitel/utils',  'async', 'modules/devices/deviceModel',
                 $scope.device = item;
                 $scope.device.last_in = $scope.convertToDate($scope.device.last_in);
                 $scope.device.last_out =$scope.convertToDate($scope.device.last_out);
-                $scope.getModels(true);
+
                 $scope.oldDevice = angular.copy(item);
                 disableEditMode();
             });

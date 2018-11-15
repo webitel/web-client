@@ -37,7 +37,13 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
                     if (~notShowAttr.indexOf(key))
                         return;
 
-                    if (/^variable_/.test(key) && key !== 'variable_account_role' && key !== 'variable_effective_caller_id_name' && key != 'variable_skills') {
+                    if (key === 'variable_device-MNO') {
+                        user.device.model = value;
+                    } else if (key === 'variable_device-OUI') {
+                        user.device.vendor = value;
+                    } else if (key === 'variable_device-MAC') {
+                        user.device.mac = value;
+                    } else  if (/^variable_/.test(key) && key !== 'variable_account_role' && key !== 'variable_effective_caller_id_name' && key != 'variable_skills') {
                         user.variables.push({
                             key: key.replace(/variable_/, ''),
                             value: value
@@ -113,10 +119,21 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
             }
 
             request.variables = request.variables.concat(_v);
+
+            if (account.device) {
+                if (account.device.vendor)
+                    request.variables.push("device-OUI='" + (account.device.vendor || "") + "'");
+
+                if (account.device.model)
+                    request.variables.push("device-MNO='" + (account.device.model || "") + "'");
+
+                if (account.device.mac)
+                request.variables.push("device-MAC='" + (account.device.mac || "") + "'");
+            }
             
             angular.forEach(account, function (value, key) {
                 if (~notShowAttr.indexOf(key) || key === 'variables' || key === 'variable_effective_caller_id_name'
-                    || key == 'variable_account_role' || key === '_new' || key === 'variable_skills')
+                    || key == 'variable_account_role' || key === '_new' || key === 'variable_skills' || key ==='device')
                     return;
 
                 if (key === 'cc-agent-contact')
@@ -147,6 +164,13 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
             var agentDialString = null;
 
             angular.forEach(diffAttr, function (value, key) {
+                if (key === 'device') {
+                    request.variables.push("device-OUI='" + (account.device.vendor || "") + "'");
+                    request.variables.push("device-MNO='" + (account.device.model || "") + "'");
+                    request.variables.push("device-MAC='" + (account.device.mac || "") + "'");
+                    return;
+                }
+
                 if (key === 'variables') {
                     angular.forEach(account.variables, function (attr, i) {
                         request.variables.push(attr.key + '=\'' + attr.value + '\'');
@@ -221,6 +245,11 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
                 id: null,
                 password: null,
                 variables: [],
+                device: {
+                    vendor: null,
+                    model: null,
+                    mac: null
+                },
 
                 "cc-agent": false,
                 "cc-agent-busy-delay-time": null,
@@ -246,6 +275,10 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
                 id: null,
                 password: null,
                 variables: [],
+                device: {
+                    vendor: null,
+                    model: null
+                },
 
                 "cc-agent": false,
                 "cc-agent-busy-delay-time": 15,
