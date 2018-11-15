@@ -1696,7 +1696,9 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     status: 0
                 }
             });
-            Object.assign(clone.variables, member.variables);
+            if (member._variables) {
+                clone._variables = [].slice.call(member._variables);
+            }
             DialerModel.members.add(options.domain, options.dialerId, clone, function (err, res) {
                 if (err)
                     return notifi.error(err, 5000);
