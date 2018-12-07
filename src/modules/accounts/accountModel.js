@@ -266,6 +266,7 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
                 "variable_effective_caller_id_name": "",
                 'vm-password': "",
                 'vm-enabled': false,
+                'max-inbound-calls': 0,
                 'webitel-extensions': ""
             }
         }
@@ -295,6 +296,7 @@ define(['app', 'scripts/webitel/utils', 'modules/acd/acdModel'], function (app, 
                 "variable_effective_caller_id_name": "",
                 'vm-password': "",
                 'vm-enabled': false,
+                'max-inbound-calls': 0,
                 'webitel-extensions': ""
             }
         }

@@ -71,14 +71,26 @@
                         <!--<input type="text"  class="form-control ng-animate ng-dirty ng-invalid ng-invalid-required" data-ng-model="account['webitel-extensions']" style="">-->
                         <!--</div>-->
 
-                        <div   class="form-group" >
-                            <label for>Agent</label>
-                            <label style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="account['cc-agent']"><i></i></label>
+
+                        <div class="form-group" ng-class="{ 'has-error' : accountForm.simultaneousInboundCalls.$invalid }">
+                            <label class="control-label">Simultaneous inbound calls</label>
+                            <input ng-disabled="viewMode" class="form-control" type="number" name="simultaneousInboundCalls" ng-model="account['max-inbound-calls']"
+                                   min="0" max="999">
                         </div>
 
-                        <div class="form-group" >
-                            <label for>Use voicemail</label>
-                            <label  style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="account['vm-enabled']"><i></i></label>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group" >
+                                    <label for>Agent</label>
+                                    <label style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="account['cc-agent']"><i></i></label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group" >
+                                    <label for>Use voicemail</label>
+                                    <label  style="width: 100%;" class="switch switch-success"><input ng-disabled="viewMode" type="checkbox" ng-model="account['vm-enabled']"><i></i></label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
