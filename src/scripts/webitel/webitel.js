@@ -225,7 +225,7 @@ define(['angular',
 			} 
 
 			else if (options.login) {
-				httpApi('POST', '/login', {"username": options.login, "password": options.password} ,function (err, res) {
+				httpApi('POST', '/login' + (options.code ? "?code=" + options.code : ""), {"username": options.login, "password": options.password} ,function (err, res) {
 					if (err)
 						return cb(err);
 					doCb(null, res);

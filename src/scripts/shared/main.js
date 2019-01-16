@@ -1,4 +1,4 @@
-define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts/modules'], function (angular, config, contributors) {
+define(['angular', 'config', 'contributors', 'qrcode', 'scripts/shared/notifier', 'scripts/modules'], function (angular, config, contributors, qrcode) {
     angular.module('app.controllers', ['app.notifier', 'app.modules'])
         .controller('AppCtrl', ['$scope', '$rootScope', '$localStorage', 'webitel', 'MODULES', '$location', 'localize',
             function($scope, $rootScope, $localStorage, webitel, MODULES, $location, localize) {
@@ -128,15 +128,36 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
                 $scope.server = _.server;
                 $scope.isLoading = false;
 
+                $scope.twoFactorAuthentication = false;
+
+                $scope.cancelInputCode = function() {
+                    $scope.twoFactorAuthentication = false;
+                    $scope.password = "";
+                };
+
+                $scope.authenticate = function() {
+                    $scope.signin();
+                };
+
                 $scope.signin = function () {
                     $scope.isLoading = true;
                     webitel.signin({
                         "login": $scope.login,
                         "server": $scope.server,
-                        "password": $scope.password
+                        "password": $scope.password,
+                        "code": $scope.code
                     }, function(err) {
                         $scope.isLoading = false;
-                        $scope.password = '';
+
+                        if (err && err.statusCode === 301) {
+                            $scope.twoFactorAuthentication = true;
+                            return;
+                        }
+
+                        if (!$scope.twoFactorAuthentication)
+                            $scope.password = '';
+
+                        $scope.code = '';
                         if (err) {
                             return notifi.error(err, 5000)
                         }
@@ -144,7 +165,7 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
                     })
                 }
             }])
-        .controller('HeaderCtrl', ['$scope', 'webitel', '$modal', '$rootScope', 'MODULES', function($scope, webitel, $modal, $rootScope, MODULES) {
+        .controller('HeaderCtrl', ['$scope', 'webitel', '$modal', '$rootScope', 'MODULES', 'notifi', function($scope, webitel, $modal, $rootScope, MODULES, notifi) {
             $scope.signout = function () {
                 webitel.signout(function () {
                     window.location.href = "/"
@@ -176,7 +197,143 @@ define(['angular', 'config', 'contributors', 'scripts/shared/notifier', 'scripts
                 });
             };
 
+            $scope.showTwoFactorAuthenticationWindow = function () {
+                $modal.open({
+                    templateUrl: 'views/dialogs/qrCode.html',
+                    backdrop: 'static',
+                    controller: 'twoFactorAuthentication',
+                    resolve: {
+
+                    }
+                });
+
+            };
+
         }])
+        .controller('twoFactorAuthentication', function ($scope, notifi, webitel, $confirm) {
+            $scope.isLoading = false;
+            $scope.settings = null;
+            $scope.root = {
+                code: ""
+            };
+            $scope.stage = 0;
+            var getData = function(code, cb) {
+                $scope.isLoading = true;
+                webitel.api('get', '/api/v2/settings/security?code=' + code, null, function(err, res) {
+                    $scope.isLoading = false;
+                    return cb(err, res);
+                });
+            };
+
+            var generateNewSecret = function (code) {
+                $scope.isLoading = true;
+                webitel.api('put', '/api/v2/settings/security?code=' + (code ? code : "") , {generateNewSecretKey: true}, function(err, data) {
+                    $scope.isLoading = false;
+                    if (err && err.statusCode !== 301) {
+                        return notifi.error(err, 5000)
+                    } else if (err && err.statusCode === 301) {
+                        $confirm({name: 'Code'},  {size: 'sm', templateUrl: 'views/dialogs/input.html' })
+                            .then(
+                                function(result) {
+                                    if (result && result.value) {
+                                        generateNewSecret(result.value);
+                                    }
+                                },
+                                function () {
+
+                                }
+                            );
+                        return;
+                    }
+
+                    $scope.settings = data;
+                });
+            };
+
+            $scope.generateNewSecret = function () {
+                $confirm({text: 'Are you sure you want to generate new secret key?'},  { templateUrl: 'views/confirm.html' })
+                    .then(function() {
+                        generateNewSecret("")
+                    });
+            };
+
+            var setEnable = function(code, enabled) {
+                $scope.isLoading = true;
+                webitel.api('put', '/api/v2/settings/security?code=' + (code ? code : "") , {setEnable: enabled}, function(err, data) {
+                    $scope.isLoading = false;
+                    if (err && err.statusCode !== 301) {
+                        return notifi.error(err, 5000)
+                    } else if (err && err.statusCode === 301) {
+                        $confirm({name: 'Code'},  {size: 'sm', templateUrl: 'views/dialogs/input.html' })
+                            .then(
+                                function(result) {
+                                    if (result && result.value) {
+                                        setEnable(result.value, enabled);
+                                    }
+                                },
+                                function () {
+
+                                }
+                            );
+                        return;
+                    }
+
+                    $scope.settings = data;
+                });
+            };
+            $scope.setEnable = function (enabled) {
+                setEnable("", enabled);
+            };
+
+            var resultOfData = function (err, data) {
+                if (err && err.statusCode !== 301) {
+                    $scope.root = {
+                        code: ""
+                    };
+                    return notifi.error(err, 5000)
+                } else if (err && err.statusCode === 301) {
+                    $scope.stage = 1;
+                    return;
+                }
+
+                $scope.stage = 2;
+                $scope.settings = data;
+            };
+
+            getData("", resultOfData);
+
+            $scope.getData = function (code) {
+                getData(code, resultOfData)
+            };
+
+        })
+        .directive('qrCode', function() {
+            return {
+                restrict: 'E',
+                scope: { code: '=' },
+                template: '<div></div>',
+                link: function ($scope, $elem) {
+                    var qr = null;
+                    $scope.$watch("code", function (val) {
+                        if (!val && qr) {
+                            qr.clear();
+                            return;
+                        }
+
+                        if (!qr) {
+                            qr = new qrcode($elem[0], "" + val);
+                        } else {
+                            qr.makeCode(val);
+                        }
+
+                    });
+
+                    $scope.$on('$destroy', function() {
+                        qr.clear();
+                    });
+                }
+            }
+        })
         .controller('NavDomainsCtrl', ['$scope', 'webitel', 'DomainModel', '$timeout',
             function($scope, webitel, DomainModel, $timeout) {
                 $scope.changeDomains = function () {

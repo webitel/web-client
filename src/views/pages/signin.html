@@ -12,7 +12,7 @@
                 <div class="form-container">
 
                     <form class="form-horizontal" ng-controller="SigninCtrl" ng-submit="signin()" name="loginForm">
-                        <fieldset>
+                        <fieldset ng-show="!twoFactorAuthentication">
                             <div class="form-group">
                                 <div class="btn-icon-lined btn-icon-round btn-icon-sm btn-default-light">
                                     <span class="glyphicon glyphicon-user"></span>
@@ -51,6 +51,29 @@
                                 <a ng-disabled="isLoading" ng-click="signin()" class="btn btn-success btn-lg btn-block text-center" type="submit">
                                     <i ng-show="isLoading" style="position: absolute; left: 12px; top: 13px;" class="fa fa-circle-o-notch fa-spin pull-left"></i>
                                     Log in</a>
+                            </div>
+                        </fieldset>
+                        <fieldset ng-show="twoFactorAuthentication">
+                            <div class="form-group">
+                                <div class="btn-icon-lined btn-icon-round btn-icon-sm btn-default-light">
+                                    <span class="glyphicon glyphicon-lock"></span>
+                                </div>
+                                <input type="code"
+                                       class="form-control input-lg text-center"
+                                       placeholder="Code"
+                                       name="code"
+                                       ng-model="code"
+                                       ng-keyup="$event.keyCode == 13 && signin()"
+                                >
+                            </div>
+                            <div class="form-group">
+                                <div class="btn-group btn-group-justified">
+                                    <a ng-disabled="isLoading" ng-click="cancelInputCode()" class="btn btn-default">Cancel</a>
+
+                                    <a ng-disabled="isLoading || !code" ng-click="authenticate(code)" class="btn btn-success btn-lg btn-block text-center" type="submit">
+                                        <i ng-show="isLoading" style="position: absolute; left: 12px; top: 13px;" class="fa fa-circle-o-notch fa-spin pull-left"></i>
+                                        Authentication</a>
+                                </div>
                             </div>
                         </fieldset>
                     </form>

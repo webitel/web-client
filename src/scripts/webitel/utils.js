@@ -466,7 +466,9 @@ define(['angular'], function (angular) {
 
         'metadata',
 
-        'hotdesk'
+        'hotdesk',
+
+        'kibana'
     ];
 
     var events = [

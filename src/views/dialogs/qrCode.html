@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <h3 class="modal-title">Two-factor authentication for root administrator</h3>
+</div>
+
+<div class="modal-body">
+    <div class="card" ng-if="settings === null">
+        <div class="form-group">
+            <label for="exampleInputPassword1">Code</label>
+            <input ng-model="root.code" class="form-control" id="exampleInputPassword1" placeholder="Code">
+        </div>
+    </div>
+    <div class="card text-center" ng-if="settings !== null">
+        <div ng-if="settings && settings.enabled">
+            <h2 class="media-heading">Scan QR code</h2>
+            <qr-code code="settings.qr_data" style="display: inline-block"></qr-code>
+            <h2 class="media-heading">Or save secret:</h2>
+            <p>{{settings.secret}}</p>
+        </div>
+
+        <div class="" ng-if="settings && !settings.enabled">
+            <h3 >Two factor authentication is not enabled yet.</h3>
+            <h4>Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.</h4>
+            <button class="btn btn-success" ng-click="setEnable(true)">Enable two-factor authentication</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <div ng-if="settings.enabled" class="btn-group dropup pull-left" dropdown="">
+        <button ng-click="setEnable(false)" type="button" class="btn btn-danger">Disable</button>
+        <button type="button" class="btn btn-danger dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a ng-click="generateNewSecret()" href="javascript:;">Generate new secret</a></li>
+        </ul>
+    </div>
+
+    <button class="btn btn-default" ng-click="$close()">Close</button>
+    <button class="btn btn-primary" ng-if="settings === null" ng-disabled="isLoading || !root.code" ng-click="getData(root.code)">Next</button>
+</div>
