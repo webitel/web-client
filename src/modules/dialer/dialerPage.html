@@ -653,10 +653,26 @@
                                             <div class="col-sm-4">
                                                 <section class="categories panel panel-default">
                                                     <div class="panel-heading">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <a ng-click="editResourceDialString(getDefaultResource())" ng-show="canUpdate" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
+                                                                    <i class="fa fa-plus"></i>
+                                                                </a>
 
-                                                        <a ng-click="editResourceDialString(getDefaultResource())" ng-show="canUpdate" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-success">
-                                                            <i class="fa fa-plus"></i>
-                                                        </a>
+                                                                <div class="no-border pull-right">
+                                                                    <span class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark  btn-file"  style="padding: 0">
+                                                                       <i class="glyphicon glyphicon-cloud-upload"></i>
+                                                                       <input type="file" nv-file-select="" uploader="uploaderForCallRouting" accept=".json">
+                                                                    </span>
+
+                                                                    <a ng-click="downloadCallRouting(dialer)" ng-disabled="!dialer.resources.length" ng-show="canUpdate" style="padding: 0" class="btn btn-icon btn-icon-sm  btn-gap-v btn-dark">
+                                                                        <i class="glyphicon glyphicon-cloud-download"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
                                                     </div>
                                                     <ul class="list-group" style="max-height: 250px; overflow-y: auto;">
                                                         <li ng-click="setActiveResource(row)" class="list-group-item" ng-class="{'active': activeResource == row}"

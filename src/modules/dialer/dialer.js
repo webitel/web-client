@@ -1190,6 +1190,42 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
             // endregion
 
+            $scope.downloadCallRouting = function(dialer){
+                if (!dialer.resources || !dialer.resources.length) {
+                    return;
+                }
+                utils.saveJsonToPc({
+                    type: "callRoutForDialer",
+                    resources: angular.copy(dialer.resources)
+                }, dialer.name + '_call_routing.json');
+                return true;
+            };
+
+            var uploaderForCallRouting = $scope.uploaderForCallRouting = new FileUploader();
+            uploaderForCallRouting.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+                console.info('onWhenAddingFileFailed', item, filter, options);
+            };
+            uploaderForCallRouting.onAfterAddingFile = function(item) {
+                console.info('onAfterAddingFile', item);
+
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        var data = JSON.parse(event.target.result);
+                        if (data.type === 'callRoutForDialer' && data.resources.length) {
+                            $scope.dialer.resources = data.resources;
+                            $scope.$apply();
+                        } else {
+                            throw "Bad json file";
+                        }
+
+                    } catch (e) {
+                        notifi.error(e, 10000);
+                    }
+                };
+                reader.readAsText(item._file);
+            };
+
             function diffArray(a1, a2) {
                 return a1.filter(function(i) {return a2.indexOf(i) < 0;});
             }
