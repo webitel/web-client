@@ -235,6 +235,40 @@ define(['app'], function (app) {
                             language: 'zh-TW',
                             gender: 'Male'
                         }
+                    ],
+                    regions: [
+                        {
+                            name: 'West US',
+                            value: 'westus'
+                        },
+                        {
+                            name: 'West US2',
+                            value: 'westus2'
+                        },
+                        {
+                            name: 'East US',
+                            value: 'eastus'
+                        },
+                        {
+                            name: 'East US2',
+                            value: 'eastus2'
+                        },
+                        {
+                            name: 'East Asia',
+                            value: 'eastasia'
+                        },
+                        {
+                            name: 'South East Asia',
+                            value: 'southeastasia'
+                        },
+                        {
+                            name: 'North Europe',
+                            value: 'northeurope'
+                        },
+                        {
+                            name: 'West Europe',
+                            value: 'westeurope'
+                        },
                     ]
                 },
                 {
@@ -360,7 +394,8 @@ define(['app'], function (app) {
                             male:[],
                             female:['Gwyneth']
                         }
-                    ]
+                    ],
+                    regions: []
                 }
             ]
         }

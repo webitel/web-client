@@ -290,6 +290,16 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                             self.props.voice = self.voices[0].value;
                         };
 
+                        self.getRegions = function() {
+                            self.regions = [];
+                            var provider = TtsProviders.providers.filter(function(item) {
+                                return self.props.provider === item.name ? item : null
+                            })[0];
+                            if (provider) {
+                                self.regions = [].concat(provider.regions)
+                            }
+                        };
+
                         self.ok = function () {
                             $modalInstance.close({
 
@@ -329,6 +339,11 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                             if (options.type === "SSML") {
                                 uri += "&textType=ssml";
                             }
+
+                            if (options.region) {
+                                uri += '&region=' + options.region
+                            }
+
                             uri += '&domain=' + domainName + '&format=.wav&text=' + encodeURIComponent(options.text);
                             return uri
                         }

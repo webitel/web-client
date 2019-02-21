@@ -68,11 +68,24 @@
                             </div>
                             <div ng-if="props.provider === 'microsoft'">
                                 <div class="col-sm-12">
+
+                                </div>
+
+                                <div class="col-sm-6">
                                     <div class="form-group" ng-class="{ 'has-error' : ttsForm.language.$invalid  }">
                                         <label class="control-label" for>Language</label>
                                         <select class="form-control" name="language" required ng-model="props.language"
                                                 ng-init="getLanguages()">
                                             <option ng-repeat="l in languages" ng-selected="{{l==props.language}}" value="{{l}}">{{l.language + " " + l.gender}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group" ng-class="{ 'has-error' : ttsForm.region.$invalid }">
+                                        <label class="control-label">Region</label>
+                                        <select class="form-control" name="region" required ng-model="props.region"
+                                                ng-init="getRegions()">
+                                            <option ng-repeat="v in regions" ng-selected="{{v==props.region}}" value="{{v.value}}">{{v.name}}</option>
                                         </select>
                                     </div>
                                 </div>
