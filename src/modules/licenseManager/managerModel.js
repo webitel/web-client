@@ -33,8 +33,7 @@ define(['app', 'config'], function (app, config) {
             date.setHours(0);
             date.setMinutes(0);
             date.setSeconds(0);
-            date.getTime();
-            return  Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())
+            return  Date.UTC(date.getFullYear(),date.getMonth(),date.getDate(), 23, 59, 59)
         };
 
 
