@@ -1162,9 +1162,9 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
             function findTypeInCommunications(code, communications) {
                 if (angular.isArray(communications && communications.types)) {
-                    for (var item of communications.types) {
-                        if (item.code === code)
-                            return item;
+                    for (var i = 0; i < communications.types.length; i++) {
+                        if (communications.types[i].code === code)
+                            return communications.types[i];
                     }
                 }
             }
