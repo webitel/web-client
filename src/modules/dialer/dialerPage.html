@@ -219,10 +219,16 @@
                                                                     <!--</div>-->
 
                                                                     <div class="col-sm-12" style="padding: 0">
-                                                                        <div class="col-sm-12"  ng-show="dialer.type==diealerTypes[2]" >
+                                                                        <div class="col-sm-6"  ng-show="dialer.type==diealerTypes[2]" >
                                                                             <div class="form-group" ng-class="{ 'has-error' : dialerForm.predictAdjust.$invalid && !dialerForm.predictAdjust.$pristine }">
                                                                                 <label class="control-label">Start predict adjust</label>
                                                                                 <input ng-disabled="viewMode" class="form-control" type="number" name="predictAdjust" ng-model="dialer.parameters.predictAdjust" min="0" max="1000">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-sm-6"  ng-show="dialer.type==diealerTypes[2]" >
+                                                                            <div class="form-group" ng-class="{ 'has-error' : dialerForm.maxLocateAgentSec.$invalid && !dialerForm.maxLocateAgentSec.$pristine }">
+                                                                                <label class="control-label">Max wait time(in seconds)</label>
+                                                                                <input ng-disabled="viewMode" class="form-control" type="number" name="maxLocateAgentSec" ng-model="dialer.parameters.maxLocateAgentSec" min="1" max="300">
                                                                             </div>
                                                                         </div>
                                                                     </div>

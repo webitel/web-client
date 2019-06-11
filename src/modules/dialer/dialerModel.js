@@ -476,6 +476,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "playbackFile" : option.playbackFile,
                 "communications" : option.communications,
                 "parameters" : {
+                    "maxLocateAgentSec": angular.isNumber(option.parameters && option.parameters.maxLocateAgentSec) ? option.parameters.maxLocateAgentSec : 10,
                     "limit" : angular.isNumber(option.parameters && option.parameters.limit) ? option.parameters.limit : 30,
                     "minBillSec" : angular.isNumber(option.parameters && option.parameters.minBillSec) ? option.parameters.minBillSec : 10,
                     "originateTimeout" : angular.isNumber(option.parameters && option.parameters.originateTimeout) ? option.parameters.originateTimeout : 60,
