@@ -5,6 +5,11 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
     'modules/accounts/accounts', 'modules/callflows/diagram/diagram', 'css!modules/callflows/diagram/diagram.css'
 ], function (app, utils, aceEditor, callflowUtils, fileSaver, moment) {
 
+    var DIAL_STRING_STRATEGY = {
+        Random: "random",
+        ToDown: "top_down"
+    };
+
 
     function moveUp (arr, value, by) {
         if (!arr)
@@ -517,6 +522,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     for (var i = 0; i < resources.length; i++) {
                         if (resources[i].$$hashKey == result.id) {
                             resources[i].dialedNumber = result.value;
+                            resources[i].strategy = result.strategy;
                             return resources[i].disabled = result.disabled;
                         }
                     }
@@ -2922,8 +2928,11 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
     app.controller('DialerResourceDialStringCtrl', ['$scope', '$modalInstance', 'resource',
         function ($scope, $modalInstance, resource) {
 
+        $scope.strategys = [DIAL_STRING_STRATEGY.ToDown, DIAL_STRING_STRATEGY.Random];
+
         $scope.dialedNumber = angular.copy(resource.dialedNumber);
         $scope.disabled = angular.copy(resource.disabled);
+        $scope.strategy = angular.copy(resource.strategy) || DIAL_STRING_STRATEGY.ToDown;
 
         var id = resource.$$hashKey;
 
@@ -2931,7 +2940,12 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
             if (!$scope.dialedNumber) {
                 return notifi.error(new Error("Bad parameters"))
             }
-            $modalInstance.close({value: $scope.dialedNumber, id: id, disabled: $scope.disabled}, 5000);
+            $modalInstance.close({
+                value: $scope.dialedNumber,
+                id: id,
+                disabled: $scope.disabled,
+                strategy: $scope.strategy
+            }, 5000);
         };
 
         $scope.cancel = function () {

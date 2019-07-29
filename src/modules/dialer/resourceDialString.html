@@ -6,7 +6,15 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group" ng-class="{ 'has-error' : dialStringForm.dialedNumber.$invalid}">
+                    <label class="control-label">Pattern</label>
                     <input type="text"  class="form-control" name="dialedNumber" required ng-model="dialedNumber" >
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : dialStringForm.strategy.$invalid}">
+                    <label class="control-label">Strategy</label>
+                    <select  class="form-control" name="strategy" ng-model="strategy" required >
+                        <option ng-repeat="str in strategys" ng-selected="{{str==strategy}}"  value="{{str}}">{{str}}</option>
+                    </select>
                 </div>
             </div>
         </div>
