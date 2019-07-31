@@ -438,7 +438,7 @@ define(['angular'], function (angular) {
         'cc/members',
         'cc/queue',
 
-        'book',
+        // 'book',
         'hook',
         
         'vmail',
@@ -447,7 +447,7 @@ define(['angular'], function (angular) {
         'cdr/files',
         'cdr/media',
 
-        'outbound/list',
+        // 'outbound/list',
 
         'gateway',
         'gateway/profile',
@@ -457,7 +457,7 @@ define(['angular'], function (angular) {
 
         'account',
 
-        'system/reload',
+        // 'system/reload',
 
         'license',
         'widget',
