@@ -34,10 +34,10 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
                 $scope.panelStatistic = !!panelStatistic;
             };
 
-            $scope.query = TableSearch.get('domains');
+            $scope.query = TableSearch.get('callback');
 
             $scope.$watch("query", function (newVal) {
-                TableSearch.set(newVal, 'domains');
+                TableSearch.set(newVal, 'callback');
             });
 
             self.queueCallback = {agents: []};
@@ -53,7 +53,8 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
 
             $scope.$watch('domain', function(domainName) {
                 $scope.domain = domainName;
-                reloadData();
+                if ($scope.tableState)
+                    reloadData();
             }, true);
 
             $scope.$watch('queueCallback', function(newValue, oldValue) {
@@ -80,6 +81,7 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
             self.save = save;
             self.edit = edit;
             self.removeItem = removeItem;
+            self.callServer = getData;
 
             function removeItem(row) {
                 $confirm({text: 'Are you sure you want to delete ' + row.name + ' ?'},  { templateUrl: 'views/confirm.html' })
@@ -139,34 +141,72 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
 
 
             function reloadData () {
-                if ($location.$$path !== '/queue/callback')
-                    return 0;
+                $scope.tableState.pagination.start = 0;
+                getData($scope.tableState)
+            }
 
-                if (!$scope.domain)
-                    return $scope.rowCollection = [];
+            var _page = 1;
+            var nexData = true;
+            var col = encodeURIComponent(JSON.stringify({
+                name: 1,
+                description: 1,
+                id: 1
+            }));
+            var maxNodes = 40;
+            function getData(tableState) {
+                $scope.tableState = tableState;
+                if ($scope.isLoading) return void 0;
+
+                if (!$scope.domain) {
+                    _page = 1;
+                    nexData = true;
+                    $scope.rowCollection = [];
+                    $scope.count = 0;
+                    return
+                }
+
+                if (((tableState.pagination.start / tableState.pagination.number) || 0) === 0) {
+                    _page = 1;
+                    nexData = true;
+                    $scope.rowCollection = [];
+                    $scope.count = 0;
+                }
+                if (!nexData) return void 0;
+
+                console.debug("Page:", _page);
+                $scope.isLoading = true;
+                var sort ={};
+
+                if (tableState.sort.predicate)
+                    sort[tableState.sort.predicate] = tableState.sort.reverse ? -1 : 1;
 
                 $scope.isLoading = true;
-                var col = encodeURIComponent(JSON.stringify({
-                    name: 1,
-                    description: 1,
-                    id: 1
-                }));
+                sort = encodeURIComponent(JSON.stringify(sort));
+                var filter = undefined;
+                if ($scope.query) {
+                    filter = encodeURIComponent(JSON.stringify({
+                        name: $scope.query
+                    }));
+                }
 
                 QueueCallbackModel.list({
                     columns: col,
-                    limit: 5000,
-                    page: 1,
+                    limit: maxNodes,
+                    page: _page,
+                    filter: filter,
+                    sort: sort,
                     domain: $scope.domain
                 }, function (err, res) {
                     $scope.isLoading = false;
                     if (err)
                         return notifi.error(err, 5000);
-                    var arr = [];
-                    angular.forEach(res.data || res.info, function(item) {
-                        arr.push(item);
-                    });
-                    $scope.rowCollection = arr;
+
+                    _page++;
+                    var data = res.data || [];
+                    nexData = data.length === maxNodes;
+                    $scope.rowCollection = $scope.rowCollection.concat(data);
                 });
+
             }
 
 
@@ -293,8 +333,6 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
                 if (!!$route.current.method) {
                     return $scope[$route.current.method]();
                 }
-
-                reloadData();
             }();
 
         }]);
