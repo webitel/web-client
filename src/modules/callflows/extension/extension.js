@@ -33,6 +33,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
             $scope.view = function () {
                 var id = $routeParams.id;
                 var domain = $routeParams.domain;
+                var autoOpenDiagram = $routeParams.openDiagram === 'true';
                 CallflowExtensionModel.item(id, domain, function (err, res) {
                     if (err)
                         return notifi.error(err);
@@ -42,6 +43,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                     $scope.cf = aceEditor.getStrFromJson(cf);
                     $scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
                     disableEditMode();
+                    if (autoOpenDiagram) {
+                        openDiagram(true)
+                    }
                 });
             };
 
@@ -231,6 +235,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
             function edit() {
                 var id = $routeParams.id;
                 var domain = $routeParams.domain;
+                var autoOpenDiagram = $routeParams.openDiagram === 'true';
                 CallflowExtensionModel.item(id, domain, function (err, res) {
                     if (err)
                         return notifi.error(err);
@@ -246,6 +251,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 'm
                     $scope.oldCfOnDisconnect = angular.copy($scope.cfOnDisconnect);
                     if(!!$scope.cfDiagram)$scope.visualCfEnabled = true;
                     disableEditMode();
+                    if (autoOpenDiagram) {
+                        openDiagram(true)
+                    }
                 });
             };
 

@@ -76,6 +76,7 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 			$scope.view = function () {
 				var id = $routeParams.id;
 				var domain = $routeParams.domain;
+                var autoOpenDiagram = $routeParams.openDiagram === 'true';
 				CallflowPublicModel.item(id, domain, function (err, res) {
 					if (err)
 						return notifi.error(err);
@@ -86,6 +87,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 					$scope.cf = aceEditor.getStrFromJson(cf);
 					$scope.cfOnDisconnect = aceEditor.getStrFromJson(cfOnDisconnect);
 					disableEditMode();
+                    if (autoOpenDiagram) {
+                        openDiagram(true)
+                    }
 				});
 			};
 
@@ -450,7 +454,8 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 
 	        function edit() {
 	            var id = $routeParams.id;
-	            var domain = $routeParams.domain;	        	
+	            var domain = $routeParams.domain;
+                var autoOpenDiagram = $routeParams.openDiagram === 'true';
 	        	CallflowPublicModel.item(id, domain, function (err, res) {
 	        		if (err)
 	        			return notifi.error(err);
@@ -469,6 +474,9 @@ define(['app', 'modules/callflows/editor', 'modules/callflows/callflowUtils', 's
 
                     if (res.debug && res.id) {
                         setDebugMode(res.id)
+                    }
+                    if (autoOpenDiagram) {
+                        openDiagram(true)
                     }
 	        	});
 	        };
