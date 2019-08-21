@@ -1271,9 +1271,10 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
     }]);
 
     app.controller('MembersDialerCtrl', ['$scope', 'DialerModel', '$modal', '$confirm', 'notifi', 'FileUploader', 'webitel',
-        'cfpLoadingBar',
-        function ($scope, DialerModel, $modal, $confirm, notifi, FileUploader, webitel, cfpLoadingBar) {
+        'cfpLoadingBar', 'dateLocalize',
+        function ($scope, DialerModel, $modal, $confirm, notifi, FileUploader, webitel, cfpLoadingBar, dateLocalize) {
         var _tableState = {};
+        var defaultLocaleDateFormat = dateLocalize.getLocaleDefaultDateTimeFormat();
         $scope.reloadData = function () {
             _tableState.pagination.start = 0;
             $scope.callServer(_tableState)
@@ -1508,6 +1509,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                 controller: function ($scope, $modalInstance, notifi, options) {
                     $scope.dateOpenedControl = false;
                     $scope.showResetLogBtn = options.showResetLogBtn;
+                    $scope.defaultLocaleDateFormat = defaultLocaleDateFormat;
 
                     $scope.changeDate = function () {
                         if (!$scope.remFromDate) {
@@ -1586,8 +1588,8 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
 
     
-    app.controller('MemberDialerPageCtrl', ['$scope', '$modalInstance', 'notifi', 'DialerModel', 'options', 'fileModel', '$confirm',
-    function ($scope, $modalInstance, notifi, DialerModel, options, fileModel, $confirm) {
+    app.controller('MemberDialerPageCtrl', ['$scope', '$modalInstance', 'notifi', 'DialerModel', 'options', 'fileModel', '$confirm', 'dateLocalize',
+    function ($scope, $modalInstance, notifi, DialerModel, options, fileModel, $confirm, dateLocalize) {
 
         if (options && options.member) {
             DialerModel.members.item(options.domain, options.dialerId, options.member._id, function (err, data) {
@@ -1605,6 +1607,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
         };
 
         $scope.viewMode = options.viewMode;
+        $scope.defaultLocaleDateFormat = dateLocalize.getLocaleDefaultDateTimeFormat();
         
         $scope.addCommunication = function (member) {
             $scope.inserted = {

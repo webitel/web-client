@@ -20,7 +20,7 @@
                                     <div class="input-group ui-datepicker">
                                         <input type="text"
                                                class="form-control"
-                                               datetime-picker="dd.MM.yyyy HH:mm"
+                                               datetime-picker="{{defaultLocaleDateFormat}}"
                                                ng-model="startDate"
                                                ng-change="onChangeDate(startDate)"
                                                is-open="dateOpenedControl.start"
@@ -43,7 +43,7 @@
                                     <div class="input-group ui-datepicker">
                                         <input type="text"
                                                class="form-control"
-                                               datetime-picker="dd.MM.yyyy HH:mm"
+                                               datetime-picker="{{defaultLocaleDateFormat}}"
                                                ng-model="endDate"
                                                ng-change="onChangeDate(endDate)"
                                                is-open="dateOpenedControl.end"

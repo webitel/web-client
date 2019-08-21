@@ -509,8 +509,9 @@ define(['app', 'scripts/webitel/utils', 'modules/queueCallback/queueCallbackMode
             };
 
         }]);
-    app.controller('MemberPageCtrl', ['$scope', '$confirm', '$modalInstance', 'notifi', 'MemberCallbackModel', 'options',
-        function ($scope, $confirm, $modalInstance, notifi, MemberCallbackModel, options) {
+    app.controller('MemberPageCtrl', ['$scope', '$confirm', '$modalInstance', 'notifi', 'MemberCallbackModel', 'options', 'dateLocalize',
+        function ($scope, $confirm, $modalInstance, notifi, MemberCallbackModel, options, dateLocalize) {
+            $scope.defaultLocaleDateFormat = dateLocalize.getLocaleDefaultDateTimeFormat();
             $scope.commentsRowCollection = [];
             $scope.displayedCommentCollection = [];
             //$scope.logsRowCollection = [];

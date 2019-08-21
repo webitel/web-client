@@ -23,7 +23,7 @@
                         <div class="input-group ui-datepicker">
                             <input ng-disabled="viewMode" type="text"
                                    class="form-control"
-                                   datetime-picker="dd.MM.yyyy HH:mm"
+                                   datetime-picker="{{defaultLocaleDateFormat}}"
                                    ng-model="member._expire"
                                    ng-change="changeDate()"
                                    is-open="dateOpenedControl"

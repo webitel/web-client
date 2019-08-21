@@ -77,7 +77,7 @@
                                     <input ng-disabled="member.done"
                                            type="text"
                                            class="form-control"
-                                           datetime-picker="dd.MM.yyyy, HH:mm"
+                                           datetime-picker="{{defaultLocaleDateFormat}}"
                                            ng-model="callback_time"
                                            ng-change="onChangeDate(callback_time)"
                                            is-open="calop"

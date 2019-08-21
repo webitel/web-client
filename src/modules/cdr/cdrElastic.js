@@ -7,11 +7,12 @@ define(['app', 'moment', 'jsZIP', 'async', 'modules/cdr/cdrModel', 'modules/cdr/
     function (app, moment, jsZIP, async) {
 
     app.controller('CDRCtrl', ['$scope', 'webitel', '$rootScope', 'notifi', 'CdrModel', 'fileModel', '$confirm',
-        'TableSearch', '$timeout', 'cfpLoadingBar', '$q',
-        function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, TableSearch, $timeout, cfpLoadingBar, $q) {
+        'TableSearch', '$timeout', 'cfpLoadingBar', '$q', 'dateLocalize',
+        function ($scope, webitel, $rootScope, notifi, CdrModel, fileModel, $confirm, TableSearch, $timeout, cfpLoadingBar, $q, dateLocalize) {
             //$scope.queries = (localStorage.getItem('cdrQueries') && JSON.parse(localStorage.getItem('cdrQueries'))) || [];
             $scope.pinSearch = false;
             $scope.isLoading = false;
+            $scope.defaultLocaleDateFormat = dateLocalize.getLocaleDefaultDateTimeFormat();
             $scope.$watch('isLoading', function (val) {
                 if (val) {
                     cfpLoadingBar.start()
