@@ -45,38 +45,70 @@
                                                     </ui-select-choices>
                                                 </ui-select>
                                             </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Use WebRTC</label>
+                                                        <br/>
+                                                        <label class="switch switch-success"><input type="checkbox" ng-disabled="widget.config.webRtcOnly" ng-model="widget.config.useWebRtc" class="ng-pristine ng-valid"><i></i></label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">WebRTC Only</label>
+                                                        <br/>
+                                                        <label class="switch switch-success"><input type="checkbox" ng-model="widget.config.webRtcOnly" class="ng-pristine ng-valid"><i></i></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
                                         </div>
                                         <div class="col-sm-3">
                                             <div  class="form-group">
                                                 <label class="control-label">Hook count down seconds</label>
                                                 <input  ng-model="widget.config.hookCountDown" type="text"  class="form-control" />
                                             </div>
+
                                             <div  class="form-group">
-                                                <label class="control-label">Get country url</label>
-                                                <input  ng-model="widget.config.getCountryUrl" type="text"  class="form-control" />
-                                            </div>
-                                            <div  class="form-group">
-                                                <label class="control-label">Requests limit by IP</label>
+                                                <label class="control-label">
+
+                                                </label>
                                                 <input  ng-model="widget.limit_by_ip" type="number"  class="form-control" />
                                             </div>
-                                            <div class="col-sm-6">
-                                                <div  class="form-group">
-                                                    <label class="control-label">Requests limit by number</label>
-                                                    <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="widget.limit_by_number" class="ng-pristine ng-valid"><i></i></label>
-                                                </div>
+
+                                            <div  class="form-group">
+                                                <label class="control-label">
+                                                    <a href="https://ipapi.com/" target="_blank" class="">
+                                                        Use geo location
+                                                    </a>
+                                                </label>
+                                                <br/>
+                                                <label class="switch switch-success"><input type="checkbox" ng-model="widget.config.useGeoLocation" class="ng-pristine ng-valid"><i></i></label>
                                             </div>
-                                            <div class="col-sm-6">
-                                                <div  class="form-group">
-                                                    <label class="control-label">Use WebRTC</label>
-                                                    <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-disabled="widget.config.webRtcOnly" ng-model="widget.config.useWebRtc" class="ng-pristine ng-valid"><i></i></label>
-                                                </div>
+
+                                            <div  class="form-group" ng-show="widget.config.useGeoLocation" ng-class="{'has-error': widgetForm.geoToken.$invalid}">
+                                                <label class="control-label">
+                                                    <a href="https://ipapi.com/dashboard" target="_blank" class="">
+                                                        Geo location token
+                                                    </a>
+                                                </label>
+                                                <input ng-required="widget.config.useGeoLocation" ng-model="widget.geo_token"  name="geoToken"  type="text"  class="form-control" />
                                             </div>
-                                            <div ng-show="widget.config.useWebRtc" class="col-sm-6">
-                                                <div  class="form-group">
-                                                    <label class="control-label">WebRTC Only</label>
-                                                    <label style="width: 100%;" class="switch switch-success"><input type="checkbox" ng-model="widget.config.webRtcOnly" class="ng-pristine ng-valid"><i></i></label>
-                                                </div>
+
+                                            <div class="form-group" ng-show="widget.config.useGeoLocation" >
+                                                <label class="control-label">Origins</label>
+                                                <tags-input min-length="1" type="text" class="form-group ui-tags-input" required ng-model="widget.geo_origins" placeholder="Hosts">
+                                                </tags-input>
                                             </div>
+
+                                            <div  class="form-group">
+                                                <label class="control-label">Requests limit by number</label>
+                                                <br/>
+                                                <label class="switch switch-success"><input type="checkbox" ng-model="widget.limit_by_number" class="ng-pristine ng-valid"><i></i></label>
+                                            </div>
+
                                             <div ng-if="false" class="col-sm-6">
                                                 <div  class="form-group">
                                                     <label class="control-label">Use video</label>

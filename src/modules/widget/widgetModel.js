@@ -38,6 +38,13 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 return cb(new Error("Number is required"));
 
             data.domain = domain;
+
+            if (angular.isArray(data.geo_origins)) {
+                data.geo_origins = data.geo_origins.map(function (i) {
+                    return i.text || "";
+                });
+            }
+
             delete data._new;
             webitel.api('POST', '/api/v2/widget?domain=' + domain, data, cb);
         };
@@ -60,6 +67,13 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 return cb(new Error("Number is required"));
 
             data.domain = domain;
+
+            if (angular.isArray(data.geo_origins)) {
+                data.geo_origins = data.geo_origins.map(function (i) {
+                    return i.text || "";
+                });
+            }
+
             webitel.api('PUT', '/api/v2/widget/'+widgetId+'?domain=' + domain, data, cb);
         };
 
