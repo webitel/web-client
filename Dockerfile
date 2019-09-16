@@ -1,4 +1,4 @@
-FROM nginx
+FROM nginx:1.16
 MAINTAINER Vitaly Kovalyshyn "v.kovalyshyn@webitel.com"
 ENV VERSION
 
