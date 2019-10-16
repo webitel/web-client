@@ -255,7 +255,7 @@ define(['app', 'jsZIP-utils', 'jsZIP', 'async', 'modules/cdr/libs/fileSaver', 's
                                     self.props.voice = null;
                                 }
                             }
-                            else if(provider.name === 'microsoft'){
+                            else if(provider.name === 'microsoft' || provider.name === 'google'){
                                 provider.voice.forEach(function(item){
                                     self.languages.push({ language: item.language, gender: item.gender});
                                 });

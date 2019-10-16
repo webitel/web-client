@@ -1740,6 +1740,14 @@
                     };
                 },
 
+                showOpenedSockets: function( cb) {
+
+                    var cmd = new WebitelCommand("list_sockets", {
+
+                    }, cb);
+                    cmd.execute();
+                },
+
                 answer: function(callUUID, useVideo) {
                     var webCall = getWebrtcCallFromCallUUID(callUUID);
 
@@ -2654,6 +2662,7 @@
                  * @useVideo {Boolean} - использовать видео поток.
                  **/
                 answer: WebitelConnection.answer,
+                showOpenedSockets: WebitelConnection.showOpenedSockets,
 
                 /**
                  * Поставить/снять звонок с удержания.
