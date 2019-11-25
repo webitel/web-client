@@ -23,7 +23,7 @@ if [ "$WEBITEL_ARCHIVE" == "$ARCHIVE" ]; then
 
 fi
 
-sed -i "s/\"useElastic\": true/\"useElastic\": $(printenv elastic:enabled)/" /webitel/client/config.js
+#sed -i "s/\"useElastic\": true/\"useElastic\": $(printenv elastic:enabled)/" /webitel/client/config.js
 
 if [ "$licenseManager" == "true" ]; then
     sed -i "s/\"enabled\": false/\"enabled\": $(printenv licenseManager)/" /webitel/client/config.js
