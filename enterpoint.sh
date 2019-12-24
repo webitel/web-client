@@ -23,7 +23,7 @@ if [ "$WEBITEL_ARCHIVE" == "$ARCHIVE" ]; then
 
 fi
 
-sed -i "s/\"useElastic\": true/\"useElastic\": $(printenv elastic:enabled)/" /webitel/client/config.js
+#sed -i "s/\"useElastic\": true/\"useElastic\": $(printenv elastic:enabled)/" /webitel/client/config.js
 
 if [ "$licenseManager" == "true" ]; then
     sed -i "s/\"enabled\": false/\"enabled\": $(printenv licenseManager)/" /webitel/client/config.js
@@ -32,6 +32,10 @@ fi
 
 if [ "$WEBITEL_PHONE" == "true" ]; then
     /webitel/client/phone-update/get_phone.sh &
+fi
+
+if [ "$VERTO_HOST" ]; then
+    sed -i "s/172.17.0.1/${VERTO_HOST}/" /etc/nginx/conf.d/default.conf
 fi
 
 if [ "$WEBITEL_HOST" ]; then
