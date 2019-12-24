@@ -185,7 +185,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 });
                 if (member.expire)
                     member._expire = new Date(member.expire);
-                
+
                 return cb && cb(err, member);
             });
         }
@@ -220,7 +220,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 return cb && cb(err, member);
             })
         }
-        
+
         function updateMember (domainName, dialerId, id, member, cb) {
             if (!domainName)
                 return cb(new Error("Domain is required."));
@@ -232,7 +232,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 return cb(new Error("DialerId is required."));
 
             var data = parseMember(member);
-            
+
             if (data.communications.length < 1)
                 return cb(new Error('Bad communication'));
 
@@ -516,7 +516,8 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                     "greeting": amd.greeting || 1500,
                     "initialSilence": amd.initialSilence || 2500,
                     "playbackFile": amd.playbackFile || null,
-                    "beforePlaybackFileTime": amd.beforePlaybackFileTime || 1000
+                    "beforePlaybackFileTime": amd.beforePlaybackFileTime || 1000,
+                    "silenceNotSure": amd.silenceNotSure || false
                 },
                 "causesError": causesError,
                 "causesRetry": causesRetry,
@@ -559,7 +560,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "description": option.description || ""
             }
         }
-        
+
         function resetMembers(dialerId, domainName, log, from, cb) {
             if (!domainName)
                 return cb(new Error("Domain is required."));

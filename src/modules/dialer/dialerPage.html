@@ -439,6 +439,13 @@
                                                                             <label class="control-label">Before playback silence (ms)</label>
                                                                             <input ng-disabled="viewMode || !dialer.amd.playbackFile" class="form-control" type="number" name="amdBeforePlaybackFileTime" ng-model="dialer.amd.beforePlaybackFileTime" min="0">
                                                                         </div>
+
+
+                                                                        <div class="form-group" style=" margin-bottom: 10px;" ng-show="dialer.amd.allowNotSure">
+                                                                            <label class="control-label">Transfer silence to an agent</label>
+                                                                            <label  style="width: 100%;" class="switch switch-success">
+                                                                                <input ng-disabled="viewMode" type="checkbox" ng-model="dialer.amd.silenceNotSure" ><i></i></label>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </tab>
