@@ -1472,6 +1472,13 @@ define(['app', 'async', 'scripts/webitel/utils', 'modules/cdr/libs/fileSaver'], 
                             m.expire = timeExpire;
                     }
 
+                    if (template.hasOwnProperty('priority')) {
+                        var pri = +row[template.priority];
+                        if (!isNaN(pri)) {
+                            m.priority = pri;
+                        }
+                    }
+
                     return m;
 
                 }
