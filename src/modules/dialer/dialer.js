@@ -101,7 +101,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                 changeDomainEvent();
                 $timeout.cancel(timerId)
             });
-            
+
             var changeStateEvent = function (e) {
                 if ($scope.dialer && $scope.dialer._id) {
                     edit();
@@ -153,11 +153,11 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
             $scope.rowCollection = [];
             $scope.activeResource = null;
-            
+
             $scope.setActiveResource = function (resource) {
                 $scope.activeResource = resource;
             };
-            
+
             $scope.getDefaultResourceDestination = function () {
                 return {
                     gwName: "",
@@ -176,7 +176,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     destinations: []
                 }
             };
-            
+
             $scope.getCalendars = function () {
                 CalendarModel.list($scope.domain, function (err, res) {
                     if (err)
@@ -494,7 +494,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
             $scope.deleteCallResult = function(index){
                 $scope.dialer.callResult.splice(index, 1);
             }
-            
+
             $scope.editResourceDialString = function (resource) {
                 var modalInstance = $modal.open({
                     animation: true,
@@ -566,7 +566,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
                 });
             };
-            
+
             $scope.removeResource = function (key, resource) {
                 var resources = $scope.dialer.resources;
                 $confirm({text: 'Are you sure you want to delete resource ' + resource.dialedNumber + ' ?'},  { templateUrl: 'views/confirm.html' })
@@ -574,7 +574,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                         resources.splice(key, 1);
                     });
             };
-            
+
             $scope.removeResourceDestination = function (key, resource) {
                 var scope = this;
                 $confirm({text: 'Are you sure you want to delete resource ' + resource.dialString + ' ?'},  { templateUrl: 'views/confirm.html' })
@@ -587,7 +587,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     });
 
             };
-            
+
             $scope.setDialStringPosition = function (resources, value, up) {
                 up ? moveUp(resources, value) : moveDown(resources, value);
             };
@@ -640,7 +640,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
             function closePage() {
                 $location.path('/queue/dialer');
             }
-            
+
             $scope.gotoUrl = function (url) {
                 $location.path(url);
             };
@@ -835,7 +835,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
                 utils.saveDataToDisk(text, filename + '.csv', 'text/csv');
             };
-            
+
             function findAgentById(agentId) {
                 var agents = $scope.agents;
                 if (!angular.isArray(agents)) {
@@ -849,7 +849,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
             }
 
             $scope.isAgentInTier = isAgentInTier;
-            
+
             $scope.removeTiers = function (all) {
                 if (all) {
                     $scope.selTiers = {};
@@ -924,7 +924,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     name: "End"
                 }
             ];
-            
+
             $scope.stateDialerToString = function (stateNumber) {
                 for (var i = 0, len = $scope.diealerStates.length; i < len; i++) {
                     if ($scope.diealerStates[i].val == stateNumber)
@@ -940,7 +940,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                 causesOK: "CODE_RESPONSE_OK",
                 causesMinus: "CODE_RESPONSE_MINUS_PROBE"
             };
-            
+
             $scope.resetCause = function () {
                 $confirm({text: 'Are you sure you want to reset causes ?'},  { templateUrl: 'views/confirm.html' })
                     .then(function() {
@@ -974,7 +974,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
             $scope.selectTabStats = function () {
                 window.dispatchEvent(new Event('resize'));
             };
-            
+
             $scope.resetProcess = function (id, domain) {
                 DialerModel.resetProcess(id, domain, function (err, res) {
                     if (err)
@@ -998,7 +998,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
             $scope._hourError = false;
             $scope._editRangeRowKey = null;
             $scope._editRangeRowRow = {};
-            
+
             $scope.editRangeName = function (rowName, key) {
                 $scope._editRangeRowRow = {
                     "name": rowName.name,
@@ -1006,7 +1006,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                 };
                 $scope._editRangeRowKey = key;
             };
-            
+
             $scope.saveRangeName = function (newRow, oldRow, communications) {
                 if (!newRow.name || !newRow.code) {
                     return showError('Bad name or code');
@@ -1053,7 +1053,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                 $scope._editRangeRowRow = {};
                 $scope._editRangeRowKey = null;
             };
-            
+
             $scope.addRangeType = function (range, communications) {
 
                 if (!range.code) {
@@ -1084,7 +1084,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
                 type.ranges.push(_range);
             };
-            
+
             $scope.removeRange = function (row, range, key) {
                 row.ranges.splice(key, 1);
                 if (row.ranges.length === 0) {
@@ -1237,7 +1237,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
             }
 
     }]);
-    
+
     app.controller('DialerResourceCtrl', ["$scope", '$modalInstance', 'resource', 'domain', 'viewMode', 'GatewayModel', 'notifi',
         function ($scope, $modalInstance, resource, domain, viewMode, GatewayModel, notifi) {
         $scope.resource = angular.copy(resource);
@@ -1406,7 +1406,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     })
                 });
         };
-        
+
         $scope.addMember = function () {
             var modalInstance = $modal.open({
                 animation: true,
@@ -1578,7 +1578,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     $scope.reloadData();
                     return notifi.info('OK: reset ' + count + ' members.', 5000);
                 })
-                
+
             }, function () {
 
             });
@@ -1587,7 +1587,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
     }]);
 
 
-    
+
     app.controller('MemberDialerPageCtrl', ['$scope', '$modalInstance', 'notifi', 'DialerModel', 'options', 'fileModel', '$confirm', 'dateLocalize',
     function ($scope, $modalInstance, notifi, DialerModel, options, fileModel, $confirm, dateLocalize) {
 
@@ -1608,7 +1608,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
         $scope.viewMode = options.viewMode;
         $scope.defaultLocaleDateFormat = dateLocalize.getLocaleDefaultDateTimeFormat();
-        
+
         $scope.addCommunication = function (member) {
             $scope.inserted = {
                 number: ''
@@ -1770,18 +1770,18 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     });
                 });
         };
-        
+
         $scope.openDate = function ($event) {
             $event.preventDefault();
             $event.stopPropagation();
             $scope.dateOpenedControl = true;
         };
-        
+
         $scope.changeDate = function () {
             $scope.member.expire = $scope.member._expire ? $scope.member._expire.getTime() : null;
         };
     }]);
-    
+
     app.controller('StatsDialerCtrl', ['$scope', 'DialerModel', 'AgentModel', 'notifi', 'webitel', '$routeParams',
         '$interval', '$timeout', '$confirm', '$modal',
         function ($scope, DialerModel, AgentModel, notifi, webitel, $routeParams, $interval, $timeout, $confirm, $modal) {
@@ -1914,7 +1914,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
             var timerId = null;
             var communicationTypes = {};
-            
+
             function reload() {
                 if (timerId) {
                     $timeout.cancel(timerId);
@@ -2234,7 +2234,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                 $scope.historyCollection = $scope.historyCollection.concat(data)
             });
 
-            
+
             function findAgent(id) {
                 var agents = $scope.agentDisplayedCollection;
                 if (angular.isArray(agents)) {
@@ -2263,7 +2263,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
             webitel.connection.instance.onServerEvent("CC::AGENT-STATE-CHANGE", fnOnUserStateChange,  {all: true});
             webitel.connection.instance.onServerEvent("CC::AGENT-STATUS-CHANGE", fnOnUserStatusChange,  {all: true});
-            
+
             function unSubscribeGridEvents() {
                 webitel.connection.instance.unServerEvent('CC::AGENT-STATE-CHANGE', {all: true}, fnOnUserStateChange);
                 webitel.connection.instance.unServerEvent('CC::AGENT-STATUS-CHANGE', {all: true}, fnOnUserStatusChange);
@@ -2340,7 +2340,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
 
                     var m = stats.amd["MACHINE"];
                     if (m) {
-                        $scope.amdMachine = ((m - (stats.amd["CANCEL"] || 0)) * 100) /  $scope.connectedCall ;
+                        $scope.amdMachine = ((Math.abs(m - (stats.amd["CANCEL"]) || 0)) * 100) /  $scope.connectedCall ;
                     } else {
                         $scope.amdMachine = 0;
                     }
@@ -2569,7 +2569,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                     }
                 }
             };
-            
+
             $scope.amdState = {
                 data: [],
                 options: {
@@ -2800,7 +2800,7 @@ define(['app', 'scripts/webitel/utils', 'modules/callflows/editor', 'modules/cal
                         }
 
                     });
-                    
+
                     angular.forEach(callbackStatus, function (item) {
                         if (item._id === null) {
                             rowsCallbackStatus.push({
