@@ -289,6 +289,13 @@
                                                                             </div>
                                                                         </div>
 
+                                                                        <div class="col-sm-6" ng-show="dialer.type!=diealerTypes[1]">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label">CPS</label>
+                                                                                <input ng-disabled="viewMode" class="form-control" type="number" ng-model="dialer.parameters.cps" min="0" max="999">
+                                                                            </div>
+                                                                        </div>
+
                                                                     </div>
 
 

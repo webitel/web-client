@@ -478,6 +478,7 @@ define(['app', 'scripts/webitel/utils'], function (app, utils) {
                 "parameters" : {
                     "maxLocateAgentSec": angular.isNumber(option.parameters && option.parameters.maxLocateAgentSec) ? option.parameters.maxLocateAgentSec : 10,
                     "limit" : angular.isNumber(option.parameters && option.parameters.limit) ? option.parameters.limit : 30,
+                    "cps" : angular.isNumber(option.parameters && option.parameters.cps) ? option.parameters.cps : 2,
                     "minBillSec" : angular.isNumber(option.parameters && option.parameters.minBillSec) ? option.parameters.minBillSec : 10,
                     "originateTimeout" : angular.isNumber(option.parameters && option.parameters.originateTimeout) ? option.parameters.originateTimeout : 60,
                     "maxTryCount" : angular.isNumber(option.parameters && option.parameters.maxTryCount) ? option.parameters.maxTryCount : 5,
