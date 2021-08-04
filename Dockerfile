@@ -1,4 +1,4 @@
-FROM nginx:1.18
+FROM nginx:stable
 MAINTAINER Vitaly Kovalyshyn "v.kovalyshyn@webitel.com"
 ENV VERSION
 
