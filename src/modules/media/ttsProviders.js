@@ -774,10 +774,6 @@ define(['app'], function (app) {
                             "gender": "MALE"
                         },
                         {
-                            "language": "uk-UA-Wavenet-A",
-                            "gender": "FEMALE"
-                        },
-                        {
                             "language": "vi-VN-Wavenet-A",
                             "gender": "FEMALE"
                         },
@@ -998,10 +994,6 @@ define(['app'], function (app) {
                             "gender": "MALE"
                         },
                         {
-                            "language": "uk-UA-Standard-A",
-                            "gender": "FEMALE"
-                        },
-                        {
                             "language": "en-IN-Standard-A",
                             "gender": "FEMALE"
                         },
@@ -1172,6 +1164,102 @@ define(['app'], function (app) {
                         {
                             "language": "it-IT-Standard-D",
                             "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Achernar",
+                            "gender": "FEMALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Achird",
+                            "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Algenib",
+                            "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Algieba",
+                            "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Alnilam",
+                            "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Autonoe",
+                            "gender": "FEMALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Callirrhoe",
+                            "gender": "FEMALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Despina",
+                            "gender": "FEMALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Enceladus",
+                            "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Erinome",
+                            "gender": "FEMALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Gacrux",
+                            "gender": "FEMALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Iapetus",
+                            "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Laomedeia",
+                            "gender": "FEMALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Pulcherrima",
+                            "gender": "FEMALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Rasalgethi",
+                            "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Sadachbia",
+                            "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Sadaltager",
+                            "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Schedar",
+                            "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Sulafat",
+                            "gender": "FEMALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Umbriel",
+                            "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Vindemiatrix",
+                            "gender": "FEMALE"
+                        },
+                        {
+                            "language": "uk-UA-Chirp3-HD-Zubenelgenubi",
+                            "gender": "MALE"
+                        },
+                        {
+                            "language": "uk-UA-Standard-B",
+                            "gender": "FEMALE"
+                        },
+                        {
+                            "language": "uk-UA-Wavenet-B",
+                            "gender": "FEMALE"
                         }
                     ]
                 }
